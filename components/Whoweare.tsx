@@ -19,16 +19,16 @@ const Whoweare = () => {
               <div className='bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md'>Our Story</div>
               <p className='capitalize text-black'>Founded in the US and Uganda, our team saw the need to prevent:</p>
               <div className='flex flex-col ml-4'>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5'></div>
                   <p className='capitalize text-black'>identify natural strengths and interests</p>
                 </div>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1'></div>
                   <p className='capitalize text-black'>Explore suitable career and business paths</p>
                 </div>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1'></div>
                   <p className='capitalize text-black'>Make informed decisions</p>
                 </div>
               </div>
