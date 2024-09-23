@@ -1,5 +1,3 @@
-import React from 'react'
-import Image from 'next/image'
 import { Button } from './ui/button';
 import TitleDot from './TitleDot';
 import CardMadam from './CardMadam'
@@ -8,7 +6,7 @@ import CardMadam from './CardMadam'
 const Whoweare = () => {
   return (
     <div className='pt-20 px-10 bg-white'>
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between space-x-60 w-full'>
         <div className='flex flex-col w-2/3 space-y-4'>
           <TitleDot title={'Who We Are'} />
           <p className='capitalize text-black'>Empowering informed decisions for a fulfing career</p>
