@@ -1,17 +1,15 @@
 import React from 'react'
 import Image from 'next/image'
 import { Button } from './ui/button';
+import TitleDot from './TitleDot';
 
 
 const Whoweare = () => {
   return (
-    <div className='py-20 px-10 bg-white'>
+    <div className='pt-20 px-10 bg-white'>
       <div className='flex justify-between items-center'>
         <div className='flex flex-col w-2/3 space-y-4'>
-          <div className='flex items-center space-x-2 text-black'>
-            <h1 className='text-4xl text-black font-extrabold'>Who We Are</h1>
-            <span className='bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-2 w-2 rounded-full'></span>
-          </div>
+        <TitleDot title={'Who We Are'} />
           <p className='capitalize text-black'>Empowering informed decisions for a fulfing career</p>
           <p className='text-black'>At pithy means, we believe that everyone deserves to find their perfect fit. our mission is to guide students, professionals, and business managers towards their most suitable study, professional, or business areas.</p>
           <div className='flex justify-between'>
