@@ -14,7 +14,7 @@ const Navbar = () => {
   const router = useRouter();
   return (
     <div className='px-10 py-4 bg-black h-screen'>
-      <div className='flex justify-between my-4'>
+      <div className='flex justify-between my-8'>
         <div className='text-2xl font-bold'>
           <Logo />
         </div>
@@ -45,7 +45,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className='flex justify-between items-center my-12'>
+      <div className='flex justify-between items-center my-20'>
         <Header_description />
         <div>
           <CardImage />
