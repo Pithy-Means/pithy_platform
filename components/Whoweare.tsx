@@ -2,6 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { Button } from './ui/button';
 import TitleDot from './TitleDot';
+import CardMadam from './CardMadam'
 
 
 const Whoweare = () => {
@@ -9,7 +10,7 @@ const Whoweare = () => {
     <div className='pt-20 px-10 bg-white'>
       <div className='flex justify-between items-center'>
         <div className='flex flex-col w-2/3 space-y-4'>
-        <TitleDot title={'Who We Are'} />
+          <TitleDot title={'Who We Are'} />
           <p className='capitalize text-black'>Empowering informed decisions for a fulfing career</p>
           <p className='text-black'>At pithy means, we believe that everyone deserves to find their perfect fit. our mission is to guide students, professionals, and business managers towards their most suitable study, professional, or business areas.</p>
           <div className='flex justify-between'>
@@ -38,17 +39,7 @@ const Whoweare = () => {
             </div>
           </div>
         </div>
-        <div className='h-[400px] w-[400px] bg-white'>
-        <div className='bg-[#5AC35A] shadow-inner flex items-center justify-center h-[250px] w-[250px] relative rounded'>
-          <Image 
-            src='/assets/whoweare.png' 
-            height={300} 
-            width={200} 
-            alt='Header'
-            className='object-cover absolute top-[-90px] drop-shadow-2xl'
-          />
-        </div>
-        </div>
+        <CardMadam />
       </div>
     </div>
   )
