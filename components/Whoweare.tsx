@@ -1,17 +1,16 @@
 import React from 'react'
 import Image from 'next/image'
 import { Button } from './ui/button';
+import TitleDot from './TitleDot';
+import CardMadam from './CardMadam'
 
 
 const Whoweare = () => {
   return (
-    <div className='py-20 px-10 bg-white'>
+    <div className='pt-20 px-10 bg-white'>
       <div className='flex justify-between items-center'>
         <div className='flex flex-col w-2/3 space-y-4'>
-          <div className='flex items-center space-x-2 text-black'>
-            <h1 className='text-4xl text-black font-extrabold'>Who We Are</h1>
-            <span className='bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-2 w-2 rounded-full'></span>
-          </div>
+          <TitleDot title={'Who We Are'} />
           <p className='capitalize text-black'>Empowering informed decisions for a fulfing career</p>
           <p className='text-black'>At pithy means, we believe that everyone deserves to find their perfect fit. our mission is to guide students, professionals, and business managers towards their most suitable study, professional, or business areas.</p>
           <div className='flex justify-between'>
@@ -19,16 +18,16 @@ const Whoweare = () => {
               <div className='bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md'>Our Story</div>
               <p className='capitalize text-black'>Founded in the US and Uganda, our team saw the need to prevent:</p>
               <div className='flex flex-col ml-4'>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5'></div>
                   <p className='capitalize text-black'>identify natural strengths and interests</p>
                 </div>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1'></div>
                   <p className='capitalize text-black'>Explore suitable career and business paths</p>
                 </div>
-                <div className='flex space-x-2'>
-                  <div className='border-2 border-[#5AC35A] rotate-45 p-1'></div>
+                <div className='flex space-x-2 items-center'>
+                  <div className='border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1'></div>
                   <p className='capitalize text-black'>Make informed decisions</p>
                 </div>
               </div>
@@ -40,17 +39,7 @@ const Whoweare = () => {
             </div>
           </div>
         </div>
-        <div className='h-[400px] w-[400px] bg-white'>
-        <div className='bg-[#5AC35A] shadow-inner flex items-center justify-center h-[250px] w-[250px] relative rounded'>
-          <Image 
-            src='/assets/whoweare.png' 
-            height={300} 
-            width={200} 
-            alt='Header'
-            className='object-cover absolute top-[-90px] drop-shadow-2xl'
-          />
-        </div>
-        </div>
+        <CardMadam />
       </div>
     </div>
   )
