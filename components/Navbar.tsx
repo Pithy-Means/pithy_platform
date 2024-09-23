@@ -1,20 +1,18 @@
 'use client';
 
 import Link from 'next/link';
-import {useRouter, usePathname} from 'next/navigation'
-import Image from 'next/image';
+import { usePathname} from 'next/navigation'
 import Logo from './Logo'
 import { Button } from './ui/button';
-import Header_description from './Header_description';
-import CardImage from './CardImage';
+
 
 
 const Navbar = () => {
   const pathname = usePathname();
-  const router = useRouter();
+
   return (
-    <div className='px-10 py-4 bg-black h-screen'>
-      <div className='flex justify-between my-8'>
+    <div className='px-10 pt-6 bg-black'>
+      <div className='flex justify-between'>
         <div className='text-2xl font-bold'>
           <Logo />
         </div>
@@ -43,12 +41,6 @@ const Navbar = () => {
               <Button className='bg-[#5AC35A] px-8 py-0'>Take Test</Button>
             </div>
           </div>
-        </div>
-      </div>
-      <div className='flex justify-between items-center my-20'>
-        <Header_description />
-        <div>
-          <CardImage />
         </div>
       </div>
     </div>
