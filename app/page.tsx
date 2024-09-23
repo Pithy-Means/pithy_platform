@@ -1,6 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Whoweare from '@/components/Whoweare'
 import Whatwegive from '@/components/Whatwegive'
+import Howdoesitwork from '@/components/Howdoesitwork'
+
 
 
 export default function Home() {
@@ -9,6 +11,7 @@ export default function Home() {
       <Navbar />
       <Whoweare />
       <Whatwegive />
+      <Howdoesitwork />
     </div>
   );
 }
