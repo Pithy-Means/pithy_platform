@@ -3,6 +3,7 @@ import Whatwegive from '@/components/Whatwegive'
 import Howdoesitwork from '@/components/Howdoesitwork'
 import BodySection from '@/components/BodySection';
 import Pricing from '@/components/Pricing';
+import FreqAskeQuestion from '@/components/FreqAskeQuestion'
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
       <Whatwegive />
       <Howdoesitwork />
       <Pricing />
+      <FreqAskeQuestion />
     </div>
   );
 }
