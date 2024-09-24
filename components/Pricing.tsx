@@ -20,7 +20,7 @@ const Pricing = () => {
           <div className='flex flex-col space-y-4'>
             <div className='flex space-x-2 items-center'>
               <div className='border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5'></div>
-              <p className='capitalize text-black'>For <b>$50</b> or UGX20.000 get a 3 months access with to the online orientation</p>
+              <p className='capitalize text-black'>For <b>$5</b> or UGX20.000 get a 3 months access with to the online orientation</p>
             </div>            
             <div className='flex space-x-2 items-center'>
               <div className='border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5'></div>
