@@ -13,7 +13,7 @@ const Footer = () => {
           }}
         />
 
-        <div className='flex items-center w-4/5 justify-between'>
+        <div className='flex py-10 w-4/5 space-x-4'>
           <div className='flex flex-col w-1/5'>
             <div className='flex justify-between'>
               <div className='flex flex-col space-y-4'>
@@ -22,7 +22,7 @@ const Footer = () => {
                   <p className='text-[#5AC35A] text-lg capitailze'>Pithy means</p>
                 </div>
                 <p className='text-white text-base'>Lorem psum aoka psuma lroe taray aoksa mdak djskas aso</p>
-                <SocialMediaLinks />
+                <SocialMediaLinks className='text-white' />
               </div>
             </div>
           </div>
@@ -31,12 +31,14 @@ const Footer = () => {
             location={'1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA'}
             email={'contact@pithymeans.com'}
             phone={'+1 (307) 374-0993 | +1 (307) 205-5983'}
+            className='text-white'
           />
           <ContactInfo 
             title={'office uganda'} 
             location={'Plot No 546, ROFRA house, 4th Floor, Room No 2, Ggaba Road, Kansanga, Kampala.'}
             email={'pithymeansafrica@gmail.com'}
             phone={'+256 750 175 892 | +256 760 389 466 | 783184543'}
+            className='text-white'
           />
           <QuickLinks />
         </div>
