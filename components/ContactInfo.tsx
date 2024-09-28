@@ -6,25 +6,26 @@ interface ContactInfoProps {
   location: string;
   email: string;
   phone: string;
+  className?: string; // Optional className for dynamic styling
 }
 
-const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone }) => {
+const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone, className }) => {
   return (
-    <div className='flex flex-col space-y-4 w-1/5'>
-      <h1 className='text-xl font-bold text-white uppercase'>{title}</h1>
+    <div className={`flex flex-col space-y-4 ${className}`}>
+      <h1 className={`text-lg font-bold uppercase ${className}`}>{title}</h1>
       <div className='flex space-x-2'>
-        <CiLocationOn className="text-white text-lg" />
-        <p className='text-white text-[12px]'>{location}</p>
+        <CiLocationOn className={`text-lg ${className}`} />
+        <p className={`text-[12px] ${className}`}>{location}</p>
       </div>
       <div className='flex space-x-2'>
-        <MdOutlineEmail className="text-white text-lg" />
-        <a href={`mailto:${email}`} className='text-white text-[12px] hover:underline'>
+        <MdOutlineEmail className={`text-lg ${className}`} />
+        <a href={`mailto:${email}`} className={`text-[12px] hover:underline ${className}`}>
           {email}
         </a>
       </div>
       <div className='flex space-x-2'>
-        <CiPhone className="text-white text-lg" />
-        <a href={`tel:${phone.replace(/\s/g, '')}`} className='text-white text-[12px] hover:underline'>
+        <CiPhone className={`text-lg ${className}`} />
+        <a href={`tel:${phone.replace(/\s/g, '')}`} className={`text-[12px] hover:underline ${className}`}>
           {phone}
         </a>
       </div>
