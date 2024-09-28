@@ -1,9 +1,13 @@
 import { FaYoutube, FaInstagram, FaTwitter } from 'react-icons/fa';
 
-const SocialMediaLinks: React.FC = () => {
+interface SocialMediaLinksProps {
+  className?: string; // Marking className as optional
+}
+
+const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({ className }) => {
   return (
-    <div className='flex flex-col'>
-      <h3 className='text-xl font-bold text-white capitalize'>Follow us on</h3>
+    <div className='flex flex-col space-y-4'>
+      <h3 className={`text-xl font-bold capitalize ${className}`}>Follow us on</h3>
       <div className='flex space-x-4 items-center'>
         <a href="https://www.youtube.com/yourchannel" target="_blank" rel="noopener noreferrer">
           <FaYoutube color="#56cb44" size={24} />
