@@ -22,6 +22,7 @@ const InputContact: React.FC<InputContactProps> = ({
           <textarea
             value={value}
             onChange={onChange}
+            required
             className={`px-6 h-24 ${className} text-lg bg-white border rounded-lg border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
           />
         ) : (
@@ -29,6 +30,7 @@ const InputContact: React.FC<InputContactProps> = ({
             type={type}
             value={value}
             onChange={onChange}
+            required
             className={`px-6 h-10 ${className} text-lg bg-white border rounded-lg border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
           />
         )}
