@@ -29,6 +29,7 @@ const Navbar = () => {
               How It Works
             </Link>
             <Link href='/contact' className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === '/contact' ? 'underline decoration-[#5AC35A] underline-offset-4 decoration-2' : ''}`}>
+
               Contact
             </Link>
           </div>
