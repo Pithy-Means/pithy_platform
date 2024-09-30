@@ -21,13 +21,13 @@ const Navbar = () => {
             <Link href='/' className={`text-white ${pathname === '/' ? 'underline decoration-[#5AC35A] underline-offset-8 decoration-2' : ''}`}>
               Home
             </Link>
-            <Link href='/about' className={`text-white ${pathname === '/about' ? 'underline decoration-[#5AC35A] underline-offset-4 decoration-2' : ''}`}>
+            <Link href='/about' className={`text-white ${pathname === '/about' ? 'underline decoration-[#5AC35A] underline-offset-8 decoration-2' : ''}`}>
               About
             </Link>
-            <Link href='/how-it-works' className={`text-white ${pathname === '/how-it-works' ? 'underline decoration-[#5AC35A] underline-offset-4 decoration-2' : ''}`}>
+            <Link href='/how-it-works' className={`text-white ${pathname === '/how-it-works' ? 'underline decoration-[#5AC35A] underline-offset-8 decoration-2' : ''}`}>
               How It Works
             </Link>
-            <Link href='/contact' className={`text-white ${pathname === '/contact' ? 'underline decoration-[#5AC35A] underline-offset-4 decoration-2' : ''}`}>
+            <Link href='/contact' className={`text-white ${pathname === '/contact' ? 'underline decoration-[#5AC35A] underline-offset-8 decoration-2' : ''}`}>
               Contact
             </Link>
           </div>
