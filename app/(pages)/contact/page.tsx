@@ -6,6 +6,9 @@ import SocialMediaLinks from '@/components/SocialMediaLinks';
 import ContactInfo from '@/components/ContactInfo';
 import { Card } from '@/components/ui/card';
 import InputContact from "@/components/InputContact";
+import FreqAskeQuestion from '@/components/FreqAskeQuestion';
+import SpecialOffer from '@/components/SpecialOffer';
+import Footer from '@/components/Footer';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -54,7 +57,7 @@ const Contact = () => {
         <div className='flex justify-center bg-black items-center h-96'>
           <h3 className='text-lg text-[#5AC35A]'>Contact</h3>
         </div>
-        <div className='bg-white overflow-hidden'>
+        <div className='bg-white'>
           <div className='flex justify-between p-10'>
             <div className='flex flex-col space-y-8 w-full'>
               <div>
@@ -113,6 +116,18 @@ const Contact = () => {
                 }}
               />
           </div>
+          <div className='bg-[#61BC5B] z-10 py-10'>
+            <div className='flex justify-center items-center flex-col space-y-4 py-10'>
+              <h3 className='text-black text-xl font-bold'>Find Us Here</h3>
+              <p className='text-black capitalize'>our uganda office location</p>
+            <Card className='bg-white w-5/6 flex items-center justify-center'>
+                <div>Map</div>
+            </Card>
+            </div>
+          </div>
+          <FreqAskeQuestion />
+          <SpecialOffer />
+          <Footer />
         </div>
       </div>
     </div>
