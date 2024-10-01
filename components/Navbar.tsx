@@ -21,6 +21,7 @@ const Navbar = () => {
             <Link href='/' className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === '/' ? 'underline decoration-[#5AC35A] underline-offset-8 decoration-2' : ''}`}>
               Home
             </Link>
+
             <Link href='/about' className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === '/about' ? 'underline decoration-[#5AC35A] underline-offset-4 decoration-2' : ''}`}>
               About
             </Link>
