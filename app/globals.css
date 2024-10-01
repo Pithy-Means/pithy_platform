@@ -102,3 +102,8 @@ textarea:focus ~ .input-text,
 textarea:valid ~ .input-text {
   @apply text-blue-500 bg-white transform -translate-y-5 -translate-x-4 scale-75;
 }
+
+/* custom.css */
+.glass-effect {
+  @apply bg-white/15 rounded-[16px] shadow-[0_4px_30px_rgba(0,0,0,0.1)] backdrop-blur-[14px];
+}
