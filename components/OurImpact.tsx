@@ -3,7 +3,9 @@ import TitleDot from './TitleDot';
 import StarRating from './Stars';
 import { PiQuotesFill } from "react-icons/pi";
 import CardCarousel from './cardSlide';
-import { IoIosArrowRoundForward } from "react-icons/io";
+import SpecialOffer from './SpecialOffer';
+import Footer from './Footer';
+// import { IoIosArrowRoundForward } from "react-icons/io";
 
 
 
@@ -34,47 +36,38 @@ const cards = [
 
 const OurImpact = () => {
   return (
-    <div className='flex flex-col  w-full bg-white text-black px-4 sm:px-8 lg:px-20 mb-10'>
-      <div className=''>
-        {/* <h1 className='text-black font-extrabold'>Our impact<b className='text-green-600 text-xl'>.</b></h1> */}
-        <TitleDot title='Our impact' />
-        <p className='md:text-left'>Hear what others have to say about us</p>
-
-        <StarRating />
-        <div className='flex justify-center md:justify-start text-green-500 transform -scale-x-100 '>
-          <PiQuotesFill size={30} />
-        </div>
-      </div>
-      <div className='relative mt-4'>
-        <Image
-          src='/assets/Group 3473707.png'
-          height={50}
-          width={50}
-          alt='Header'
-          className='absolute left-0 object-cover drop-shadow-2xl text-green-500'
-        />
-      </div>
-      {/* <div className="absolute left-0 flex items-center justify-center ">
-
-        <div className="absolute border-r-2 border-green-500 rounded-full h-[600px] w-[600px] left-0 top-[10%]"></div>
-
-        <div className="absolute border-r-2 border-green-500 rounded-full h-[500px] w-[500px] left-2 top-[15%]"></div>
-
-        <div className="absolute border-r-2 border-green-500 rounded-full h-[400px] w-[400px] left-4 top-[20%]"></div>
-
-        <div className="absolute border-r-2 border-green-500 rounded-full h-[300px] w-[300px] left-6 top-[25%]"></div>
-      </div> */}
-      <CardCarousel cards={cards} />
-
-      <div className='flex flex-col bg-green-500 lg:flex-row  rounded p-4 mt-10 mb-10 lg:mx-20'>
+    <div className='relative flex flex-col  w-full bg-white'>
+      <div className=' text-black px-4 sm:px-8 lg:px-20'>
         <div className=''>
-           {/* <Image
-              src='/assets/Group3473639.png'
-              height={800}
-              width={400}
+          {/* <h1 className='text-black font-extrabold'>Our impact<b className='text-green-600 text-xl'>.</b></h1> */}
+          <TitleDot title='Our impact' />
+          <p className='md:text-left'>Hear what others have to say about us</p>
+
+          <StarRating />
+          <div className='flex justify-center md:justify-start text-green-500 transform -scale-x-100 '>
+            <PiQuotesFill size={30} />
+          </div>
+        </div>
+        <div className=' mt-4'>
+          <Image
+            src='/assets/Group3473707.png'
+            height={50}
+            width={50}
+            alt='Header'
+            className='absolute left-0 object-contain'
+          />
+        </div>
+        <CardCarousel cards={cards} />
+
+        {/* <div className='flex flex-col bg-green-500 lg:flex-row  rounded p-4 mt-10 mb-10 lg:mx-20'>
+        <div className=''>
+           <Image
+              src='/assets/Layer_1.png'
+              height={250}
+              width={220}
               alt=''
-              className='left-12 absolute px-1 '
-            /> */}
+              className='left-30 absolute px-1 '
+            />
 
           <div className='w-full lg:w-3/4 my-4 lg:my-8 px-4 lg:px-10'>
   
@@ -105,10 +98,14 @@ const OurImpact = () => {
             height={350}
             width={350}
             alt=''
-            className='mr-0 lg:mr-10'
+            className='mr-0 lg:mr-10 object-contain'
           />
         </div>
+      </div> */}
+
       </div>
+      <SpecialOffer />
+      <Footer />
     </div>
 
   )
