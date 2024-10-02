@@ -144,8 +144,8 @@ const NextArrow: React.FC<CustomArrowProps> = ({ className, slickNext }) => {
 const PrevArrow: React.FC<CustomArrowProps> = ({ className, slickPrev }) => {
   // const { className, onClick } = props;
   return (
-    <button className={`${className} bg-transparent border border-green-400 rounded`} onClick={slickPrev} >
+    <div className={`${className} bg-transparent border border-green-400 rounded`} onClick={slickPrev} >
       <IoMdArrowBack size={40} className="text-green-500 px-2" />
-    </button>
+    </div>
   );
 };
