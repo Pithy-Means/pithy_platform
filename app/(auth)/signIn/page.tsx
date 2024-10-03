@@ -6,8 +6,8 @@ const SignIn = () => {
 
       {/* Sign-in form */}
       <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full max-w-m h-screen">
-      <div className="flex justify-between items-center w-full">
-        <div className="flex flex-col w-1/2">
+      <div className="flex justify-center space-x-4 items-center w-full">
+        <div className="flex flex-col w-2/4 px-10">
           <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">Welcome back</h2>
 
           <form className="space-y-6">
@@ -55,11 +55,11 @@ const SignIn = () => {
             </div>
           </div>
           {/* Image Section */}
-          <div className="w-full mt-6 md:mt-0 flex justify-center">
+          <div className="w-2/4 py-10 px-10 mt-6 md:mt-0 flex justify-center glass-effect">
             <img 
-              src="/assets/signin.png" 
+              src="/assets/sign.png" 
               alt="Sign In" 
-              className="max-w-full h-auto object-fill md:max-h-[600px]" 
+              className="max-w-full h-auto object-fill md:max-h-[500px]" 
             />
           </div>
         </div>
