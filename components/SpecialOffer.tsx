@@ -1,4 +1,4 @@
-import Link from 'next/link';
+// import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { Card } from "./ui/card";
@@ -7,13 +7,13 @@ import { Button } from "./ui/button";
 const SpecialOffer = () => {
   return (
 
-    <div className='px-10 bg-white py-4'>
+    <div className='px-10 bg-white py-4 w-full'>
       <div className="flex h-96">
         {/* Left Side with full background color */}
         <Card className="w-full rounded-lg relative bg-[#61BC5B]">
           {/* Background image that covers only the left half */}
           <div
-            className="absolute inset-0 bg-auto bg-left bg-no-repeat"
+            className="absolute inset-0 bg-auto bg-left bg-no-repeat pr-10"
             style={{
               backgroundImage: "url('/assets/Layer_1.png')",
             }}
