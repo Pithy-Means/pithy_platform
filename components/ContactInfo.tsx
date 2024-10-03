@@ -16,7 +16,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone
       <h1 className={`text-lg md:text-xl lg:text-2xl font-bold uppercase  md:text-left ${className}`}>{title}</h1>
       <div className='flex flex-col items-center md:flex-row md:items-start space-x-2 md:space-x-4'>
         <CiLocationOn className={`text-lg md:text-xl lg:text-2xl ${className}`} />
-        <p className={`text-[12px] md:text-sm lg:text-base text-center md:text-start w-full md:w-auto break-words${className}`}>{location}</p>
+        <p className={`text-[12px] md:text-sm lg:text-base text-center md:text-start w-full md:w-auto${className}`}>{location}</p>
       </div>
       <div className='flex flex-col items-center md:flex-row md:items-start  md:space-x-4 space-x-2'>
         <MdOutlineEmail className={`text-lg md:text-xl lg:text-2xl  ${className}`} />
@@ -30,9 +30,9 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone
           {phone}
         </a>
       </div> */}
-      <div className={`flex flex-col items-center md:flex-row md:items-start ${className}`}>
+      <div className={`flex flex-col  md:flex-row md:items-start ${className}`}>
         {phoneNumbers.map((phone: string, index: number) => (
-          <div key={index} className="flex items-center space-x-2 md:w-auto">
+          <div key={index} className="flex flex-col items-center space-x-2 md:w-auto">
             <CiPhone className={`text-lg md:text-xl lg:text-2xl ${className}`} />
             <a
               href={`tel:${phone.replace(/\s/g, '')}`}
