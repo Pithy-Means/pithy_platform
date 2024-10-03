@@ -4,7 +4,7 @@ import QuickLinks from './QuickLinks';
 
 const Footer = () => {
   return (
-    <div className='bg-black'>
+    <div className='bg-black '>
       <div className="flex flex-col md:flex-row h-auto md:h-96 w-full lg:flex-row">
         <div
           className="flex-1 bg-contain bg-no-repeat bg-left-bottom flex items-center justify-center text-white"
@@ -21,7 +21,7 @@ const Footer = () => {
                   <div className='p-1 bg-[#5AC35A] h-4 w-4 rounded-full'></div>
                   <p className='text-[#5AC35A] text-lg capitailze'>Pithy means</p>
                 </div>
-                <p className='text-white text-base '>Lorem psum aoka psuma lroe taray aoksa mdak djskas aso</p>
+                <p className='text-white text-base'>Lorem psum aoka psuma lroe taray aoksa mdak djskas aso</p>
                 <SocialMediaLinks className='text-white' />
               </div>
             </div>
@@ -31,14 +31,14 @@ const Footer = () => {
             location={'1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA'}
             email={'contact@pithymeans.com'}
             phone={'+1 (307) 374-0993 | +1 (307) 205-5983'}
-            className='text-white w-full  mb-4 md:mb-0 '
+            className='text-white  mb-4 md:mb-0 break-normal'
           />
           <ContactInfo 
             title={'office uganda'} 
             location={'Plot No 546, ROFRA house, 4th Floor,Room No 2, Ggaba Road, Kansanga, Kampala.'}
             email={'pithymeansafrica@gmail.com'}
             phone={'+256 750 175 892 | +256 760 389 466 | 783184543'}
-            className='text-white w-full  mb-4 md:mb-0 '
+            className='text-white mb-4 md:mb-0  break-normal '
           />
           <QuickLinks />
         </div>
