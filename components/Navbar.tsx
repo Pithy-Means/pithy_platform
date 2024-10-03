@@ -34,7 +34,7 @@ const Navbar = () => {
           </div>
           <div className='flex space-x-12'>
             <div className='flex items-center gap-x-2'>
-              <Link href='#' className='text-[#5AC35A] hover:text-white transition duration-300'>Login</Link>
+              <Link href='/signIn' className='text-[#5AC35A] hover:text-white transition duration-300'>Login</Link>
               <div className='bg-white h-3 w-0.5'></div>
               <Link href='#' className='text-white hover:text-[#5AC35A] transition duration-300'>Sign Up</Link>
             </div>
