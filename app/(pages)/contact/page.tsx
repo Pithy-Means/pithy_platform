@@ -10,6 +10,7 @@ import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import SpecialOffer from "@/components/SpecialOffer";
 import Footer from "@/components/Footer";
 import SpecialMobile from "@/components/SpecialMobile";
+import GoogleMaps from "@/components/GoogleMaps";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -158,14 +159,16 @@ const Contact = () => {
               }}
             />
           </div>
-          <div className="bg-[#61BC5B] z-10 py-10">
+          <div className="bg-gradient-to-b from-[#61BC5B] via-white to-white z-10 py-10">
             <div className="flex justify-center items-center flex-col space-y-4 py-10">
               <h3 className="text-black text-xl font-bold">Find Us Here</h3>
               <p className="text-black capitalize">
                 our uganda office location
               </p>
               <Card className="bg-white w-5/6 flex items-center justify-center">
-                <div>Map</div>
+                <div className="">
+                  <GoogleMaps />
+                </div>
               </Card>
             </div>
           </div>
