@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import '../app/globals.css';
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { IoMdArrowForward, IoMdArrowBack } from "react-icons/io";
