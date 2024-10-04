@@ -60,10 +60,10 @@ const OurImpact = () => {
         </div>
         <CardCarousel cards={cards} />
       </div>
-      <div className='md:block hidden'>
+      <div className='lg:block hidden'>
         <SpecialOffer />
       </div>
-      <div className='md:hidden block'>
+      <div className='lg:hidden block'>
         <SpecialMobile />
       </div>
       <Footer />
