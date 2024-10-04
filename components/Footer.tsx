@@ -15,14 +15,14 @@ const Footer = () => {
           />
 
           <div className='flex flex-col md:flex-row py-10 w-full md:w-4/5 space-x-4 md:items-start items-center md:space-x-6'>
-            <div className='flex flex-1 flex-col w-full md:w-1/5 mb-4 md:mb-0'>
+            <div className='flex flex-1 flex-col w-full md:w-1/5 mb-4 md:mb-0 md:items-start items-center'>
               <div className='flex justify-between'>
                 <div className='flex flex-col space-y-4  md:items-start items-center md:-ml-8'>
                   <div className='flex space-x-4 items-center'>
-                    <div className='p-1 bg-[#5AC35A] h-4 w-4 rounded-full'></div>
+                    <div className='p-1  bg-[#5AC35A] h-4 w-4 rounded-full'></div>
                     <p className='text-[#5AC35A] text-lg capitailze'>Pithy means</p>
                   </div>
-                  <p className='text-white text-base md:text-start text-center break-normal'>Lorem psum aoka psuma lroe taray aoksa mdak djskas aso</p>
+                  <p className='text-white text-[12px] md:text-sm lg:text-base md:text-start text-center break-normal'>Lorem psum aoka psuma lroe taray aoksa mdak djskas aso</p>
                   <SocialMediaLinks className='text-white' />
                 </div>
               </div>
