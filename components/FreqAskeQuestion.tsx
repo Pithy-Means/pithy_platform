@@ -13,11 +13,11 @@ const FreqAskeQuestion = () => {
         <TitleDot title='Frequently asked questions' />
         <p className='capitalize text-black lg:text-start text-center'>Get answers to your questions about pithy means</p>
         <div className="w-full max-w-full overflow-x-auto">
-          <div className="flex space-x-4 items-center snap-x">
+          <div className="flex space-x-4 items-center scroll-scroll-smooth snap-mandatory snap-x">
             {arraybutton.map((arr, index) => (
               <button
                 key={index}
-                className="px-4 py-2 text-black border border-black rounded capitalize whitespace-nowrap">
+                className="px-4 py-2 text-black border border-black rounded capitalize snap-center whitespace-nowrap">
                 {arr.name}
               </button>
             ))}
