@@ -9,6 +9,7 @@ import InputContact from "@/components/InputContact";
 import FreqAskeQuestion from '@/components/FreqAskeQuestion';
 import SpecialOffer from '@/components/SpecialOffer';
 import Footer from '@/components/Footer';
+import SpecialMobile from '@/components/SpecialMobile';
 
 const Contact = () => {
   const [name, setName] = useState('');
@@ -55,12 +56,12 @@ const Contact = () => {
     <div>
       <div className=''>
         <div className='flex justify-center bg-black items-center h-96'>
-          <h3 className='text-lg text-[#5AC35A]'>Contact</h3>
+          <h3 className='text-lg lg:text-4xl md:text-2xl text-[#5AC35A]'>Contact</h3>
         </div>
         <div className='bg-white'>
-          <div className='flex justify-between p-10'>
-            <div className='flex flex-col space-y-8 w-full'>
-              <div>
+          <div className='flex  md:flex-row lg:flex-row flex-col-reverse justify-between p-10'>
+            <div className='flex flex-col  space-y-8 w-full'>
+              <div className='text-center mt-4 -mb-4'>
                 <TitleDot title='get in touch' />
                 <p className='text-base text-black capitalize'>
                   contact us for questions, feedback or support
@@ -71,7 +72,7 @@ const Contact = () => {
                 location={'1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA'}
                 email={'contact@pithymeans.com'}
                 phone={'+1 (307) 374-0993 | +1 (307) 205-5983'}
-                className='text-black'
+                className='text-black break-normal'
               />
               <ContactInfo
                 title={'office uganda'}
@@ -82,18 +83,18 @@ const Contact = () => {
               />
               <SocialMediaLinks className='text-black' />
             </div>
-              {!responseMessage ? (
-            <Card className='bg-white py-20 px-6 w-full'>
+            {!responseMessage ? (
+              <Card className='bg-white py-20 px-6 w-full'>
                 <form onSubmit={handleSubmit} className='flex flex-col space-y-4'>
-                <InputContact label='Name' type='text' className='w-full' value={name} onChange={(e) => setName(e.target.value)} />
-                <InputContact label="Email" type="email" className='w-full' value={email} onChange={(e) => setEmail(e.target.value)} />
-                <InputContact label="Phone Number" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <InputContact label="Message" isTextarea={true} className="w-full" value={message} onChange={(e) => setMessage(e.target.value)} />
-                <button type='submit' className='bg-[#5AC35A] text-white py-2 rounded-lg' disabled={loading}>
-                  {loading ? 'Sending...' : 'Submit'}
-                </button>
-              </form>
-            </Card>
+                  <InputContact label='Name' type='text' className='w-full' value={name} onChange={(e) => setName(e.target.value)} />
+                  <InputContact label="Email" type="email" className='w-full' value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <InputContact label="Phone Number" type="tel" className='w-full' value={phone} onChange={(e) => setPhone(e.target.value)} />
+                  <InputContact label="Message" isTextarea={true} className='w-full' value={message} onChange={(e) => setMessage(e.target.value)} />
+                  <button type='submit' className='bg-[#5AC35A] text-white p-2 rounded-lg w-fit mx-auto md:w-52 md:text-lg lg:w-72 lg:text-2xl flex justify-center text-center' disabled={loading}>
+                    {loading ? 'Sending...' : 'Submit'}
+                  </button>
+                </form>
+              </Card>
             ) : (
               <Card className='bg-[#5AC35A] py-10 px-6 w-full flex justify-center items-center'>
                 <div className='flex flex-col space-y-8'>
@@ -105,28 +106,33 @@ const Contact = () => {
                 </div>
               </Card>
             )}
-            </div>
-            <div className='h-24'>
-              <div
-                className="bg-contain bg-no-repeat bg-left-bottom"
-                style={{
-                  backgroundImage: "url('/assets/leftfooter.png')",
-                  height: '300px',
-                  width: '300px'
-                }}
-              />
+          </div>
+          <div className='h-24'>
+            <div
+              className="bg-contain bg-no-repeat bg-left-bottom"
+              style={{
+                backgroundImage: "url('/assets/leftfooter.png')",
+                height: '300px',
+                width: '300px'
+              }}
+            />
           </div>
           <div className='bg-[#61BC5B] z-10 py-10'>
             <div className='flex justify-center items-center flex-col space-y-4 py-10'>
               <h3 className='text-black text-xl font-bold'>Find Us Here</h3>
               <p className='text-black capitalize'>our uganda office location</p>
-            <Card className='bg-white w-5/6 flex items-center justify-center'>
+              <Card className='bg-white w-5/6 flex items-center justify-center'>
                 <div>Map</div>
-            </Card>
+              </Card>
             </div>
           </div>
           <FreqAskeQuestion />
-          <SpecialOffer />
+          <div className='lg:block hidden'>
+            <SpecialOffer />
+          </div>
+          <div className='lg:hidden block'>
+            <SpecialMobile />
+          </div>
           <Footer />
         </div>
       </div>

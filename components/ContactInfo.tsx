@@ -12,7 +12,7 @@ interface ContactInfoProps {
 const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone, className }) => {
   const phoneNumbers = Array.isArray(phone) ? phone : [phone];
   return (
-    <div className={`flex flex-col space-y-4 text-center ${className}`}>
+    <div className={`flex flex-col gap-0 md:space-y-4  text-center ${className}`}>
       <h1 className={`text-lg md:text-xl lg:text-2xl font-bold uppercase  md:text-center ${className}`}>{title}</h1>
       <div className='flex flex-col items-center md:flex-row md:items-start space-x-2 md:space-x-4'>
         <CiLocationOn className={`text-lg md:text-xl lg:text-2xl ${className}`} />
@@ -24,9 +24,9 @@ const ContactInfo: React.FC<ContactInfoProps> = ({ title, location, email, phone
           {email}
         </a>
       </div>
-      <div className={`flex flex-col  md:flex-row md:space-x-4 md:items-start ${className}`}>
+      <div className={`flex flex-col   md:flex-row md:space-x-4 md:items-start items-center ${className}`}>
         <CiPhone className={`text-lg md:text-xl lg:text-2xl ${className}`} />
-        <div className={`flex flex-col items-center justify-center space-y-2 md:w-auto`}>
+        <div className={`flex flex-col items-center justify-center gap-0 md:w-auto`}>
         {phoneNumbers.map((phone: string, index: number) => (
             <a
               key={index}
