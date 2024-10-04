@@ -22,12 +22,12 @@ export default function HowItWorksPage() {
       </div>
 
       {/* Special Offer for larger screens */}
-      <div className='md:block hidden w-full'>
+      <div className='lg:block hidden w-full'>
         <SpecialOffer />
       </div>
 
       {/* Special Mobile Offer for smaller screens */}
-      <div className='md:hidden block w-full'>
+      <div className='lg:hidden block w-full'>
         <SpecialMobile />
       </div>
 
