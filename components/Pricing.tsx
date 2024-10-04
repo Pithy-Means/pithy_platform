@@ -2,6 +2,7 @@ import { Card } from './ui/card';
 import TitleDot from './TitleDot';
 import CardMadam from './CardMadam';
 import { Button } from './ui/button';
+import Image from 'next/image';
 
 const Pricing = () => {
   return (
@@ -10,12 +11,16 @@ const Pricing = () => {
         <TitleDot title={'Pricing'} />
         <p className='capitalize text-black'>One time payment</p>
       </div>
-      <div className="bg-white flex flex-col lg:flex-row md:space-x-8 space-y-8 lg:space-y-0 p-6 lg:p-10 items-center border border-black/10 rounded-md drop-shadow-2xl shadow">
-        <div className="bg-[#37BB65] rounded-lg w-full md:w-auto">
-          <img
+      <Card className="bg-white flex flex-col lg:flex-row md:space-x-8 space-y-8 lg:space-y-0 p-6 lg:p-10 items-center border border-black/10 rounded-md drop-shadow-2xl shadow lg:w-full w-fit mx-auto">
+        <div className="bg-[#37BB65] rounded-lg">
+          <Image
             src="/assets/C2_1.png.png"
+            width={200}
+            height={400}
             alt="Gentle"
-            className="w-full md:w-auto px-10 relative top-[-40px] md:top-[-60px] drop-shadow-[0_200px_25px_rgba(0,0,0,0.90)]"
+            priority
+            className="w-full md:w-auto px-10 relative top-[-10px] md:top-[-40px] drop-shadow-[0_150px_25px_rgba(0,0,0,0.90)]"
+            style={{ height: '370px', width: '100%' }}
           />
         </div>
         <div className="flex flex-col space-y-4 w-full lg:items-start items-center md:w-auto text-center md:text-left">
@@ -36,7 +41,7 @@ const Pricing = () => {
             </Button>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 
