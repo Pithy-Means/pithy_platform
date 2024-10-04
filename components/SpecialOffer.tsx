@@ -51,7 +51,7 @@ const SpecialOffer = () => {
                   width={300}
                   height={400}
                   objectFit='contain'
-                  style={{ height: '100%', width: 'auto' }}
+                  // style={{ height: 'auto', width: 'auto' }}
                   priority
                 />
               </div>
