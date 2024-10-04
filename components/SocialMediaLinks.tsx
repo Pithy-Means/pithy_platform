@@ -6,7 +6,7 @@ interface SocialMediaLinksProps {
 
 const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({ className }) => {
   return (
-    <div className='flex flex-col space-y-4'>
+    <div className='flex flex-col space-y-4 '>
       <h3 className={`text-xl font-bold capitalize ${className}`}>Follow us on</h3>
       <div className='flex space-x-4 items-center'>
         <a href="https://www.youtube.com/yourchannel" target="_blank" rel="noopener noreferrer">

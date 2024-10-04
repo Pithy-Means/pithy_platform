@@ -60,9 +60,6 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
     speed: 300,
     slidesToShow: 3,
     slidesToScroll: 1,
-    // beforeChange: (current: number, next: number) => setCurrentSlide(next),
-    // nextArrow: <NextArrow />,
-    // prevArrow: <PrevArrow />,
     responsive: [
       {
         breakpoint: 1024,
@@ -78,8 +75,6 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
       },
     ],
   };
-
-  // const progressPercentage = ((currentSlide + 1) / totalSlides) * 100;
 
   return (
     <div className="w-full">
@@ -106,14 +101,6 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
               <PrevArrow slickPrev={() => (document.querySelector('.slick-prev') as HTMLElement).click()} />
               <NextArrow slickNext={() => (document.querySelector('.slick-next') as HTMLElement).click()} />
             </div>
-
-            {/* Progress bar */}
-            {/* <div className="mt-4 w-full h-2 bg-gray-200 rounded-full">
-              <div
-                className="h-full bg-green-500 rounded-full"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </div> */}
           </div>
         </>
 

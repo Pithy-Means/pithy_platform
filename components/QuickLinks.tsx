@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 const QuickLinks: React.FC = () => {
   return (
-    <div className="flex flex-col space-y-4 w-1/5">
+    <div className="flex flex-col space-y-4 md:w-1/5 text-center justify-center w-full ">
       <h3 className="text-lg font-bold text-white">Quick Links</h3>
       <nav className="flex flex-col space-y-2">
         <Link href="/" className="text-gray-600 hover:text-white transition duration-300 ease-in-out">
@@ -17,7 +17,7 @@ const QuickLinks: React.FC = () => {
         <Link href="/contact" className="text-gray-600 hover:text-white transition duration-300 ease-in-out">
           Contact
         </Link>
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 text-center justify-center ">
           <Link href="/login" className="text-gray-600 hover:text-white transition duration-300 ease-in-out">
             Login
           </Link>
