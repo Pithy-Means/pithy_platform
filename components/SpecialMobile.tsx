@@ -8,9 +8,9 @@ import { Button } from "./ui/button";
 const SpecialMobile = () => {
   return (
     <div className='p-10 bg-white'>
-      <Card className='bg-[#61BC5B] flex flex-col items-center py-12 space-y-6'>
+      <Card className='bg-[#61BC5B] flex flex-col items-center py-12 space-y-6 lg:w-full w-fit mx-auto px-6'>
         {/* The main image container */}
-        <div className="flex items-center justify-center relative w-full md:h-56 h-48">
+        <div className="flex items-center justify-center relative lg:h-56 h-48">
           {/* First Image (woman.png) */}
           <Image
             src='/assets/woman.png'
@@ -22,7 +22,7 @@ const SpecialMobile = () => {
           />
 
           {/* Discount image positioned bottom-left of the first image */}
-          <div className="absolute bottom-0 left-5 md:left-48 w-16 h-16">
+          <div className="absolute bottom-0 left-5 lg:left-0 w-16 h-16">
             <Image
               src='/assets/discount.png'
               alt='90% Discount'
