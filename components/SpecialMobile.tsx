@@ -1,5 +1,5 @@
 import React from 'react';
-import Image from 'next/image';
+import Image from "next/legacy/image";
 import { ArrowRight } from 'lucide-react';
 import { Card } from './ui/card';
 import { Button } from "./ui/button";
@@ -10,13 +10,15 @@ const SpecialMobile = () => {
     <div className='p-10 bg-white'>
       <Card className='bg-[#61BC5B] flex flex-col items-center py-12 space-y-6'>
         {/* The main image container */}
-        <div className="relative w-full md:h-56 h-48">
+        <div className="flex items-center justify-center relative w-full md:h-56 h-48">
           {/* First Image (woman.png) */}
           <Image
             src='/assets/woman.png'
             alt='Woman'
-            layout='fill'
+            width={200}
+            height={300}
             objectFit='contain'
+            priority
           />
 
           {/* Discount image positioned bottom-left of the first image */}
@@ -24,8 +26,10 @@ const SpecialMobile = () => {
             <Image
               src='/assets/discount.png'
               alt='90% Discount'
-              layout='fill'
+              width={100}
+              height={200}
               objectFit='contain'
+              priority
             />
           </div>
         </div>
