@@ -1,5 +1,5 @@
 // import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { ArrowRight } from 'lucide-react';
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -34,20 +34,25 @@ const SpecialOffer = () => {
                 </div>
 
               </div>
-              <div className="relative w-full h-28">
+              <div className="w-full h-28">
                 <Image
                   src='/assets/discount.png'
                   alt='90% Discount'
-                  layout='fill'
+                  width={100}
+                  height={200}
                   objectFit='contain'
+                  priority
                 />
               </div>
-              <div className="relative w-full h-80 mt-8">
+              <div className="w-full h-80">
                 <Image
                   src='/assets/woman.png'
                   alt='Woman'
-                  layout='fill'
+                  width={300}
+                  height={400}
                   objectFit='contain'
+                  // style={{ height: 'auto', width: 'auto' }}
+                  priority
                 />
               </div>
             </div>

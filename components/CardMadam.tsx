@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 const CardMadam = () => {
   return (
@@ -9,7 +9,9 @@ const CardMadam = () => {
           height={320}
           width={220}
           alt='Header'
-          className='object-cover absolute top-[-75px] drop-shadow-2xl'
+          priority
+          className='object-contain absolute top-[-70px] drop-shadow-2xl'
+          style={{ height: '370px', width: '100%' }}
         />
       </div>
     </div>
