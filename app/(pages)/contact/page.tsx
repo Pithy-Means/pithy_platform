@@ -61,7 +61,7 @@ const Contact = () => {
           </h3>
         </div>
         <div className="bg-white">
-          <div className="flex lg:flex-row lg:flex-row flex-col-reverse justify-between p-10">
+          <div className="flex lg:flex-row flex-col-reverse justify-between p-10">
             <div className="flex flex-col lg:items-start items-center space-y-8 w-full">
               <div className="text-center mt-4 -mb-4">
                 <TitleDot title="get in touch" />
