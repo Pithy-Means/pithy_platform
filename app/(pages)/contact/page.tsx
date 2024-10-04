@@ -89,8 +89,8 @@ const Contact = () => {
                   <InputContact label='Name' type='text' className='w-full' value={name} onChange={(e) => setName(e.target.value)} />
                   <InputContact label="Email" type="email" className='w-full' value={email} onChange={(e) => setEmail(e.target.value)} />
                   <InputContact label="Phone Number" type="tel" className='w-full' value={phone} onChange={(e) => setPhone(e.target.value)} />
-                  <InputContact label="Message" isTextarea={true} className="w-full" value={message} onChange={(e) => setMessage(e.target.value)} />
-                  <button type='submit' className='bg-[#5AC35A] text-white py-2 rounded-lg' disabled={loading}>
+                  <InputContact label="Message" isTextarea={true} className='w-full' value={message} onChange={(e) => setMessage(e.target.value)} />
+                  <button type='submit' className='bg-[#5AC35A] text-white p-2 rounded-lg w-fit mx-auto md:w-52 md:text-lg lg:w-72 lg:text-2xl flex justify-center text-center' disabled={loading}>
                     {loading ? 'Sending...' : 'Submit'}
                   </button>
                 </form>
