@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import TitleDot from "@/components/TitleDot";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import ContactInfo from "@/components/ContactInfo";
@@ -13,9 +13,9 @@ import Footer from "@/components/Footer";
 import SpecialMobile from "@/components/SpecialMobile";
 import GoogleMaps from "@/components/GoogleMaps";
 
-const DynamicMap = dynamic(() => import('../../../components/Map'), {
+const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
-})
+});
 
 const Contact = () => {
   const [name, setName] = useState("");

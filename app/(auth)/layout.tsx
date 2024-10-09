@@ -1,20 +1,18 @@
-'use client';
+"use client";
 
-import { useAuthStore } from '@/store/auth';
-import { useRouter } from 'next/navigation';
-import React from 'react';
+import { useAuthStore } from "@/store/auth";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuthStore();
   const router = useRouter();
 
   React.useEffect(() => {
-    if (session)
-      router.push('/dashboard');
+    if (session) router.push("/dashboard");
   }, [session, router]);
 
-  if (session)
-    return null;
+  if (session) return null;
 
   return (
     <html>
@@ -24,7 +22,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         </div>
       </body>
     </html>
-  )
-}
+  );
+};
 
 export default Layout;
