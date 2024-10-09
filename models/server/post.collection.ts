@@ -18,8 +18,8 @@ export default async function createPostCollection() {
 
     // Create common attributes
     await Promise.all([
-      databases.createStringAttribute(db, postCollection, 'user_id', 100, true), // User ID of the post creator
       databases.createStringAttribute(db, postCollection, 'post_id', 100, true), // Post ID
+      databases.createStringAttribute(db, postCollection, 'user_id', 100, true), // User ID of the post creator
       databases.createStringAttribute(db, postCollection, 'title', 100, true),
       databases.createStringAttribute(db, postCollection, 'content', 100, true),
       databases.createStringAttribute(db, postCollection, 'created_at', 100, false),
