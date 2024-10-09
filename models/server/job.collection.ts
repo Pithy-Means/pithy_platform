@@ -17,8 +17,8 @@ export default async function createJobCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(db, jobCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, jobCollection, 'job_id', 100, true),
+    databases.createStringAttribute(db, jobCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, jobCollection, 'job_title', 100, false),
     databases.createStringAttribute(db, jobCollection, 'job_description', 100, false),
     databases.createStringAttribute(db, jobCollection, 'job_location', 100, false),
