@@ -17,6 +17,7 @@ export default async function createLikeCommentCollection() {
 
   // Create common attributes
   await Promise.all([
+    databases.createStringAttribute(db, likeCommentCollection, 'like_comment_id', 100, true),
     databases.createStringAttribute(db, likeCommentCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, likeCommentCollection, 'post_id', 100, true),
     databases.createStringAttribute(db, likeCommentCollection, 'comment_id', 100, true),
