@@ -11,7 +11,7 @@ import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import SpecialOffer from "@/components/SpecialOffer";
 import Footer from "@/components/Footer";
 import SpecialMobile from "@/components/SpecialMobile";
-import GoogleMaps from "@/components/GoogleMaps";
+// import GoogleMaps from "@/components/GoogleMaps";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
