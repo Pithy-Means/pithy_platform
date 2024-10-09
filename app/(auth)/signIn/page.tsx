@@ -2,8 +2,7 @@ import React from 'react';
 
 const SignIn = () => {
   return (
-    <div className="absolute top-[-10px] left-0 right-0 flex items-center justify-center">
-
+    <div className="flex items-center justify-center w-full">
       {/* Sign-in form */}
       <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full max-w-m h-screen">
       <div className="flex justify-center space-x-4 items-center w-full">
