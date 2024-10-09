@@ -18,6 +18,7 @@ export default async function createCourseCommentCollection() {
 
   // Create common attributes
   await Promise.all([
+    databases.createStringAttribute(db, courseCommentCollection, 'comment_id', 100, true),
     databases.createStringAttribute(db, courseCommentCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, courseCommentCollection, 'course_id', 100, true),
     databases.createStringAttribute(db, courseCommentCollection, 'comment', 100, false),
