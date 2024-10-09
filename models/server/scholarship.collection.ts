@@ -15,8 +15,8 @@ export default async function createScholarshipCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(db, scholarshipCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, scholarshipCollection, 'scholarship_id', 100, true),
+    databases.createStringAttribute(db, scholarshipCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, scholarshipCollection, 'comment', 1000, false),
     databases.createStringAttribute(db, scholarshipCollection, 'created_at', 100, false),
     databases.createStringAttribute(db, scholarshipCollection, 'updated_at', 100, false)
