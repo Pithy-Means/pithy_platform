@@ -104,7 +104,7 @@ const Navbar = () => {
                 Login
               </Link>
               <div className='bg-white h-3 w-0.5'></div>
-              <Link href='#' prefetch={true} className='text-white hover:text-[#5AC35A] transition duration-300'>
+              <Link href='/signUp' prefetch={true} className='text-white hover:text-[#5AC35A] transition duration-300'>
                 Sign Up
               </Link>
             </div>
