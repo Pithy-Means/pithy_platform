@@ -1,14 +1,13 @@
-'use client';
-import dynamic from 'next/dynamic';
-import React from 'react';
+"use client";
+import dynamic from "next/dynamic";
+import React from "react";
 import Image from "next/legacy/image";
-import '../app/globals.css';
+import "../app/globals.css";
 import { IoPersonCircleOutline } from "react-icons/io5";
 import { IoMdArrowForward, IoMdArrowBack } from "react-icons/io";
-import { CustomArrowProps as ReactSlickArrowProps } from 'react-slick';
+import { CustomArrowProps as ReactSlickArrowProps } from "react-slick";
 
-
-const Slider = dynamic(() => import('react-slick'), { ssr: false });
+const Slider = dynamic(() => import("react-slick"), { ssr: false });
 
 interface CardProps {
   title: string;
@@ -18,7 +17,13 @@ interface CardProps {
   role: string;
 }
 
-const Card: React.FC<CardProps> = ({ title, description, imageSrc, name, role }) => {
+const Card: React.FC<CardProps> = ({
+  title,
+  description,
+  imageSrc,
+  name,
+  role,
+}) => {
   const imagePath = imageSrc ? `${imageSrc}` : null;
 
   return (
@@ -32,10 +37,10 @@ const Card: React.FC<CardProps> = ({ title, description, imageSrc, name, role })
             height={50}
             width={50}
             alt={`${name}'s image`}
-            className=''
+            className=""
           />
         ) : (
-          <IoPersonCircleOutline size={50} className='text-gray-400' />
+          <IoPersonCircleOutline size={50} className="text-gray-400" />
         )}
         <div className="ml-4">
           <h3 className="text-lg mt-2">{name}</h3>
@@ -95,19 +100,24 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
             ))}
           </Slider>
 
-          <div className='flex items-center'>
-
+          <div className="flex items-center">
             <div className=" left-0 w-full flex space-x-4 p-4">
-              <PrevArrow slickPrev={() => (document.querySelector('.slick-prev') as HTMLElement).click()} />
-              <NextArrow slickNext={() => (document.querySelector('.slick-next') as HTMLElement).click()} />
+              <PrevArrow
+                slickPrev={() =>
+                  (document.querySelector(".slick-prev") as HTMLElement).click()
+                }
+              />
+              <NextArrow
+                slickNext={() =>
+                  (document.querySelector(".slick-next") as HTMLElement).click()
+                }
+              />
             </div>
           </div>
         </>
-
       ) : (
         <p>No cards to show</p>
       )}
-
     </div>
   );
 };
@@ -122,7 +132,10 @@ interface CustomArrowProps extends ReactSlickArrowProps {
 const NextArrow: React.FC<CustomArrowProps> = ({ className, slickNext }) => {
   // const { className, onClick } = props;
   return (
-    <div className={`${className} bg-transparent border border-green-400 rounded`} onClick={slickNext}>
+    <div
+      className={`${className} bg-transparent border border-green-400 rounded`}
+      onClick={slickNext}
+    >
       <IoMdArrowForward size={40} className="text-green-500 px-2 " />
     </div>
   );
@@ -131,7 +144,10 @@ const NextArrow: React.FC<CustomArrowProps> = ({ className, slickNext }) => {
 const PrevArrow: React.FC<CustomArrowProps> = ({ className, slickPrev }) => {
   // const { className, onClick } = props;
   return (
-    <div className={`${className} bg-transparent border border-green-400 rounded`} onClick={slickPrev} >
+    <div
+      className={`${className} bg-transparent border border-green-400 rounded`}
+      onClick={slickPrev}
+    >
       <IoMdArrowBack size={40} className="text-green-500 px-2" />
     </div>
   );

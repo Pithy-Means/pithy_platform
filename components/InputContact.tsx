@@ -1,16 +1,18 @@
 interface InputContactProps {
   label: string;
-  type?: 'text' | 'email' | 'number' | 'tel';
+  type?: "text" | "email" | "number" | "tel";
   className?: string;
   isTextarea?: boolean;
   value: string;
-  onChange: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+  ) => void;
 }
 
 const InputContact: React.FC<InputContactProps> = ({
   label,
-  type = 'text',
-  className = '',
+  type = "text",
+  className = "",
   isTextarea = false,
   value,
   onChange,

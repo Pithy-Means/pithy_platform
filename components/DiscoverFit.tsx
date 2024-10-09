@@ -24,7 +24,7 @@ const DiscoverFit = () => {
                   src="/assets/one.png"
                   alt="step 1"
                   width={50}
-                  priority 
+                  priority
                   height={50}
                 />
               </div>
@@ -33,9 +33,9 @@ const DiscoverFit = () => {
                   src="/assets/lineone.png"
                   alt="line 1"
                   width={50}
-                  priority 
+                  priority
                   height={120}
-                  style={{ height: '234px', width: '100%' }}
+                  style={{ height: "234px", width: "100%" }}
                 />
               </div>
               <div className="relative z-10  lg:-mt-24 md:-mt-16 md:ml-2 ">
@@ -43,7 +43,7 @@ const DiscoverFit = () => {
                   src="/assets/two.png"
                   alt="step 2"
                   width={50}
-                  priority 
+                  priority
                   height={50}
                 />
               </div>
@@ -52,9 +52,9 @@ const DiscoverFit = () => {
                   src="/assets/linetwo.png"
                   alt="line 2 "
                   width={30}
-                  priority 
+                  priority
                   height={100}
-                  style={{ height: 'auto', width: 'auto%' }}
+                  style={{ height: "auto", width: "auto%" }}
                 />
               </div>
               <div className="relative z-10 lg:-mt-2 md:mt-2">
@@ -62,7 +62,8 @@ const DiscoverFit = () => {
                   src="/assets/three.png"
                   alt="step 3"
                   width={50}
-                  priority height={50}
+                  priority
+                  height={50}
                 />
               </div>
             </div>
@@ -76,7 +77,8 @@ const DiscoverFit = () => {
                         src="/assets/one.png"
                         alt="step 1"
                         width={50}
-                        priority height={50}
+                        priority
+                        height={50}
                       />
                     </div>
                   </div>
@@ -111,7 +113,7 @@ const DiscoverFit = () => {
                 <Image
                   src="/assets/Frame 87.png"
                   width={150}
-                  height={150} 
+                  height={150}
                   priority
                   alt="DiscoverFit"
                   className=""
@@ -122,7 +124,7 @@ const DiscoverFit = () => {
                       src="/assets/lineone.png"
                       alt="line 1"
                       width={50}
-                      priority 
+                      priority
                       height={50}
                     />
                   </div>
@@ -131,7 +133,7 @@ const DiscoverFit = () => {
                       src="/assets/two.png"
                       alt="step 2"
                       width={50}
-                      priority 
+                      priority
                       height={50}
                     />
                   </div>
@@ -172,10 +174,10 @@ const DiscoverFit = () => {
                     <Image
                       src="/assets/Frame 88.png"
                       width={50}
-                      height={140} 
+                      height={140}
                       priority
                       alt="DiscoverFit"
-                      style={{ height: '150px', width: 'auto' }}
+                      style={{ height: "150px", width: "auto" }}
                     />
                     <div className="block md:hidden">
                       <div className="-mt-4">
@@ -183,7 +185,7 @@ const DiscoverFit = () => {
                           src="/assets/lineone.png"
                           alt="line 1"
                           width={50}
-                          priority 
+                          priority
                           height={100}
                         />
                       </div>
@@ -192,7 +194,7 @@ const DiscoverFit = () => {
                           src="/assets/three.png"
                           alt="step 2"
                           width={50}
-                          priority 
+                          priority
                           height={50}
                         />
                       </div>
