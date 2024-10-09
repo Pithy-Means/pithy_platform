@@ -16,15 +16,14 @@ import createJobCollection from "./job.collection";
 import createCertificateCollection from "./certificate.collection";
 import createPaymentCollection from "./payment.collection";
 
-
 export default async function getOrCreateDB() {
   try {
     await databases.get(db);
-    console.log('Database exists');
+    console.log("Database exists");
   } catch (error) {
     try {
       await databases.create(db, db);
-      console.log('Database created');
+      console.log("Database created");
       // Create collections
       await Promise.all([
         createUserCollection(),
@@ -43,9 +42,9 @@ export default async function getOrCreateDB() {
         createScholarshipCollection(),
         createJobCollection(),
       ]);
-      console.log('Database setup complete');
+      console.log("Database setup complete");
     } catch (error) {
-      console.log('Error creating database', error);
+      console.log("Error creating database", error);
     }
   }
   return databases;

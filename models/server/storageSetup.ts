@@ -38,7 +38,7 @@ export default async function setupStorage() {
           "webm",
           "mp3",
           "wav",
-        ]
+        ],
       );
       console.log("Storage setup complete");
     } catch (error) {
