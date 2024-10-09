@@ -15,6 +15,7 @@ export default async function createPostCourseQuestionCollection() {
 
   // Create common attributes
   await Promise.all([
+    databases.createStringAttribute(db, postCourseQuestionCollection, 'post_course_question_id', 100, true),
     databases.createStringAttribute(db, postCourseQuestionCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, postCourseQuestionCollection, 'course_id', 100, true),
     databases.createStringAttribute(db, postCourseQuestionCollection, 'question', 100, true),
