@@ -15,13 +15,13 @@ export default async function createCourseCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(db, courseCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, courseCollection, 'course_id', 100, true),
+    databases.createStringAttribute(db, courseCollection, 'user_id', 100, true),
     databases.createStringAttribute(db, courseCollection, 'title', 100, true),
     databases.createStringAttribute(db, courseCollection, 'description', 100, true),
     databases.createFloatAttribute(db, courseCollection, 'price', true),
     databases.createStringAttribute(db, courseCollection, 'duration', 100, true),
-    databases.createStringAttribute(db, courseCollection, 'video', 100, true),
+    databases.createStringAttribute(db, courseCollection, 'video', 100, false),
     databases.createStringAttribute(db, courseCollection, 'syllabus', 100, false),
     databases.createStringAttribute(db, courseCollection, 'requirements', 100, false),
     databases.createStringAttribute(db, courseCollection, 'outcomes', 100, false),
