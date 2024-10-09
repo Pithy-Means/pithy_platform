@@ -45,6 +45,5 @@ export default async function setupStorage() {
       console.log("Error creating bucket", error);
     }
   }
-
   return storage;
 }
