@@ -1,5 +1,5 @@
 // Parts of naming database name and tables in the database
-export const db = 'ptiydb';
+export const db = 'pithydb';
 export const userCollection = 'users';
 export const courseCollection = 'courses';
 export const courseCommentCollection = 'courseComments';
