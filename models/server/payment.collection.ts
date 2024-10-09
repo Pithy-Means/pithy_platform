@@ -14,9 +14,9 @@ export default async function createPaymentCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(db, paymentCollection, 'user_id', 100, true),
-    databases.createStringAttribute(db, paymentCollection, 'course_id', 100, true),
-    databases.createStringAttribute(db, paymentCollection, 'payment_id', 100, true),
+    databases.createStringAttribute(db, paymentCollection, 'payment_id', 100, true), // Payment ID
+    databases.createStringAttribute(db, paymentCollection, 'user_id', 100, true), // User ID
+    databases.createStringAttribute(db, paymentCollection, 'course_id', 100, true), // Course ID
     databases.createStringAttribute(db, paymentCollection, 'payment_status', 100, true),
     databases.createStringAttribute(db, paymentCollection, 'payment_method', 100, true),
     databases.createStringAttribute(db, paymentCollection, 'payment_amount', 100, true),
