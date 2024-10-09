@@ -14,17 +14,24 @@ export async function POST(request: Request) {
 
     // Send the email using Resend
     const response = await resend.emails.send({
-      from: 'onboarding@resend.dev', // Replace with your sender email
-      to: 'bandonkeyea@gmail.com', // Replace with your target email
-      subject: 'New Contact Form Submission',
+      from: "onboarding@resend.dev", // Replace with your sender email
+      to: "bandonkeyea@gmail.com", // Replace with your target email
+      subject: "New Contact Form Submission",
       react: `Hello, I'm ${name} and I have a message for you: ${message}. You can reach me at ${phone} or ${email}.`,
     });
 
     // Return a success response
-    return NextResponse.json({ success: true, message: 'Email sent successfully!', response });
+    return NextResponse.json({
+      success: true,
+      message: "Email sent successfully!",
+      response,
+    });
   } catch (error) {
     // Handle errors (e.g., email not sent)
-    console.error('Error sending email:', error);
-    return NextResponse.json({ success: false, message: 'Failed to send email', error }, { status: 500 });
+    console.error("Error sending email:", error);
+    return NextResponse.json(
+      { success: false, message: "Failed to send email", error },
+      { status: 500 },
+    );
   }
 }
