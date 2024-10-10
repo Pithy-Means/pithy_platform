@@ -59,6 +59,8 @@ interface IAuthStore {
   createAccount(
     firstname: string,
     lastname: string,
+    age: string[],
+    gender: string[],
     address: string,
     phone: string,
     categories: Categories[],
@@ -120,6 +122,8 @@ export const useAuthStore = create<IAuthStore>()(
       async createAccount(
         firstname: string,
         lastname: string,
+        age: string[],
+        gender: string[],
         address: string,
         phone: string,
         categories: Categories[],
@@ -135,6 +139,8 @@ export const useAuthStore = create<IAuthStore>()(
             firstname,
             lastname,
             address,
+            age,
+            gender,
             phone,
             categories
           });
