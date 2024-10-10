@@ -9,6 +9,35 @@ export interface UserInfo {
   reputation: number;
 }
 
+interface Student {
+  level_of_study?: string;
+  school?: string;
+  major_subject?: string;
+  expect_year_of_graduation?: string;
+}
+
+interface Job_seeker {
+  current_job_title?: string;
+  skills?: string[];
+  industry?: string;
+  years_of_experience?: string;
+}
+
+interface Employer {
+  company_name?: string;
+  company_size?: string;
+  industry?: string;
+  about_company?: string;
+  position_in_company?: string;
+  job_posted?: string;
+}
+
+interface Categories {
+  Student?: Student[];
+  Job_seeker?: Job_seeker[];
+  Employer?: Employer[];
+}
+
 interface IAuthStore {
   session: Models.Session | null;
   jwt: string | null;
@@ -28,7 +57,11 @@ interface IAuthStore {
   }>;
 
   createAccount(
-    name: string,
+    firstname: string,
+    lastname: string,
+    address: string,
+    phone: string,
+    categories: Categories[],
     email: string,
     password: string,
   ): Promise<{
@@ -84,9 +117,28 @@ export const useAuthStore = create<IAuthStore>()(
         }
       },
 
-      async createAccount(name: string, email: string, password: string) {
+      async createAccount(
+        firstname: string,
+        lastname: string,
+        address: string,
+        phone: string,
+        categories: Categories[],
+        email: string,
+        password: string
+      ) {
         try {
-          await account.create(ID.unique(), email, password, name);
+          // Create a new account with Appwrite using email and password
+          const user = await account.create(ID.unique(), email, password, `${firstname} ${lastname}`);
+
+          // After account creation, update user preferences with additional information
+          await account.updatePrefs({
+            firstname,
+            lastname,
+            address,
+            phone,
+            categories
+          });
+
           return {
             success: true,
           };
@@ -98,6 +150,7 @@ export const useAuthStore = create<IAuthStore>()(
           };
         }
       },
+
 
       async logout() {
         try {
