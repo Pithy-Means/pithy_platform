@@ -39,7 +39,7 @@ const Footer = () => {
               }
               email={"contact@pithymeans.com"}
               phone={["+1 (307) 374-0993", " +1 (307) 205-5983"]}
-              className="text-white  mb-4 md:mb-0 break-normal"
+              className="text-white text-center  mb-4 md:mb-0 break-normal"
             />
             <ContactInfo
               title={"office uganda"}
@@ -52,7 +52,7 @@ const Footer = () => {
                 "+256 760 389 466",
                 "+256 783 184 543",
               ]}
-              className="text-white mb-4 md:mb-0  break-normal "
+              className="text-white mb-4 md:mb-0 text-center break-normal "
             />
             <QuickLinks />
           </div>
