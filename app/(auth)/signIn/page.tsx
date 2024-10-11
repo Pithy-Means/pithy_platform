@@ -1,6 +1,36 @@
-import React from "react";
+"use client";
+
+import React, {useState, useEffect} from "react";
+import InputContact from "@/components/InputContact";
 
 const SignIn = () => {
+  
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState<boolean>(false)
+  const [isMounted, setIsMounted] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  }
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null;
+  }
+
+  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const emailInput = form.elements.namedItem("email") as HTMLInputElement;
+    const passwordInput = form.elements.namedItem("password") as HTMLInputElement;
+    setEmail(emailInput.value);
+    setPassword(passwordInput.value);
+  };
+
   return (
     <div className="flex items-center justify-center w-full">
       {/* Sign-in form */}
@@ -11,52 +41,42 @@ const SignIn = () => {
               Welcome back
             </h2>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSignIn}>
               {/* Email Input */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="mt-1 block w-full px-4 py-2 bg-[#1f1f1f] text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent"
-                  placeholder="Enter your email"
-                  required
-                />
-              </div>
-
+              <InputContact
+                label="Email"
+                type="email"
+                className="w-full"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
               {/* Password Input */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-gray-300"
-                >
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="mt-1 block w-full px-4 py-2 bg-[#1f1f1f] text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-[#3b82f6] focus:border-transparent"
-                  placeholder="Enter your password"
-                  required
+              <div className="relative">
+                <InputContact
+                  label="Password"
+                  type={showPassword ? "text" : "password"} // Dynamically change type
+                  className="w-full"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                 />
+                {/* Toggle Button */}
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-4 flex items-center px-2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
               </div>
 
               {/* Submit Button */}
-              <div>
-                <button
-                  type="submit"
-                  className="w-full py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
-                >
-                  Sign In
-                </button>
-              </div>
+              <button
+                type="submit"
+                className="w-full py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+              >
+                Sign In
+              </button>
             </form>
-
             {/* Forgot password and sign up link */}
             <div className="mt-6 text-center">
               <a
