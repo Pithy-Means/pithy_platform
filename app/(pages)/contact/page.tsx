@@ -81,7 +81,7 @@ const Contact = () => {
                   "1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA"
                 }
                 email={"contact@pithymeans.com"}
-                phone={"+1 (307) 374-0993 | +1 (307) 205-5983"}
+                phone={["+1 (307) 374-0993", " +1 (307) 205-5983"]}
                 className="text-black break-normal"
               />
               <ContactInfo
@@ -90,13 +90,17 @@ const Contact = () => {
                   "Plot No 546, ROFRA house, 4th Floor, Room No 2, Ggaba Road, Kansanga, Kampala."
                 }
                 email={"pithymeansafrica@gmail.com"}
-                phone={"+256 750 175 892 | +256 760 389 466 | 783184543"}
+                phone={[
+                  "+256 750 175 892",
+                  "+256 760 389 466",
+                  "+256 783 184 543",
+                ]}
                 className="text-black"
               />
               <SocialMediaLinks className="text-black" />
             </div>
             {!responseMessage ? (
-              <Card className="bg-white py-20 px-6 w-full">
+              <Card className="bg-white py-20 px-6 h-fit w-full">
                 <form
                   onSubmit={handleSubmit}
                   className="flex flex-col space-y-4"
