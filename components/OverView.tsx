@@ -10,8 +10,8 @@ import { IoMdLogOut } from "react-icons/io";
 
 const OverView = () => {
   return (
-    <div className=' flex flex-col bg-white w-1/5 text-black px-6 justify-center  h-full'>
-      <div>
+    <div className='flex flex-col bg-white w-1/5 text-black px-6 justify-center  h-full mt-6'>
+      <div className=''>
         <div>
           <p className='text-lg py-4'>Overview</p>
           <div className='space-y-4 mb-10'>
