@@ -28,22 +28,23 @@ const Post = () => {
               width={600}
               height={300}
               alt='Post person'
-              className=' rounded-sm items-center object-cover' />
-            <div className='flex justify-evenly  '>
-              <div className='flex flex-row  p-2'>
+              className=' rounded-sm items-center object-cover'
+            />
+            <div className='flex  space-x-64'>
+              <div className='flex flex-row p-2 '>
                 <AiFillLike />
                 <FcLike />
                 <FaComments />
                 <p>78</p>
               </div>
               <div className='flex flex-row items-center justify-end gap-4'>
-                  <p>10 Comments</p>
-                  <p>2 Shared</p>
-                 
+                <p>10 Comments</p>
+                <p>2 Shared</p>
+
               </div>
             </div>
           </div>
-          <div className='flex flex-row justify-evenly'>
+          <div className='flex flex-row justify-start gap-8 '>
             <div>
               <Image src='/assets/person_feedback.png'
                 width={40}
@@ -52,21 +53,24 @@ const Post = () => {
                 className=' rounded-lg' />
 
             </div>
-            <div>
-              <FcLike />
-              <p>Like</p>
-            </div>
-            <div>
-              <FaRegCommentDots />
-              <p>Comment</p>
-            </div>
-            <div>
-              <BiRepost />
-              <p>Repost</p>
-            </div>
-            <div>
-              <FaRegShareFromSquare />
-              <p>Share</p>
+            <div className='flex items-center gap-8'>
+              <div className='items-center'>
+                <FcLike size={20} />
+                <p>Like</p>
+              </div>
+              <div className='flex flex-col items-center'>
+                <FaRegCommentDots size={16} />
+                <p>Comment</p>
+              </div>
+              <div className='flex flex-col items-center' >
+                <BiRepost size={20} />
+                <p>Repost</p>
+              </div>
+              <div className='flex flex-col items-center'>
+                <FaRegShareFromSquare size={16} />
+                <p>Share</p>
+              </div>
+
             </div>
           </div>
 
