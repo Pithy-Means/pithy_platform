@@ -10,7 +10,7 @@ import { FaRegShareFromSquare } from "react-icons/fa6";
 const Post = () => {
   return (
     <div>
-      <div className='flex flex-col bg-white  text-black px-6 justify-center h-full w-3/5 p-2 mx-6 '>
+      <div className='flex flex-col bg-white  text-black px-6 justify-center  p-2 mx-6 '>
         <div className=''>
           <div className=' flex flex-row gap-1'>
             <Image src='/assets/person_feedback.png'
