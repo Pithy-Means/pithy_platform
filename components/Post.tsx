@@ -30,8 +30,8 @@ const Post = () => {
               alt='Post person'
               className=' rounded-sm items-center object-cover'
             />
-            <div className='flex  space-x-64'>
-              <div className='flex flex-row p-2 '>
+            <div className='flex  space-x-80'>
+              <div className='flex flex-row p-2 ml-[-20px] '>
                 <AiFillLike />
                 <FcLike />
                 <FaComments />
