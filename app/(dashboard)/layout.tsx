@@ -1,16 +1,13 @@
-import DashboardNavBar from "@/components/dashboard_navBar";
+'use client';
+// import DashboardNavBar from "@/components/dashboard_navBar";
 
-const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
+export default function DashboardLayout ({ children }: {children: React.ReactNode }) {
+  console.log("DashboardLayout is active");
   return (
-    <html lang="en"
-    >
-      <body>
-        <DashboardNavBar />
-        {children}
-      </body>
+    <div className=" ">
+      {/* <DashboardNavBar /> */}
+      {children}
+    </div>
+  );
+};
 
-    </html>
-  )
-}
-
-export default DashboardLayout;
