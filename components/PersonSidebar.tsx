@@ -11,7 +11,7 @@ const interests = [''];
 
 const PersonSidebar = () => {
   return (
-    <div className='flex flex-col bg-white w-full text-black  justify-start  h-auto mt-6 mr-4 rounded-lg overflow-hidden'>
+    <div className='flex flex-col bg-white w-full text-black  justify-start  h-[calc(100vh-64px)] overflow-y-auto mt-6 mr-4 rounded-lg overflow-hidden'>
       <div className='bg-green-500 h-20 rounded-t-lg w-full'></div>
       <div className='flex flex-col items-center justify-center gap-4 bg-white'>
         <div className='flex flex-col justify-center items-center -mt-10'>
