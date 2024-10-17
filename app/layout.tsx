@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import ConditionalLayout from "@/components/ConditionalLayout";
+// import Navbar from "@/components/Navbar";
+// import DashboardNavBar from "@/components/dashboard_navBar";
+// import { usePathname } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,8 +32,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
-        <Navbar />
-        {children}
+        <ConditionalLayout>{children}</ConditionalLayout>
+        {/* {children} */}
       </body>
     </html>
   );
