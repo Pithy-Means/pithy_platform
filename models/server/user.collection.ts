@@ -23,26 +23,21 @@ export default async function createUserCollection() {
       "user_id",
       40,
       true,
-      "",
-      true,
     ),
     databases.createStringAttribute(
       db,
       userCollection,
-      "first_name",
+      "firstname",
       100,
       true,
     ),
-    databases.createStringAttribute(db, userCollection, "last_name", 100, true),
+    databases.createStringAttribute(db, userCollection, "lastname", 100, true),
     databases.createStringAttribute(db, userCollection, "email", 100, true),
     databases.createStringAttribute(
       db,
       userCollection,
       "password",
       100,
-      true,
-      "",
-      false,
       true,
     ),
     databases.createEnumAttribute(
@@ -61,8 +56,7 @@ export default async function createUserCollection() {
       userCollection,
       "age",
       ["18-25", "26-35", "36-45", "46 and +"],
-      true,
-      "18-25",
+      true
     ),
     databases.createEnumAttribute(
       db,
@@ -78,10 +72,7 @@ export default async function createUserCollection() {
       ["student", "job seeker", "employer"],
       true,
     ),
-  ]);
 
-  // Add attributes specific to the 'student' category
-  await Promise.all([
     databases.createEnumAttribute(
       db,
       userCollection,
@@ -109,10 +100,7 @@ export default async function createUserCollection() {
       "expected_graduation_year",
       false,
     ),
-  ]);
 
-  // Add attributes specific to the 'job seeker' category
-  await Promise.all([
     databases.createStringAttribute(
       db,
       userCollection,
@@ -121,10 +109,11 @@ export default async function createUserCollection() {
       false,
     ),
     databases.createStringAttribute(db, userCollection, "skills", 255, false),
-    databases.createIntegerAttribute(
+    databases.createStringAttribute(
       db,
       userCollection,
       "years_of_work_experience",
+      5,
       false,
     ),
     databases.createStringAttribute(
@@ -141,10 +130,7 @@ export default async function createUserCollection() {
       ["immediately available", "open to opportunities"],
       false,
     ),
-  ]);
 
-  // Add attributes specific to the 'employer' category
-  await Promise.all([
     databases.createStringAttribute(
       db,
       userCollection,
@@ -179,10 +165,11 @@ export default async function createUserCollection() {
       100,
       false,
     ),
-    databases.createIntegerAttribute(
+    databases.createStringAttribute(
       db,
       userCollection,
       "job_posting_count",
+      5,
       false,
     ),
   ]);
