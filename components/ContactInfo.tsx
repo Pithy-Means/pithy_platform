@@ -52,7 +52,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({
       <div
         className={`flex flex-col   md:flex-row md:space-x-4 md:items-start items-center ${className}`}
       >
-        <CiPhone 
+        <CiPhone
           className={`text-lg md:text-xl lg:text-2xl ${className}`}
           color="#5AC35A"
         />

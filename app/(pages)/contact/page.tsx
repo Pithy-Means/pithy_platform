@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import TitleDot from "@/components/TitleDot";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import ContactInfo from "@/components/ContactInfo";
@@ -10,7 +11,11 @@ import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import SpecialOffer from "@/components/SpecialOffer";
 import Footer from "@/components/Footer";
 import SpecialMobile from "@/components/SpecialMobile";
-import GoogleMaps from "@/components/GoogleMaps";
+// import GoogleMaps from "@/components/GoogleMaps";
+
+const DynamicMap = dynamic(() => import("../../../components/Map"), {
+  ssr: false,
+});
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -62,8 +67,8 @@ const Contact = () => {
           </h3>
         </div>
         <div className="bg-white">
-          <div className="flex  md:flex-row lg:flex-row flex-col-reverse justify-between p-10">
-            <div className="flex flex-col  space-y-8 w-full">
+          <div className="flex lg:flex-row flex-col-reverse justify-between p-10">
+            <div className="flex flex-col lg:items-start items-center space-y-8 w-full">
               <div className="text-center mt-4 -mb-4">
                 <TitleDot title="get in touch" />
                 <p className="text-base text-black capitalize">
@@ -159,7 +164,7 @@ const Contact = () => {
               }}
             />
           </div>
-          <div className="bg-gradient-to-b from-[#61BC5B] via-white to-white z-10 py-10">
+          <div className="bg-gradient-to-b from-[#61BC5B] to-white z-10 py-10">
             <div className="flex justify-center items-center flex-col space-y-4 py-10">
               <h3 className="text-black text-xl font-bold">Find Us Here</h3>
               <p className="text-black capitalize">
@@ -167,7 +172,7 @@ const Contact = () => {
               </p>
               <Card className="bg-white w-5/6 flex items-center justify-center">
                 <div className="">
-                  <GoogleMaps />
+                  <DynamicMap />
                 </div>
               </Card>
             </div>

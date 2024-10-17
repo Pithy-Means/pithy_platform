@@ -1,11 +1,11 @@
-import Link from 'next/link'
-import React from 'react'
+import Link from "next/link";
+import React from "react";
 
 const SignInPage = () => {
   return (
-    <div className='flex justify-between w-full items-center text-base bg-white/85'>
-      <div className='text-black mx-4'>
-        <div className=''>
+    <div className="flex justify-between w-full items-center text-base bg-white/85">
+      <div className="text-black mx-4">
+        <div className="">
           <h1>Welcome back!</h1>
         </div>
         <div>
@@ -40,22 +40,34 @@ const SignInPage = () => {
       <div>
         <div>
           <svg>
-            <image xlinkHref="./public/assets/C05_6.png"  height="100" width="100" />
+            <image
+              xlinkHref="./public/assets/C05_6.png"
+              height="100"
+              width="100"
+            />
           </svg>
         </div>
         <div>
           <svg>
-            <image xlinkHref="./public/assets/C12_22.png"  height="100" width="100" />
+            <image
+              xlinkHref="./public/assets/C12_22.png"
+              height="100"
+              width="100"
+            />
           </svg>
         </div>
         <div>
           <svg>
-            <image xlinkHref="./public/assets/C2_15.png"  height="100" width="100" />
+            <image
+              xlinkHref="./public/assets/C2_15.png"
+              height="100"
+              width="100"
+            />
           </svg>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignInPage
+export default SignInPage;
