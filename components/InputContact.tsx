@@ -5,6 +5,7 @@ import { Textarea } from "./ui/textarea";
 interface InputContactProps {
   label: string;
   type?: "text" | "email" | "number" | "tel" | "password";
+  name?: string;
   className?: string;
   isTextarea?: boolean;
   value: string;
@@ -17,6 +18,7 @@ const InputContact: React.FC<InputContactProps> = ({
   label,
   type = "text",
   className = "",
+  name,
   isTextarea = false,
   value,
   onChange,
@@ -35,6 +37,7 @@ const InputContact: React.FC<InputContactProps> = ({
           <Input
             type={type}
             value={value}
+            name={name}
             onChange={onChange}
             required
             className={`px-6 h-10 ${className} text-lg bg-white border rounded-lg border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
