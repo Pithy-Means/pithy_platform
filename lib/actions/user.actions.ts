@@ -40,7 +40,15 @@ export const login = async ({ email, password }: LoginInfo) => {
 };
 // 6710b73b001163300b05
 
-export const logout = async () => {};
+export const logout = async () => {
+  try {
+    const { account } = await createSessionClient();
+    cookies().delete('my-session');
+    await account.deleteSession('current');
+  } catch (error) {
+    return null;
+  }
+};
 
 export const register = async (userdata: UserInfo) => {
   const { email, password, firstname, lastname, categories } = userdata;
