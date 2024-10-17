@@ -3,12 +3,13 @@
 import { register } from "@/lib/actions/user.actions";
 import { UserInfo } from "@/types/schema";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
   // Form state
   const [formData, setFormData] = useState<Partial<UserInfo>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState(null);
+  const router = useRouter();
 
   // Update form fields
   const handleChange = (
@@ -27,7 +28,9 @@ const SignupForm = () => {
     setIsLoading(true);
     try {
       const newuser = await register(formData as UserInfo);
-      setUser(newuser);
+      if (newuser) {
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error("Error registering user:", error);
     } finally {
