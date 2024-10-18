@@ -6,18 +6,19 @@ import DashboardNavBar from "@/components/dashboard_navBar";
 
 const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+    
+  // Determine if the current pathname matches the desired routes
+  const isPublicRoute = ["/", "/about", "/contact", "/how-it-works"].includes(pathname);
 
-  const isSingleCourse = pathname?.startsWith("/singlecourse");
-  const isViewCourse = pathname?.startsWith("/viewcourse");
-  const isCourse = pathname?.startsWith("/course");
   const isDashboard = pathname?.startsWith("/dashboard");
 
   return (
-    <div>
-      {isSingleCourse ? <DashboardNavBar/> : isCourse ? <DashboardNavBar /> : isViewCourse ? < DashboardNavBar/> :isDashboard ? <DashboardNavBar /> : <Navbar />}
-      {/* {isDashboard ? <DashboardNavBar /> : <Navbar />} */}
-     
-      
+    <div>    
+      {isDashboard ? (
+        <DashboardNavBar />
+      ) : isPublicRoute ? (
+        <Navbar />
+      ) : ''} {/* Render nothing if not on the specified routes */}
       {children}
     </div>
   );
