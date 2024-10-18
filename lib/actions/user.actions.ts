@@ -7,13 +7,13 @@ import { ID, Query } from "node-appwrite";
 import { parseStringify } from "../utils";
 import { db, userCollection } from "@/models/name";
 
-export const getUserInfo = async ({ user_id }: GetUserInfo) => {
+export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
     const { databases } = await createAdminClient();
     const user = await databases.listDocuments(db, userCollection, [
-      Query.equal("user_id", [user_id]),
+      Query.equal("user_id", [userId]),
     ]);
-    parseStringify(user.documents[0]);
+    return parseStringify(user.documents[0]);
   } catch (error) {
     console.error(error);
   }
@@ -31,20 +31,30 @@ export const login = async ({ email, password }: LoginInfo) => {
       secure: true,
     });
 
-    const user = await getUserInfo({ user_id: session.userId });
+    const user = await getUserInfo({ userId: session.userId });
     console.log('User', user);
-    return parseStringify(session);
+    return parseStringify(user);
   } catch (error) {
     console.error(error);
   }
 };
 // 6710b73b001163300b05
 
-export const logout = async () => {
+export const getSession = async () => {
+  try {
+    const { account } = await createSessionClient();
+    const session = await account.get();
+    return parseStringify(session);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const logoutUser = async () => {
   try {
     const { account } = await createSessionClient();
     cookies().delete('my-session');
-    await account.deleteSession('current');
+    await account.deleteSessions();
   } catch (error) {
     return null;
   }
@@ -89,14 +99,23 @@ export const register = async (userdata: UserInfo) => {
   }
 };
 
-export const update = async () => {};
+export const updateUserSession = async () => {
+  try {
+    const { account } = await createSessionClient();
+    const session = await account.updateSession('current');
+    return parseStringify(session);
+  } catch (error) {
+    return null;
+  }
+};
 
 export const remove = async () => {};
 
 export const getLoggedInUser = async () => {
   try {
     const { account } = await createSessionClient();
-    const user = await account.get();
+    const response = await account.get();
+    const user = await getUserInfo({ userId: response.$id });
     return parseStringify(user);
   } catch (error) {
     return null;
