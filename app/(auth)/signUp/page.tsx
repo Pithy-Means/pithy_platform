@@ -5,5 +5,4 @@ const SignUp = () => {
         <SignupForm />
     )
 }
-
-export default SignUp;
+export default Signup;
