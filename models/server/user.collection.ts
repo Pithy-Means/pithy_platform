@@ -94,10 +94,11 @@ export default async function createUserCollection() {
       100,
       false,
     ),
-    databases.createIntegerAttribute(
+    databases.createStringAttribute(
       db,
       userCollection,
       "expected_graduation_year",
+      5,
       false,
     ),
 
