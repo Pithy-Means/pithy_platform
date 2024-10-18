@@ -1,7 +1,9 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { MdAccessTimeFilled } from "react-icons/md";
 import { FaBookReader } from "react-icons/fa";
+import { useRouter } from 'next/navigation';
 
 
 interface Course {
@@ -20,6 +22,33 @@ interface CourseCardProps {
 
 const CourseCard: React.FC<CourseCardProps> = ({ courses}) => {
   // const [courses, setCourses] = useState<Course[]>([]);
+  const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+  // const router = typeof window !== 'undefined' ? useRouter() : null;
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return null;
+  }
+
+  // const router = useRouter();
+  const handleViewMore = (id: string) => {
+    router.push(`/courses/${id}`);
+  };
+  // const handleViewMore = (id: string) => {
+  //   //check if router is available before navigating
+  //   if (isClient) {
+  //     // Navigate to the course details page using the course id
+  //     router.push(`/courses/${id}`);
+
+  //   } else {
+  //     console.warn('Router is not available on the server side');
+  //   }
+  // };
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6'>
       {courses.map((course: Course, index: number) => (
@@ -47,7 +76,14 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses}) => {
                 <del className='text-gray-400 pr-2 items-center flex flex-row'>{course.originalPrice}</del>
                 Free
               </p>
-              <button className='text-black/85 font-bold text-lg hover:border rounded-md  hover:bg-green-600/100 transition px-1'>View more</button>
+              <button 
+              onClick={() => handleViewMore(course.id)}
+              type='button'
+              // onClick={() => router.push('/courses/' + course.id)}
+              className='text-black/85 font-bold text-lg hover:border rounded-md  hover:bg-green-600/100 transition px-1'
+              >
+                View more
+              </button>
             </div>
           </div>
         </div>
