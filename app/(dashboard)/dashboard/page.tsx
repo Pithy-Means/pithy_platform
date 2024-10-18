@@ -1,4 +1,3 @@
-// import DashboardLayout from '../layout';
 import Communty from '@/components/communty';
 import OverView from '@/components/OverView';
 import PersonSidebar from '@/components/PersonSidebar';
