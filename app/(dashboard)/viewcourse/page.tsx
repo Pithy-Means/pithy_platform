@@ -1,4 +1,5 @@
 import OverView from '@/components/OverView'
+import ViewCourse from '@/components/ViewCourse'
 import React from 'react'
 
 const page = () => {
@@ -7,6 +8,7 @@ const page = () => {
       <div className='flex h-screen'>
         <OverView />
         <div className='w-full'>
+          <ViewCourse />
 
         </div>
 
