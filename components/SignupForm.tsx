@@ -29,7 +29,7 @@ const SignupForm = () => {
     try {
       const newuser = await register(formData as UserInfo);
       if (newuser) {
-        router.push("/dashboard");
+        router.push("/signIn");
       }
     } catch (error) {
       console.error("Error registering user:", error);
@@ -328,6 +328,7 @@ const SignupForm = () => {
             onChange={handleChange}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
           >
+            <option value="">Select Category</option>
             <option value="student">Student</option>
             <option value="job seeker">Job Seeker</option>
             <option value="employer">Employer</option>
