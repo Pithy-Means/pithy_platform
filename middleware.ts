@@ -9,7 +9,7 @@ import { getSession } from './lib/actions/user.actions';
 export async function middleware(request: NextRequest) {
   
   // Initialize DB and Storage
-  await Promise.all([getOrCreateDB(), getOrCreateStorage()]);
+  await Promise.all([getOrCreateDB()]);
   
   // Example: Check if the user is authenticated (token in cookies)
   const session = await getSession();
