@@ -1,17 +1,8 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Course from "@/types/Course";
 
-interface Course {
-  id: string;
-  title: string;
-  image: string;
-  duration: string;
-  learners: number;
-  originalPrice: string;
-  price: string;
-  description: string;
-}
 
 const CourseDetails = () => {
   const router = useRouter();
@@ -36,24 +27,41 @@ const CourseDetails = () => {
   }
 
   return (
-    <div className="flex justify-center">
-      <div className="w-1/2">
-        {course ? (
-          <div>
-            <h1 className="text-2xl font-bold">{course.title}</h1>
-            <Image src={course.image}
-              alt={course.title}
-              className="w-full"
-            />
-            <p><strong>Duration: </strong>{course.duration}</p>
-            <p><strong>Learners: </strong>{course.learners}</p>
-            <p><strong>Original Price: </strong>{course.originalPrice}</p>
-            <p><strong>Price: </strong>{course.price}</p>
-            <p className='mt-4'>{course.description}</p>
+    <div className='flex flex-col w-full h-full'>
+      <div className='flex flex-col  text-black/75 px-6 justify-center h-10 p-4 m-6'>
+        {/* <div className='flex flex-col justify-between'> */}
+          <div className='flex flex-col'>
+            <p className='text-2xl text-black-95 font-bold'>Introduction</p>
+            <p className='text-black/50 text-base'>Module 1 - Course overview</p>
           </div>
-        ) : (
-          <p>Loading...</p>
-        )}
+          <div>
+            <div className="w-1/2">
+              {course ? (
+                <div>
+                  <Image src={course.image}
+                    width={500}
+                    height={300}
+                    alt={course.title}
+                    className="w-full object-cover h-96 rounded-md "
+                  />
+                  <div className="flex flex-row gap-4 p-2 text-black">
+                    <p className="text-base font-semibold hover:outline-2 hover:border-gray-600 transition">Summary</p>
+                    <p className="text-base">Resources</p>
+                    <div >
+                      {course.description}
+                    </div>
+                  </div>
+
+                  <p className='mt-4'>{course.description}</p>
+                </div>
+              ) : (
+                <p>Loading...</p>
+              )}
+            </div>
+
+          </div>
+
+        
       </div>
     </div>
   );
