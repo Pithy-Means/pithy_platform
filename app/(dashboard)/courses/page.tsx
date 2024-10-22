@@ -1,3 +1,4 @@
+
 import OverView from '@/components/OverView'
 import CourseView from '@/components/courseView'
 import React from 'react'
@@ -10,6 +11,7 @@ const page = () => {
         <OverView />
         <div className='w-full'>
           <CourseView />
+         
         </div>
       </div>
 
