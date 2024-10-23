@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import course from "@/types/Course";
-// Dummy data for testing
 
+// Dummy data for testing
 const courses: course[] = [
   {
     _id: '1',
