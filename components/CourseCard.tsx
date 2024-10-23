@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { MdAccessTimeFilled } from "react-icons/md";
@@ -14,7 +14,6 @@ interface CourseCardProps {
 // const CourseCard = ({ courses }: CourseCardProps) => {}; //another way to define a functional component with props
 const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
   const router = useRouter();
-  // const [courses, setCourses] = useState<Course[]>([]);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -35,7 +34,6 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
       console.warn('Route is not available on the server side');
     }
   };
-
 
   return (
     <div className='max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 p-6'>
@@ -78,14 +76,10 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
             </div>
           </div>
         </Link>
-
-
-
-      ))}
+      ))};
 
     </div>
   );
 };
 
-
-export default CourseCard
+export default CourseCard;
