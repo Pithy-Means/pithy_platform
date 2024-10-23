@@ -1,10 +1,11 @@
 "use server";
 
 import { GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
+import dayjs from 'dayjs';
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
-import { parseStringify } from "../utils";
+import { generateValidPostId, parseStringify } from "../utils";
 import { db, postCollection, userCollection } from "@/models/name";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
@@ -123,16 +124,22 @@ export const getLoggedInUser = async () => {
 };
 
 export const createPost = async (data: Post) => {
-  const { post_id, user_id, title, content } = data;
+  const { post_id, created_at, updated_at } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validPost = generateValidPostId(post_id);
+
   try {
     const { databases } = await createAdminClient();
-    const post = await databases.createDocument(db, postCollection, post_id, {
-      user_id,
-      title,
-      content,
+    const post = await databases.createDocument(db, postCollection, validPost, {
+      ...data,
+      post_id: validPost,
+      created_at: now,
+      updated_at: now
     });
+    console.log("Post", post)
     return parseStringify(post);
   } catch (error) {
     console.error(error);
   }
 };
+
