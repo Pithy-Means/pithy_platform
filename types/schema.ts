@@ -76,3 +76,14 @@ export type User = {
 export type GetUserInfo = {
   userId: string;
 };
+
+// Define the Post type based on the collection's fields
+export type Post = {
+  post_id: string;       // Unique identifier for the post
+  user_id: string;       // User ID of the post creator
+  title: string;         // Title of the post
+  content: string;       // Content of the post
+  created_at?: string;   // Optional, creation date
+  updated_at?: string;   // Optional, last updated date
+};
+
