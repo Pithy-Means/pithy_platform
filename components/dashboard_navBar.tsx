@@ -6,10 +6,11 @@ import { IoMdNotificationsOutline } from "react-icons/io";
 import Image from "next/image";
 
 interface DashboardNavBarProps {
+  user: string;
   children: React.ReactNode;
 }
 
-const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ children }) => {
+const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => {
   return (
     <div className="bg-gray-300">
       <nav className="flex h-20 w-full bg-white justify-evenly items-center">
@@ -32,14 +33,10 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ children }) => {
         <div>
           <IoMdNotificationsOutline className="text-black h-8 w-8" />
         </div>
-        <div className="flex items-center ">
-          <Image
-            src="/assets/person_feedback.png"
-            width={30}
-            height={30}
-            alt="personIcon"
-            className="rounded-full size-8"
-          />
+        <div className="flex items-center gap-x-2">
+          <div className="bg-gray-600 py-1 px-2 rounded-full border border-black">
+            {user}
+          </div>
           <p className="text-black ">Me</p>
         </div>
       </nav>
