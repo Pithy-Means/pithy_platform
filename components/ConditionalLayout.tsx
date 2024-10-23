@@ -11,6 +11,7 @@ const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div>
+
       {isPublicRoute ? (
         <Navbar />
       ) : ''} {/* Render nothing if not on the specified routes */}
