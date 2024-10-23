@@ -1,11 +1,11 @@
 "use server";
 
-import { GetUserInfo, LoginInfo, UserInfo } from "@/types/schema";
+import { GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
 import { parseStringify } from "../utils";
-import { db, userCollection } from "@/models/name";
+import { db, postCollection, userCollection } from "@/models/name";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -119,5 +119,20 @@ export const getLoggedInUser = async () => {
     return parseStringify(user);
   } catch (error) {
     return null;
+  }
+};
+
+export const createPost = async (data: Post) => {
+  const { post_id, user_id, title, content } = data;
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.createDocument(db, postCollection, post_id, {
+      user_id,
+      title,
+      content,
+    });
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
   }
 };
