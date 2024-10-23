@@ -10,12 +10,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId }) => {
 
     // Define initial state for the post
     const [post, setPost] = useState<Post>({
-      post_id: "",
       user_id: userId,
-      title: "",
-      content: "",
-      created_at: "",
-      updated_at: "",
     });
     
   const handleChange = (
@@ -50,8 +45,8 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId }) => {
           type="text"
           id="title"
           name="title"
-          // value={post.title}
-          // onChange={handleChange}
+          value={post.title}
+          onChange={handleChange}
           required
           className="border border-gray-300 rounded-md p-2"
         />
@@ -62,8 +57,8 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId }) => {
         <textarea
           id="content"
           name="content"
-          // value={post.content}
-          // onChange={handleChange}
+          value={post.content}
+          onChange={handleChange}
           required
           className="border border-gray-300 rounded-md p-2"
         />
