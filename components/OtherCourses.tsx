@@ -1,5 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
+import { FaRegClock } from "react-icons/fa";
+import { VscFileSubmodule } from "react-icons/vsc";
 
 interface Course {
   id: number;
@@ -15,9 +17,9 @@ interface OtherCoursesProps {
 
 const OtherCourses: React.FC<OtherCoursesProps> = ({ courses }) => {
   return (
-    <div className="bg-white shadow-md rounded-lg p-5 mb-8">
+    <div className="bg-white text-black shadow-md rounded-lg p-5 mb-8 mx-4 bg-t-green-600 w-full">
       <h2 className="text-lg font-semibold mb-4 text-green-600">Other Courses</h2>
-      <p className="text-gray-500 mb-5">These Could Also Interest You</p>
+      <p className="text-black-500 mb-5">These Could Also Interest You</p>
       <div>
         {courses.map((course) => (
           <div key={course.id} className="flex items-center mb-4 border-b pb-4">
@@ -34,25 +36,13 @@ const OtherCourses: React.FC<OtherCoursesProps> = ({ courses }) => {
             </div>
             <div>
               <h3 className="text-sm font-semibold">{course.title}</h3>
-              <div className="flex items-center text-gray-500 text-xs mt-1">
-                <span className="mr-3 flex items-center">
-                  <svg
-                    className="w-4 h-4 text-green-600 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-.5-13h1v6h-1zm0 8h1v2h-1z" />
-                  </svg>
+              <div className="flex items-center text-black-500 text-xs mt-1">
+                <span className="mr-3 flex items-center gap-1">
+                  <FaRegClock size={20} className='text-green-600'/>
                   {course.duration}
                 </span>
-                <span className="flex items-center">
-                  <svg
-                    className="w-4 h-4 text-green-600 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M6 6h12v2H6V6zm0 6h12v2H6v-2zm0 6h12v2H6v-2z" />
-                  </svg>
+                <span className="flex items-center gap-1">
+                <VscFileSubmodule size={20} className='text-green-600'/>
                   {course.modules} Modules
                 </span>
               </div>
