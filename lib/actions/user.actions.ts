@@ -143,3 +143,36 @@ export const createPost = async (data: Post) => {
   }
 };
 
+export const updatePost = async (postId: string, updatedData: Partial<Post>) => {
+  const now = dayjs().toISOString(); // current timestamp
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.updateDocument(db, postCollection, postId, {
+      ...updatedData,
+      updated_at: now
+    });
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deletePost = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.deleteDocument(db, postCollection, postId);
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getPosts = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const posts = await databases.listDocuments(db, postCollection);
+    return parseStringify(posts);
+  } catch (error) {
+    console.error(error);
+  }
+};
