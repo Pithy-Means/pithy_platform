@@ -5,7 +5,7 @@ export default async function DashboardLayout ({ children }: {children: React.Re
   const loggedIn = await getLoggedInUser();
   return (
     <div className="">
-      <DashboardNavBar user={loggedIn.firstname.charAt(0).toUpperCase()}>
+      <DashboardNavBar user={loggedIn ? loggedIn.firstname.charAt(0).toUpperCase() : 'G'}>
         {children}
       </DashboardNavBar>
     </div>
