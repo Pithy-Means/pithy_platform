@@ -10,7 +10,7 @@ import { IoMdLogOut } from "react-icons/io";
 
 const OverView = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="flex">
+    <div className="flex space-x-4 w-full pr-4">
       <div className="flex flex-col bg-white text-black px-6 justify-center rounded mt-6 shadow-lg shadow-black w-1/4 ">
         <div className="">
           <div>
