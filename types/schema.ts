@@ -14,7 +14,13 @@ export type UserInfo = {
   categories?: "student" | "job seeker" | "employer";
 
   // Attributes specific to 'student'
-  education_level?: "Tertiary" | "High School" | "Bachelor’s" | "Diploma" | "Master’s" | "PhD";
+  education_level?:
+    | "Tertiary"
+    | "High School"
+    | "Bachelor’s"
+    | "Diploma"
+    | "Master’s"
+    | "PhD";
   institution_name?: string;
   major_subject?: string;
   expected_graduation_year?: number;
@@ -28,7 +34,12 @@ export type UserInfo = {
 
   // Attributes specific to 'employer'
   company_name?: string;
-  company_size?: "1-10 employees" | "11-50 employees" | "51-200 employees" | "201-500 employees" | "501+ employees";
+  company_size?:
+    | "1-10 employees"
+    | "11-50 employees"
+    | "51-200 employees"
+    | "201-500 employees"
+    | "501+ employees";
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
@@ -52,25 +63,36 @@ export type User = {
   address?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   categories?: "student" | "job seeker" | "employer";
-    // Attributes specific to 'student'
-    education_level?: "Tertiary" | "High School" | "Bachelor’s" | "Diploma" | "Master’s" | "PhD";
-    institution_name?: string;
-    major_subject?: string;
-    expected_graduation_year?: number;
-  
-    // Attributes specific to 'job seeker'
-    desired_job_title?: string;
-    skills?: string;
-    years_of_work_experience?: number;
-    resume_link?: string;
-    availability_status?: "immediately available" | "open to opportunities";
-  
-    // Attributes specific to 'employer'
-    company_name?: string;
-    company_size?: "1-10 employees" | "11-50 employees" | "51-200 employees" | "201-500 employees" | "501+ employees";
-    industry_type?: string;
-    position_in_company?: string;
-    job_posting_count?: number;
+  // Attributes specific to 'student'
+  education_level?:
+    | "Tertiary"
+    | "High School"
+    | "Bachelor’s"
+    | "Diploma"
+    | "Master’s"
+    | "PhD";
+  institution_name?: string;
+  major_subject?: string;
+  expected_graduation_year?: number;
+
+  // Attributes specific to 'job seeker'
+  desired_job_title?: string;
+  skills?: string;
+  years_of_work_experience?: number;
+  resume_link?: string;
+  availability_status?: "immediately available" | "open to opportunities";
+
+  // Attributes specific to 'employer'
+  company_name?: string;
+  company_size?:
+    | "1-10 employees"
+    | "11-50 employees"
+    | "51-200 employees"
+    | "201-500 employees"
+    | "501+ employees";
+  industry_type?: string;
+  position_in_company?: string;
+  job_posting_count?: number;
 };
 
 export type GetUserInfo = {
@@ -79,11 +101,20 @@ export type GetUserInfo = {
 
 // Define the Post type based on the collection's fields
 export type Post = {
-  post_id?: string;       // Unique identifier for the post
-  user_id?: string;       // User ID of the post creator
-  title?: string;         // Title of the post
-  content?: string;       // Content of the post
-  created_at?: string;   // Optional, creation date
-  updated_at?: string;   // Optional, last updated date
+  post_id?: string; // Unique identifier for the post
+  user_id?: string; // User ID of the post creator
+  title?: string; // Title of the post
+  content?: string; // Content of the post
+  created_at?: string; // Optional, creation date
+  updated_at?: string; // Optional, last updated date
 };
 
+export type PostWithUser = {
+  post_id?: string;
+  user_id?: string;
+  title?: string;
+  content?: string;
+  created_at?: string;
+  updated_at?: string;
+  user?: { name: string };
+};
