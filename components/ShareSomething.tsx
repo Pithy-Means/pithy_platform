@@ -1,14 +1,26 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import Post from './Post';
 import { useRouter } from 'next/navigation';
-import CreatePost from '@/components/createPost'; // Import CreatePost component
+import CreatePost from '@/components/createPosts'; // Import CreatePost component
+import Posts from './Posts';
+import { getLoggedInUser, getPosts } from '@/lib/actions/user.actions';
+import { PostWithUser } from '@/types/schema';
 
 const ShareSomething = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
+  const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
+  const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const loggedInUser = await getLoggedInUser(); // Fetch logged in user
+      setUser(loggedInUser);
+    };
+    fetchUser();
+  }, []);
 
   // Function to open the modal
   const openModal = () => {
@@ -19,6 +31,16 @@ const ShareSomething = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  // Function to add a new post to the state
+  const addNewPost = (newPost: PostWithUser) => {
+    setPosts((prevPosts) => {
+      console.log('Previous posts:', prevPosts); // Debugging line
+      return [newPost, ...(Array.isArray(prevPosts) ? prevPosts : [])];
+    });
+    closeModal(); // Close the modal after adding the post
+  };
+  
 
   return (
     <div className='flex flex-col w-full h-full'>
@@ -50,7 +72,7 @@ const ShareSomething = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <CreatePost userId="671890b20024c8ab999f" /> {/* Pass the userId as a prop */}
+            <CreatePost userId={user?.user_id || ''} onPostCreated={addNewPost}/> {/* Pass the userId as a prop */}
             <button
               onClick={closeModal}
               className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"
@@ -60,8 +82,7 @@ const ShareSomething = () => {
           </div>
         </div>
       )}
-
-      <Post />
+      <Posts />
     </div>
   );
 };
