@@ -17,7 +17,7 @@ export default async function createCommentCollection() {
       Permission.update(Role.team("admin")), // Admins can update
       Permission.delete(Role.team("admin")), // Admins can delete
       Permission.read(Role.team("admin")), // Admins can read all user data
-    ],
+    ]
   );
   console.log("Comment post collection created");
 
@@ -28,35 +28,42 @@ export default async function createCommentCollection() {
       postCommentCollection,
       "user_id",
       100,
-      true,
+      true
     ),
     databases.createStringAttribute(
       db,
       postCommentCollection,
       "post_id",
       100,
-      true,
+      true
+    ),
+    databases.createStringAttribute(
+      db,
+      postCommentCollection,
+      "comment_id",
+      100,
+      true
     ),
     databases.createStringAttribute(
       db,
       postCommentCollection,
       "comment",
       1000,
-      true,
+      true
     ),
     databases.createStringAttribute(
       db,
       postCommentCollection,
       "created_at",
       100,
-      false,
+      false
     ),
     databases.createStringAttribute(
       db,
       postCommentCollection,
       "updated_at",
       100,
-      false,
+      false
     ),
   ]);
 }
