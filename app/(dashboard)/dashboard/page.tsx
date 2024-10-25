@@ -9,7 +9,7 @@ function Dashboard() {
   return (
     <div className=''>
       <div className='bg-white/90'>
-        <div className='flex h-screen'>
+        <div className='flex space-x-4'>
           <OverView>
             <div className='w-full'>
               <ShareSomething />
