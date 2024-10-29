@@ -25,12 +25,12 @@ const SingleCourse: React.FC = () => {
   const [modules, setModules] = useState<Module[]>([
     {
       title: 'Fundamental Entrepreneurial Skills',
-      isLocked: false,
+      isLocked: true,
       content: 'This is the first module',
     },
     {
       title: 'Bringing The Change That’s Needed',
-      isLocked: false,
+      isLocked: true,
       content: 'To implement the functionality where clicking on a locked module in the sidebar unlocks it and then displays its details in the main content area, you need to:Track the state of locked/unlocked modules.',
     },
     {
@@ -79,11 +79,12 @@ const SingleCourse: React.FC = () => {
 
   if (!id) {
 
-    return <p
-      className='flex justify-center items-center font-bold text-4xl py-32 bg-white object-cover text-black h-screen'
-    >
-      Course ID not found
-    </p>;
+    // return <p
+    //   className='flex justify-center items-center font-bold text-4xl py-32 bg-white object-cover text-black h-screen'
+    // >
+    //   Course ID not found
+    // </p>;
+    setLoading(true);
   }
 
   if (loading) {
@@ -161,6 +162,8 @@ const SingleCourse: React.FC = () => {
     setActiveModule(moduleTitle);
   }
 
+  const currentModuleContent = modules.find((module) => module.title === activeModule)?.content;
+
   return (
     <div className='flex flex-row bg-gray-300 pr-6 w-full'>
 
@@ -168,16 +171,27 @@ const SingleCourse: React.FC = () => {
 
         <div className='flex flex-col space-y-4 p-4 text-black w-full'>
           <div className=''>
-            <h1 className='text-2xl font-semibold mb-2'>Introduction</h1>
-            <p className='text-gray-500 mb-2'>{modules[0].title}</p>
-            <div>
-              <Image src={course.image}
-                alt={course.title}
-                width={500}
-                height={300}
-                className='object-cover rounded-none w-full h-80'
-              />
-            </div>
+            <h1 className='text-2xl font-semibold mb-2'>
+              {activeModule ? currentModuleContent : 'Introduction'}
+            </h1>
+            {activeModule ? (
+              <div>
+                <p className='text-gray-500 mb-2'>{activeModule.title}</p>
+              </div>
+            ) : (
+              <>
+                <p className='text-gray-500 mb-2'>{modules[0].title}</p>
+                <div>
+                  <Image src={course.image}
+                    alt={course.title}
+                    width={500}
+                    height={300}
+                    className='object-cover rounded-none w-full h-80'
+                  />
+                </div>
+              </>
+            )}
+
             <div className='flex flex-col'>
               <div className='flex items-center space-x-4'>
                 <div>
