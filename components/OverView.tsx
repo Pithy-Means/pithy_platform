@@ -8,7 +8,7 @@ import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
 
-const OverView = ({ children }: { children: React.ReactNode }) => {
+const OverView: React.FC<{children?: React.ReactNode}> = ({ children }) => {
   return (
     <div className="flex space-x-4 w-full pr-4">
       <div className="flex flex-col bg-white text-black px-6 justify-center rounded mt-6 shadow-lg shadow-black w-1/4 ">
