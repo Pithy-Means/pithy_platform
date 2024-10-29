@@ -36,15 +36,15 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
   };
 
   return (
-    <div className='max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 p-6'>
+    <div className='max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 lg:grid-cols-3 gap-8 p-6 '>
       {courses.map((course: Course) => (
         <Link href={`/singlecourse/${course._id}`} key={course._id}>
-          <div key={course._id} className='bg-white shadow-lg rounded-lg overflow-hidden '>
+          <div key={course._id} className='bg-white shadow-lg rounded-lg overflow-hidden w-full'>
             <Image src={course.image}
               alt={course.title}
-              width={300}
-              height={200}
-              className='object-cover rounded-t-sm w-full h-60'
+              width={500}
+              height={500}
+              className='object-contain rounded-t-sm w-full '
             />
             <div className='p-4'>
               <p className='text-black font-bold text-lg mb-2'>{course.title}</p>
@@ -67,7 +67,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
                 <button
                   type='button'
                   onClick={() => handleViewMore(course._id)}
-                  className='text-black/85 font-bold text-base hover:border rounded-md  hover:bg-green-600/100 transition px-1 '
+                  className='text-black/85 font-semibold text-base hover:border rounded-md  hover:bg-green-600/100 transition px-1 text-center '
                 >
                   View more
                 </button>
