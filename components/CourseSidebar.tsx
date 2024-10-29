@@ -56,7 +56,6 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ modules, activeModule, se
                 </span>
                 {module.title}
               </span>
-              {/* {!module.isLocked && <span><FaLockOpen size={20} /></span>} */}
             </li>
           ))}
         </ul>
