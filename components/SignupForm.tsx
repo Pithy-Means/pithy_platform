@@ -4,16 +4,35 @@ import { register } from "@/lib/actions/user.actions";
 import { UserInfo } from "@/types/schema";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import InputContact from "./InputContact";
+import PersonInfo from "./PersonalInfo";
+import ProgressBar from "./ProgressBar";
+import { Input } from "postcss";
 
 const SignupForm = () => {
   // Form state
   const [formData, setFormData] = useState<Partial<UserInfo>>({});
+  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const handleNext = () => {
+    if (currentStep < 5) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
   // Update form fields
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -29,7 +48,7 @@ const SignupForm = () => {
     try {
       const newuser = await register(formData as UserInfo);
       if (newuser) {
-        router.push("/dashboard");
+        router.push("/signIn");
       }
     } catch (error) {
       console.error("Error registering user:", error);
@@ -38,11 +57,10 @@ const SignupForm = () => {
     }
   };
 
-  if(isLoading) (
-    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center"> 
-      <div className="bg-white p-4 rounded-md">Loading...</div> 
-    </div>
-  )
+  if (isLoading)
+    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-4 rounded-md">Loading...</div>
+    </div>;
 
   // Handle category-specific fields
   const renderCategoryFields = () => {
@@ -69,34 +87,31 @@ const SignupForm = () => {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Institution Name</label>
-              <input
+              <InputContact
+                label="Institution Name"
+                type="text"
                 name="institution_name"
                 value={formData.institution_name || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Major Subject</label>
-              <input
+              <InputContact
+                label="Major Subject"
+                type="text"
                 name="major_subject"
                 value={formData.major_subject || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">
-                Expected Graduation Year
-              </label>
-              <input
+              <InputContact
+                label="Expected Graduation Year"
                 type="number"
                 name="expected_graduation_year"
                 value={formData.expected_graduation_year || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
           </>
         );
@@ -105,43 +120,40 @@ const SignupForm = () => {
           <>
             {/* Job seeker specific fields */}
             <div className="mb-4">
-              <label className="block text-gray-700">Desired Job Title</label>
-              <input
+              <InputContact
+                label="Desired Job Title"
+                type="text"
                 name="desired_job_title"
                 value={formData.desired_job_title || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Skills</label>
-              <input
+              <InputContact
+                label="Skills"
+                type="text"
                 name="skills"
                 value={formData.skills || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">
-                Years of Work Experience
-              </label>
-              <input
+              <InputContact
+                label="Years of Work Experience"
                 type="number"
                 name="years_of_work_experience"
                 value={formData.years_of_work_experience || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Resume Link</label>
-              <input
+              <InputContact
+                label="Resume Link"
+                type="text"
                 name="resume_link"
                 value={formData.resume_link || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Availability Status</label>
@@ -167,13 +179,13 @@ const SignupForm = () => {
           <>
             {/* Employer specific fields */}
             <div className="mb-4">
-              <label className="block text-gray-700">Company Name</label>
-              <input
+              <InputContact
+                label="Company Name"
+                type="text"
                 name="company_name"
                 value={formData.company_name || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Company Size</label>
@@ -192,32 +204,31 @@ const SignupForm = () => {
               </select>
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Industry Type</label>
-              <input
+              <InputContact
+                label="Industry Type"
+                type="text"
                 name="industry_type"
                 value={formData.industry_type || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Position in Company</label>
-              <input
+              <InputContact
+                label="Position in Company"
+                type="text"
                 name="position_in_company"
                 value={formData.position_in_company || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
             <div className="mb-4">
-              <label className="block text-gray-700">Job Posting Count</label>
-              <input
+              <InputContact
+                label="Job Posting Count"
                 type="number"
                 name="job_posting_count"
                 value={formData.job_posting_count || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              />
+                />
             </div>
           </>
         );
@@ -227,122 +238,173 @@ const SignupForm = () => {
   };
 
   return (
-    <form
-        onSubmit={handleSubmit}
-        className="text-black bg-white/80 w-full h-full px-10"
-      >
+    <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col">
+      {/* Progress Bar */}
+      <div className="w-1/4">
+        <ProgressBar
+          currentStep={currentStep}
+          />
+      </div>
+      <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
         {/* Basic fields */}
-        <div className="mb-4">
-          <label className="block text-gray-700">First Name</label>
-          <input
-            name="firstname"
-            value={formData.firstname || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Last Name</label>
-          <input
-            name="lastname"
-            value={formData.lastname || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Phone</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Address</label>
-          <input
-            name="address"
-            value={formData.address || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Age</label>
-          <select
-            name="age"
-            value={formData.age || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">Select Age Group</option>
-            <option value="18-25">18-25</option>
-            <option value="26-35">26-35</option>
-            <option value="36-45">36-45</option>
-            <option value="46 and +">46 and +</option>
-          </select>
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700">Gender</label>
-          <select
-            name="gender"
-            value={formData.gender || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-        </div>
-        {/* Category selection */}
-        <div className="mb-4">
-          <label className="block text-gray-700">Category</label>
-          <select
-            name="categories"
-            value={formData.categories || ""}
-            onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-          >
-            <option value="student">Student</option>
-            <option value="job seeker">Job Seeker</option>
-            <option value="employer">Employer</option>
-          </select>
-        </div>
+        <div className="flex items-center justify-center h-[400px] px-10 py-6">
+          {currentStep === 0 && (
+            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <h2 className="text-lg font-semibold mb-4 text-center">Basic Info</h2>
+              <p className="text-center text-gray-500 mb-6">
+                Please provide your basic information to get started.
+              </p>
+              {/**First Name */}
+              <InputContact
+                label="First Name"
+                type="text"
+                name="firstname"
+                value={formData.firstname || ""}
+                onChange={handleChange}
+              />
 
-        {/* Render category-specific fields */}
-        {renderCategoryFields()}
-
-        <div className="mt-4">
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded-md">
-            Sign Up
-          </button>
+              {/**Last Name */}
+              <InputContact
+                label="Last Name"
+                type="text"
+                name="lastname"
+                value={formData.lastname || ""}
+                onChange={handleChange}
+              />
+            </div>
+          )}
+          {currentStep === 1 && (
+            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <h2 className="text-lg font-semibold mb-4 text-center">
+                Contact Info
+              </h2>
+              <p className="text-gray-500 mb-6">
+                Please provide your contact information.
+              </p>
+              <InputContact
+                label="Phone Number"
+                type="tel"
+                name="phone"
+                value={formData.phone || ""}
+                onChange={handleChange}
+              />
+              <InputContact
+                label="Address"
+                type="text"
+                name="address"
+                value={formData.address || ""}
+                onChange={handleChange}
+              />
+            </div>
+          )}
+          {currentStep === 2 && (
+            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <PersonInfo
+                question="What is your age group?"
+                options={["18-25", "26-35", "36-45", "46 and +"]}
+                description="Please select your age group."
+                selectedValue={formData.age || ""}
+                onselect={(value) =>
+                  handleChange({
+                    target: { name: "age", value },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
+              />
+            </div>
+          )}
+          {currentStep === 3 && (
+            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <PersonInfo
+                question="Select your gender"
+                options={["male", "female"]}
+                description="Please select your gender."
+                selectedValue={formData.gender || ""}
+                onselect={(value) =>
+                  handleChange({
+                    target: { name: "gender", value },
+                  } as React.ChangeEvent<HTMLInputElement>)
+                }
+              />
+            </div>
+          )}
+          {currentStep === 4 && (
+            <div className="flex w-full space-y-6">
+              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+                <PersonInfo
+                  question="Select your category"
+                  options={["student", "job seeker", "employer"]}
+                  description="Please select your category."
+                  selectedValue={formData.categories || ""}
+                  onselect={(value) =>
+                    handleChange({
+                      target: { name: "categories", value },
+                    } as React.ChangeEvent<HTMLInputElement>)
+                  }
+                />
+                {/* Render category-specific fields */}
+              </div>
+              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+                {renderCategoryFields()}
+              </div>
+            </div>
+          )}
+          {currentStep === 5 && (
+            <div className="flex flex-col justify-center space-y-4 w-full mx-auto">
+              <h2 className="text-lg font-semibold mb-4">
+                Additional Info
+              </h2>
+              <label className="block text-gray-700">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+              <label className="block text-gray-700">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                required
+              />
+            </div>
+          )}
+        </div>
+        {/* Navigation buttons */}
+        <div className="flex justify-center items-center gap-x-4 mt-6">
+          {currentStep > 0 && (
+            <button
+              type="button"
+              onClick={handlePrev}
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md"
+            >
+              Previous
+            </button>
+          )}
+          {currentStep < 5 && (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+            >
+              Next
+            </button>
+          )}
+          {currentStep === 5 && (
+            <button
+              type="submit"
+              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+            >
+              Sign up
+            </button>
+          )}
         </div>
       </form>
+    </div>
   );
 };
 

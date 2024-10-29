@@ -6,7 +6,7 @@ const page = () => {
   return (
     <div className='bg-white/90'>
       <div className='flex h-screen'>
-        <OverView />
+        {/* <OverView /> */}
         <div className='w-full'>
           <ViewCourse />
 

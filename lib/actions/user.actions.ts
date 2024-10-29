@@ -1,19 +1,21 @@
 "use server";
 
-import { GetUserInfo, LoginInfo, UserInfo } from "@/types/schema";
+import { CommentPost, GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
+import dayjs from 'dayjs';
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
-import { parseStringify } from "../utils";
-import { db, userCollection } from "@/models/name";
+import { generateValidPostId, parseStringify } from "../utils";
+import { db, postCollection, postCommentCollection, userCollection } from "@/models/name";
+import { get } from "http";
 
-export const getUserInfo = async ({ user_id }: GetUserInfo) => {
+export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
     const { databases } = await createAdminClient();
     const user = await databases.listDocuments(db, userCollection, [
-      Query.equal("user_id", [user_id]),
+      Query.equal("user_id", [userId]),
     ]);
-    parseStringify(user.documents[0]);
+    return parseStringify(user.documents[0]);
   } catch (error) {
     console.error(error);
   }
@@ -31,20 +33,30 @@ export const login = async ({ email, password }: LoginInfo) => {
       secure: true,
     });
 
-    const user = await getUserInfo({ user_id: session.userId });
+    const user = await getUserInfo({ userId: session.userId });
     console.log('User', user);
-    return parseStringify(session);
+    return parseStringify(user);
   } catch (error) {
     console.error(error);
   }
 };
 // 6710b73b001163300b05
 
-export const logout = async () => {
+export const getSession = async () => {
+  try {
+    const { account } = await createSessionClient();
+    const session = await account.get();
+    return parseStringify(session);
+  } catch (error) {
+    return null;
+  }
+};
+
+export const logoutUser = async () => {
   try {
     const { account } = await createSessionClient();
     cookies().delete('my-session');
-    await account.deleteSession('current');
+    await account.deleteSessions();
   } catch (error) {
     return null;
   }
@@ -89,16 +101,122 @@ export const register = async (userdata: UserInfo) => {
   }
 };
 
-export const update = async () => {};
+export const updateUserSession = async () => {
+  try {
+    const { account } = await createSessionClient();
+    const session = await account.updateSession('current');
+    return parseStringify(session);
+  } catch (error) {
+    return null;
+  }
+};
 
 export const remove = async () => {};
 
 export const getLoggedInUser = async () => {
   try {
     const { account } = await createSessionClient();
-    const user = await account.get();
+    const response = await account.get();
+    const user = await getUserInfo({ userId: response.$id });
     return parseStringify(user);
   } catch (error) {
     return null;
+  }
+};
+
+export const createPost = async (data: Post) => {
+  const { post_id } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validPost = generateValidPostId(post_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.createDocument(db, postCollection, validPost, {
+      ...data,
+      post_id: validPost,
+      created_at: now,
+      updated_at: now
+    });
+    console.log("Post", post)
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const updatePost = async (postId: string, updatedData: Partial<Post>) => {
+  const now = dayjs().toISOString(); // current timestamp
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.updateDocument(db, postCollection, postId, {
+      ...updatedData,
+      updated_at: now
+    });
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const deletePost = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.deleteDocument(db, postCollection, postId);
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getPosts = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const posts = await databases.listDocuments(db, postCollection);
+    return parseStringify(posts);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getPost = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.getDocument(db, postCollection, postId);
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createComment = async (data: CommentPost) => {
+  const { comment_id } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validComment = generateValidPostId(comment_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    const comment = await databases.createDocument(db, postCommentCollection, validComment, {
+      ...data,
+      comment_id: validComment,
+      created_at: now,
+      updated_at: now
+    });
+    return parseStringify(comment);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const getCommentsByPostId = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.listDocuments(db, postCommentCollection, [
+      Query.equal("post_id", postId)
+    ]);
+    return parseStringify(response.documents);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
   }
 };
