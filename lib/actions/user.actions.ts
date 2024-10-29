@@ -1,12 +1,13 @@
 "use server";
 
-import { GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
+import { CommentPost, GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
 import dayjs from 'dayjs';
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify } from "../utils";
-import { db, postCollection, userCollection } from "@/models/name";
+import { db, postCollection, postCommentCollection, userCollection } from "@/models/name";
+import { get } from "http";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -124,7 +125,7 @@ export const getLoggedInUser = async () => {
 };
 
 export const createPost = async (data: Post) => {
-  const { post_id, created_at, updated_at } = data;
+  const { post_id } = data;
   const now = dayjs().toISOString(); // current timestamp
   const validPost = generateValidPostId(post_id);
 
@@ -174,5 +175,48 @@ export const getPosts = async () => {
     return parseStringify(posts);
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getPost = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const post = await databases.getDocument(db, postCollection, postId);
+    return parseStringify(post);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const createComment = async (data: CommentPost) => {
+  const { comment_id } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validComment = generateValidPostId(comment_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    const comment = await databases.createDocument(db, postCommentCollection, validComment, {
+      ...data,
+      comment_id: validComment,
+      created_at: now,
+      updated_at: now
+    });
+    return parseStringify(comment);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const getCommentsByPostId = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.listDocuments(db, postCommentCollection, [
+      Query.equal("post_id", postId)
+    ]);
+    return parseStringify(response.documents);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
   }
 };
