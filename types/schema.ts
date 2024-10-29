@@ -103,7 +103,6 @@ export type GetUserInfo = {
 export type Post = {
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
-  title?: string; // Title of the post
   content?: string; // Content of the post
   created_at?: string; // Optional, creation date
   updated_at?: string; // Optional, last updated date
@@ -112,9 +111,30 @@ export type Post = {
 export type PostWithUser = {
   post_id?: string;
   user_id?: string;
-  title?: string;
   content?: string;
   created_at?: string;
   updated_at?: string;
   user?: { name: string };
 };
+
+// Define the type for the CommentPost collection
+export interface CommentPost {
+  user_id: string;          // Unique ID of the user who made the comment
+  post_id: string;          // ID of the post the comment is associated with
+  comment_id: string;       // Unique ID of the comment
+  comment: string;          // Content of the comment, max length 1000 characters
+  created_at?: string;      // Timestamp when the comment was created
+  updated_at?: string;      // Timestamp when the comment was last updated
+  user?: { name: string };  // User information associated with the comment
+}
+
+export type LikePost = {
+  like_post_id: string; // ID for the like
+  user_id: string; // ID of the user who liked the post
+  post_id: string; // ID of the post being liked
+  isLiked?: boolean; // Boolean to indicate a like
+  created_at?: string; // Optional timestamp for when the like was created
+  updated_at?: string; // Optional timestamp for the last update
+  user?: { name: string }; // User information associated with the like
+};
+
