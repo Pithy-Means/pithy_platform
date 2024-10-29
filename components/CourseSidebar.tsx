@@ -10,8 +10,8 @@ interface Module {
 interface CourseSidebarProps {
   modules: Module[];
   activeModule: string;
-  setActiveModule: (module: string) => void;
-  unlockModule: (module: string) => void;
+  setActiveModule: (moduleTitle: string) => void;
+  unlockModule: (moduleTitle: string) => void;
   progress: number;
 };
 
