@@ -43,7 +43,7 @@ const ShareSomething = () => {
   
 
   return (
-    <div className='flex flex-col w-full h-full'>
+    <div className='flex flex-col w-full h-full '>
       <div className='flex flex-col bg-white text-black px-6 justify-center h-20 p-4 m-6'>
         <div className='flex flex-row gap-4'>
           <Image
