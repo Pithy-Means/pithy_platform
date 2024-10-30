@@ -10,9 +10,12 @@ function Dashboard() {
     <div className=''>
       <div className='bg-white/90'>
         <div className='flex space-x-4'>
-          <OverView>
-            <div className='w-full'>
-              <ShareSomething />
+          <OverView  className='sticky top-0 h-screen'>
+            <div className='flex-1 overflow-y-auto h-screen'>
+            <div className='w-full '>
+              <ShareSomething  className=''/>
+            </div>
+
             </div>
             <div className='flex flex-col mr-4  overflow-y-auto overflow-x-hidden'>
               <PersonSidebar />
