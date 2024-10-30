@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify } from "../utils";
 import { db, postCollection, postCommentCollection, userCollection } from "@/models/name";
-import { get } from "http";
+// import { get } from "http";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -23,9 +23,17 @@ export const getUserInfo = async ({ userId }: GetUserInfo) => {
 
 export const login = async ({ email, password }: LoginInfo) => {
   try {
-    const { account } = await createAdminClient();
+    const { account } = await createAdminClient() || {};
+
+    if (!account) {
+      throw new Error("Account creation failed.");
+    }
     const session = await account.createEmailPasswordSession(email, password);
     console.log('Session', session);
+
+    if (!session || !session.secret || !session.userId) {
+      throw new Error("Session creation failed");
+    }
     cookies().set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
@@ -35,9 +43,29 @@ export const login = async ({ email, password }: LoginInfo) => {
 
     const user = await getUserInfo({ userId: session.userId });
     console.log('User', user);
-    return parseStringify(user);
+
+    if (!user) {
+      throw new Error("User information could not be retrieved");
+    }
+
+    return parseStringify(user); //proceed only if use is valid
   } catch (error) {
-    console.error(error);
+    // if (error.code === 401) {
+    //   console.error('Invalid credentials');
+    //   throw new Error('Invalid credentials');
+    // } else {
+    //   console.error('Error in login function:', error.message);
+    //   throw error;
+
+    // }
+
+    if (error instanceof Error) {
+      console.error('Error in login function:', error.message);
+      throw new Error(`Login failed: ${error.message}`);
+    } else {
+      console.error('Error in login function: unknown error');
+      throw new Error('An unexpected error occurred during login');
+    }
   }
 };
 // 6710b73b001163300b05
