@@ -6,7 +6,22 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
+// export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
+export function parseStringify(data: any) {
+  if (typeof data === "string") {
+    try {
+      return JSON.parse(data);
+    } catch (err: unknown) {
+      if (err instanceof Error){
+        console.error("Error parsing JSON:", err.message);
+      } else {
+        console.error("Error parsing JSON: unknown error");
+      }
+      throw new Error("Failed to parse user data."); // Optional: throw an error if parsing fails
+    }
+  }
+  return data; // Return data as is if already an object
+}
 
 export const generateValidPostId = (post_id?: string): string => {
   const isValidPostId = post_id && /^[a-zA-Z0-9._-]{1,36}$/.test(post_id);
