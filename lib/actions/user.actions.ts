@@ -30,10 +30,10 @@ export const login = async ({ email, password }: LoginInfo) => {
     }
     const session = await account.createEmailPasswordSession(email, password);
     console.log('Session', session);
-
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
+
     cookies().set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
@@ -47,25 +47,29 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!user) {
       throw new Error("User information could not be retrieved");
     }
-
     return parseStringify(user); //proceed only if use is valid
   } catch (error) {
-    // if (error.code === 401) {
-    //   console.error('Invalid credentials');
-    //   throw new Error('Invalid credentials');
-    // } else {
-    //   console.error('Error in login function:', error.message);
-    //   throw error;
-
-    // }
-
     if (error instanceof Error) {
-      console.error('Error in login function:', error.message);
-      throw new Error(`Login failed: ${error.message}`);
+      if (error.message.includes('Invalid `password` param')) {
+        console.error('Inavalid credentials provided');
+        return {success: false, message: 'Invalid email or password'};
+      } else {
+        console.error('Error in login function:', error.message);
+        return {success: false, message: error.message};
+      }
     } else {
-      console.error('Error in login function: unknown error');
-      throw new Error('An unexpected error occurred during login');
+      console.error('Unknown error in login function');
+      return {success: false, message: 'An unexpected error occurred during login'};
     }
+    // if (error instanceof Error) {
+
+    // if (error instanceof Error) {
+    //   console.error('Error in login function:', error.message);
+    //   throw new Error(`Login failed: ${error.message}`);
+    // } else {
+    //   console.error('Error in login function: unknown error');
+    //   throw new Error('An unexpected error occurred during login');
+    // }
   }
 };
 // 6710b73b001163300b05
