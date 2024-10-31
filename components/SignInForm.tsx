@@ -6,6 +6,8 @@ import { Loader2 } from "lucide-react";
 import InputContact from "@/components/InputContact";
 import { LoginInfo } from "@/types/schema";
 import { login } from "@/lib/actions/user.actions";
+import Image from "next/image";
+import Link from "next/link";
 
 const SignInForm = () => {
   const [formdata, setFormdata] = useState<Partial<LoginInfo>>({
@@ -14,6 +16,9 @@ const SignInForm = () => {
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [attempts, setAttempts] = useState<number>(0);
+
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -32,10 +37,11 @@ const SignInForm = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
+    setErrorMessage(null);
 
     // Ensure no undefined values in formdata
     if (!formdata.email || !formdata.password) {
-      console.error("Email or Password is missing.");
+      setErrorMessage("Email or Password is missing.");
       setLoading(false);
       return;
     }
@@ -43,9 +49,17 @@ const SignInForm = () => {
       const userdata = await login(formdata as LoginInfo);
       if (userdata) {
         router.push("/dashboard");
+      } else {
+        setErrorMessage("Invalid email or password.");
+        setAttempts((prev) => prev + 1);
+        // setLoading
       }
     } catch (error) {
-      console.error(error);
+      setErrorMessage("An error occurred. Please try again.");
+      setAttempts((prev) => prev + 1);
+      // console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,6 +108,11 @@ const SignInForm = () => {
                   </button>
                 </div>
 
+                {/* Error Message */}
+                {errorMessage && (
+                  <p className="text-red-500 text-center">{errorMessage}</p>
+                )}
+
                 {/* Submit Button */}
                 <button
                   type="submit"
@@ -116,15 +135,28 @@ const SignInForm = () => {
                   href="#"
                   className="text-sm text-gray-400 hover:text-white transition duration-200"
                 >
-                  Don't have an account? Sign up
+                  Don`&apos;`t have an account? Sign up
                 </a>
               </div>
+              {/* Password Reset Option after 3 failed attempts */}
+              {attempts >= 3 && (
+                <div className="mt-4 text-center">
+                  <Link href="/reset-password"
+                    className="text-sm text-blue-500 hover:text-blue-700 transition duration-200"
+                  >
+                    Too many attempts? Reset your password
+                  </Link>
+                </div>
+              )}
+
             </div>
             {/* Image Section */}
             <div className="w-2/4 py-10 px-10 mt-6 md:mt-0 flex justify-center glass-effect">
-              <img
+              <Image
                 src="/assets/sign.png"
                 alt="Sign In"
+                width={20}
+                height={20}
                 className="max-w-full h-auto object-fill md:max-h-[500px]"
               />
             </div>
