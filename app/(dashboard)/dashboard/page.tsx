@@ -11,8 +11,8 @@ function Dashboard() {
       <div className='bg-white/60'>
         <div className='flex space-x-4'>
           <OverView className='sticky top-0 h-screen'>
-            <div className=' '>
-              <div className=' h-screen'>
+            <div className=''>
+              <div className='h-screen'>
                 <ShareSomething />
               </div>
             </div>
