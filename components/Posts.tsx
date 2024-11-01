@@ -118,9 +118,9 @@ const Posts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 text-black">
+    <div className="flex flex-col gap-4 text-black ">
       {loading ? (
-        <div className="flex justify-center items-center h-40">
+        <div className="flex justify-center items-center h-40 ">
           <p>Loading posts...</p>
         </div>
       ) : (
@@ -130,11 +130,12 @@ const Posts = () => {
           hasMore={hasMore}
           loader={<h4>Loading more posts...</h4>}
           endMessage={<p>No more posts aavailable.</p>}
+          className="flex flex-col gap-y-4  "
         >
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div key={post.$id} className="border border-gray-300 rounded-md p-4 bg-white/10">
-                <div className="flex flex-col space-y-4">
+              <div key={post.$id} className="border border-gray-300  rounded-md p-4 bg-white/10">
+                <div className="flex flex-col ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
                       <Image

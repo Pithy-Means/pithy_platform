@@ -8,16 +8,15 @@ import React from 'react'
 function Dashboard() {
   return (
     <div className=''>
-      <div className='bg-white/90'>
+      <div className='bg-white/60'>
         <div className='flex space-x-4'>
-          <OverView  className='sticky top-0 h-screen'>
-            <div className='flex-1 overflow-y-auto h-screen'>
-            <div className='w-full '>
-              <ShareSomething  className=''/>
+          <OverView className='sticky top-0 h-screen'>
+            <div className=' '>
+              <div className=' h-screen'>
+                <ShareSomething />
+              </div>
             </div>
-
-            </div>
-            <div className='flex flex-col mr-4  overflow-y-auto overflow-x-hidden'>
+            <div className='flex flex-col mr-4  overflow-y-auto overflow-x-hidden w-1/4 sticky'>
               <PersonSidebar />
               <Communty />
             </div>

@@ -78,13 +78,13 @@ const SignInForm = () => {
                 Welcome back
               </h2>
 
-              <form className="space-y-6" onSubmit={handleSignIn}>
+              <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
                 {/* Email Input */}
                 <InputContact
                   label="Email"
                   type="email"
                   name="email"
-                  className="w-full"
+                  className="w-3/4 ml-10"
                   value={formdata.email as string}
                   onChange={handleChange}
                 />
@@ -93,7 +93,7 @@ const SignInForm = () => {
                   <InputContact
                     label="Password"
                     type={showPassword ? "text" : "password"} // Dynamically change type
-                    className="w-full"
+                    className="w-3/4 ml-10"
                     name="password"
                     value={formdata.password as string}
                     onChange={handleChange}
@@ -102,7 +102,7 @@ const SignInForm = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-4 flex items-center px-2 text-gray-500 hover:text-gray-700"
+                    className="absolute inset-y-0 right-10 flex items-center px-2 text-gray-500 hover:text-gray-700"
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
@@ -116,7 +116,7 @@ const SignInForm = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+                  className="w-3/4 ml-10 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
                 >
                   Sign In
                 </button>
@@ -125,7 +125,7 @@ const SignInForm = () => {
               <div className="mt-6 text-center">
                 <a
                   href="#"
-                  className="text-sm text-gray-400 hover:text-white transition duration-200"
+                  className="text-sm text-gray-800 hover:text-green-600 transition duration-200"
                 >
                   Forgot your password?
                 </a>
@@ -133,7 +133,7 @@ const SignInForm = () => {
               <div className="mt-4 text-center">
                 <a
                   href="#"
-                  className="text-sm text-gray-400 hover:text-white transition duration-200"
+                  className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-200"
                 >
                   Don`&apos;`t have an account? Sign up
                 </a>
@@ -155,8 +155,8 @@ const SignInForm = () => {
               <Image
                 src="/assets/sign.png"
                 alt="Sign In"
-                width={20}
-                height={20}
+                width={400}
+                height={500}
                 className="max-w-full h-auto object-fill md:max-h-[500px]"
               />
             </div>
