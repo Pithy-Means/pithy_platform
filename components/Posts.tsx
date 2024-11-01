@@ -258,7 +258,6 @@ const Posts = () => {
         </InfiniteScroll>
       )}
     </div>
-
   );
 };
 

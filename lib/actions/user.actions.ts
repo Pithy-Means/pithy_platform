@@ -7,7 +7,7 @@ import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify } from "../utils";
 import { db, postCollection, postCommentCollection, userCollection } from "@/models/name";
-// import { get } from "http";
+
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -43,7 +43,6 @@ export const login = async ({ email, password }: LoginInfo) => {
 
     const user = await getUserInfo({ userId: session.userId });
     console.log('User', user);
-
     if (!user) {
       throw new Error("User information could not be retrieved");
     }

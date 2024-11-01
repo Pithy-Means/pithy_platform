@@ -1,9 +1,8 @@
+import React from 'react'
 import Communty from '@/components/communty';
 import OverView from '@/components/OverView';
 import PersonSidebar from '@/components/PersonSidebar';
-
 import ShareSomething from '@/components/ShareSomething';
-import React from 'react'
 
 function Dashboard() {
   return (
@@ -17,6 +16,7 @@ function Dashboard() {
               </div>
             </div>
             <div className='flex flex-col mr-4  overflow-y-auto overflow-x-hidden w-1/4 sticky'>
+
               <PersonSidebar />
               <Communty />
             </div>

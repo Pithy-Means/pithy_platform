@@ -6,7 +6,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// export const parseStringify = (value: any) => JSON.parse(JSON.stringify(value));
 export function parseStringify(data: any) {
   if (typeof data === "string") {
     try {
@@ -22,6 +21,7 @@ export function parseStringify(data: any) {
   }
   return data; // Return data as is if already an object
 }
+
 
 export const generateValidPostId = (post_id?: string): string => {
   const isValidPostId = post_id && /^[a-zA-Z0-9._-]{1,36}$/.test(post_id);

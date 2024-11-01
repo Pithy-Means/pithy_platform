@@ -9,6 +9,7 @@ import { login } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import Link from "next/link";
 
+
 const SignInForm = () => {
   const [formdata, setFormdata] = useState<Partial<LoginInfo>>({
     email: "",
@@ -77,7 +78,6 @@ const SignInForm = () => {
               <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">
                 Welcome back
               </h2>
-
               <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
                 {/* Email Input */}
                 <InputContact
@@ -107,7 +107,6 @@ const SignInForm = () => {
                     {showPassword ? "Hide" : "Show"}
                   </button>
                 </div>
-
                 {/* Error Message */}
                 {errorMessage && (
                   <p className="text-red-500 text-center">{errorMessage}</p>
@@ -157,6 +156,7 @@ const SignInForm = () => {
                 alt="Sign In"
                 width={400}
                 height={500}
+
                 className="max-w-full h-auto object-fill md:max-h-[500px]"
               />
             </div>

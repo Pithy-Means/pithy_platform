@@ -1,4 +1,5 @@
-'use client'
+'use client';
+
 import React, { ReactNode } from "react";
 import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
