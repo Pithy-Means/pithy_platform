@@ -11,7 +11,12 @@ import { IoMdLogOut } from "react-icons/io";
 import { logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
-const OverView: React.FC<{ children?: ReactNode }> = ({ children }) => {
+interface OverViewProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const OverView: React.FC<OverViewProps> = ({ children, className }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
