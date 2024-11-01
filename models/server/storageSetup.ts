@@ -39,6 +39,7 @@ export default async function setupStorage() {
           "mp3",
           "wav",
         ],
+        
       );
       console.log("Storage setup complete");
     } catch (error) {

@@ -1,4 +1,6 @@
-import React from "react";
+'use client';
+
+import React, { ReactNode } from "react";
 import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { IoIosPeople } from "react-icons/io";
@@ -7,8 +9,22 @@ import { IoPersonOutline } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
+import { logoutUser } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
-const OverView = ({ children }: { children: React.ReactNode }) => {
+interface OverViewProps {
+  children?: ReactNode;
+  className?: string;
+}
+
+const OverView: React.FC<OverViewProps> = ({ children, className }) => {
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logoutUser();
+    router.push('/');
+  }
+
   return (
     <div className="flex space-x-4 w-full pr-4">
       <div className="flex flex-col bg-white text-black px-6 justify-center rounded mt-6 shadow-lg shadow-black w-1/4 ">
@@ -18,19 +34,19 @@ const OverView = ({ children }: { children: React.ReactNode }) => {
             <div className="space-y-4 mb-10">
               <div className="flex flex-row gap-3">
                 <GoHome size={24} />
-                <p className="text-base">Home</p>
+                <p className="text-base" >Home</p>
               </div>
               <div className="flex flex-row gap-3 items-center">
                 <HiMiniClipboardDocumentList size={24} />
-                <p className="text-base">courses</p>
+                <p className="text-base" >courses</p>
               </div>
               <div className="flex flex-row gap-3 items-center">
                 <IoIosPeople size={24} />
-                <p className="text-base">Community</p>
+                <p className="text-base" >Community</p>
               </div>
               <div className="flex flex-row gap-3 items-center">
                 <MdOutlineAddCircle size={24} />
-                <p className="text-base">Post</p>
+                <p className="text-base" >Post</p>
               </div>
             </div>
           </div>
@@ -62,7 +78,9 @@ const OverView = ({ children }: { children: React.ReactNode }) => {
               <IoMdHelpCircleOutline size={24} />
               <p className="text-base">Help & support</p>
             </div>
-            <div className="flex flex-row gap-3 items-center text-[#F26900]">
+            <div className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600"
+              onClick={handleLogout}
+            >
               <IoMdLogOut size={24} />
               <p className="text-base">Logout</p>
             </div>

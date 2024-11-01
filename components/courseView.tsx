@@ -3,29 +3,28 @@ import React, { useState, useEffect } from 'react'
 import { FaListUl } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
 import CourseCard from './CourseCard';
+import {getData} from '@/app/(api)/api/courses/route';
+
 
 
 const CourseView: React.FC = () => {
   const [courses, setCourses] = useState([]);
-  // const [courses, setCourses] = useState(dummyCourses);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-
   const fetchCourses = async () => {
+    setLoading(true);
     try {
-      const response = await fetch('/api/courses');
-      if (!response.ok) {
-        throw new Error('Something went wrong while fetching the data');
-      }
-      const data = await response.json();
+      const data = await getData();
       setCourses(data);
     } catch (error) {
+      setLoading(false);
       console.error('Error fetching courses:', error);
       setError('Error fetching courses');
     } finally {
       setLoading(false);
     }
+
   }
   useEffect(() => {
     fetchCourses();
@@ -64,3 +63,4 @@ const CourseView: React.FC = () => {
 }
 
 export default CourseView
+
