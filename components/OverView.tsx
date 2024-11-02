@@ -17,7 +17,7 @@ interface OverViewProps {
   className?: string;
 }
 
-const OverView: React.FC<OverViewProps> = ({ children, className }) => {
+const OverView: React.FC<OverViewProps> = ({ children }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
