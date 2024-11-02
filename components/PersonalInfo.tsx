@@ -1,5 +1,3 @@
-// components/PersonInfo.tsx
-import { useState } from 'react';
 import { FiCircle, FiCheckCircle } from 'react-icons/fi';
 
 type PersonInfoProps = {
