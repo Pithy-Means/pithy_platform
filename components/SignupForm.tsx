@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import InputContact from "./InputContact";
 import PersonInfo from "./PersonalInfo";
 import ProgressBar from "./ProgressBar";
-import { Input } from "postcss";
 
 const SignupForm = () => {
   // Form state
