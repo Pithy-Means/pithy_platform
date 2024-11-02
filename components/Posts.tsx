@@ -13,6 +13,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { CommentPost } from "@/types/schema";
 import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroll-component";
+import CommentSection from "./CommentSection";
 
 
 dayjs.extend(relativeTime);
@@ -217,39 +218,14 @@ const Posts = () => {
                 )}
 
                 {/* Comment Section */}
-                <div className="mt-4">
-                  <button onClick={() => handleFetchComments(post.$id)} className="text-blue-500 text-sm">
-                    View Comments
-                  </button>
-                  {comments[post.$id] && (
-                    <div className="mt-2 space-y-2">
-                      {comments[post.$id].map((comment) => (
-                        <div key={comment.$id} className="border-t border-gray-200 pt-2">
-                          <p>{comment.comment}</p>
-                          <small className="text-gray-500">{dayjs(comment.created_at).fromNow()}</small>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Add Comment */}
-                  <div className="flex items-center mt-2">
-                    <textarea
-                      value={newComment[post.$id] || ""}
-                      onChange={(e) =>
-                        setNewComment((prev) => ({ ...prev, [post.$id]: e.target.value }))
-                      }
-                      placeholder="Add a comment"
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                    />
-                    <button
-                      onClick={() => handleAddComment(post.$id)}
-                      className="bg-blue-500 text-white rounded-md px-4 py-2 ml-2 hover:bg-blue-600"
-                    >
-                      Post
-                    </button>
-                  </div>
-                </div>
+                <CommentSection
+                  postId={post.$id}
+                  comments={comments}
+                  fetchComments={handleFetchComments}
+                  newComment={newComment}
+                  setNewComment={setNewComment}
+                  addComment={handleAddComment}
+                />
               </div>
             ))
           ) : (
