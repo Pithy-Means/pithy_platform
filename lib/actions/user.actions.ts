@@ -229,6 +229,7 @@ export const createComment = async (data: CommentPost) => {
     const postExists = await getPost(data.post_id);
     const comment = await databases.createDocument(db, postCommentCollection, validComment, {
       ...data,
+      poat_id: postExists.post_id,
       comment_id: validComment,
       created_at: now,
       updated_at: now
