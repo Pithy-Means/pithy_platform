@@ -5,11 +5,17 @@ import getOrCreateDB from './models/server/seed';
 import getOrCreateStorage from './models/server/storageSetup';
 import { getSession } from './lib/actions/user.actions';
 
+let dbPromise: Promise<any> | null = null;
+
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
+
+  if (!dbPromise) {
+    dbPromise = getOrCreateDB();
+  }
   
   // Initialize DB and Storage
-  await Promise.all([getOrCreateDB()]);
+  await dbPromise;
   
   // Example: Check if the user is authenticated (token in cookies)
   const session = await getSession();
