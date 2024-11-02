@@ -39,7 +39,7 @@ const ResetPassword = () => {
       setLoading(false);
     }
   };
-
+  // TODO: Uncomment if you're using a token for direct password reset
   const handlePasswordReset = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
