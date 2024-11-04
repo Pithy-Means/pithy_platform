@@ -84,7 +84,7 @@ const SignInForm = () => {
                   label="Email"
                   type="email"
                   name="email"
-                  className="w-3/4 ml-10"
+                  className="w-3/4"
                   value={formdata.email as string}
                   onChange={handleChange}
                 />
@@ -93,7 +93,7 @@ const SignInForm = () => {
                   <InputContact
                     label="Password"
                     type={showPassword ? "text" : "password"} // Dynamically change type
-                    className="w-3/4 ml-10"
+                    className="w-3/4"
                     name="password"
                     value={formdata.password as string}
                     onChange={handleChange}
@@ -102,7 +102,7 @@ const SignInForm = () => {
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-10 flex items-center px-2 text-gray-500 hover:text-gray-700"
+                    className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-gray-700"
                   >
                     {showPassword ? "Hide" : "Show"}
                   </button>
@@ -115,7 +115,8 @@ const SignInForm = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-3/4 ml-10 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+                  disabled={loading}
+                  className="w-3/4 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
                 >
                   Sign In
                 </button>
