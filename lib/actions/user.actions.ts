@@ -60,18 +60,8 @@ export const login = async ({ email, password }: LoginInfo) => {
       console.error('Unknown error in login function');
       return {success: false, message: 'An unexpected error occurred during login'};
     }
-    // if (error instanceof Error) {
-
-    // if (error instanceof Error) {
-    //   console.error('Error in login function:', error.message);
-    //   throw new Error(`Login failed: ${error.message}`);
-    // } else {
-    //   console.error('Error in login function: unknown error');
-    //   throw new Error('An unexpected error occurred during login');
-    // }
   }
 };
-// 6710b73b001163300b05
 
 export const getSession = async () => {
   try {
@@ -113,7 +103,7 @@ export const register = async (userdata: UserInfo) => {
     const userinfo = await databases.createDocument(
       db,
       userCollection,
-      ID.unique(),
+      newUserAccount.$id,
       { ...userdata, user_id: newUserAccount.$id, categories: categories || [] }
     );
 
