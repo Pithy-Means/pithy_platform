@@ -409,7 +409,7 @@ const SignupForm = () => {
             <button
               type="button"
               onClick={handleNext}
-              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
               disabled={!isFormComplete}
             >
               Next
@@ -418,7 +418,7 @@ const SignupForm = () => {
           {currentStep === 5 && (
             <button
               type="submit"
-              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
               disabled={!isFormComplete}
             >
               Sign up
