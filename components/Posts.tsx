@@ -19,7 +19,7 @@ import CommentSection from "./CommentSection";
 dayjs.extend(relativeTime);
 
 const Posts = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const fetchedPosts = usePosts();
   const [posts, setPosts] = useState<any[]>([]);
   const [loggedIn, setLoggedIn] = useState<{ user_id: string } | null>(null);
@@ -30,13 +30,10 @@ const Posts = () => {
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [hasMore, setHasMore] = useState(true);
 
- 
-  const fetchMorePosts = async () => {
+  const fetchMorePosts =  () => {
     if (fetchedPosts.length === 0) {
       setHasMore(false);
-      return;
     }
-    setPosts((prevPosts) => [...prevPosts, ...fetchedPosts.reverse()]);
   };
 
   useEffect(() => {
@@ -47,15 +44,15 @@ const Posts = () => {
     fetchLoggedInUser();
   }, []);
 
-  useEffect(() => {
-    if (fetchedPosts.length > 0) {
-      setPosts(fetchedPosts.reverse());
-      setLoading(false);
-    }
-  }, [fetchedPosts]);
+  // useEffect(() => {
+  //   if (fetchedPosts.length > 0) {
+  //     setLoading(false);
+  //   }
+  // }, [fetchedPosts]);
 
   useEffect(() => {
     if (fetchedPosts.length > 0) {
+      setLoading(true);
       setPosts((prevPosts) => [...prevPosts, ...fetchedPosts.reverse()]);
       setHasMore(fetchedPosts.length > 0);
     }
