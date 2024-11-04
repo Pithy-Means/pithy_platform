@@ -50,6 +50,11 @@ export type LoginInfo = {
   password: string;
 };
 
+export type ResetPass = {
+  email: string;
+  url?: string
+}
+
 export type User = {
   $id: string;
   $created: number;
