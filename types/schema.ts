@@ -55,6 +55,13 @@ export type ResetPass = {
   url?: string
 }
 
+export type UpdateUser = {
+  user_id?: string;
+  secret?: string;
+  password: string;
+  passwordAgain: string;
+};
+
 export type User = {
   $id: string;
   $created: number;
