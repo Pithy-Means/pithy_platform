@@ -5,11 +5,11 @@ import {
   GetUserInfo,
   LoginInfo,
   Post,
-  ResetPass,
+  // ResetPass,
   UpdateUser,
   UserInfo,
 } from "@/types/schema";
-import crypto from "crypto";
+// import crypto from "crypto";
 import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
@@ -21,9 +21,9 @@ import {
   postCommentCollection,
   userCollection,
 } from "@/models/name";
-import { sendEmail } from "./mails/sendMails";
-import ResetPasswordEmail from "@/components/reset-password-email"; // Adjust the import path as necessary
-import React from "react";
+// import { sendEmail } from "./mails/sendMails";
+// import ResetPasswordEmail from "@/components/reset-password-email"; // Adjust the import path as necessary
+// import React from "react";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -297,7 +297,7 @@ export const createComment = async (data: CommentPost) => {
       validComment,
       {
         ...data,
-        poat_id: postExists.post_id,
+        post_id: postExists.post_id,
         comment_id: validComment,
         created_at: now,
         updated_at: now,
