@@ -43,6 +43,7 @@ export type UserInfo = {
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
+  url?: string;
 };
 
 export type LoginInfo = {
@@ -54,6 +55,13 @@ export type ResetPass = {
   email: string;
   url?: string
 }
+
+export type UpdateUser = {
+  user_id?: string;
+  secret?: string;
+  password: string;
+  passwordAgain: string;
+};
 
 export type User = {
   $id: string;

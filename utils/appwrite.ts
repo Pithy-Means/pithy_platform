@@ -35,7 +35,7 @@ export const createAdminClient = () => {
     get databases() {
       return new Databases(client);
     },
-    get user() {
+    get users() {
       return new Users(client);
     }
   };

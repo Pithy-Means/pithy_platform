@@ -1,8 +1,10 @@
 "use client";
 
-import { reset } from '@/lib/actions/user.actions';
-import { ResetPass } from '@/types/schema';
+import { recovery } from '@/lib/actions/user.actions';
+import { ResetPass, UserInfo } from '@/types/schema';
 import { useState, FormEvent } from 'react';
+import TestEmailbutton from './TestEmailbutton';
+import { sendEmail } from '@/lib/actions/mails/sendMails';
 
 const ForgotPasswordForm: React.FC = () => {
   const [form, setForm] = useState<Partial<ResetPass>>({ email: '' });
@@ -15,7 +17,8 @@ const ForgotPasswordForm: React.FC = () => {
     setMessage('');
 
     if (form.email) {
-      await reset(form as ResetPass);
+      await recovery(form as UserInfo);
+      
     } else {
       setMessage('Email is required.');
       setLoading(false);
@@ -29,10 +32,19 @@ const ForgotPasswordForm: React.FC = () => {
     }, 2000);
   };
 
+  const createEmail = async() => {
+    await sendEmail({
+      sender: { name: "Acme", email: "onboarding@resend.dev" },
+      receipients: [{ name: "Recipient", email: "bandonkeyea@gmail.com" }],
+      subject: 'Test Email',
+      message: '<h1>Hello, this is a test email from Resend.</h1>',
+    } as unknown as any);
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
       <div className="bg-white p-6 rounded-lg shadow-md w-96">
-        <h2 className="text-2xl font-bold text-center mb-4">Forgot Password</h2>
+        <h2 className="text-2xl font-bold text-center mb-4 text-black">Forgot Password</h2>
         {message && <p className="text-green-500 text-center mb-4">{message}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">

@@ -1,5 +1,3 @@
-// src/app/api/emails/route.ts
-
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
 
