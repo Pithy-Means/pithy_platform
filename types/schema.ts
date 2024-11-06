@@ -15,12 +15,12 @@ export type UserInfo = {
 
   // Attributes specific to 'student'
   education_level?:
-    | "Tertiary"
-    | "High School"
-    | "Bachelor’s"
-    | "Diploma"
-    | "Master’s"
-    | "PhD";
+  | "Tertiary"
+  | "High School"
+  | "Bachelor’s"
+  | "Diploma"
+  | "Master’s"
+  | "PhD";
   institution_name?: string;
   major_subject?: string;
   expected_graduation_year?: number;
@@ -35,11 +35,11 @@ export type UserInfo = {
   // Attributes specific to 'employer'
   company_name?: string;
   company_size?:
-    | "1-10 employees"
-    | "11-50 employees"
-    | "51-200 employees"
-    | "201-500 employees"
-    | "501+ employees";
+  | "1-10 employees"
+  | "11-50 employees"
+  | "51-200 employees"
+  | "201-500 employees"
+  | "501+ employees";
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
@@ -78,12 +78,12 @@ export type User = {
   categories?: "student" | "job seeker" | "employer";
   // Attributes specific to 'student'
   education_level?:
-    | "Tertiary"
-    | "High School"
-    | "Bachelor’s"
-    | "Diploma"
-    | "Master’s"
-    | "PhD";
+  | "Tertiary"
+  | "High School"
+  | "Bachelor’s"
+  | "Diploma"
+  | "Master’s"
+  | "PhD";
   institution_name?: string;
   major_subject?: string;
   expected_graduation_year?: number;
@@ -98,11 +98,11 @@ export type User = {
   // Attributes specific to 'employer'
   company_name?: string;
   company_size?:
-    | "1-10 employees"
-    | "11-50 employees"
-    | "51-200 employees"
-    | "201-500 employees"
-    | "501+ employees";
+  | "1-10 employees"
+  | "11-50 employees"
+  | "51-200 employees"
+  | "201-500 employees"
+  | "501+ employees";
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
@@ -122,12 +122,11 @@ export type Post = {
 };
 
 export type PostWithUser = {
-  post_id?: string;
-  user_id?: string;
-  content?: string;
-  created_at?: string;
-  updated_at?: string;
-  user?: { name: string };
+  user: {
+    firtsname: string;
+    lastname: string;
+    avatar: string;
+  };
 };
 
 // Define the type for the CommentPost collection
