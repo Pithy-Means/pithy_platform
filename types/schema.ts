@@ -43,6 +43,7 @@ export type UserInfo = {
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
+  url?: string;
 };
 
 export type LoginInfo = {
