@@ -78,7 +78,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               <IoMdHelpCircleOutline size={24} />
               <p className="text-base">Help & support</p>
             </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer text-[#F26900] hover:text-green-600"
+
+            <div className="flex flex-row gap-3 items-center text-[#F26900] hover:bg-green-600 hover: rounded-md hover: p-2 hover: w-auto hover:text-white"
+
               onClick={handleLogout}
             >
               <IoMdLogOut size={24} />
