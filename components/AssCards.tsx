@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "./ui/card";
+import Image from "next/image";
 
 const AssCards = () => {
   return (
@@ -21,7 +22,12 @@ const AssCards = () => {
               <p className="capitalize text-black">
                 Answer a series of questions
               </p>
-              <img src="/assets/Frame 87.png" alt="Frame" />
+              <Image
+               src="/assets/Frame 87.png"
+                alt="Frame"
+                width={40}
+                height={40}
+                 />
             </div>
           </Card>
           <div className="text-center lg:block hidden">
@@ -30,7 +36,11 @@ const AssCards = () => {
             </div>
           </div>
           <div className="block lg:hidden">
-            <img src="/assets/green.png" alt="Take" />
+            <Image src="/assets/green.png" 
+            alt="Take"
+            width={40}
+            height={40}
+             />
           </div>
           <div className="text-center block lg:hidden">
             <div className="h-6 w-6 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-full p-4 text-white flex justify-center items-center text-center">
@@ -38,9 +48,11 @@ const AssCards = () => {
             </div>
           </div>
         </div>
-        <img
+        <Image
           src="/assets/Arrow2.png"
           alt="Join"
+          width={40}
+          height={40}
           className="mb-[360px] lg:block hidden"
         />
       </div>
@@ -53,18 +65,28 @@ const AssCards = () => {
           </div>
           <div className="flex items-center flex-col space-y-2 py-4">
             <p className="capitalize text-black">receive a customized report</p>
-            <img src="/assets/Frame 88.png" alt="Frame" />
+            <Image src="/assets/Frame 88.png"
+            alt="Frame" 
+            width={40}
+            height={40}
+            />
           </div>
         </Card>
         <div className="text-center">
-          <img
+          <Image
             src="/assets/Arrow 3.png"
             alt=""
+            width={40}
+            height={40}
             className="mt-[-160px] lg:block hidden"
           />
         </div>
         <div className="block lg:hidden">
-          <img src="/assets/green.png" alt="Take" />
+          <Image src="/assets/green.png" 
+          alt="Take"
+          width={40}
+          height={40}
+           />
         </div>
         <div className="text-center block lg:hidden">
           <div className="h-6 w-6 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-full p-4 text-white flex justify-center items-center text-center">
@@ -83,7 +105,11 @@ const AssCards = () => {
             <p className="capitalize text-black">
               review your results & explore recommendations
             </p>
-            <img src="/assets/Frame 89.png" alt="Frame" />
+            <Image src="/assets/Frame 89.png" 
+            alt="Frame" 
+            width={40}
+            height={40}
+            />
           </div>
         </Card>
       </div>
