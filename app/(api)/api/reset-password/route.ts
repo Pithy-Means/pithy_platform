@@ -1,14 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Client, Databases } from 'appwrite';
 import bcrypt from 'bcryptjs'; // For hashing the new password
-
-// Initialize Appwrite client
-const client = new Client();
-client
-  .setEndpoint(process.env.APPWRITE_ENDPOINT as string) // Your Appwrite endpoint
-  .setProject(process.env.APPWRITE_PROJECT_ID as string); // Your Appwrite project ID
-
-const databases = new Databases(client);
+import { databases } from '@/models/server/config';
 
 const resetPassword = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === 'POST') {
