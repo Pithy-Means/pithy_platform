@@ -16,7 +16,12 @@ import createJobCollection from "./job.collection";
 import createCertificateCollection from "./certificate.collection";
 import createPaymentCollection from "./payment.collection";
 
+let isDbSetup = false;
+
 export default async function getOrCreateDB() {
+  if (isDbSetup) {
+    return databases;
+  }
   try {
     await databases.get(db);
     console.log("Database exists");

@@ -1,6 +1,6 @@
 "use server";
 
-import { CommentPost, GetUserInfo, LoginInfo, Post, UserInfo } from "@/types/schema";
+import { CommentPost, GetUserInfo, LoginInfo, Post, ResetPass, UserInfo } from "@/types/schema";
 import dayjs from 'dayjs';
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
@@ -28,8 +28,10 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!account) {
       throw new Error("Account creation failed.");
     }
+
     const session = await account.createEmailPasswordSession(email, password);
-    console.log('Session', session);
+    console.log("Session", session);
+
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
@@ -42,36 +44,28 @@ export const login = async ({ email, password }: LoginInfo) => {
     });
 
     const user = await getUserInfo({ userId: session.userId });
-    console.log('User', user);
+    console.log("User", user);
+
     if (!user) {
       throw new Error("User information could not be retrieved");
     }
-    return parseStringify(user); //proceed only if use is valid
+
+    return { success: true, data: parseStringify(user) }; // Success response
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('Invalid `password` param')) {
-        console.error('Inavalid credentials provided');
-        return {success: false, message: 'Invalid email or password'};
+      if (error.message.includes("Invalid `password` param")) {
+        console.error("Invalid credentials provided");
+        return { success: false, message: "Invalid email or password" };
       } else {
-        console.error('Error in login function:', error.message);
-        return {success: false, message: error.message};
+        console.error("Error in login function:", error.message);
+        return { success: false, message: error.message };
       }
     } else {
-      console.error('Unknown error in login function');
-      return {success: false, message: 'An unexpected error occurred during login'};
+      console.error("Unknown error in login function");
+      return { success: false, message: "An unexpected error occurred during login" };
     }
-    // if (error instanceof Error) {
-
-    // if (error instanceof Error) {
-    //   console.error('Error in login function:', error.message);
-    //   throw new Error(`Login failed: ${error.message}`);
-    // } else {
-    //   console.error('Error in login function: unknown error');
-    //   throw new Error('An unexpected error occurred during login');
-    // }
   }
 };
-// 6710b73b001163300b05
 
 export const getSession = async () => {
   try {
@@ -93,6 +87,20 @@ export const logoutUser = async () => {
   }
 };
 
+export const reset = async (data: ResetPass) => {
+  try {
+    const { account } = await createAdminClient();
+
+    if (!data.email || !data.url) {
+      throw new Error("Email and URL must be provided");
+    }
+    const response = await account.createRecovery(data.email, data.url);
+    return parseStringify(response);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 export const register = async (userdata: UserInfo) => {
   const { email, password, firstname, lastname, categories } = userdata;
   let newUserAccount;
@@ -113,7 +121,7 @@ export const register = async (userdata: UserInfo) => {
     const userinfo = await databases.createDocument(
       db,
       userCollection,
-      ID.unique(),
+      newUserAccount.$id,
       { ...userdata, user_id: newUserAccount.$id, categories: categories || [] }
     );
 
@@ -229,6 +237,7 @@ export const createComment = async (data: CommentPost) => {
     const postExists = await getPost(data.post_id);
     const comment = await databases.createDocument(db, postCommentCollection, validComment, {
       ...data,
+      poat_id: postExists.post_id,
       comment_id: validComment,
       created_at: now,
       updated_at: now

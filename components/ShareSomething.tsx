@@ -2,14 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import CreatePost from '@/components/createPosts'; // Import CreatePost component
 import Posts from './Posts';
-import { getLoggedInUser, getPosts } from '@/lib/actions/user.actions';
+import { getLoggedInUser } from '@/lib/actions/user.actions';
 import { PostWithUser } from '@/types/schema';
 
 const ShareSomething = () => {
-  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
   const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
   const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts

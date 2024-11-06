@@ -1,4 +1,3 @@
-import Image from "next/legacy/image";
 import { Button } from "./ui/button";
 import TitleDot from "./TitleDot";
 import { Card } from "./ui/card";

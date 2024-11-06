@@ -1,6 +1,5 @@
 import { Card } from "./ui/card";
 import TitleDot from "./TitleDot";
-import CardMadam from "./CardMadam";
 import { Button } from "./ui/button";
 import Image from "next/image";
 

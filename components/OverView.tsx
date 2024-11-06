@@ -17,7 +17,7 @@ interface OverViewProps {
   className?: string;
 }
 
-const OverView: React.FC<OverViewProps> = ({ children, className }) => {
+const OverView: React.FC<OverViewProps> = ({ children }) => {
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -36,15 +36,15 @@ const OverView: React.FC<OverViewProps> = ({ children, className }) => {
                 <GoHome size={24} />
                 <p className="text-base" >Home</p>
               </div>
-              <div className="flex flex-row gap-3 items-center">
+              <div className="flex flex-row gap-3 items-center cursor-pointer">
                 <HiMiniClipboardDocumentList size={24} />
                 <p className="text-base" >courses</p>
               </div>
-              <div className="flex flex-row gap-3 items-center">
+              <div className="flex flex-row gap-3 items-center cursor-pointer">
                 <IoIosPeople size={24} />
                 <p className="text-base" >Community</p>
               </div>
-              <div className="flex flex-row gap-3 items-center">
+              <div className="flex flex-row gap-3 items-center cursor-pointer">
                 <MdOutlineAddCircle size={24} />
                 <p className="text-base" >Post</p>
               </div>
@@ -58,11 +58,11 @@ const OverView: React.FC<OverViewProps> = ({ children, className }) => {
               <p className="text-lg py-4">Account</p>
             </div>
             <div className="space-y-4 mb-10">
-              <div className="flex flex-row gap-3 items-center">
+              <div className="flex flex-row gap-3 items-center cursor-pointer">
                 <IoPersonOutline size={24} />
                 <p className="text-base">Profile & settings</p>
               </div>
-              <div className="flex flex-row gap-3 items-center">
+              <div className="flex flex-row gap-3 items-center cursor-pointer">
                 <IoNotifications size={24} />
                 <p className="text-base">Notifications</p>
               </div>
@@ -74,11 +74,13 @@ const OverView: React.FC<OverViewProps> = ({ children, className }) => {
             <p className="text-lg py-2">other features</p>
           </div>
           <div className="space-y-4 mb-2">
-            <div className="flex flex-row gap-3 items-center">
+            <div className="flex flex-row gap-3 items-center cursor-pointer">
               <IoMdHelpCircleOutline size={24} />
               <p className="text-base">Help & support</p>
             </div>
+
             <div className="flex flex-row gap-3 items-center text-[#F26900] hover:bg-green-600 hover: rounded-md hover: p-2 hover: w-auto hover:text-white"
+
               onClick={handleLogout}
             >
               <IoMdLogOut size={24} />

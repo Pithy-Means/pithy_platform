@@ -1,6 +1,6 @@
 "use client";
 
-import { Post, PostWithUser } from "@/types/schema";
+import { PostWithUser } from "@/types/schema";
 import { useState, useEffect } from "react";
 import { fetchPosts, subscribeToPostChanges } from "../actions/postService";
 import { getUserInfo } from "../actions/user.actions";
@@ -21,7 +21,7 @@ export const usePosts = () => {
       const { events, payload } = res;
   
       if (events.includes("create")) {
-        const user = await getUserInfo({ userId: payload.user_id });
+        const user = await getUserInfo({ userId: payload.user_id! });
         setPosts((prev) => [...prev, { ...payload, user }]);
       }
   

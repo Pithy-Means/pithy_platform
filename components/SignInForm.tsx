@@ -9,6 +9,7 @@ import { login } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import Link from "next/link";
 
+const MAX_ATTEMPTS = 5;
 
 const SignInForm = () => {
   const [formdata, setFormdata] = useState<Partial<LoginInfo>>({
@@ -39,7 +40,7 @@ const SignInForm = () => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage(null);
-
+  
     // Ensure no undefined values in formdata
     if (!formdata.email || !formdata.password) {
       setErrorMessage("Email or Password is missing.");
@@ -47,122 +48,126 @@ const SignInForm = () => {
       return;
     }
     try {
-      const userdata = await login(formdata as LoginInfo);
-      if (userdata) {
+      const response = await login(formdata as LoginInfo);
+  
+      if (response.success) {
+        // Only navigate if login is successful
         router.push("/dashboard");
       } else {
-        setErrorMessage("Invalid email or password.");
+        // Show error message and increment attempts on failure
+        setErrorMessage(response.message ?? "An unknown error occurred.");
         setAttempts((prev) => prev + 1);
-        // setLoading
+  
+        // Redirect to forgot-password after 5 attempts
+        if (attempts >= 4) {
+          router.push("/forgot-password");
+        }
       }
     } catch (error) {
       setErrorMessage("An error occurred. Please try again.");
       setAttempts((prev) => prev + 1);
-      // console.error(error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center w-full">
-      {/* Sign-in form */}
-      {loading ? (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <Loader2 size={64} color="#3b82f6" />
-        </div>
-      ) : (
-        <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full max-w-m h-screen">
-          <div className="flex justify-center space-x-4 items-center w-full">
-            <div className="flex flex-col w-2/4 px-10">
-              <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">
-                Welcome back
-              </h2>
-              <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
-                {/* Email Input */}
+      <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full max-w-m h-screen">
+        <div className="flex justify-center space-x-4 items-center w-full">
+          <div className="flex flex-col w-2/4 px-10">
+            <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">
+              Welcome back
+            </h2>
+            <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
+              <InputContact
+                label="Email"
+                type="email"
+                name="email"
+                className="w-3/4"
+                value={formdata.email as string}
+                onChange={handleChange}
+              />
+              <div className="relative">
                 <InputContact
-                  label="Email"
-                  type="email"
-                  name="email"
-                  className="w-3/4 ml-10"
-                  value={formdata.email as string}
+                  label="Password"
+                  type={showPassword ? "text" : "password"}
+                  className="w-3/4"
+                  name="password"
+                  value={formdata.password as string}
                   onChange={handleChange}
                 />
-                {/* Password Input */}
-                <div className="relative">
-                  <InputContact
-                    label="Password"
-                    type={showPassword ? "text" : "password"} // Dynamically change type
-                    className="w-3/4 ml-10"
-                    name="password"
-                    value={formdata.password as string}
-                    onChange={handleChange}
-                  />
-                  {/* Toggle Button */}
-                  <button
-                    type="button"
-                    onClick={togglePasswordVisibility}
-                    className="absolute inset-y-0 right-10 flex items-center px-2 text-gray-500 hover:text-gray-700"
-                  >
-                    {showPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                {/* Error Message */}
-                {errorMessage && (
-                  <p className="text-red-500 text-center">{errorMessage}</p>
-                )}
-
-                {/* Submit Button */}
                 <button
-                  type="submit"
-                  className="w-3/4 ml-10 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="absolute inset-y-0 right-[150px] flex items-center px-2 text-gray-500 hover:text-gray-700"
                 >
-                  Sign In
+                  {showPassword ? "Hide" : "Show"}
                 </button>
-              </form>
-              {/* Forgot password and sign up link */}
-              <div className="mt-6 text-center">
-                <a
-                  href="#"
-                  className="text-sm text-gray-800 hover:text-green-600 transition duration-200"
-                >
-                  Forgot your password?
-                </a>
               </div>
-              <div className="mt-4 text-center">
-                <a
-                  href="#"
-                  className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-200"
-                >
-                  Don`&apos;`t have an account? Sign up
-                </a>
-              </div>
-              {/* Password Reset Option after 3 failed attempts */}
-              {attempts >= 3 && (
-                <div className="mt-4 text-center">
-                  <Link href="/reset-password"
-                    className="text-sm text-blue-500 hover:text-blue-700 transition duration-200"
-                  >
-                    Too many attempts? Reset your password
-                  </Link>
-                </div>
+
+              {errorMessage && (
+                <p className="text-red-500 text-center">{errorMessage}</p>
               )}
 
-            </div>
-            {/* Image Section */}
-            <div className="w-2/4 py-10 px-10 mt-6 md:mt-0 flex justify-center glass-effect">
-              <Image
-                src="/assets/sign.png"
-                alt="Sign In"
-                width={400}
-                height={500}
+              {attempts > 0 && attempts < 5 && (
+                <p className="text-red-500 text-center">
+                  You have {5 - attempts} attempt{5 - attempts === 1 ? "" : "s"}{" "}
+                  remaining.
+                </p>
+              )}
 
-                className="max-w-full h-auto object-fill md:max-h-[500px]"
-              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-3/4 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+              >
+                {loading ? "Signing In ...." : "Sign In"}
+              </button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-gray-800 hover:text-green-600 transition duration-200"
+              >
+                Forgot your password?
+              </Link>
             </div>
+
+            <div className="mt-4 text-center">
+              <Link
+                href="/signup"
+                className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-200"
+              >
+                Don&apos;t have an account? Sign up
+              </Link>
+            </div>
+
+            {attempts >= 3 && attempts < MAX_ATTEMPTS && (
+              <div className="mt-4 text-center">
+                <Link
+                  href="/reset-password"
+                  className="text-sm text-blue-500 hover:text-blue-700 transition duration-200"
+                >
+                  Too many attempts? Reset your password
+                </Link>
+              </div>
+            )}
+          </div>
+
+          <div className="w-2/4 py-10 px-10 mt-6 md:mt-0 flex justify-center glass-effect">
+            <Image
+              src="/assets/sign.png"
+              alt="Sign In"
+              width={400}
+              height={500}
+              className="max-w-full h-auto object-fill md:max-h-[500px]"
+            />
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

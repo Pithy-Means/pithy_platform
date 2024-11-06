@@ -2,18 +2,18 @@
 
 import { register } from "@/lib/actions/user.actions";
 import { UserInfo } from "@/types/schema";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InputContact from "./InputContact";
 import PersonInfo from "./PersonalInfo";
 import ProgressBar from "./ProgressBar";
-import { Input } from "postcss";
 
 const SignupForm = () => {
   // Form state
   const [formData, setFormData] = useState<Partial<UserInfo>>({});
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFormComplete, setIsFormComplete] = useState(false);
   const router = useRouter();
 
   const handleNext = () => {
@@ -27,6 +27,26 @@ const SignupForm = () => {
       setCurrentStep(currentStep - 1);
     }
   };
+
+  useEffect(() => {
+    const checkFormCompletion = () => {
+      // Define required fields based on current step
+      const requiredFields: { [key: number]: string[] } = {
+        0: ["firstname", "lastname"],
+        1: ["phone", "address"],
+        2: ["age"],
+        3: ["gender"],
+        4: ["categories"],
+        5: ["email", "password"], // Assuming password and email are required at step 5
+      };
+
+      const fields = requiredFields[currentStep] || [];
+      const isComplete = fields.every((field) => formData[field as keyof UserInfo]);
+      setIsFormComplete(isComplete);
+    };
+
+    checkFormCompletion();
+  }, [formData, currentStep]);
 
   // Update form fields
   const handleChange = (
@@ -354,23 +374,23 @@ const SignupForm = () => {
                 Additional Info
               </h2>
               <label className="block text-gray-700">Email</label>
-              <input
+              <InputContact
                 type="email"
                 name="email"
-                value={formData.email}
+                value={formData.email || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
+                label="Email"
               />
               <label className="block text-gray-700">Password</label>
-              <input
+              <InputContact
                 type="password"
                 name="password"
-                value={formData.password}
+                value={formData.password || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              />
+                className="mt-1 block w-full p-2 border border-gray-300 rounded-md" 
+                label={"Password"}              
+                />
             </div>
           )}
         </div>
@@ -389,7 +409,8 @@ const SignupForm = () => {
             <button
               type="button"
               onClick={handleNext}
-              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
+              disabled={!isFormComplete}
             >
               Next
             </button>
@@ -397,7 +418,8 @@ const SignupForm = () => {
           {currentStep === 5 && (
             <button
               type="submit"
-              className="px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
+              disabled={!isFormComplete}
             >
               Sign up
             </button>
