@@ -1,10 +1,10 @@
-import PaymentForm from '@/components/PaymentForm'
+import MobileMoney from '@/components/MobileMoney'
 import React from 'react'
 
 const Payment = () => {
   return (
     <div>
-      <PaymentForm />
+      <MobileMoney />
     </div>
   )
 }
