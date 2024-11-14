@@ -1,10 +1,9 @@
 import env from "@/env";
+import { NextResponse } from "next/server";
 
-const Flutterwave = require('flutterwave-node-v3');
+const Flutterwave = require("flutterwave-node-v3");
 
-const flw = new Flutterwave(
-  env.payment.public, env.payment.secret
-);
+const flw = new Flutterwave(env.payment.public, env.payment.secret);
 
 export async function POST(req: Request) {
   const data = await req.json();
@@ -13,49 +12,43 @@ export async function POST(req: Request) {
 
   try {
     const payload = {
-      amount, currency, tx_ref, email, phone_number, network
+      amount,
+      currency,
+      tx_ref,
+      email,
+      phone_number,
+      network,
     };
 
-    console.log('Payload data: ', payload);
+    console.log("Payload data: ", payload);
 
     const response = await flw.MobileMoney.uganda(payload);
 
-    console.log('Response data: ', response);
+    console.log("Response data: ", response);
 
-    if (response.status === 'success') {
+    if (response.status === "success") {
       const redirectLink = response.meta?.authorization?.redirect;
 
-      if ( redirectLink ) {
-        return {
-          status: 200,
-          body: {
-            status: 'success',
-            message: 'Payment initiated successfully',
-            data: {
-              redirect: redirectLink
-            }
-          }
-        }
+      if (redirectLink) {
+        return NextResponse.json({
+          status: "success",
+          message: "Payment initiated successfully",
+          redirect: redirectLink,
+        });
       } else {
-        return {
-          status: 400,
-          body: {
-            status: 'error',
-            message: 'Payment initiation failed',
-            data: response
-          }
-        }
+        return NextResponse.json({
+          status: "error",
+          message: "Payment initiation failed",
+          data: response,
+        });
       }
     }
   } catch (error) {
-    console.log('Error: ', error);
-    return {
-      status: 400,
-      body: {
-        status: 'error',
-        message: 'Payment initiation failed',
-        data: error
-      }
-    }
+    console.log("Error: ", error);
+    return NextResponse.json({
+      status: "error",
+      message: "Payment initiation failed",
+      data: error,
+    });
   }
 }
