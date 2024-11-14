@@ -151,3 +151,18 @@ export type LikePost = {
   user?: { name: string }; // User information associated with the like
 };
 
+export interface PaymentData {
+  amount: number;
+  currency: string;
+  tx_ref: string;
+  email: string;
+  phone_number: string;
+  network: string;
+}
+
+export interface PaymentResponse {
+  status: string;
+  message: string;
+  redirect?: string;
+  data?: any;
+}
