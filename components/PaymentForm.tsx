@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 
 const PaymentForm: React.FC = () => {
   return (
@@ -6,7 +7,7 @@ const PaymentForm: React.FC = () => {
       <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
         <h1 className="text-xl font-bold text-center mb-2">Payment Details</h1>
         <p className="text-center text-gray-600 mb-4">
-          To Access The Full Services Offered By Pithy Means, Note That Will Be Charged 
+          To Access The Full Services Offered By Pithy Means, Note That Will Be Charged
           $50, To Have Pass Any Test
         </p>
 
@@ -95,13 +96,30 @@ const PaymentForm: React.FC = () => {
           <label className="block mb-1 font-medium">Payment Method</label>
           <div className="flex space-x-4">
             <div className="p-2 border border-green-500 rounded-xl">
-              <img src="/assets/visa.png" alt="Visa" className="h-12" />
+              <Image
+                src="/assets/visa.png"
+                alt="Visa"
+                width={40}
+                height={40}
+                className="h-12" />
             </div>
             <div className="p-2 border border-green-500 rounded-xl">
-              <img src="/assets/airtel.png" alt="Airtel" className="h-12" />
+              <Image
+                src="/assets/airtel.png"
+                alt="Airtel"
+                width={40}
+                height={40}
+                className="h-12"
+              />
             </div>
             <div className="p-2 border border-green-500 rounded-xl">
-              <img src="/assets/mtn.png" alt="Mastercard" className="h-12" />
+              <Image
+                src="/assets/mtn.png"
+                alt="Mastercard"
+                width={40}
+                height={40}
+                className="h-12"
+              />
             </div>
           </div>
         </div>
