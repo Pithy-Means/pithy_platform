@@ -78,12 +78,14 @@ const SignInForm = () => {
               <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">
                 Welcome back
               </h2>
+
               <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
                 {/* Email Input */}
                 <InputContact
                   label="Email"
                   type="email"
                   name="email"
+                  className="w-3/4 ml-10"
                   className="w-3/4 ml-10"
                   value={formdata.email as string}
                   onChange={handleChange}
@@ -115,7 +117,7 @@ const SignInForm = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-3/4 ml-10 py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
+                  className="w-full py-2 px-4 bg-[#3b82f6] text-white font-semibold rounded-md hover:bg-[#2563eb] transition duration-200"
                 >
                   Sign In
                 </button>
@@ -156,7 +158,6 @@ const SignInForm = () => {
                 alt="Sign In"
                 width={400}
                 height={500}
-
                 className="max-w-full h-auto object-fill md:max-h-[500px]"
               />
             </div>
