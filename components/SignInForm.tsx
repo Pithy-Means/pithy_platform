@@ -86,7 +86,6 @@ const SignInForm = () => {
                   type="email"
                   name="email"
                   className="w-3/4 ml-10"
-                  className="w-3/4 ml-10"
                   value={formdata.email as string}
                   onChange={handleChange}
                 />
