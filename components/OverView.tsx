@@ -26,7 +26,7 @@ const OverView: React.FC<OverViewProps> = ({ children, className }) => {
   }
 
   return (
-    <div className="flex space-x-4 w-full pr-4">
+    <div className={`flex space-x-4 w-full pr-4 ${className || ""}`}>
       <div className="flex flex-col bg-white text-black px-6 justify-center rounded mt-6 shadow-lg shadow-black w-1/4 ">
         <div className="">
           <div>
