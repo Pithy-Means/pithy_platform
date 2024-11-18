@@ -1,6 +1,6 @@
 import { PaymentData, PaymentResponse } from "@/types/schema";
 
-export async function initiatePayment(paymentData: PaymentData): Promise<void> {
+export async function initiatePayment(paymentData: PaymentData): Promise<PaymentResponse> {
   try {
     const response = await fetch('/api/proxy-flutterwave/mobile-money', {
       method: 'POST',
@@ -15,18 +15,9 @@ export async function initiatePayment(paymentData: PaymentData): Promise<void> {
     }
 
     const result: PaymentResponse = await response.json();
-
-    if (result.status === 'success' && result.redirect) {
-      // Redirect the user to the authorization URL
-      window.location.href = result.redirect;
-    } else if (result.status === 'success') {
-      // Handle success without redirect
-      console.log('Payment initialized successfully', result.data);
-    } else {
-      // Handle error response
-      console.error('Payment initiation error:', result.message);
-    }
+    return result; // Explicitly return the response
   } catch (error) {
     console.error('Error in initiatePayment:', (error as Error).message);
+    throw error; // Re-throw the error for handling in the calling function
   }
 }
