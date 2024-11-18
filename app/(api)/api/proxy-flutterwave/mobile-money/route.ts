@@ -1,12 +1,9 @@
-import env from "@/env";
+import { flw } from "@/flutterwave.config";
+import { PaymentData, PaymentResponse } from "@/types/schema";
 import { NextResponse } from "next/server";
 
-const Flutterwave = require("flutterwave-node-v3");
-
-const flw = new Flutterwave(env.payment.public, env.payment.secret);
-
 export async function POST(req: Request) {
-  const data = await req.json();
+  const data: PaymentData = await req.json();
 
   const { amount, currency, tx_ref, email, phone_number, network } = data;
 
@@ -30,11 +27,15 @@ export async function POST(req: Request) {
       const redirectLink = response.meta?.authorization?.redirect;
 
       if (redirectLink) {
-        return NextResponse.json({
+        const successResponse: PaymentResponse = {
           status: "success",
           message: "Payment initiated successfully",
           redirect: redirectLink,
-        });
+          tx_ref,
+        };
+
+        return NextResponse.json(successResponse);
+
       } else {
         return NextResponse.json({
           status: "error",
@@ -50,5 +51,5 @@ export async function POST(req: Request) {
       message: "Payment initiation failed",
       data: error,
     });
-  }
+  };
 }
