@@ -1,6 +1,7 @@
 "use client";
 
 import React, { ReactNode } from "react";
+import Link from "next/link";
 import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { IoIosPeople } from "react-icons/io";
@@ -28,62 +29,77 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   return (
     <div className="flex space-x-4 w-full pr-4">
-      <div className="flex flex-col space-y-4 bg-white text-black p-4 rounded mt-6 shadow-lg shadow-black w-[250px] ">
+      <div className="flex flex-col space-y-4 bg-white text-black p-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
         <div className="flex flex-col space-y-4">
-          <p className="text-lg py-4 font-semibold">Overview</p>
+          {/* Title */}
+          <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
           <div className="flex flex-col space-y-2">
-            <div className="flex flex-row gap-3 cursor-pointer hover:text-[#37BB65]">
+            {/* Home */}
+            <Link href="/dashboard" className="flex flex-row gap-3 cursor-pointer hover:text-[#37BB65]">
               <GoHome size={24} />
-              <p className="text-base">Home</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Home</p>
+            </Link>
+            {/* Courses */}
+            <Link href="/courses" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <HiMiniClipboardDocumentList size={24} />
-              <p className="text-base">Courses</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Courses</p>
+            </Link>
+            {/* Community */}
+            <Link href="/community" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <IoIosPeople size={24} />
-              <p className="text-base">Community</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Community</p>
+            </Link>
+            {/* Post */}
+            <Link href="/post" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <MdOutlineAddCircle size={24} />
-              <p className="text-base">Post</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Post</p>
+            </Link>
+            {/* Job */}
+            <Link href="/jobs" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <BriefcaseBusiness size={24} />
-              <p className="text-base">Job</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Job</p>
+            </Link>
+            {/* Scholarship */}
+            <Link href="/scholarships" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <School size={24} />
-              <p className="text-base">Scholarship</p>
-            </div>
+              <p className="text-base hidden lg:block">Scholarship</p>
+            </Link>
           </div>
         </div>
+
+        {/* Account Section */}
         <div className="flex flex-col space-y-2">
-          <p className="text-lg py-4 font-semibold">Account</p>
+          <p className="text-lg py-4 font-semibold hidden lg:block">Account</p>
           <div className="flex flex-col space-y-2">
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+            {/* Profile & Settings */}
+            <Link href="/profile" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <IoPersonOutline size={24} />
-              <p className="text-base">Profile & settings</p>
-            </div>
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <p className="text-base hidden lg:block">Profile & settings</p>
+            </Link>
+            {/* Notifications */}
+            <Link href="/notifications" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
               <IoNotifications size={24} />
-              <p className="text-base">Notifications</p>
-            </div>
+              <p className="text-base hidden lg:block">Notifications</p>
+            </Link>
           </div>
         </div>
+
+        {/* Other Features */}
         <div className="flex flex-col space-y-2">
-          <p className="text-lg py-2 font-semibold">Other features</p>
+          <p className="text-lg py-2 font-semibold hidden lg:block">Other features</p>
           <div className="space-y-4 mb-2">
-            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
-              <IoMdHelpCircleOutline size={24} className="" />
-              <p className="text-base">Help & support</p>
-            </div>
+            {/* Help & Support */}
+            <Link href="/help" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <IoMdHelpCircleOutline size={24} />
+              <p className="text-base hidden lg:block">Help & support</p>
+            </Link>
+            {/* Logout */}
             <div
               className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
               onClick={handleLogout}
             >
               <IoMdLogOut size={24} />
-              <p className="text-base">Logout</p>
+              <p className="text-base hidden lg:block">Logout</p>
             </div>
           </div>
         </div>
