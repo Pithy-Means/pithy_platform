@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { ReactNode } from "react";
 import { GoHome } from "react-icons/go";
@@ -9,6 +9,7 @@ import { IoPersonOutline } from "react-icons/io5";
 import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
+import { BriefcaseBusiness, School } from "lucide-react";
 import { logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 
@@ -22,65 +23,63 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   const handleLogout = async () => {
     await logoutUser();
-    router.push('/');
-  }
+    router.push("/");
+  };
 
   return (
     <div className="flex space-x-4 w-full pr-4">
-      <div className="flex flex-col bg-white text-black px-6 justify-center rounded mt-6 shadow-lg shadow-black w-1/4 ">
-        <div className="">
-          <div>
-            <p className="text-lg py-4">Overview</p>
-            <div className="space-y-4 mb-10">
-              <div className="flex flex-row gap-3">
-                <GoHome size={24} />
-                <p className="text-base" >Home</p>
-              </div>
-              <div className="flex flex-row gap-3 items-center cursor-pointer">
-                <HiMiniClipboardDocumentList size={24} />
-                <p className="text-base" >courses</p>
-              </div>
-              <div className="flex flex-row gap-3 items-center cursor-pointer">
-                <IoIosPeople size={24} />
-                <p className="text-base" >Community</p>
-              </div>
-              <div className="flex flex-row gap-3 items-center cursor-pointer">
-                <MdOutlineAddCircle size={24} />
-                <p className="text-base" >Post</p>
-              </div>
+      <div className="flex flex-col space-y-4 bg-white text-black p-4 rounded mt-6 shadow-lg shadow-black w-[250px] ">
+        <div className="flex flex-col space-y-4">
+          <p className="text-lg py-4 font-semibold">Overview</p>
+          <div className="flex flex-col space-y-2">
+            <div className="flex flex-row gap-3 cursor-pointer hover:text-[#37BB65]">
+              <GoHome size={24} />
+              <p className="text-base">Home</p>
+            </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <HiMiniClipboardDocumentList size={24} />
+              <p className="text-base">Courses</p>
+            </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <IoIosPeople size={24} />
+              <p className="text-base">Community</p>
+            </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <MdOutlineAddCircle size={24} />
+              <p className="text-base">Post</p>
+            </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <BriefcaseBusiness size={24} />
+              <p className="text-base">Job</p>
+            </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <School size={24} />
+              <p className="text-base">Scholarship</p>
             </div>
           </div>
         </div>
-
-        <div>
-          <>
-            <div>
-              <p className="text-lg py-4">Account</p>
+        <div className="flex flex-col space-y-2">
+          <p className="text-lg py-4 font-semibold">Account</p>
+          <div className="flex flex-col space-y-2">
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <IoPersonOutline size={24} />
+              <p className="text-base">Profile & settings</p>
             </div>
-            <div className="space-y-4 mb-10">
-              <div className="flex flex-row gap-3 items-center cursor-pointer">
-                <IoPersonOutline size={24} />
-                <p className="text-base">Profile & settings</p>
-              </div>
-              <div className="flex flex-row gap-3 items-center cursor-pointer">
-                <IoNotifications size={24} />
-                <p className="text-base">Notifications</p>
-              </div>
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <IoNotifications size={24} />
+              <p className="text-base">Notifications</p>
             </div>
-          </>
-        </div>
-        <div>
-          <div>
-            <p className="text-lg py-2">other features</p>
           </div>
+        </div>
+        <div className="flex flex-col space-y-2">
+          <p className="text-lg py-2 font-semibold">Other features</p>
           <div className="space-y-4 mb-2">
-            <div className="flex flex-row gap-3 items-center cursor-pointer">
-              <IoMdHelpCircleOutline size={24} />
+            <div className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <IoMdHelpCircleOutline size={24} className="" />
               <p className="text-base">Help & support</p>
             </div>
-
-            <div className="flex flex-row gap-3 items-center text-[#F26900] hover:bg-green-600 hover: rounded-md hover: p-2 hover: w-auto hover:text-white"
-
+            <div
+              className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
               onClick={handleLogout}
             >
               <IoMdLogOut size={24} />
