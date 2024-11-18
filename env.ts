@@ -9,7 +9,8 @@ const env = {
   },
   payment: {
     public: String(process.env.NEXT_PUBLIC_FLUTTERWAVE_KEY),
-    secret: String(process.env.FLUTTERWAVE_SECRET_KEY)
+    secret: String(process.env.FLUTTERWAVE_SECRET_KEY),
+    encryption: String(process.env.FLUTTERWAVE_ENCRYPTION_KEY)
   }
 }
 
