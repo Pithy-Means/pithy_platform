@@ -164,5 +164,20 @@ export interface PaymentResponse {
   status: string;
   message: string;
   redirect?: string;
-  data?: any;
+  tx_ref?: string;
+}
+
+export interface CardPaymentData {
+  card_number: string;
+  cvv: string;
+  expiry_month: string;
+  expiry_year: string;
+  currency: string;
+  amount: number;
+  email: string;
+  tx_ref: string;
+  redirect_url: string;
+  fullname: string;
+  phone_number: string;
+  enckey: string;
 }
