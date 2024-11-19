@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function parseStringify(data: any) {
+export function parseStringify(data: unknown) {
   if (typeof data === "string") {
     try {
       return JSON.parse(data);
