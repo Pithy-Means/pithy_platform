@@ -1,10 +1,11 @@
 import { createPost } from '@/lib/actions/user.actions';
-import { Post } from '@/types/schema';
+import { Post, PostWithUser } from '@/types/schema';
 import React, { useState } from 'react'
 
 interface CreatePostProps {
   userId: string; // Pass the logged-in user ID as a prop
-  onPostCreated: (post: Post) => void; 
+  // onPostCreated: (post: Post) => void; 
+  onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
 
 }
 
