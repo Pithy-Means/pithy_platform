@@ -16,8 +16,11 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 
 dayjs.extend(relativeTime);
+// type PostProps = {
+//   posts: PostWithUser[];
+// };
 
-const Posts = () => {
+const Posts= () => {
   const [loading, setLoading] = useState(true);
   const fetchedPosts = usePosts();
   const [posts, setPosts] = useState<PostWithUser[]>([]);
