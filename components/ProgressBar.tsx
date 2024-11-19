@@ -6,7 +6,7 @@ type ProgressBarProps = {
 };
 
 const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
-  const totalSteps = 5;
+  const totalSteps = 3;
 
   return (
     <div className="flex items-center w-full mx-auto">
