@@ -83,6 +83,7 @@ export type User = {
   employerInfo?: EmployerInfo;
  
 };
+// export type User = RegularUserInfo | AdminInfo;
 
 export type GetUserInfo = {
   userId: string;
