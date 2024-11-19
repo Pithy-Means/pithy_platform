@@ -1,4 +1,5 @@
-export type UserInfo = {
+//Base user info type (common fields for all users)
+export type BaseUserInfo = {
   user_id: string;
   firstname?: string;
   lastname?: string;
@@ -11,88 +12,106 @@ export type UserInfo = {
   address?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
-  categories?: "student" | "job seeker" | "employer";
+  // categories?: "student" | "job seeker" | "employer";
+};
 
-  // Attributes specific to 'student'
+//User categories
+export type UserCategories = "student" | "job seeker" | "employer";
+
+//Admin-specific information
+export type AdminInfo = {
+  // admin_level?: "super" | "moderator " // Admin level can be 'super' or 'moderator'
+  role: "admin"; // Role is always 'admin'
+  categories?: never; // Admins do not have categories
+};
+
+//Regular user information(non-admins)
+export type RegularUserInfo = {
+  role: "user"; // Role is always 'user'
+  categories: UserCategories; // Categories required for regular users
+} & (
+  | { categories: "student"; studentInfo: StudentInfo } // Student user
+  | { categories: "job seeker"; jobSeekerInfo: JobSeekerInfo } // Job seeker user
+  | { categories: "employer"; employerInfo: EmployerInfo } // Employer user
+);
+
+//Category-sp studentInfo
+export type StudentInfo = {
   education_level?:
-    | "Tertiary"
-    | "High School"
-    | "Bachelor’s"
-    | "Diploma"
-    | "Master’s"
-    | "PhD";
+  | "High School"
+  | "Tertiary"
+  | "Diploma"
+  | "Bachelors"
+  | "Masters"
+  | "PhD";
   institution_name?: string;
   major_subject?: string;
   expected_graduation_year?: number;
+};
 
-  // Attributes specific to 'job seeker'
-  desired_job_title?: string;
-  skills?: string;
-  years_of_work_experience?: number;
-  resume_link?: string;
-  availability_status?: "immediately available" | "open to opportunities";
+// Category specific to 'job seeker'
+export type JobSeekerInfo = {
+desired_job_title?: string;
+skills?: string;
+years_of_work_experience?: number;
+resume_link?: string;
+availability_status?: "immediately available" | "open to opportunities";
+};
 
-  // Attributes specific to 'employer'
+// Category specific to 'employer'
+export type EmployerInfo = {
   company_name?: string;
   company_size?:
-    | "1-10 employees"
-    | "11-50 employees"
-    | "51-200 employees"
-    | "201-500 employees"
-    | "501+ employees";
+  | "1-10 employees"
+  | "11-50 employees"
+  | "51-200 employees"
+  | "201-500 employees"
+  | "501+ employees";
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
 };
 
-export type LoginInfo = {
-  email: string;
-  password: string;
-};
+//Comprehensive user info type
+export type UserInfo = BaseUserInfo & (AdminInfo | RegularUserInfo);
 
+//Extended UserInfo with role-specific types
+// export type ExtendedUserInfo = UserInfo & {
+//   studentInfo?: StudentInfo;
+//   jobSeekerInfo?: JobSeekerInfo;
+//   employerInfo?: EmployerInfo;
+// };
+
+// export type ExtendedUserInfo =
+//   | (UserInfo & StudentInfo)
+//   | (UserInfo & JobSeekerInfo)
+//   | (UserInfo & EmployerInfo);
+
+//Login info type
+//   export type LoginInfo = {
+//   email: string;
+//   password: string;
+// };
+
+// //Student user
+// export type StudentUser = Required<UserInfo> & StudentInfo;
+
+// //Job seeker user
+// export type JobSeekerUser = Required<UserInfo> & JobSeekerInfo;
+
+// //Employer user
+// export type EmployerUser = Required<UserInfo> & EmployerInfo;
+
+// //Login info type
+// export type LoginInfo = Pick<UserInfo, "email" | "password">;
+
+//User type
 export type User = {
-  $id: string;
-  $created: number;
-  $updated: number;
-  firstname?: string;
-  lastname?: string;
-  email: string;
-  role: "admin" | "user";
-  avatar?: string;
-  phone?: string;
-  address?: string;
-  age?: "18-25" | "26-35" | "36-45" | "46 and +";
-  categories?: "student" | "job seeker" | "employer";
-  // Attributes specific to 'student'
-  education_level?:
-    | "Tertiary"
-    | "High School"
-    | "Bachelor’s"
-    | "Diploma"
-    | "Master’s"
-    | "PhD";
-  institution_name?: string;
-  major_subject?: string;
-  expected_graduation_year?: number;
-
-  // Attributes specific to 'job seeker'
-  desired_job_title?: string;
-  skills?: string;
-  years_of_work_experience?: number;
-  resume_link?: string;
-  availability_status?: "immediately available" | "open to opportunities";
-
-  // Attributes specific to 'employer'
-  company_name?: string;
-  company_size?:
-    | "1-10 employees"
-    | "11-50 employees"
-    | "51-200 employees"
-    | "201-500 employees"
-    | "501+ employees";
-  industry_type?: string;
-  position_in_company?: string;
-  job_posting_count?: number;
+  user_id: string;
+  studentInfo?: StudentInfo;
+  jobSeekerInfo?: JobSeekerInfo;
+  employerInfo?: EmployerInfo;
+ 
 };
 
 export type GetUserInfo = {
@@ -108,13 +127,10 @@ export type Post = {
   updated_at?: string; // Optional, last updated date
 };
 
-export type PostWithUser = {
-  post_id?: string;
-  user_id?: string;
-  content?: string;
-  created_at?: string;
-  updated_at?: string;
-  user?: { name: string };
+//post with user info
+export type PostWithUser =  Post & {
+  // user?: { name?: string; firstname?: string; lastname?: string; };
+  user: Partial<UserInfo>; //Associate user details with the post
 };
 
 // Define the type for the CommentPost collection
@@ -125,7 +141,7 @@ export interface CommentPost {
   comment: string;          // Content of the comment, max length 1000 characters
   created_at?: string;      // Timestamp when the comment was created
   updated_at?: string;      // Timestamp when the comment was last updated
-  user?: { name: string };  // User information associated with the comment
+  user?: Partial<UserInfo>;  // User information associated with the comment
 }
 
 export type LikePost = {
@@ -135,6 +151,6 @@ export type LikePost = {
   isLiked?: boolean; // Boolean to indicate a like
   created_at?: string; // Optional timestamp for when the like was created
   updated_at?: string; // Optional timestamp for the last update
-  user?: { name: string }; // User information associated with the like
+  user?: Partial<UserInfo>; // User information associated with the like
 };
 
