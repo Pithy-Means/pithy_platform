@@ -47,8 +47,8 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   return (
     <div className="flex space-x-4 w-full pr-4">
-      <div className="flex flex-col space-y-4 bg-white text-black p-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
-        <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
+        <div className="flex flex-col space-y-2">
           <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
           <div className="flex flex-col space-y-2">
             <Link href="/dashboard" className={getLinkClassName("/dashboard")}>
