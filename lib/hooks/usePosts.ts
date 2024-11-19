@@ -1,6 +1,6 @@
 "use client";
 
-import { Post, PostWithUser } from "@/types/schema";
+import { PostWithUser } from "@/types/schema";
 import { useState, useEffect } from "react";
 import { fetchPosts, subscribeToPostChanges } from "../actions/postService";
 import { getUserInfo } from "../actions/user.actions";
