@@ -226,7 +226,7 @@ export const createComment = async (data: CommentPost) => {
 
   try {
     const { databases } = await createAdminClient();
-    const postExists = await getPost(data.post_id);
+    // const postExists = await getPost(data.post_id);
     const comment = await databases.createDocument(db, postCommentCollection, validComment, {
       ...data,
       comment_id: validComment,
