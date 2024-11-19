@@ -13,7 +13,8 @@ const ShareSomething = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
   const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
   //To chnage posts
-  const [_posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+  const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+  // const [posts, setPosts] = useState(); // State to store posts
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -21,6 +22,16 @@ const ShareSomething = () => {
       setUser(loggedInUser);
     };
     fetchUser();
+  }, []);
+
+  //Fetch posts
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const res = await fetch('/api/posts');
+      const posts: PostWithUser[] = await res.json();
+      setPosts(posts);
+    };
+    fetchPosts();
   }, []);
 
   // Function to open the modal
@@ -37,7 +48,8 @@ const ShareSomething = () => {
   const addNewPost = (newPost: PostWithUser) => {
     setPosts((prevPosts) => {
       console.log('Previous posts:', prevPosts); // Debugging line
-      return [newPost, ...(Array.isArray(prevPosts) ? prevPosts : [])];
+      // return [newPost, ...(Array.isArray(prevPosts) ? prevPosts : [])];
+      return [newPost, ...prevPosts];
     });
     closeModal(); // Close the modal after adding the post
   };
@@ -83,7 +95,9 @@ const ShareSomething = () => {
           </div>
         </div>
       )}
-      <Posts />
+      {/*Render posts dynamically*/}
+      <Posts posts={posts}/>
+      
     </div>
   );
 };
