@@ -44,27 +44,21 @@ const Posts = () => {
     fetchLoggedInUser();
   }, []);
 
-  // useEffect(() => {
-  //   if (fetchedPosts.length > 0) {
-  //     setLoading(false);
-  //   }
-  // }, [fetchedPosts]);
-
   useEffect(() => {
     if (fetchedPosts.length > 0) {
       setLoading(true);
-      setPosts((prevPosts) => [...prevPosts, ...fetchedPosts.reverse()]);
+  
+      setPosts((prevPosts) => {
+        const existingIds = new Set(prevPosts.map((post) => post.$id));
+        const newPosts = fetchedPosts.filter((post) => !existingIds.has(post.post_id));
+        return [...prevPosts, ...newPosts.reverse()];
+      });
+  
       setHasMore(fetchedPosts.length > 0);
+      setLoading(false);
     }
-    setLoading(false);
   }, [fetchedPosts]);
-
-
-  // useEffect(() => {
-  //   fetchMorePosts();
-  //   setLoading(false);
-  // }, [fetchedPosts, fetchMorePosts]);
-
+  
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
@@ -132,7 +126,7 @@ const Posts = () => {
         >
           {posts.length > 0 ? (
             posts.map((post) => (
-              <div key={post.$id} className="border border-gray-300  rounded-md p-4 bg-white/10">
+              <div key={post.$id} className="border border-gray-300 rounded-md p-4 bg-white/10">
                 <div className="flex flex-col ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
@@ -163,9 +157,10 @@ const Posts = () => {
                     <p>{post.content}</p>
                     <Image
                       src="/assets/post_image.png"
-                      width={800}
-                      height={500}
-                      alt=""
+                      width={600}
+                      height={100}
+                      alt="Image of User"
+                      className="h-78 object-cover rounded-md"
                     />
                   </div>
 
