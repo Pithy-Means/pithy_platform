@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ReactNode } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -14,17 +14,19 @@ import { IoMdLogOut } from "react-icons/io";
 import { BriefcaseBusiness, School } from "lucide-react";
 import { logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import ModalComp from "./ModalComp";
 
 interface OverViewProps {
-  children?: ReactNode;
+  children?: React.ReactNode;
   className?: string;
 }
 
 const OverView: React.FC<OverViewProps> = ({ children }) => {
+  const [isCoursesModalOpen, setCoursesModalOpen] = useState(false); // State for Courses modal
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
 
-  const notAuthorizedLinks = ["Community", "Scholarship", "Courses"];
+  const notAuthorizedLinks = ["Community", "Scholarship"];
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>, linkName: string) => {
     if (notAuthorizedLinks.includes(linkName)) {
@@ -53,14 +55,13 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               <GoHome size={24} />
               <p className="text-base hidden lg:block">Home</p>
             </Link>
-            <Link
-              href="/courses"
-              className={getLinkClassName("/courses")}
-              onClick={(e) => handleLinkClick(e, "Courses")}
+            <button
+              onClick={() => setCoursesModalOpen(true)}
+              className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
             >
               <HiMiniClipboardDocumentList size={24} />
               <p className="text-base hidden lg:block">Courses</p>
-            </Link>
+            </button>
             <Link
               href="/community"
               className={getLinkClassName("/community")}
@@ -121,6 +122,13 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      <ModalComp isOpen={isCoursesModalOpen} onClose={() => setCoursesModalOpen(false)}>
+        <h2 className="text-lg font-bold">Courses Information</h2>
+        <p>This modal shows detailed information about courses.</p>
+      </ModalComp>
+
       {children}
     </div>
   );
