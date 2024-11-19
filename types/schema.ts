@@ -75,36 +75,6 @@ export type EmployerInfo = {
 //Comprehensive user info type
 export type UserInfo = BaseUserInfo & (AdminInfo | RegularUserInfo);
 
-//Extended UserInfo with role-specific types
-// export type ExtendedUserInfo = UserInfo & {
-//   studentInfo?: StudentInfo;
-//   jobSeekerInfo?: JobSeekerInfo;
-//   employerInfo?: EmployerInfo;
-// };
-
-// export type ExtendedUserInfo =
-//   | (UserInfo & StudentInfo)
-//   | (UserInfo & JobSeekerInfo)
-//   | (UserInfo & EmployerInfo);
-
-//Login info type
-//   export type LoginInfo = {
-//   email: string;
-//   password: string;
-// };
-
-// //Student user
-// export type StudentUser = Required<UserInfo> & StudentInfo;
-
-// //Job seeker user
-// export type JobSeekerUser = Required<UserInfo> & JobSeekerInfo;
-
-// //Employer user
-// export type EmployerUser = Required<UserInfo> & EmployerInfo;
-
-// //Login info type
-// export type LoginInfo = Pick<UserInfo, "email" | "password">;
-
 //User type
 export type User = {
   user_id: string;
@@ -120,6 +90,7 @@ export type GetUserInfo = {
 
 // Define the Post type based on the collection's fields
 export type Post = {
+  // $id?: string; // Unique identifier for the post
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
   content?: string; // Content of the post
