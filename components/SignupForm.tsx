@@ -17,7 +17,7 @@ const SignupForm = () => {
   const router = useRouter();
 
   const handleNext = () => {
-    if (currentStep < 5) {
+    if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -32,12 +32,10 @@ const SignupForm = () => {
     const checkFormCompletion = () => {
       // Define required fields based on current step
       const requiredFields: { [key: number]: string[] } = {
-        0: ["firstname", "lastname"],
-        1: ["phone", "address"],
-        2: ["age"],
-        3: ["gender"],
-        4: ["categories"],
-        5: ["email", "password"], // Assuming password and email are required at step 5
+        0: ["firstname", "lastname", "email", "phone", "address", "password"],
+        1: ["age"],
+        2: ["gender"],
+        3: ["categories"],
       };
 
       const fields = requiredFields[currentStep] || [];
@@ -260,7 +258,7 @@ const SignupForm = () => {
   return (
     <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col">
       {/* Progress Bar */}
-      <div className="w-1/4">
+      <div className="w-1/5">
         <ProgressBar
           currentStep={currentStep}
           />
@@ -269,11 +267,7 @@ const SignupForm = () => {
         {/* Basic fields */}
         <div className="flex items-center justify-center h-[400px] px-10 py-6">
           {currentStep === 0 && (
-            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
-              <h2 className="text-lg font-semibold mb-4 text-center">Basic Info</h2>
-              <p className="text-center text-gray-500 mb-6">
-                Please provide your basic information to get started.
-              </p>
+            <div className="flex flex-col justify-center space-y-4 w-2/5 mx-auto">
               {/**First Name */}
               <InputContact
                 label="First Name"
@@ -291,23 +285,24 @@ const SignupForm = () => {
                 value={formData.lastname || ""}
                 onChange={handleChange}
               />
-            </div>
-          )}
-          {currentStep === 1 && (
-            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
-              <h2 className="text-lg font-semibold mb-4 text-center">
-                Contact Info
-              </h2>
-              <p className="text-gray-500 mb-6">
-                Please provide your contact information.
-              </p>
+
+              {/**Email */}
               <InputContact
-                label="Phone Number"
+                label="Email"
+                type="email"
+                name="email"
+                value={formData.email || ""}
+                onChange={handleChange}
+              />
+
+              <InputContact
+                label="Phone"
                 type="tel"
                 name="phone"
                 value={formData.phone || ""}
                 onChange={handleChange}
               />
+
               <InputContact
                 label="Address"
                 type="text"
@@ -315,9 +310,18 @@ const SignupForm = () => {
                 value={formData.address || ""}
                 onChange={handleChange}
               />
+
+              <InputContact
+                type="password"
+                name="password"
+                value={formData.password || ""}
+                onChange={handleChange}
+                className="mt-1 block w-full p-2 border border-gray-300 rounded" 
+                label={"Password"}              
+                />
             </div>
           )}
-          {currentStep === 2 && (
+          {currentStep === 1 && (
             <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
               <PersonInfo
                 question="What is your age group?"
@@ -332,7 +336,7 @@ const SignupForm = () => {
               />
             </div>
           )}
-          {currentStep === 3 && (
+          {currentStep === 2 && (
             <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
               <PersonInfo
                 question="Select your gender"
@@ -347,7 +351,7 @@ const SignupForm = () => {
               />
             </div>
           )}
-          {currentStep === 4 && (
+          {currentStep === 3 && (
             <div className="flex w-full space-y-6">
               <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
                 <PersonInfo
@@ -368,31 +372,6 @@ const SignupForm = () => {
               </div>
             </div>
           )}
-          {currentStep === 5 && (
-            <div className="flex flex-col justify-center space-y-4 w-full mx-auto">
-              <h2 className="text-lg font-semibold mb-4">
-                Additional Info
-              </h2>
-              <label className="block text-gray-700">Email</label>
-              <InputContact
-                type="email"
-                name="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                label="Email"
-              />
-              <label className="block text-gray-700">Password</label>
-              <InputContact
-                type="password"
-                name="password"
-                value={formData.password || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md" 
-                label={"Password"}              
-                />
-            </div>
-          )}
         </div>
         {/* Navigation buttons */}
         <div className="flex justify-center items-center gap-x-4 mt-6">
@@ -405,17 +384,17 @@ const SignupForm = () => {
               Previous
             </button>
           )}
-          {currentStep < 5 && (
+          {currentStep < 3 && (
             <button
               type="button"
               onClick={handleNext}
-              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
+              className={!isFormComplete ? "text-red-500 p-2 ": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
               disabled={!isFormComplete}
             >
-              Next
+              {!isFormComplete ? "Complete the missing space" : "Next"}
             </button>
           )}
-          {currentStep === 5 && (
+          {currentStep === 3 && (
             <button
               type="submit"
               className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
