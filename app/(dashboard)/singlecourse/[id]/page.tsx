@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { getSingleCourse } from '@/app/(api)/api/courses/route'
+import { getSingleCourse } from '@/utils/apiUtils';
 import course from '@/types/Course'
 import { useParams } from 'next/navigation'
 import OverView from '@/components/OverView';
