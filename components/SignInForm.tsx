@@ -76,8 +76,8 @@ const SignInForm = () => {
     <div className="flex items-center justify-center w-full">
       <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full max-w-m h-screen">
         <div className="flex justify-center space-x-4 items-center w-full">
-          <div className="flex flex-col w-2/4 px-10">
-            <h2 className="text-3xl font-bold text-[#111111] mb-6 text-center capitalize">
+          <div className="flex flex-col w-2/4 px-10 mx-auto">
+            <h2 className="text-3xl font-bold text-[#111111] mb-6 capitalize">
               Welcome back
             </h2>
             <form className="space-y-6 flex flex-col " onSubmit={handleSignIn}>
@@ -127,7 +127,7 @@ const SignInForm = () => {
               </button>
             </form>
 
-            <div className="mt-6 text-center">
+            <div className="mt-2">
               <Link
                 href="/forgot-password"
                 className="text-sm text-gray-800 hover:text-green-600 transition duration-200"
@@ -136,12 +136,12 @@ const SignInForm = () => {
               </Link>
             </div>
 
-            <div className="mt-4 text-center">
+            <div className="">
               <Link
-                href="/signup"
-                className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-200"
+                href="/signUp"
+                className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-400"
               >
-                Don&apos;t have an account? Sign up
+                Don&apos;t have an account? <span className="text-blue-800">Sign up</span>
               </Link>
             </div>
 
