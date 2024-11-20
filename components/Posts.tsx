@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { usePosts } from "@/lib/hooks/usePosts";
 import {
@@ -14,7 +14,7 @@ import { CommentPost } from "@/types/schema";
 import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroll-component";
 import CommentSection from "./CommentSection";
-
+import LikePost from "./LikePostComp"; // Import the LikePost component
 
 dayjs.extend(relativeTime);
 
@@ -30,7 +30,7 @@ const Posts = () => {
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchMorePosts =  () => {
+  const fetchMorePosts = () => {
     if (fetchedPosts.length === 0) {
       setHasMore(false);
     }
@@ -47,18 +47,18 @@ const Posts = () => {
   useEffect(() => {
     if (fetchedPosts.length > 0) {
       setLoading(true);
-  
+
       setPosts((prevPosts) => {
         const existingIds = new Set(prevPosts.map((post) => post.$id));
         const newPosts = fetchedPosts.filter((post) => !existingIds.has(post.post_id));
         return [...prevPosts, ...newPosts.reverse()];
       });
-  
+
       setHasMore(fetchedPosts.length > 0);
       setLoading(false);
     }
   }, [fetchedPosts]);
-  
+
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
@@ -85,15 +85,23 @@ const Posts = () => {
   };
 
   const handleFetchComments = async (postId: string) => {
-    const postComments = await getCommentsByPostId(postId);
-    setComments((prev) => ({ ...prev, [postId]: postComments }));
+    if (!comments[postId]) {
+      // Only fetch if not already fetched
+      const postComments = await getCommentsByPostId(postId);
+      setComments((prev) => ({ ...prev, [postId]: postComments }));
+    }
   };
+
+    // Use `useCallback` to memoize the function
+  const memoizedFetchComments = useCallback((postId: string) => {
+    handleFetchComments(postId);
+  }, [comments]);
 
   const handleAddComment = async (postId: string) => {
     if (!newComment[postId]) return;
 
     const commentData: CommentPost = {
-      comment_id: '', // Replace with actual comment ID
+      comment_id: "", // Replace with actual comment ID
       post_id: postId,
       user_id: loggedIn?.user_id ?? "", // Replace with actual user ID
       comment: newComment[postId],
@@ -121,8 +129,8 @@ const Posts = () => {
           next={fetchMorePosts}
           hasMore={hasMore}
           loader={<h4>Loading more posts...</h4>}
-          endMessage={<p>No more posts aavailable.</p>}
-          className="flex flex-col gap-y-4  "
+          endMessage={<p>No more posts available.</p>}
+          className="flex flex-col gap-y-4"
         >
           {posts.length > 0 ? (
             posts.map((post) => (
@@ -139,7 +147,9 @@ const Posts = () => {
                       />
                       <div className="flex flex-col space-y-2">
                         <p className="font-semibold">
-                          {post.user ? `${post.user.firstname || 'Unknown'} ${post.user.lastname || ''}` : 'Anonymous'}
+                          {post.user
+                            ? `${post.user.firstname || "Unknown"} ${post.user.lastname || ""}`
+                            : "Anonymous"}
                         </p>
                         <p className="text-sm text-gray-500 font-light">
                           {dayjs(post.created_at).fromNow()}
@@ -209,15 +219,26 @@ const Posts = () => {
                   </div>
                 )}
 
+                <div className="flex justify-between space-y-4">
+
+                {/* Like Post */}
+                <LikePost
+                  postId={post.$id}
+                  userId={loggedIn?.user_id || ""}
+                  handleLikeSuccess={() => console.log(`Post ${post.$id} liked!`)}
+                />
+
                 {/* Comment Section */}
                 <CommentSection
                   postId={post.$id}
                   comments={comments}
-                  fetchComments={handleFetchComments}
+                  fetchComments={memoizedFetchComments}
                   newComment={newComment}
                   setNewComment={setNewComment}
                   addComment={handleAddComment}
                 />
+
+                </div>
               </div>
             ))
           ) : (
