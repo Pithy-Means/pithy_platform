@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { FaListUl } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
 import CourseCard from './CourseCard';
-import {getData} from '@/app/(api)/api/courses/route';
+import {getData} from '@/utils/apiUtils';
 
 
 
