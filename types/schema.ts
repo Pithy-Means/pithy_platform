@@ -30,10 +30,10 @@ export type RegularUserInfo = {
   role: "user"; // Role is always 'user'
   categories: UserCategories; // Categories required for regular users
 } & (
-  | { categories: "student"; studentInfo: StudentInfo } // Student user
-  | { categories: "job seeker"; jobSeekerInfo: JobSeekerInfo } // Job seeker user
-  | { categories: "employer"; employerInfo: EmployerInfo } // Employer user
-);
+    | { categories: "student"; studentInfo: StudentInfo } // Student user
+    | { categories: "job seeker"; jobSeekerInfo: JobSeekerInfo } // Job seeker user
+    | { categories: "employer"; employerInfo: EmployerInfo } // Employer user
+  );
 
 //Category-sp studentInfo
 export type StudentInfo = {
@@ -51,11 +51,11 @@ export type StudentInfo = {
 
 // Category specific to 'job seeker'
 export type JobSeekerInfo = {
-desired_job_title?: string;
-skills?: string;
-years_of_work_experience?: number;
-resume_link?: string;
-availability_status?: "immediately available" | "open to opportunities";
+  desired_job_title?: string;
+  skills?: string;
+  years_of_work_experience?: number;
+  resume_link?: string;
+  availability_status?: "immediately available" | "open to opportunities";
 };
 
 // Category specific to 'employer'
@@ -76,18 +76,24 @@ export type EmployerInfo = {
 export type UserInfo = BaseUserInfo & (AdminInfo | RegularUserInfo);
 
 //User type
+// export type User = {
+//   user_id: string;
+//   studentInfo?: StudentInfo;
+//   jobSeekerInfo?: JobSeekerInfo;
+//   employerInfo?: EmployerInfo;
+
+// };
 export type User = {
   user_id: string;
-  studentInfo?: StudentInfo;
-  jobSeekerInfo?: JobSeekerInfo;
-  employerInfo?: EmployerInfo;
- 
+  userInfo: UserInfo;
 };
-// export type User = RegularUserInfo | AdminInfo;
 
 export type GetUserInfo = {
   userId: string;
 };
+
+//Login info type
+export type LoginInfo = Pick<UserInfo, "email" | "password">;
 
 // Define the Post type based on the collection's fields
 export type Post = {
@@ -100,7 +106,7 @@ export type Post = {
 };
 
 //post with user info
-export type PostWithUser =  Post & {
+export type PostWithUser = Post & {
   // user?: { name?: string; firstname?: string; lastname?: string; };
   user: Partial<UserInfo>; //Associate user details with the post
 };
