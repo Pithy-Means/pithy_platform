@@ -34,7 +34,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const commentCount = comments[postId]?.length || 0; // Count of comments for this post
 
   return (
-    <div className="mt-4">
+    <div className="mt-2">
       <p className="text-gray-500 text-sm">
         {commentCount} {commentCount === 1 ? "comment" : "comments"}
       </p>
@@ -55,12 +55,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       {!isTextareaVisible ? (
         <button
           onClick={() => setIsTextareaVisible(true)}
-          className="bg-blue-500 text-white rounded-md px-4 py-2 mt-2 hover:bg-blue-600"
+          className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
         >
           Add a Comment
         </button>
       ) : (
-        <div className="flex items-center mt-2">
+        <div className="flex items-center">
           <textarea
             value={newComment[postId] || ""}
             onChange={(e) =>
