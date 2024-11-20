@@ -3,6 +3,7 @@
 import {
   CommentPost,
   GetUserInfo,
+  LikePost,
   LoginInfo,
   Post,
   ResetPass,
@@ -17,13 +18,11 @@ import { ID, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify } from "../utils";
 import {
   db,
+  likePostCollection,
   postCollection,
   postCommentCollection,
   userCollection,
 } from "@/models/name";
-import { sendEmail } from "./mails/sendMails";
-import ResetPasswordEmail from "@/components/reset-password-email"; // Adjust the import path as necessary
-import React from "react";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -297,7 +296,7 @@ export const createComment = async (data: CommentPost) => {
       validComment,
       {
         ...data,
-        poat_id: postExists.post_id,
+        post_id: postExists.post_id,
         comment_id: validComment,
         created_at: now,
         updated_at: now,
@@ -319,5 +318,76 @@ export const getCommentsByPostId = async (postId: string) => {
   } catch (error) {
     console.error("Error fetching comments:", error);
     return [];
+  }
+};
+
+
+export const likePost = async (data: LikePost) => {
+  const { like_post_id } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validLike = generateValidPostId(like_post_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    console.log("Post exists", postExists);
+    const like = await databases.createDocument(db, likePostCollection, validLike, {
+      ...data,
+      post_id: postExists.post_id,
+      like_post_id: validLike,
+      created_at: now,
+      updated_at: now,
+    });
+    console.log("Like created", like);
+    return parseStringify(like);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const unlike = async (likeId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const like = await databases.deleteDocument(db, likePostCollection, likeId);
+    console.log("Like deleted:", like);
+    return parseStringify(like);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const toggleLike = async (data: LikePost) => {
+  const { like_post_id } = data;
+  const now = dayjs().toISOString(); // Current timestamp
+  const validLike = generateValidPostId(like_post_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    console.log("Post exists:", postExists);
+
+    // Check if the like already exists
+    const existingLike = await databases.getDocument(db, likePostCollection, validLike);
+
+    if (existingLike) {
+      // If like exists, remove it
+      console.log("Like exists. Removing...");
+      await databases.deleteDocument(db, likePostCollection, validLike);
+      return { action: "unliked", likeId: validLike };
+    } else {
+      // If like does not exist, add it
+      console.log("Like does not exist. Adding...");
+      const newLike = await databases.createDocument(db, likePostCollection, validLike, {
+        ...data,
+        post_id: postExists.post_id,
+        like_post_id: validLike,
+        created_at: now,
+        updated_at: now,
+      });
+      return { action: "liked", like: parseStringify(newLike) };
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    throw new Error("Failed to toggle like.");
   }
 };
