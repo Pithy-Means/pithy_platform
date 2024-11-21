@@ -132,3 +132,21 @@ export type LikePost = {
   user?: Partial<UserInfo>; // User information associated with the like
 };
 
+export type FormDataState =
+  | Partial<BaseUserInfo> // Common fields for all users
+  | (Partial<BaseUserInfo> &
+      RegularUserInfo & {
+        categories?: "student";
+        studentInfo?: Partial<StudentInfo>;
+      })
+  | (Partial<BaseUserInfo> &
+      RegularUserInfo & {
+        categories?: "job seeker";
+        jobSeekerInfo?: Partial<JobSeekerInfo>;
+      })
+  | (Partial<BaseUserInfo> &
+      RegularUserInfo & {
+        categories?: "employer";
+        employerInfo?: Partial<EmployerInfo>;
+      });
+
