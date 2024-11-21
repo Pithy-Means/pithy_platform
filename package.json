@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "concurrently \"npm run lint\" \"npm run type-check\" \"next build\"",
-    "start": "next start",
     "lint": "eslint '*/**/*.{js,jsx,ts,tsx}' --quiet",
     "type-check": "tsc --noEmit",
+    "build": "next build",
+    "start": "next start",
+    "dev": "next dev",
+    "build-and-serve": "npm run build && npm run start",
+    "ci": "npm run lint && npm run type-check && npm run build",
     "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "email": "email dev --dir ./emails"
   },
