@@ -13,7 +13,8 @@ const ShareSomething = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
   const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
   //To chnage posts
-  const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
   // const [posts, setPosts] = useState(); // State to store posts
 
   useEffect(() => {
@@ -96,7 +97,7 @@ const ShareSomething = () => {
         </div>
       )}
       {/*Render posts dynamically*/}
-      <Posts posts={posts}/>
+      <Posts />
       
     </div>
   );
