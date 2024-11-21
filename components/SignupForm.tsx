@@ -57,15 +57,19 @@ const SignupForm = () => {
     }
   };
 
-  if (isLoading)
-    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-4 rounded-md">Loading...</div>
-    </div>;
+  if (isLoading) {
+    return (
+      <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="bg-white p-4 rounded-md">Loading...</div>
+      </div>
+    );
+  }
 
   // Handle category-specific fields
   const renderCategoryFields = () => {
     switch (formData.categories) {
       case "student":
+        if (formData.studentInfo) {
         return (
           <>
             {/* Student specific fields */}
@@ -73,7 +77,7 @@ const SignupForm = () => {
               <label className="block text-gray-700">Education Level</label>
               <select
                 name="education_level"
-                value={formData.education_level || ""}
+                value={formData.studentInfo.education_level|| ""}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               >
@@ -91,31 +95,34 @@ const SignupForm = () => {
                 label="Institution Name"
                 type="text"
                 name="institution_name"
-                value={formData.institution_name || ""}
+                value={formData.studentInfo.institution_name || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Major Subject"
                 type="text"
                 name="major_subject"
-                value={formData.major_subject || ""}
+                value={formData.studentInfo.major_subject || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Expected Graduation Year"
                 type="number"
                 name="expected_graduation_year"
-                value={formData.expected_graduation_year || ""}
+                value={formData.studentInfo.expected_graduation_year || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
           </>
         );
+      }
+      break;
       case "job seeker":
+        if (formData.jobSeekerInfo) {
         return (
           <>
             {/* Job seeker specific fields */}
@@ -124,42 +131,42 @@ const SignupForm = () => {
                 label="Desired Job Title"
                 type="text"
                 name="desired_job_title"
-                value={formData.desired_job_title || ""}
+                value={formData.jobSeekerInfo.desired_job_title || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Skills"
                 type="text"
                 name="skills"
-                value={formData.skills || ""}
+                value={formData.jobSeekerInfo.skills || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Years of Work Experience"
                 type="number"
                 name="years_of_work_experience"
-                value={formData.years_of_work_experience || ""}
+                value={formData.jobSeekerInfo.years_of_work_experience || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Resume Link"
                 type="text"
                 name="resume_link"
-                value={formData.resume_link || ""}
+                value={formData.jobSeekerInfo.resume_link || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Availability Status</label>
               <select
                 name="availability_status"
-                value={formData.availability_status || ""}
+                value={formData.jobSeekerInfo.availability_status || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               >
@@ -174,7 +181,10 @@ const SignupForm = () => {
             </div>
           </>
         );
+      }
+      break;
       case "employer":
+        if (formData.employerInfo){
         return (
           <>
             {/* Employer specific fields */}
@@ -183,15 +193,15 @@ const SignupForm = () => {
                 label="Company Name"
                 type="text"
                 name="company_name"
-                value={formData.company_name || ""}
+                value={formData.employerInfo.company_name || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Company Size</label>
               <select
                 name="company_size"
-                value={formData.company_size || ""}
+                value={formData.employerInfo.company_size || ""}
                 onChange={handleChange}
                 className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               >
@@ -208,30 +218,31 @@ const SignupForm = () => {
                 label="Industry Type"
                 type="text"
                 name="industry_type"
-                value={formData.industry_type || ""}
+                value={formData.employerInfo.industry_type || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Position in Company"
                 type="text"
                 name="position_in_company"
-                value={formData.position_in_company || ""}
+                value={formData.employerInfo.position_in_company || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
                 label="Job Posting Count"
                 type="number"
                 name="job_posting_count"
-                value={formData.job_posting_count || ""}
+                value={formData.employerInfo.job_posting_count || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
           </>
         );
+      }
       default:
         return null;
     }
@@ -243,7 +254,7 @@ const SignupForm = () => {
       <div className="w-1/4">
         <ProgressBar
           currentStep={currentStep}
-          />
+        />
       </div>
       <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
         {/* Basic fields */}
