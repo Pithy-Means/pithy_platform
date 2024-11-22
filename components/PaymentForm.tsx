@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const PaymentForm: React.FC = () => {
   return (
@@ -6,8 +6,8 @@ const PaymentForm: React.FC = () => {
       <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">
         <h1 className="text-xl font-bold text-center mb-2">Payment Details</h1>
         <p className="text-center text-gray-600 mb-4">
-          To Access The Full Services Offered By Pithy Means, Note That Will Be Charged 
-          $50, To Have Pass Any Test
+          To Access The Full Services Offered By Pithy Means, Note That Will Be
+          Charged $50, To Have Pass Any Test
         </p>
 
         {/* Product Card */}
@@ -16,7 +16,8 @@ const PaymentForm: React.FC = () => {
           <div>
             <h2 className="font-semibold">Pithy Means Modules</h2>
             <p className="text-sm text-gray-600">
-              For Career Path Discovery, Career Changes, Subsd Businesses Venture
+              For Career Path Discovery, Career Changes, Subsd Businesses
+              Venture
             </p>
           </div>
           <div className="ml-auto text-right">
@@ -81,7 +82,9 @@ const PaymentForm: React.FC = () => {
               id="alternative-email"
               defaultChecked
             />
-            <label htmlFor="alternative-email">Send To Alternative Account Email</label>
+            <label htmlFor="alternative-email">
+              Send To Alternative Account Email
+            </label>
           </div>
           <input
             type="email"
