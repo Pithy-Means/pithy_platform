@@ -286,7 +286,6 @@ export const deletePost = async (postId: string) => {
   }
 };
 
-
 export const repost = async (data: Post) => {
   const { post_id, content, user_comment, user_id } = data; // Removed `repost_of` from input as it's derived
   const now = dayjs().toISOString(); // Current timestamp
@@ -321,7 +320,7 @@ export const repost = async (data: Post) => {
         user_comment: user_comment || "", // Optional user comment
         created_at: now,
         updated_at: now,
-      }
+      },
     );
 
     console.log("Repost created successfully:", repost);
@@ -331,7 +330,6 @@ export const repost = async (data: Post) => {
     throw error; // Propagate the error for handling
   }
 };
-
 
 export const getPosts = async () => {
   try {
