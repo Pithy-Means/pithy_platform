@@ -1,9 +1,7 @@
 import PasswordRecoveryForm from "@/components/ResetPassForm";
 
 const ResetPasswordPage = () => {
-  return ( 
-    <PasswordRecoveryForm />
-  )
+  return <PasswordRecoveryForm />;
 };
 
 export default ResetPasswordPage;
