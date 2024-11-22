@@ -13,7 +13,7 @@ function Dashboard() {
             <div className="sticky top-0 h-screen">
               <ShareSomething />
             </div>
-            <div className="flex flex-col mr-4  overflow-y-auto overflow-x-hidden w-1/4 sticky">
+            <div className="flex flex-col mr-4  overflow-y-auto overflow-x-hidden w-1/4">
               <PersonSidebar />
               <Communty />
             </div>
