@@ -8,7 +8,7 @@ const TestEmailbutton = () => {
       to: ["bandonkeyea@gmail.com"],
       subject: "Test Email",
       html: "<h1>Hello, this is a test email from Great.</h1>",
-    } as any);
+    });
     return res;
   };
   return (
