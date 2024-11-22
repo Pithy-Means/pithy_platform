@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   if (!redirectUrl) {
     return NextResponse.json(
       { status: "error", message: "Missing redirect URL." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     console.error("Error fetching redirect content: ", error);
     return NextResponse.json(
       { status: "error", message: "Failed to fetch redirect content." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
