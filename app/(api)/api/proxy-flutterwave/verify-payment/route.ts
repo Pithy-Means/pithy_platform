@@ -4,11 +4,14 @@ import { NextResponse } from "next/server";
 export const POST = async (req: Request) => {
   const data = await req.json();
 
-  const { tx_ref } = data;
+  const { id, tx_ref, amount, status } = data;
 
   try {
     const payload = {
+      id,
       tx_ref,
+      amount,
+      status,
     };
 
     console.log("Payload data: ", payload);
@@ -22,7 +25,7 @@ export const POST = async (req: Request) => {
         status: "success",
         message: "Payment verified successfully",
         data: response,
-        redirect: '/course'
+        redirect: "/course",
       });
     }
   } catch (error) {

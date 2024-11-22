@@ -1,7 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { Client, Databases, Query} from 'appwrite';
-import sgMail from '@sendgrid/mail';
-
+import type { NextApiRequest, NextApiResponse } from "next";
+import { Client, Databases, Query } from "appwrite";
+import sgMail from "@sendgrid/mail";
 
 // Initialize Appwrite client
 const client = new Client();
@@ -21,27 +20,26 @@ const userExists = async (email: string): Promise<boolean> => {
     // const users = await account.list();
     const response = await databases.listDocuments(
       process.env.APPWRITE_DATABASE_ID as string,
-      'users' // Your user collection
-      [Query.equal('email', email)]
+      "users"[Query.equal("email", email)], // Your user collection
     );
     // return users.users.some(user => user.email === email);
     return response.documents.length > 0;
   } catch (error) {
-    throw new Error('Unable to check user existence');
+    throw new Error("Unable to check user existence");
   } finally {
     return false;
   }
 };
 
 const sendResetLink = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     const { email } = req.body;
 
     try {
       // Check if the user exists in the database
       const exists = await userExists(email);
       if (!exists) {
-        return res.status(404).json({ error: 'User not found' });
+        return res.status(404).json({ error: "User not found" });
       }
 
       // Generate a unique reset token (you can implement your own token generation)
@@ -51,9 +49,9 @@ const sendResetLink = async (req: NextApiRequest, res: NextApiResponse) => {
       const expirationTime = Date.now() + 3600000; // 1 hour in milliseconds
       await databases.createDocument(
         process.env.APPWRITE_DATABASE_ID as string,
-        'password_resets', // Collection ID for password reset tokens
+        "password_resets", // Collection ID for password reset tokens
         resetToken, // Document ID
-        { email, token: resetToken, expiresAt: expirationTime }
+        { email, token: resetToken, expiresAt: expirationTime },
       );
 
       // Construct the reset link
@@ -62,23 +60,27 @@ const sendResetLink = async (req: NextApiRequest, res: NextApiResponse) => {
       // Send the reset email
       const msg = {
         to: email,
-        from: 'no-reply@yourdomain.com', // Use your verified SendGrid domain
-        subject: 'Password Reset Request',
+        from: "no-reply@yourdomain.com", // Use your verified SendGrid domain
+        subject: "Password Reset Request",
         text: `Click this link to reset your password: ${resetLink}`,
         html: `<strong>Click this link to reset your password:</strong> <a href="${resetLink}">${resetLink}</a>`,
       };
 
       await sgMail.send(msg);
 
-      return res.status(200).json({ message: 'Reset link sent to your email.' });
+      return res
+        .status(200)
+        .json({ message: "Reset link sent to your email." });
     } catch (error) {
       if (error instanceof Error) {
-        return res.status(500).json({ error: error.message || 'An error occurred.' });
+        return res
+          .status(500)
+          .json({ error: error.message || "An error occurred." });
       }
     }
   }
 
-  return res.status(405).json({ error: 'Method not allowed' });
+  return res.status(405).json({ error: "Method not allowed" });
 };
 
 export default sendResetLink;

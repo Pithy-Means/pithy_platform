@@ -35,7 +35,6 @@ export async function POST(req: Request) {
         };
 
         return NextResponse.json(successResponse);
-
       } else {
         return NextResponse.json({
           status: "error",
@@ -51,5 +50,5 @@ export async function POST(req: Request) {
       message: "Payment initiation failed",
       data: error,
     });
-  };
+  }
 }
