@@ -12,7 +12,6 @@ export type BaseUserInfo = {
   address?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
-  // categories?: "student" | "job seeker" | "employer";
 };
 
 //User categories
@@ -76,13 +75,6 @@ export type EmployerInfo = {
 export type UserInfo = BaseUserInfo & (AdminInfo | RegularUserInfo);
 
 //User type
-// export type User = {
-//   user_id: string;
-//   studentInfo?: StudentInfo;
-//   jobSeekerInfo?: JobSeekerInfo;
-//   employerInfo?: EmployerInfo;
-
-// };
 export type User = {
   user_id: string;
   userInfo: UserInfo;
@@ -107,7 +99,6 @@ export type Post = {
 
 //post with user info
 export type PostWithUser = Post & {
-  // user?: { name?: string; firstname?: string; lastname?: string; };
   user: Partial<UserInfo>; //Associate user details with the post
 };
 
