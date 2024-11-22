@@ -24,8 +24,6 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { CommentPost } from "@/types/schema";
 import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroll-component";
-import CommentSection from "./CommentSection";
-import LikePost from "./LikePostComp"; // Import the LikePost component
 import InputContact from "./InputContact";
 
 dayjs.extend(relativeTime);
