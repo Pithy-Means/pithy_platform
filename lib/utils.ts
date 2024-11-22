@@ -27,4 +27,5 @@ export const generateValidPostId = (post_id?: string): string => {
   return isValidPostId ? post_id : uuidv4();
 };
 
-export const generateValidId = () => `${Date.now()}_${Math.random().toString(36).substr(2, 35)}`;
+export const generateValidId = () =>
+  `${Date.now()}_${Math.random().toString(36).substr(2, 35)}`;
