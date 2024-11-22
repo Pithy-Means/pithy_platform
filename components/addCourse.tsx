@@ -8,25 +8,22 @@ interface Course {
   price: string;
 }
 
-
-
 const addCourse = async (newCourse: Course) => {
   try {
-    const response = await fetch('/api/courses', {
-      method: 'POST',
+    const response = await fetch("/api/courses", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(newCourse),
     });
     if (!response.ok) {
-      throw new Error('Something went wrong while adding the course');
+      throw new Error("Something went wrong while adding the course");
     }
     const saveCourse = await response.json();
-    console.log('New course added:', saveCourse);
+    console.log("New course added:", saveCourse);
   } catch (error) {
-    console.error('Error adding course:', error);
-  
+    console.error("Error adding course:", error);
   }
 };
 
@@ -44,5 +41,3 @@ export default addCourse;
 //   };
 //   addCourse(courseData);
 // }
-  
-
