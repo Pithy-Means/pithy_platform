@@ -1,12 +1,7 @@
-import React from 'react'
+import React from "react";
 
-const PostIndex
- = () => {
-  return (
-    <div>
-      Post
-    </div>
-  )
-}
+const PostIndex = () => {
+  return <div>Post</div>;
+};
 
-export default PostIndex
+export default PostIndex;
