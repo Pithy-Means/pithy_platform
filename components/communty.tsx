@@ -4,9 +4,9 @@ import { IoIosPeople } from "react-icons/io";
 
 const communty = () => {
   return (
-    <div className="flex flex-col bg-white  text-black  justify-start  mt-6 mr-4 rounded-lg w-full ">
+    <div className="flex flex-col bg-white  text-black  justify-start rounded-lg w-full ">
       <div>
-        <p className="text-lg font-bold flex justify-start mt-4 px-2 mb-2">
+        <p className="text-lg font-bold flex justify-start my-3 px-2">
           Community
         </p>
       </div>
