@@ -30,6 +30,7 @@ const nextConfig = {
         return [
             {
                 source: "/(.*).(js|css|woff|woff2|ttf|otf|eot|ico|jpg|jpeg|png|svg|gif|webp|avif)",
+                // source: "/:path*",
                 headers: [
                     {
                         key: "Cache-Control",
@@ -49,12 +50,12 @@ const nextConfig = {
         ];
     },
 
-    // Incremental Static Regeneration
-    async revalidate() {
-        return {
-            revalidate: 60, // Revalidate pages every 60 seconds
-        };
-    },
+    // // Incremental Static Regeneration not configured globally but per page basis
+    // async revalidate() {
+    //     return {
+    //         revalidate: 60, // Revalidate pages every 60 seconds
+    //     };
+    // },
 };
 
 export default bundleAnalyzer(nextConfig);
