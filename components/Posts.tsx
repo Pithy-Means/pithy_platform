@@ -155,13 +155,13 @@ const Posts= () => {
                 <div className="flex flex-col ">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <Image
+                      {/* <Image
                         src={post.user.avatar || "/assets/person_feedback.png"}
                         alt="person"
                         width={40}
                         height={40}
                         className="w-10 h-10 rounded-full"
-                      />
+                      /> */}
                       <div className="flex flex-col space-y-2">
                         <p className="font-semibold">
                           {post.user ? `${post.user.firstname || ''} ${post.user.lastname || ''}`.trim() || post.user?.name : 'Anonymous'}
