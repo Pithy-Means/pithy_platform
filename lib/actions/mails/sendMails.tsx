@@ -1,4 +1,4 @@
-"use server"
+"use server";
 
 import env from "@/env";
 import { Resend } from "resend";
@@ -8,7 +8,7 @@ const resend = new Resend(env.emails.apikey);
 
 export const sendEmail = async (
   payload: CreateEmailOptions,
-  options?: CreateEmailRequestOptions | undefined
+  options?: CreateEmailRequestOptions | undefined,
 ) => {
   try {
     const response = await resend.emails.send(payload, options);

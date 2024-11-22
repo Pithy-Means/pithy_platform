@@ -53,8 +53,8 @@ export type LoginInfo = {
 
 export type ResetPass = {
   email: string;
-  url?: string
-}
+  url?: string;
+};
 
 export type UpdateUser = {
   user_id?: string;
@@ -119,6 +119,8 @@ export type Post = {
   content?: string; // Content of the post
   created_at?: string; // Optional, creation date
   updated_at?: string; // Optional, last updated date
+  repost_of?: string; // ID of the original post if this is a repost
+  user_comment?: string; // Additional user content on top of the reposted content
 };
 
 export type PostWithUser = {
@@ -132,13 +134,13 @@ export type PostWithUser = {
 
 // Define the type for the CommentPost collection
 export interface CommentPost {
-  user_id: string;          // Unique ID of the user who made the comment
-  post_id: string;          // ID of the post the comment is associated with
-  comment_id: string;       // Unique ID of the comment
-  comment: string;          // Content of the comment, max length 1000 characters
-  created_at?: string;      // Timestamp when the comment was created
-  updated_at?: string;      // Timestamp when the comment was last updated
-  user?: { name: string };  // User information associated with the comment
+  user_id: string; // Unique ID of the user who made the comment
+  post_id: string; // ID of the post the comment is associated with
+  comment_id: string; // Unique ID of the comment
+  comment: string; // Content of the comment, max length 1000 characters
+  created_at?: string; // Timestamp when the comment was created
+  updated_at?: string; // Timestamp when the comment was last updated
+  user?: { name: string }; // User information associated with the comment
 }
 
 export type LikePost = {

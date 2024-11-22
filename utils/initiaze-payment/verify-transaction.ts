@@ -5,10 +5,10 @@ const verifyTransaction = async (tx_ref: string) => {
   const res = await fetch("api/proxy-flutterwave/verify-payment", {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ tx_ref })
-  })
+    body: JSON.stringify({ tx_ref }),
+  });
 
   const data = await res.json();
 

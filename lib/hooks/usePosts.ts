@@ -19,35 +19,36 @@ export const usePosts = () => {
   useEffect(() => {
     const unsubscribe = subscribeToPostChanges(async (res) => {
       const { events, payload } = res;
-  
+
       if (events.includes("create")) {
         const user = await getUserInfo({ userId: payload.user_id! });
         setPosts((prev) => [...prev, { ...payload, user }]);
       }
-  
+
       if (events.includes("update")) {
         setPosts((prev) =>
           prev.map((post) =>
-            post.post_id === payload.post_id ? { ...payload, user: post.user } : post
-          )
+            post.post_id === payload.post_id
+              ? { ...payload, user: post.user }
+              : post,
+          ),
         );
       }
-  
+
       if (events.includes("delete")) {
         setPosts((prev) =>
-          prev.filter((post) => post.post_id !== payload.post_id)
+          prev.filter((post) => post.post_id !== payload.post_id),
         );
       }
     });
-  
+
     // Cleanup: Only call unsubscribe if it's a function
     return () => {
-      if (typeof unsubscribe === 'function') {
+      if (typeof unsubscribe === "function") {
         unsubscribe();
       }
     };
   }, []);
-  
-  
+
   return posts;
-}
+};

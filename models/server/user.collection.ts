@@ -17,29 +17,11 @@ export default async function createUserCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(
-      db,
-      userCollection,
-      "user_id",
-      40,
-      true,
-    ),
-    databases.createStringAttribute(
-      db,
-      userCollection,
-      "firstname",
-      100,
-      true,
-    ),
+    databases.createStringAttribute(db, userCollection, "user_id", 40, true),
+    databases.createStringAttribute(db, userCollection, "firstname", 100, true),
     databases.createStringAttribute(db, userCollection, "lastname", 100, true),
     databases.createStringAttribute(db, userCollection, "email", 100, true),
-    databases.createStringAttribute(
-      db,
-      userCollection,
-      "password",
-      100,
-      true,
-    ),
+    databases.createStringAttribute(db, userCollection, "password", 100, true),
     databases.createEnumAttribute(
       db,
       userCollection,
@@ -56,7 +38,7 @@ export default async function createUserCollection() {
       userCollection,
       "age",
       ["18-25", "26-35", "36-45", "46 and +"],
-      true
+      true,
     ),
     databases.createEnumAttribute(
       db,
