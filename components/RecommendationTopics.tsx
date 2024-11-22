@@ -13,11 +13,11 @@ const RecommendationTopics: React.FC<RecommendationTopicsProps> = ({
         <p className="text-base font-bold mb-2 flex justify-center items-center">
           Top Recommended Majors
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {majors.map((major: string, index: number) => (
             <button
               key={index}
-              className="bg-gray-500 text-black/85 px-2 rounded-lg hover:bg-green-600 transition duration-300"
+              className="bg-gray-500 text-black/85 px-2 py-1 rounded-lg hover:bg-green-600 transition duration-300"
             >
               {major}
             </button>
