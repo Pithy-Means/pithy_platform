@@ -28,6 +28,7 @@ const Whatwegive = () => {
                 alt="line"
                 width={40}
                 height={40}
+                priority
                 className="object-cover"
               />
             </div>
