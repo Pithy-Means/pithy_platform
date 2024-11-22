@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 interface VerificationResponse {
   status: string;
@@ -11,32 +11,34 @@ interface VerificationResponse {
 
 export default function VerifyPayment() {
   const [loading, setLoading] = useState(false);
-  const [verificationStatus, setVerificationStatus] = useState<string | null>(null);
+  const [verificationStatus, setVerificationStatus] = useState<string | null>(
+    null,
+  );
   const router = useRouter();
   const { tx_ref } = router.query;
 
   const verifyTransaction = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/proxy-flutterwave/verify-payment', {
-        method: 'POST',
+      const res = await fetch("/api/proxy-flutterwave/verify-payment", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ tx_ref }),
       });
 
       const data: VerificationResponse = await res.json();
-      if (data.status === 'success') {
-        setVerificationStatus('Payment verified successfully');
+      if (data.status === "success") {
+        setVerificationStatus("Payment verified successfully");
         // Redirect to course or success page
-        router.push('/course');
+        router.push("/course");
       } else {
-        setVerificationStatus('Payment verification failed or pending');
+        setVerificationStatus("Payment verification failed or pending");
       }
     } catch (error) {
-      console.error('Error verifying transaction:', error);
-      setVerificationStatus('An error occurred during verification');
+      console.error("Error verifying transaction:", error);
+      setVerificationStatus("An error occurred during verification");
     } finally {
       setLoading(false);
     }

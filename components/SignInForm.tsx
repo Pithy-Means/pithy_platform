@@ -30,7 +30,7 @@ const SignInForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormdata((prev) => ({ ...prev, [name]: value }));
@@ -40,7 +40,7 @@ const SignInForm = () => {
     e.preventDefault();
     setLoading(true);
     setErrorMessage(null);
-  
+
     // Ensure no undefined values in formdata
     if (!formdata.email || !formdata.password) {
       setErrorMessage("Email or Password is missing.");
@@ -49,7 +49,7 @@ const SignInForm = () => {
     }
     try {
       const response = await login(formdata as LoginInfo);
-  
+
       if (response.success) {
         // Only navigate if login is successful
         router.push("/dashboard");
@@ -57,7 +57,7 @@ const SignInForm = () => {
         // Show error message and increment attempts on failure
         setErrorMessage(response.message ?? "An unknown error occurred.");
         setAttempts((prev) => prev + 1);
-  
+
         // Redirect to forgot-password after 5 attempts
         if (attempts >= 4) {
           router.push("/forgot-password");
@@ -70,7 +70,6 @@ const SignInForm = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="flex items-center justify-center w-full">
@@ -141,7 +140,8 @@ const SignInForm = () => {
                 href="/signUp"
                 className="text-sm text-gray-800 hover:text-black hover:font-semibold transition duration-400"
               >
-                Don&apos;t have an account? <span className="text-blue-800">Sign up</span>
+                Don&apos;t have an account?{" "}
+                <span className="text-blue-800">Sign up</span>
               </Link>
             </div>
 

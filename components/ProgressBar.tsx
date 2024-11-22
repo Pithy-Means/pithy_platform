@@ -1,5 +1,5 @@
 // components/ProgressBar.tsx
-import React from 'react';
+import React from "react";
 
 type ProgressBarProps = {
   currentStep: number; // Current step (1-6)
@@ -15,17 +15,21 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ currentStep }) => {
         return (
           <div
             key={index}
-            className={`flex items-center mb-2 w-full ${currentStep >= stepNumber ? 'text-green-500' : 'text-gray-500'}`}
+            className={`flex items-center mb-2 w-full ${currentStep >= stepNumber ? "text-green-500" : "text-gray-500"}`}
           >
             <div
               className={`w-6 h-6 flex items-center justify-center rounded-full border-2 ${
-                currentStep >= stepNumber ? 'border-green-500 bg-green-50' : 'border-gray-300'
+                currentStep >= stepNumber
+                  ? "border-green-500 bg-green-50"
+                  : "border-gray-300"
               }`}
             >
               {stepNumber}
             </div>
             {index < totalSteps - 1 && (
-              <div className={`flex-1 h-1 ${currentStep > stepNumber ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+              <div
+                className={`flex-1 h-1 ${currentStep > stepNumber ? "bg-green-500" : "bg-gray-300"}`}
+              ></div>
             )}
           </div>
         );

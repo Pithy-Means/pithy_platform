@@ -6,6 +6,8 @@ import CreatePost from "@/components/createPosts"; // Import CreatePost componen
 import Posts from "./Posts";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { PostWithUser } from "@/types/schema";
+import { CircleUserRound } from "lucide-react";
+import InputContact from "./InputContact";
 
 const ShareSomething = () => {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
@@ -43,19 +45,14 @@ const ShareSomething = () => {
     <div className="flex flex-col w-full no-scrollbar max-h-screen">
       {/* Header Section */}
       <div className="flex flex-col bg-white text-black px-6 justify-center rounded h-16 p-4 m-6">
-        <div className="flex flex-row gap-4">
-          <Image
-            src="/assets/person_feedback.png"
-            width={40}
-            height={40}
-            alt="person"
-            className="rounded-lg"
-          />
-          <input
+        <div className="flex flex-row items-center gap-4">
+          <CircleUserRound size={32} />
+          <InputContact
             type="text"
-            placeholder="Share something"
+            label="Share something"
             className="border-2 border-gray-300 rounded-lg w-full"
-            onClick={openModal} // Open modal when the input is clicked
+            value="" // Add the value property
+            onChange={openModal} // Open modal when the input is clicked
           />
           <button
             onClick={openModal} // Open modal when button is clicked
@@ -70,7 +67,10 @@ const ShareSomething = () => {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <CreatePost userId={user?.user_id || ""} onPostCreated={addNewPost} />
+            <CreatePost
+              userId={user?.user_id || ""}
+              onPostCreated={addNewPost}
+            />
             <button
               onClick={closeModal}
               className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"

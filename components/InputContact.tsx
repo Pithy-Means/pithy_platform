@@ -11,7 +11,9 @@ interface InputContactProps {
   isTextarea?: boolean;
   value: string | number;
   onChange?: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >,
   ) => void;
 }
 
@@ -27,7 +29,7 @@ const InputContact: React.FC<InputContactProps> = ({
   const [isValid, setIsValid] = useState<boolean>(false);
 
   const handleValidation = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const inputValue = e.target.value;
 

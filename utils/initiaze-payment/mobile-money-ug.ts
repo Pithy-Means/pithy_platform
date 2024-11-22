@@ -1,11 +1,13 @@
 import { PaymentData, PaymentResponse } from "@/types/schema";
 
-export async function initiatePayment(paymentData: PaymentData): Promise<PaymentResponse> {
+export async function initiatePayment(
+  paymentData: PaymentData,
+): Promise<PaymentResponse> {
   try {
-    const response = await fetch('/api/proxy-flutterwave/mobile-money', {
-      method: 'POST',
+    const response = await fetch("/api/proxy-flutterwave/mobile-money", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(paymentData),
     });
@@ -17,7 +19,7 @@ export async function initiatePayment(paymentData: PaymentData): Promise<Payment
     const result: PaymentResponse = await response.json();
     return result; // Explicitly return the response
   } catch (error) {
-    console.error('Error in initiatePayment:', (error as Error).message);
+    console.error("Error in initiatePayment:", (error as Error).message);
     throw error; // Re-throw the error for handling in the calling function
   }
 }

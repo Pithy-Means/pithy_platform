@@ -4,13 +4,15 @@ import { FaSearch } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { IoMdNotificationsOutline } from "react-icons/io";
 
-
 interface DashboardNavBarProps {
   user: string;
   children: React.ReactNode;
 }
 
-const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => {
+const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
+  user,
+  children,
+}) => {
   return (
     <div className="bg-gray-300">
       <nav className="flex h-20 w-full bg-white justify-evenly items-center">

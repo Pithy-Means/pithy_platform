@@ -1,22 +1,21 @@
-import { createPost } from '@/lib/actions/user.actions';
-import { Post } from '@/types/schema';
-import React, { useState } from 'react'
+import { createPost } from "@/lib/actions/user.actions";
+import { Post } from "@/types/schema";
+import React, { useState } from "react";
 
 interface CreatePostProps {
   userId: string; // Pass the logged-in user ID as a prop
-  onPostCreated: (post: Post) => void; 
-
+  onPostCreated: (post: Post) => void;
 }
 
 const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
+  // Define initial state for the post
+  const [post, setPost] = useState<Post>({
+    user_id: userId,
+  });
+  const [loading, setLoading] = useState<boolean>(false);
 
-    // Define initial state for the post
-    const [post, setPost] = useState<Post>({
-      user_id: userId,
-    });
-    
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setPost((prev) => ({
@@ -28,12 +27,15 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
+      setLoading(true);
       // Call the createPost function from user.actions.ts
       const newPost = await createPost(post);
       onPostCreated(newPost);
       // Redirect to the dashboard after successful post creation
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
   return (
@@ -41,7 +43,9 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
 
       <div className="flex flex-col">
-        <label htmlFor="content" className="font-medium">Content</label>
+        <label htmlFor="content" className="font-medium">
+          Content
+        </label>
         <textarea
           id="content"
           name="content"
@@ -59,7 +63,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
         Create Post
       </button>
     </form>
-  )
-}
+  );
+};
 
-export default CreatePost
+export default CreatePost;

@@ -39,7 +39,9 @@ const SignupForm = () => {
       };
 
       const fields = requiredFields[currentStep] || [];
-      const isComplete = fields.every((field) => formData[field as keyof UserInfo]);
+      const isComplete = fields.every(
+        (field) => formData[field as keyof UserInfo],
+      );
       setIsFormComplete(isComplete);
     };
 
@@ -50,7 +52,7 @@ const SignupForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
@@ -111,7 +113,7 @@ const SignupForm = () => {
                 name="institution_name"
                 value={formData.institution_name || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -120,7 +122,7 @@ const SignupForm = () => {
                 name="major_subject"
                 value={formData.major_subject || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -129,7 +131,7 @@ const SignupForm = () => {
                 name="expected_graduation_year"
                 value={formData.expected_graduation_year || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
           </>
         );
@@ -144,7 +146,7 @@ const SignupForm = () => {
                 name="desired_job_title"
                 value={formData.desired_job_title || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -153,7 +155,7 @@ const SignupForm = () => {
                 name="skills"
                 value={formData.skills || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -162,7 +164,7 @@ const SignupForm = () => {
                 name="years_of_work_experience"
                 value={formData.years_of_work_experience || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -171,7 +173,7 @@ const SignupForm = () => {
                 name="resume_link"
                 value={formData.resume_link || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Availability Status</label>
@@ -203,7 +205,7 @@ const SignupForm = () => {
                 name="company_name"
                 value={formData.company_name || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <label className="block text-gray-700">Company Size</label>
@@ -228,7 +230,7 @@ const SignupForm = () => {
                 name="industry_type"
                 value={formData.industry_type || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -237,7 +239,7 @@ const SignupForm = () => {
                 name="position_in_company"
                 value={formData.position_in_company || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
             <div className="mb-4">
               <InputContact
@@ -246,7 +248,7 @@ const SignupForm = () => {
                 name="job_posting_count"
                 value={formData.job_posting_count || ""}
                 onChange={handleChange}
-                />
+              />
             </div>
           </>
         );
@@ -259,9 +261,7 @@ const SignupForm = () => {
     <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col">
       {/* Progress Bar */}
       <div className="w-1/5">
-        <ProgressBar
-          currentStep={currentStep}
-          />
+        <ProgressBar currentStep={currentStep} />
       </div>
       <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
         {/* Basic fields */}
@@ -316,9 +316,9 @@ const SignupForm = () => {
                 name="password"
                 value={formData.password || ""}
                 onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded" 
-                label={"Password"}              
-                />
+                className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                label={"Password"}
+              />
             </div>
           )}
           {currentStep === 1 && (
@@ -388,7 +388,11 @@ const SignupForm = () => {
             <button
               type="button"
               onClick={handleNext}
-              className={!isFormComplete ? "text-red-500 p-2 ": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
+              className={
+                !isFormComplete
+                  ? "text-red-500 p-2 "
+                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              }
               disabled={!isFormComplete}
             >
               {!isFormComplete ? "Complete the missing space" : "Next"}
@@ -397,7 +401,11 @@ const SignupForm = () => {
           {currentStep === 3 && (
             <button
               type="submit"
-              className={!isFormComplete ? "bg-black text-white/10": "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"}
+              className={
+                !isFormComplete
+                  ? "bg-black text-white/10"
+                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+              }
               disabled={!isFormComplete}
             >
               Sign up

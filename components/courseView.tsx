@@ -1,11 +1,9 @@
-'use client'
-import React, { useState, useEffect } from 'react'
+"use client";
+import React, { useState, useEffect } from "react";
 import { FaListUl } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
-import CourseCard from './CourseCard';
-import {getData} from '@/app/(api)/api/courses/route';
-
-
+import CourseCard from "./CourseCard";
+import { getData } from "@/app/(api)/api/courses/route";
 
 const CourseView: React.FC = () => {
   const [courses, setCourses] = useState([]);
@@ -19,13 +17,12 @@ const CourseView: React.FC = () => {
       setCourses(data);
     } catch (error) {
       setLoading(false);
-      console.error('Error fetching courses:', error);
-      setError('Error fetching courses');
+      console.error("Error fetching courses:", error);
+      setError("Error fetching courses");
     } finally {
       setLoading(false);
     }
-
-  }
+  };
   useEffect(() => {
     fetchCourses();
   }, []);
@@ -38,20 +35,19 @@ const CourseView: React.FC = () => {
     return <p>{error}</p>;
   }
 
-
   return (
-    <div className='flex flex-col w-full h-full '>
-      <div className='flex flex-col bg-white  text-black px-6 justify-center h-10 p-4 m-6'>
-        <div className='flex justify-between'>
+    <div className="flex flex-col w-full h-full ">
+      <div className="flex flex-col bg-white  text-black px-6 justify-center h-10 p-4 m-6">
+        <div className="flex justify-between">
           <div>
-            <p className='text-lg'>All Courses</p>
+            <p className="text-lg">All Courses</p>
           </div>
-          <div className='flex flex-row gap-10 items-center'>
+          <div className="flex flex-row gap-10 items-center">
             <div>
-              <LiaThListSolid size={30} className='text-green-600 text-fill' />
+              <LiaThListSolid size={30} className="text-green-600 text-fill" />
             </div>
-            <div >
-              <FaListUl size={20} className='' />
+            <div>
+              <FaListUl size={20} className="" />
             </div>
           </div>
         </div>
@@ -59,8 +55,7 @@ const CourseView: React.FC = () => {
 
       <CourseCard courses={courses} />
     </div>
-  )
-}
+  );
+};
 
-export default CourseView
-
+export default CourseView;

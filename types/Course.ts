@@ -1,4 +1,4 @@
- export default interface Course {
+export default interface Course {
   _id: string | number;
   title: string;
   image: string;
