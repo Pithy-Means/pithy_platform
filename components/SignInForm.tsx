@@ -2,7 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
 import InputContact from "@/components/InputContact";
 import { LoginInfo } from "@/types/schema";
 import { login } from "@/lib/actions/user.actions";
