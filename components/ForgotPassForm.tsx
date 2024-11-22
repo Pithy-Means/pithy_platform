@@ -3,8 +3,6 @@
 import { recovery } from "@/lib/actions/user.actions";
 import { ResetPass, UserInfo } from "@/types/schema";
 import { useState, FormEvent } from "react";
-import TestEmailbutton from "./TestEmailbutton";
-import { sendEmail } from "@/lib/actions/mails/sendMails";
 
 const ForgotPasswordForm: React.FC = () => {
   const [form, setForm] = useState<Partial<ResetPass>>({ email: "" });
@@ -31,14 +29,14 @@ const ForgotPasswordForm: React.FC = () => {
     }, 2000);
   };
 
-  const createEmail = async () => {
-    await sendEmail({
-      sender: { name: "Acme", email: "onboarding@resend.dev" },
-      receipients: [{ name: "Recipient", email: "bandonkeyea@gmail.com" }],
-      subject: "Test Email",
-      message: "<h1>Hello, this is a test email from Resend.</h1>",
-    } as unknown as any);
-  };
+  // const createEmail = async () => {
+  //   await sendEmail({
+  //     sender: { name: "Acme", email: "onboarding@resend.dev" },
+  //     receipients: [{ name: "Recipient", email: "bandonkeyea@gmail.com" }],
+  //     subject: "Test Email",
+  //     message: "<h1>Hello, this is a test email from Resend.</h1>",
+  //   } as unknown as any);
+  // };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
