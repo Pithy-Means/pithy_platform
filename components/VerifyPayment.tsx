@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+// Fix the unknow data type
 interface VerificationResponse {
   status: string;
   message: string;
-  data?: any;
+  data?: unknown;
 }
 
 export default function VerifyPayment() {
