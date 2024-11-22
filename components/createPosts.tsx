@@ -41,30 +41,36 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     }
   };
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-      <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
-
-      <div className="flex flex-col">
-        <label htmlFor="content" className="font-medium">
-          Content
-        </label>
-        <textarea
-          id="content"
-          name="content"
-          value={post.content}
-          onChange={handleChange}
-          required
-          className="border border-gray-300 rounded-md p-2"
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
-      >
-        Create Post
-      </button>
-    </form>
+    <>
+    {loading ? (
+      <p>Creating post...</p>
+    ) : (
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+        <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
+  
+        <div className="flex flex-col">
+          <label htmlFor="content" className="font-medium">
+            Content
+          </label>
+          <textarea
+            id="content"
+            name="content"
+            value={post.content}
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-md p-2"
+          />
+        </div>
+  
+        <button
+          type="submit"
+          className="bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
+        >
+          Create Post
+        </button>
+      </form>
+    )}
+    </>
   );
 };
 
