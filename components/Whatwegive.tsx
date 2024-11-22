@@ -1,6 +1,7 @@
 import { Button } from "./ui/button";
 import TitleDot from "./TitleDot";
 import { Card } from "./ui/card";
+import Image from "next/image";
 
 const Whatwegive = () => {
   return (
