@@ -25,6 +25,36 @@ const nextConfig = {
         };
         return config;
     },
+    // Cache-Control Headers
+    async headers() {
+        return [
+            {
+                source: "/(.*).(js|css|woff|woff2|ttf|otf|eot|ico|jpg|jpeg|png|svg|gif|webp|avif)",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "public, max-age=31536000, immutable",
+                    },
+                ],
+            },
+            {
+                source: "/_next/static/(.*)",
+                headers: [
+                    {
+                        key: "Cache-Control",
+                        value: "public, max-age=31536000, immutable",
+                    },
+                ],
+            },
+        ];
+    },
+
+    // Incremental Static Regeneration
+    async revalidate() {
+        return {
+            revalidate: 60, // Revalidate pages every 60 seconds
+        };
+    },
 };
 
 export default bundleAnalyzer(nextConfig);
