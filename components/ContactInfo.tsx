@@ -18,9 +18,7 @@ const ContactInfo: React.FC<ContactInfoProps> = ({
 }) => {
   const phoneNumbers = Array.isArray(phone) ? phone : [phone];
   return (
-    <div
-      className={`flex flex-col gap-0 md:space-y-4 ${className}`}
-    >
+    <div className={`flex flex-col gap-0 md:space-y-4 ${className}`}>
       <h1
         className={`text-lg md:text-xl lg:text-2xl font-bold uppercase ${className}`}
       >
