@@ -16,7 +16,7 @@ import createJobCollection from "./job.collection";
 import createCertificateCollection from "./certificate.collection";
 import createPaymentCollection from "./payment.collection";
 
-let isDbSetup = false;
+const isDbSetup = false;
 
 export default async function getOrCreateDB() {
   if (isDbSetup) {
