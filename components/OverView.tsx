@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -12,9 +12,11 @@ import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
 import { BriefcaseBusiness, School } from "lucide-react";
-import { logoutUser } from "@/lib/actions/user.actions";
+import { getLoggedInUser, logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 import ModalComp from "./ModalComp";
+import { PostWithUser } from "@/types/schema";
+import CreatePost from "./createPosts";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -25,6 +27,36 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [isCoursesModalOpen, setCoursesModalOpen] = useState(false); // State for Courses modal
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
+  const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
+  const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const loggedInUser = await getLoggedInUser(); // Fetch logged in user
+      setUser(loggedInUser);
+    };
+    fetchUser();
+  }, []);
+
+  // Function to open the modal
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to close the modal
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to add a new post to the state
+  const addNewPost = (newPost: PostWithUser) => {
+    setPosts((prevPosts) => {
+      console.log("Previous posts:", prevPosts); // Debugging line
+      return [newPost, ...(Array.isArray(prevPosts) ? prevPosts : [])];
+    });
+    closeModal(); // Close the modal after adding the post
+  };
 
   const notAuthorizedLinks = ["Community", "Scholarship"];
 
@@ -49,7 +81,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     }`;
 
   return (
-    <div className="flex space-x-4 w-full pr-4">
+    <div className="flex space-x-4 w-full pr-8">
       <div className="flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
         <div className="flex flex-col space-y-2">
           <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
@@ -73,14 +105,10 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               <IoIosPeople size={24} />
               <p className="text-base hidden lg:block">Community</p>
             </Link>
-            <Link
-              href="/post"
-              className={getLinkClassName("/post")}
-              onClick={(e) => handleLinkClick(e, "Post")}
-            >
+            <button onClick={openModal} className={getLinkClassName("/post")}>
               <MdOutlineAddCircle size={24} />
               <p className="text-base hidden lg:block">Post</p>
-            </Link>
+            </button>
             <Link
               href="/jobs"
               className={getLinkClassName("/jobs")}
@@ -130,6 +158,23 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           </div>
         </div>
       </div>
+      {/* Conditionally render the modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <CreatePost
+              userId={user?.user_id || ""}
+              onPostCreated={addNewPost}
+            />
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       <ModalComp
