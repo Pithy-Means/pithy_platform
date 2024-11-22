@@ -29,20 +29,20 @@ export type RegularUserInfo = {
   role: "user"; // Role is always 'user'
   categories: UserCategories; // Categories required for regular users
 } & (
-    | { categories: "student"; studentInfo: StudentInfo } // Student user
-    | { categories: "job seeker"; jobSeekerInfo: JobSeekerInfo } // Job seeker user
-    | { categories: "employer"; employerInfo: EmployerInfo } // Employer user
-  );
+  | { categories: "student"; studentInfo: StudentInfo } // Student user
+  | { categories: "job seeker"; jobSeekerInfo: JobSeekerInfo } // Job seeker user
+  | { categories: "employer"; employerInfo: EmployerInfo } // Employer user
+);
 
 //Category-sp studentInfo
 export type StudentInfo = {
   education_level?:
-  | "High School"
-  | "Tertiary"
-  | "Diploma"
-  | "Bachelors"
-  | "Masters"
-  | "PhD";
+    | "High School"
+    | "Tertiary"
+    | "Diploma"
+    | "Bachelors"
+    | "Masters"
+    | "PhD";
   institution_name?: string;
   major_subject?: string;
   expected_graduation_year?: number;
@@ -61,11 +61,11 @@ export type JobSeekerInfo = {
 export type EmployerInfo = {
   company_name?: string;
   company_size?:
-  | "1-10 employees"
-  | "11-50 employees"
-  | "51-200 employees"
-  | "201-500 employees"
-  | "501+ employees";
+    | "1-10 employees"
+    | "11-50 employees"
+    | "51-200 employees"
+    | "201-500 employees"
+    | "501+ employees";
   industry_type?: string;
   position_in_company?: string;
   job_posting_count?: number;
@@ -88,14 +88,28 @@ export type GetUserInfo = {
 //Login info type
 export type LoginInfo = Pick<UserInfo, "email" | "password">;
 
+export type UpdateUser = {
+  user_id?: string;
+  secret?: string;
+  password: string;
+  passwordAgain: string;
+};
+
+export type ResetPass = {
+  email: string;
+  url?: string;
+};
+
+// Define the Post type based on the collection's fields
 // Define the Post type based on the collection's fields
 export type Post = {
-  // $id?: string; // Unique identifier for the post
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
   content?: string; // Content of the post
   created_at?: string; // Optional, creation date
   updated_at?: string; // Optional, last updated date
+  repost_of?: string; // ID of the original post if this is a repost
+  user_comment?: string; // Additional user content on top of the reposted content
 };
 
 //post with user info
@@ -105,13 +119,13 @@ export type PostWithUser = Post & {
 
 // Define the type for the CommentPost collection
 export interface CommentPost {
-  user_id: string;          // Unique ID of the user who made the comment
-  post_id: string;          // ID of the post the comment is associated with
-  comment_id: string;       // Unique ID of the comment
-  comment: string;          // Content of the comment, max length 1000 characters
-  created_at?: string;      // Timestamp when the comment was created
-  updated_at?: string;      // Timestamp when the comment was last updated
-  user?: Partial<UserInfo>;  // User information associated with the comment
+  user_id: string; // Unique ID of the user who made the comment
+  post_id: string; // ID of the post the comment is associated with
+  comment_id: string; // Unique ID of the comment
+  comment: string; // Content of the comment, max length 1000 characters
+  created_at?: string; // Timestamp when the comment was created
+  updated_at?: string; // Timestamp when the comment was last updated
+  user?: Partial<UserInfo>; // User information associated with the comment
 }
 
 export type LikePost = {
@@ -142,3 +156,33 @@ export type FormDataState =
         employerInfo?: Partial<EmployerInfo>;
       });
 
+export interface PaymentData {
+  amount: number;
+  currency: string;
+  tx_ref: string;
+  email: string;
+  phone_number: string;
+  network: string;
+}
+
+export interface PaymentResponse {
+  status: string;
+  message: string;
+  redirect?: string;
+  tx_ref?: string;
+}
+
+export interface CardPaymentData {
+  card_number: string;
+  cvv: string;
+  expiry_month: string;
+  expiry_year: string;
+  currency: string;
+  amount: number;
+  email: string;
+  tx_ref: string;
+  redirect_url: string;
+  fullname: string;
+  phone_number: string;
+  enckey: string;
+}
