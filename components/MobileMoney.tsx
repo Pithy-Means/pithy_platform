@@ -1,48 +1,48 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { initiatePayment } from '@/utils/initiaze-payment/mobile-money-ug';
-import Modal from '@/components/Modal';
+import { useState } from "react";
+import { initiatePayment } from "@/utils/initiaze-payment/mobile-money-ug";
+import Modal from "@/components/Modal";
 
 export default function MobileMoney() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [network, setNetwork] = useState('AIRTEL'); // Default to Airtel
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [network, setNetwork] = useState("AIRTEL"); // Default to Airtel
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalContent, setModalContent] = useState<React.ReactNode>(null);
 
   const handlePayment = async () => {
     if (!email || !phoneNumber) {
-      alert('Please enter both email and phone number.');
+      alert("Please enter both email and phone number.");
       return;
     }
-  
+
     setLoading(true);
     setIsModalOpen(true);
     setModalContent(<p>Processing payment...</p>);
-  
+
     const paymentData = {
       amount: 1000000,
-      currency: 'UGX',
+      currency: "UGX",
       tx_ref: `tx_ref_${Math.floor(Math.random() * 1000000)}`,
       email: email,
       phone_number: phoneNumber,
       network: network,
     };
-  
+
     try {
       const res = await initiatePayment(paymentData);
-  
+
       if (res.status === "success" && res.redirect) {
         const proxyUrl = `/api/proxy-flutterwave/fetch-redirect-content?url=${encodeURIComponent(
-          res.redirect
+          res.redirect,
         )}`;
-  
+
         const redirectContent = await fetch(proxyUrl).then((response) =>
-          response.text()
+          response.text(),
         );
-  
+
         setModalContent(
           <div className="overflow-auto max-h-[80vh] p-4">
             <h2 className="text-lg font-bold mb-2">Payment Page</h2>
@@ -50,19 +50,19 @@ export default function MobileMoney() {
               className="border p-4 bg-gray-100"
               dangerouslySetInnerHTML={{ __html: redirectContent }}
             ></div>
-          </div>
+          </div>,
         );
       } else {
         setModalContent(<p>Payment initiation failed. Please try again.</p>);
       }
     } catch (error) {
-      console.error('Error initiating payment:', error);
+      console.error("Error initiating payment:", error);
       setModalContent(<p>Something went wrong. Please try again later.</p>);
     } finally {
       setLoading(false);
     }
   };
-  
+
   const closeModal = () => {
     setIsModalOpen(false);
     setModalContent(null);
