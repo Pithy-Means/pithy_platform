@@ -121,12 +121,12 @@ const content = {
   padding: "5px 20px 10px 20px",
 };
 
-const logo = {
-  display: "flex",
-  justifyContent: "center",
-  alingItems: "center",
-  padding: 30,
-};
+// const logo = {
+//   display: "flex",
+//   justifyContent: "center",
+//   alingItems: "center",
+//   padding: 30,
+// };
 
 const sectionsBorders = {
   width: "100%",
