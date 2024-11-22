@@ -21,7 +21,7 @@ import {
 } from "@/lib/actions/user.actions";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { CommentPost } from "@/types/schema";
+import { CommentPost, LikePost, PostWithUser } from "@/types/schema";
 import Image from "next/image";
 import InfiniteScroll from "react-infinite-scroll-component";
 import InputContact from "./InputContact";
@@ -31,7 +31,7 @@ dayjs.extend(relativeTime);
 const Posts = () => {
   const [loading, setLoading] = useState(false);
   const fetchedPosts = usePosts();
-  const [posts, setPosts] = useState<any[]>([]);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [loggedIn, setLoggedIn] = useState<{
     user_id: string;
     firstname: string;
@@ -39,7 +39,7 @@ const Posts = () => {
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [editedContent, setEditedContent] = useState<string>("");
   const [showOptions, setShowOptions] = useState<string | null>(null);
-  const [comments, setComments] = useState<{ [key: string]: any[] }>({});
+  const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>({});
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [hasMore, setHasMore] = useState(true);
   const [showComments, setShowComments] = useState<{ [key: string]: boolean }>(
@@ -55,16 +55,16 @@ const Posts = () => {
   );
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
 
-  const handleRepost = async (post: any) => {
+  const handleRepost = async (post: PostWithUser) => {
     try {
-      if (!repostContent[post.$id]) return;
+      if (!post.post_id || !repostContent[post.post_id]) return;
 
       const repostData = {
         post_id: post.post_id,
         user_id: loggedIn?.user_id,
         content: post.content, // Original post content
         repost_of: post.post_id, // Indicate it's a repost
-        user_comment: repostContent[post.$id], // User's additional comment
+        user_comment: repostContent[post.post_id], // User's additional comment
       };
 
       const newRepost = await repost(repostData);
@@ -72,7 +72,13 @@ const Posts = () => {
       if (newRepost) {
         console.log("Repost created successfully", newRepost);
         setRepostingPostId(null); // Close the modal or input area
-        setRepostContent((prev) => ({ ...prev, [post.$id]: "" }));
+        if (post.post_id) {
+          if (post.post_id) {
+            if (post.post_id) {
+              setRepostContent((prev) => ({ ...prev, [post.post_id || ""]: "" }));
+            }
+          }
+        }
       }
     } catch (error) {
       console.error("Error creating repost:", error);
@@ -151,7 +157,7 @@ const Posts = () => {
       if (fetchedPosts.length > 0) {
         setLoading(true);
         setPosts((prevPosts) => {
-          const existingIds = new Set(prevPosts.map((post) => post.$id));
+          const existingIds = new Set(prevPosts.map((post) => post.post_id));
           const newPosts = fetchedPosts.filter(
             (post) => !existingIds.has(post.post_id),
           );
@@ -163,7 +169,7 @@ const Posts = () => {
             fetchedPosts.map(async (post) => {
               const likes = await getLikesByPostId(post.post_id || "");
               const isLiked = likes.some(
-                (like: any) => like.user_id === loggedIn?.user_id,
+                (like: LikePost) => like.user_id === loggedIn?.user_id,
               );
               return {
                 postId: post.post_id,
@@ -213,7 +219,7 @@ const Posts = () => {
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
-      setPosts((prevPosts) => prevPosts.filter((post) => post.$id !== postId));
+      setPosts((prevPosts) => prevPosts.filter((post) => post.post_id !== postId));
     } catch (error) {
       console.error(error);
     }
@@ -223,7 +229,7 @@ const Posts = () => {
     try {
       const updatedPost = await updatePost(postId, { content: editedContent });
       setPosts((prevPosts) =>
-        prevPosts.map((post) => (post.$id === postId ? updatedPost : post)),
+        prevPosts.map((post) => (post.post_id === postId ? updatedPost : post)),
       );
       setEditingPostId(null);
     } catch (error) {
@@ -298,7 +304,7 @@ const Posts = () => {
           {posts.length > 0 ? (
             posts.map((post) => (
               <div
-                key={post.$id}
+                key={post.post_id}
                 className="border border-gray-300 rounded-md p-4 bg-white/10"
               >
                 <div className="flex flex-col ">
@@ -319,7 +325,7 @@ const Posts = () => {
                     {loggedIn?.user_id === post.user_id && (
                       <HiOutlineDotsVertical
                         className="text-gray-500 cursor-pointer"
-                        onClick={() => toggleOptions(post.$id)}
+                        onClick={() => post.post_id && toggleOptions(post.post_id)}
                       />
                     )}
                   </div>
@@ -334,20 +340,22 @@ const Posts = () => {
                     />
                   </div>
 
-                  {showOptions === post.$id &&
+                  {showOptions === post.post_id &&
                     loggedIn?.user_id === post.user_id && (
                       <div className="flex space-x-2 mt-2">
                         <button
                           onClick={() => {
-                            setEditingPostId(post.$id);
-                            setEditedContent(post.content);
+                            if (post.post_id) {
+                              setEditingPostId(post.post_id);
+                              setEditedContent(post.content || "");
+                            }
                           }}
                           className="bg-green-500 text-white rounded-md px-4 py-2 hover:bg-green-600"
                         >
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(post.$id)}
+                          onClick={() => handleDelete(post.post_id || "")}
                           className="bg-red-500 text-white rounded-md px-4 py-2 hover:bg-red-600"
                         >
                           Delete
@@ -356,7 +364,7 @@ const Posts = () => {
                     )}
                 </div>
 
-                {editingPostId === post.$id && (
+                {editingPostId === post.post_id && (
                   <div className="mt-2">
                     <textarea
                       value={editedContent}
@@ -365,7 +373,7 @@ const Posts = () => {
                     />
                     <div className="mt-2">
                       <button
-                        onClick={() => handleUpdate(post.$id)}
+                        onClick={() => handleUpdate(post.post_id || "")}
                         className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 mr-2"
                       >
                         Save
@@ -387,17 +395,17 @@ const Posts = () => {
                         <ThumbsUp size={16} strokeWidth={1} />
                       </div>
                       <span className="font-normal">
-                        {likeStatus[post.$id]?.likeCount || 0}
+                        {post.post_id ? likeStatus[post.post_id]?.likeCount || 0 : 0}
                       </span>
                     </div>
                     <button
-                      onClick={() => toggleComments(post.$id)}
+                      onClick={() => post.post_id && toggleComments(post.post_id)}
                       className="text-blue-500"
                     >
-                      {showComments[post.$id]
+                      {post.post_id && showComments[post.post_id]
                         ? "Hide Comments"
                         : "Show Comments"}{" "}
-                      ({comments[post.$id]?.length || 0})
+                      ({post.post_id ? comments[post.post_id]?.length || 0 : 0})
                     </button>
                   </div>
                   <div className="w-full bg-gray-300 h-0.5 rounded" />
@@ -408,12 +416,12 @@ const Posts = () => {
                         : ""}
                     </div>
                     <button
-                      onClick={() => handleLike(post.$id)}
+                      onClick={() => post.post_id && handleLike(post.post_id)}
                       disabled={loading}
                       className={`flex flex-col space-y-1 items-center`}
                     >
                       <p>
-                        {likeStatus[post.$id]?.isLiked ? (
+                        {post.post_id && likeStatus[post.post_id]?.isLiked ? (
                           <ThumbsUp size={24} strokeWidth={2} />
                         ) : (
                           <ThumbsUp size={24} strokeWidth={2} />
@@ -435,7 +443,7 @@ const Posts = () => {
                       </span>
                     </button>
                     <button
-                      onClick={() => setRepostingPostId(post.$id)}
+                      onClick={() => post.post_id && setRepostingPostId(post.post_id)}
                       className="flex flex-col space-y-1 items-center"
                     >
                       <p>
@@ -454,14 +462,14 @@ const Posts = () => {
                       </span>
                     </button>
                   </div>
-                  {repostingPostId === post.$id && (
+                  {repostingPostId === post.post_id && (
                     <div className="mt-2">
                       <textarea
-                        value={repostContent[post.$id] || ""}
+                        value={repostContent[post.post_id] || ""}
                         onChange={(e) =>
                           setRepostContent((prev) => ({
                             ...prev,
-                            [post.$id]: e.target.value,
+                            [post.post_id || ""]: e.target.value,
                           }))
                         }
                         placeholder="Add your comment to this repost..."
@@ -483,10 +491,10 @@ const Posts = () => {
                       </div>
                     </div>
                   )}
-                  {showComments[post.$id] && (
+                  {post.post_id && showComments[post.post_id] && (
                     <div className="mt-4 flex flex-col space-y-4">
                       <div>
-                        {comments[post.$id]?.map((comment) => (
+                        {comments[post.post_id]?.map((comment: CommentPost) => (
                           <div
                             key={comment.comment_id}
                             className="flex items-center gap-2 mb-2"
@@ -515,18 +523,18 @@ const Posts = () => {
                     <div className="flex items-center my-2 w-full">
                       <InputContact
                         type="text"
-                        value={newComment[post.$id] || ""}
+                        value={post.post_id ? newComment[post.post_id] || "" : ""}
                         onChange={(e) =>
                           setNewComment((prev) => ({
                             ...prev,
-                            [post.$id]: e.target.value,
+                            [post.post_id || ""]: e.target.value,
                           }))
                         }
                         label="Add a comment..."
                         className="border rounded-md p-2 w-full"
                       />
                       <button
-                        onClick={() => handleAddComment(post.$id)}
+                        onClick={() => handleAddComment(post.post_id || "")}
                         className="bg-blue-500 text-white px-4 py-2 ml-2 rounded-md"
                       >
                         Comment
