@@ -15,7 +15,6 @@ export async function POST(req: Request) {
     cvv,
     expiry_month,
     expiry_year,
-    enckey,
   } = data;
 
   try {
