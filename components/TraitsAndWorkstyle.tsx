@@ -12,11 +12,11 @@ const TraitsAndWorkstyle: React.FC<TraitsAndWorkstyleProps> = ({ traits }) => {
         <p className="text-base font-bold mb-2 flex justify-center items-center">
           Traits & Work Style
         </p>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-3">
           {traitsToDisplay.map((trait: string, index: number) => (
             <button
               key={index}
-              className="bg-gray-500 text-black/85 px-2 rounded-lg hover:bg-green-600  transition duration-300"
+              className="bg-gray-500 text-black/85 px-2 py-1 rounded-lg hover:bg-green-600  transition duration-300"
             >
               {trait}
             </button>
