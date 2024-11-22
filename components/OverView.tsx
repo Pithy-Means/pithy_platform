@@ -29,6 +29,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const pathname = usePathname(); // Get the current path
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
   const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
 
   useEffect(() => {
