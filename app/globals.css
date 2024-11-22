@@ -98,13 +98,13 @@ body {
 /* When input is focused or has content */
 input:focus ~ .input-text,
 input:valid ~ .input-text {
-  @apply text-blue-500 bg-white transform -translate-y-5 -translate-x-4 scale-75;
+  @apply text-blue-500 bg-white transform -translate-y-5 -translate-x-4 scale-75 2xl:text-2xl;
 }
 
 /* When textarea is focused or has content */
 textarea:focus ~ .input-text,
 textarea:valid ~ .input-text {
-  @apply text-blue-500 bg-white transform -translate-y-5 -translate-x-4 scale-75;
+  @apply text-blue-500 bg-white transform -translate-y-5 -translate-x-4 scale-75 2xl:text-2xl;
 }
 
 /* custom.css */
