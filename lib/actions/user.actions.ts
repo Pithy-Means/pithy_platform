@@ -6,11 +6,11 @@ import {
   LikePost,
   LoginInfo,
   Post,
-  ResetPass,
+  // ResetPass,
   UpdateUser,
   UserInfo,
 } from "@/types/schema";
-import crypto from "crypto";
+// import crypto from "crypto";
 import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
