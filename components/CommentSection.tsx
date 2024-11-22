@@ -12,7 +12,9 @@ interface CommentSectionProps {
   comments: { [key: string]: Comment[] };
   fetchComments: (postId: string) => void;
   newComment: { [key: string]: string };
-  setNewComment: React.Dispatch<React.SetStateAction<{ [key: string]: string }>>;
+  setNewComment: React.Dispatch<
+    React.SetStateAction<{ [key: string]: string }>
+  >;
   addComment: (postId: string) => void;
 }
 
@@ -55,9 +57,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       {!isTextareaVisible ? (
         <button
           onClick={() => setIsTextareaVisible(true)}
-          className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
+          className="text-white rounded-md hover:bg-blue-600"
         >
-          Add a Comment
+          🗨️
         </button>
       ) : (
         <div className="flex items-center">
