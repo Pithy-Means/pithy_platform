@@ -9,3 +9,4 @@ export default interface Course {
   description?: string;
   isFree?: string;
 }
+ 

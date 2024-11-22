@@ -1,20 +1,20 @@
 import { client } from "@/models/client/config";
 import { getPosts, getUserInfo } from "./user.actions";
 import { db, postCollection } from "@/models/name";
-import { Post, PostWithUser } from "@/types/schema";
+import {  Post } from "@/types/schema";
 
-type PostEvent = {
+interface SubscriptionEvent<Tpayload = string> {
   events: string[];
-  payload: Post;
+  payload: Tpayload;
 };
 
-export const fetchPosts = async (): Promise<PostWithUser[]> => {
+export const fetchPosts = async () => {
   try {
-    const response = await getPosts();
-    console.log("Posts:", response);
-    const postsWithUserInfo: PostWithUser[] = await Promise.all(
-      response.documents.map(async (post: Post) => {
-        const user = await getUserInfo({ userId: post.user_id! });
+    const response  = await getPosts();
+    console.log('Posts:', response);
+    const postsWithUserInfo = await Promise.all(response.documents.map(
+      async (post: { user_id: unknown; }) => {
+        const user = await getUserInfo({ userId: post.user_id  as string});
         return {
           ...post,
           user,
@@ -30,12 +30,24 @@ export const fetchPosts = async (): Promise<PostWithUser[]> => {
 };
 
 // Adjusted subscription logic
+// export const subscribeToPostChanges = (callback: (posts: PostWithUser) => void): (() => void) => {
+//   const unsubscription = client.subscribe(
+//     `databases.${db}.collections.${postCollection}.documents`,
+//     callback
+//   );
+
+//   return () => {
+//     unsubscription();
+//   }
+// };
+
+
 export const subscribeToPostChanges = (
-  callback: (posts: PostEvent) => void,
+  callback: (event: SubscriptionEvent<Post>) => void
 ): (() => void) => {
   const unsubscription = client.subscribe(
-    `databases.${db}.collections.${postCollection}.documents`,
-    callback,
+    `databases.${db}.documents.${postCollection}.documents`,
+    callback
   );
 
   return () => {

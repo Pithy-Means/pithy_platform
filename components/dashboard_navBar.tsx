@@ -3,6 +3,7 @@ import Logo from "./Logo";
 import { FaSearch } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { IoMdNotificationsOutline } from "react-icons/io";
+// import Image from "next/image";
 
 interface DashboardNavBarProps {
   user: string;

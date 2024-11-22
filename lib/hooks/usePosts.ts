@@ -20,21 +20,27 @@ export const usePosts = () => {
     const unsubscribe = subscribeToPostChanges(async (res) => {
       const { events, payload } = res;
 
-      if (events.includes("create")) {
-        const user = await getUserInfo({ userId: payload.user_id! });
-        setPosts((prev) => [...prev, { ...payload, user }]);
-      }
+      //checking if user_is is absent or empty in payload
+      // if (!payload.user_id) {
+      //   console.warn("Received event with missing user_id:", payload);
+      //   return; // Skip processing this event
+      // }
 
-      if (events.includes("update")) {
-        setPosts((prev) =>
-          prev.map((post) =>
-            post.post_id === payload.post_id
-              ? { ...payload, user: post.user }
-              : post,
-          ),
-        );
-      }
+      //checking if the user_id is present in the payload
+      if (payload.user_id) {
+        if (events.includes("create")) {
+          const user = await getUserInfo({ userId: payload.user_id });
+          setPosts((prev) => [...prev, { ...payload, user }]);
+        }
 
+        if (events.includes("update")) {
+          setPosts((prev) =>
+            prev.map((post) =>
+              post.post_id === payload.post_id ? { ...payload, user: post.user } : post
+            )
+          );
+        }
+      }
       if (events.includes("delete")) {
         setPosts((prev) =>
           prev.filter((post) => post.post_id !== payload.post_id),
@@ -49,6 +55,7 @@ export const usePosts = () => {
       }
     };
   }, []);
+
 
   return posts;
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import { Card } from "./ui/card";
-import Image from "next/image";
+import Image from 'next/image';
 
 const AssCards = () => {
   return (
@@ -23,11 +23,12 @@ const AssCards = () => {
                 Answer a series of questions
               </p>
               <Image
-               src="/assets/Frame 87.png"
-                alt="Frame"
-                width={40}
-                height={40}
-                 />
+               src="/assets/Frame 87.png" 
+               alt="Frame" 
+               width={40}
+               height={40}
+               className=""
+               />
             </div>
           </Card>
           <div className="text-center lg:block hidden">
@@ -36,11 +37,13 @@ const AssCards = () => {
             </div>
           </div>
           <div className="block lg:hidden">
-            <Image src="/assets/green.png" 
+            <Image 
+            src="/assets/green.png" 
             alt="Take"
             width={40}
             height={40}
-             />
+            className="" 
+            />
           </div>
           <div className="text-center block lg:hidden">
             <div className="h-6 w-6 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-full p-4 text-white flex justify-center items-center text-center">
@@ -65,11 +68,12 @@ const AssCards = () => {
           </div>
           <div className="flex items-center flex-col space-y-2 py-4">
             <p className="capitalize text-black">receive a customized report</p>
-            <Image src="/assets/Frame 88.png"
-            alt="Frame" 
+            <Image src="/assets/Frame 88.png" 
+            alt="Frame"
             width={40}
             height={40}
-            />
+            className=""
+             />
           </div>
         </Card>
         <div className="text-center">
@@ -82,10 +86,11 @@ const AssCards = () => {
           />
         </div>
         <div className="block lg:hidden">
-          <Image src="/assets/green.png" 
-          alt="Take"
-          width={40}
-          height={40}
+          <Image src="/assets/green.png"
+           alt="Take" 
+           width={40}
+           height={40}
+           className=""
            />
         </div>
         <div className="text-center block lg:hidden">
@@ -109,6 +114,7 @@ const AssCards = () => {
             alt="Frame" 
             width={40}
             height={40}
+            className=""
             />
           </div>
         </Card>

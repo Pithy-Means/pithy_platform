@@ -1,12 +1,12 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
-import { getSingleCourse } from "@/app/(api)/api/courses/route";
-import course from "@/types/Course";
-import { useParams } from "next/navigation";
-import OverView from "@/components/OverView";
-import CourseSidebar from "@/components/CourseSidebar";
-import OtherCourses from "@/components/OtherCourses";
+'use client';
+import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { getSingleCourse } from '@/utils/apiUtils';
+import course from '@/types/Course'
+import { useParams } from 'next/navigation'
+import OverView from '@/components/OverView';
+import CourseSidebar from '@/components/CourseSidebar';
+import OtherCourses from '@/components/OtherCourses';
 
 type Module = {
   title: string;
@@ -171,7 +171,7 @@ const SingleCourse: React.FC = () => {
             </h1>
             {activeModule ? (
               <div>
-                <p className="text-gray-500 mb-2">{activeModule.title}</p>
+                <p className='text-gray-500 mb-2'>{activeModule}</p>
               </div>
             ) : (
               <>

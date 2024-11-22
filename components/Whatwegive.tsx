@@ -22,9 +22,12 @@ const Whatwegive = () => {
               <h1 className="text-3xl sm:text-lg md:text-xl lg:text-3xl text-[#5AC35A] font-extrabold uppercase">
                 Pithy means
               </h1>
-              <img
+              <Image
                 src="/assets/green-line.png"
                 alt="line"
+                width={40}
+                height={40}
+                priority
                 className="object-cover"
               />
             </div>
@@ -44,9 +47,11 @@ const Whatwegive = () => {
             <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase">
               Pithy means
             </h1>
-            <img
+            <Image
               src="/assets/green-line.png"
               alt="line"
+              width={40}
+              height={40}
               className="object-contain w-24"
             />
           </div>
@@ -63,9 +68,11 @@ const Whatwegive = () => {
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
-                <img
+                <Image
                   src="/assets/briefcase-04.png"
                   alt="briefcase"
+                  width={40}
+                  height={40}
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
@@ -82,9 +89,11 @@ const Whatwegive = () => {
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
-                <img
+                <Image
                   src="/assets/cancel-circle.png"
                   alt="cancel"
+                  width={40}
+                  height={40}
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
@@ -100,9 +109,11 @@ const Whatwegive = () => {
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
-                <img
+                <Image
                   src="/assets/strike - stroke.png"
                   alt="strike"
+                  width={40}
+                  height={40}
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
@@ -118,9 +129,11 @@ const Whatwegive = () => {
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
-                <img
+                <Image
                   src="/assets/square-lock-02.png"
                   alt="secure"
+                  width={40}
+                  height={40}
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>

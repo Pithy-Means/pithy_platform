@@ -1,5 +1,6 @@
 "use client";
 
+
 import React from "react";
 // import Image from "next/image";
 import Posts from "./Posts";
@@ -7,7 +8,6 @@ import { CircleUserRound } from "lucide-react";
 import InputContact from "./InputContact";
 
 const ShareSomething = () => {
-
   return (
     <div className="flex flex-col w-full no-scrollbar max-h-screen">
       {/* Header Section */}
@@ -29,7 +29,6 @@ const ShareSomething = () => {
           </button>
         </div>
       </div>
-
       {/* Scrollable Posts Section */}
       <div className="flex-1 overflow-y-auto no-scrollbar px-6">
         <Posts />

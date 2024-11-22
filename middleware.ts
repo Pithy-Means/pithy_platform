@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import getOrCreateDB from './models/server/seed';
-import getOrCreateStorage from './models/server/storageSetup';
+// import getOrCreateStorage from './models/server/storageSetup';
 import { getSession } from './lib/actions/user.actions';
 
 let dbPromise: Promise<any> | null = null;
@@ -21,7 +21,7 @@ export async function middleware(request: NextRequest) {
   const session = await getSession();
 
   // If the user is authenticated, redirect to the dashboard
-  let url = request.nextUrl.pathname;
+  const url = request.nextUrl.pathname;
 
   if (url.startsWith("/dashboard")) {
     if (!session) {
