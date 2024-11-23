@@ -18,36 +18,36 @@ export default function VerifyPayment() {
   const router = useRouter();
   const { tx_ref } = router.query;
 
-  const verifyTransaction = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/proxy-flutterwave/verify-payment", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ tx_ref }),
-      });
-
-      const data: VerificationResponse = await res.json();
-      if (data.status === "success") {
-        setVerificationStatus("Payment verified successfully");
-        // Redirect to course or success page
-        router.push("/course");
-      } else {
-        setVerificationStatus("Payment verification failed or pending");
-      }
-    } catch (error) {
-      console.error("Error verifying transaction:", error);
-      setVerificationStatus("An error occurred during verification");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const verifyTransaction = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/proxy-flutterwave/verify-payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ tx_ref }),
+        });
+
+        const data: VerificationResponse = await res.json();
+        if (data.status === "success") {
+          setVerificationStatus("Payment verified successfully");
+          // Redirect to course or success page
+          router.push("/course");
+        } else {
+          setVerificationStatus("Payment verification failed or pending");
+        }
+      } catch (error) {
+        console.error("Error verifying transaction:", error);
+        setVerificationStatus("An error occurred during verification");
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (tx_ref) verifyTransaction();
-  }, [tx_ref]);
+  }, [tx_ref, router]);
 
   return (
     <div className="flex flex-col justify-center items-center min-h-screen space-y-4">
