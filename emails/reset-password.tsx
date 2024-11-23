@@ -42,9 +42,8 @@ export const PithyResetPasswordEmail = ({
           <Section style={content}>
             <Text style={paragraph}>Hi {username},</Text>
             <Text style={paragraph}>
-              You updated the password for your Pithy account on{" "}
-              {formattedDate}. If this was you, then no further action is
-              required.
+              You updated the password for your Pithy account on {formattedDate}
+              . If this was you, then no further action is required.
             </Text>
             <Text style={paragraph}>
               However if you did NOT perform this password change, please{" "}
@@ -122,12 +121,12 @@ const content = {
   padding: "5px 20px 10px 20px",
 };
 
-const logo = {
-  display: "flex",
-  justifyContent: "center",
-  alingItems: "center",
-  padding: 30,
-};
+// const logo = {
+//   display: "flex",
+//   justifyContent: "center",
+//   alingItems: "center",
+//   padding: 30,
+// };
 
 const sectionsBorders = {
   width: "100%",

@@ -6,6 +6,11 @@ const env = {
   },
   emails: {
     apikey: String(process.env.RESEND_API_KEY)
+  },
+  payment: {
+    public: String(process.env.NEXT_PUBLIC_FLUTTERWAVE_KEY),
+    secret: String(process.env.FLUTTERWAVE_SECRET_KEY),
+    encryption: String(process.env.FLUTTERWAVE_ENCRYPTION_KEY)
   }
 }
 

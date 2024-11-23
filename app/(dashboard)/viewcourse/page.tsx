@@ -4,8 +4,8 @@ import React from 'react'
 
 const page = () => {
   return (
-    <div className='bg-white/90'>
-      <div className='flex h-screen'>
+    <div className="bg-white/90">
+      <div className="flex h-screen">
         {/* <OverView /> */}
         <div className='w-full'>
           {/* <ViewCourse /> */}
@@ -13,9 +13,8 @@ const page = () => {
         </div>
 
       </div>
-
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default page;

@@ -3,6 +3,7 @@
 import {
   CommentPost,
   GetUserInfo,
+  LikePost,
   LoginInfo,
   Post,
   // ResetPass,
@@ -14,16 +15,14 @@ import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
-import { generateValidPostId, parseStringify } from "../utils";
+import { generateValidPostId, parseStringify, generateValidId } from "../utils";
 import {
   db,
+  likePostCollection,
   postCollection,
   postCommentCollection,
   userCollection,
 } from "@/models/name";
-// import { sendEmail } from "./mails/sendMails";
-// import ResetPasswordEmail from "@/components/reset-password-email"; // Adjust the import path as necessary
-// import React from "react";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -110,7 +109,7 @@ export const recovery = async (data: UserInfo) => {
   try {
     const { account, users } = await createAdminClient();
     const userList = await users.list([Query.equal("email", data.email)]);
-    
+
     if (!userList || userList.total === 0) {
       throw new Error("User not found");
     }
@@ -122,7 +121,7 @@ export const recovery = async (data: UserInfo) => {
     const resetLink = `http://localhost:3000/reset-password?userId=${userId}&secret=${resetToken}`;
     console.log("Generated reset link:", resetLink);
 
-    const recoveryPass = await account.createRecovery(data.email, resetLink); 
+    const recoveryPass = await account.createRecovery(data.email, resetLink);
     console.log("Recovery email sent:", recoveryPass);
 
     return parseStringify(recoveryPass);
@@ -144,7 +143,7 @@ export const reset = async (data: UpdateUser) => {
     const response = await account.updateRecovery(
       data.user_id,
       data.secret,
-      data.password
+      data.password,
     );
     console.log("Password reset response", response);
 
@@ -164,7 +163,7 @@ export const register = async (userdata: UserInfo) => {
       ID.unique(),
       email,
       password,
-      `${firstname} ${lastname}`
+      `${firstname} ${lastname}`,
     );
 
     if (!newUserAccount) {
@@ -175,7 +174,11 @@ export const register = async (userdata: UserInfo) => {
       db,
       userCollection,
       newUserAccount.$id,
-      { ...userdata, user_id: newUserAccount.$id, categories: categories || [] }
+      {
+        ...userdata,
+        user_id: newUserAccount.$id,
+        categories: categories || [],
+      },
     );
 
     const session = await account.createEmailPasswordSession(email, password);
@@ -238,7 +241,7 @@ export const createPost = async (data: Post) => {
 
 export const updatePost = async (
   postId: string,
-  updatedData: Partial<Post>
+  updatedData: Partial<Post>,
 ) => {
   const now = dayjs().toISOString(); // current timestamp
   try {
@@ -256,10 +259,75 @@ export const updatePost = async (
 export const deletePost = async (postId: string) => {
   try {
     const { databases } = await createAdminClient();
+
+    // Step 1: Delete related comments
+    const comments = await databases.listDocuments(db, postCommentCollection, [
+      Query.equal("post_id", postId),
+    ]);
+    for (const comment of comments.documents) {
+      await databases.deleteDocument(db, postCommentCollection, comment.$id);
+    }
+
+    // Step 2: Delete related likes
+    const likes = await databases.listDocuments(db, likePostCollection, [
+      Query.equal("post_id", postId),
+    ]);
+    for (const like of likes.documents) {
+      await databases.deleteDocument(db, likePostCollection, like.$id);
+    }
+
+    // Step 3: Delete the post
     const post = await databases.deleteDocument(db, postCollection, postId);
+
     return parseStringify(post);
   } catch (error) {
-    console.error(error);
+    console.error("Error deleting post with comments and likes:", error);
+    throw error; // Re-throw the error for better debugging
+  }
+};
+
+export const repost = async (data: Post) => {
+  const { post_id, content, user_comment, user_id } = data; // Removed `repost_of` from input as it's derived
+  const now = dayjs().toISOString(); // Current timestamp
+
+  try {
+    const { databases } = await createAdminClient();
+
+    // Validate `post_id`
+    if (!post_id) {
+      throw new Error("post_id is required");
+    }
+
+    // Fetch the original post
+    const originalPost = await getPost(post_id);
+    if (!originalPost) {
+      throw new Error("Original post not found");
+    }
+
+    // Generate a new unique post ID
+    const newPostId = generateValidId();
+
+    // Create a new document for the repost
+    const repost = await databases.createDocument(
+      db,
+      postCollection,
+      newPostId, // New unique ID
+      {
+        content: content || "", // Content for the repost
+        user_id, // ID of the user creating the repost
+        post_id: newPostId, // New unique ID for the repost
+        repost_of: originalPost.post_id, // Link to the original post
+        user_comment: user_comment || "", // Optional user comment
+        created_at: now,
+        updated_at: now,
+      },
+    );
+
+    console.log("Repost created successfully:", repost);
+    return parseStringify(repost); // Return the repost object
+  } catch (error) {
+    console.error("Failed to repost:", error);
+    throw error; // Propagate the error for handling
   }
 };
 
@@ -301,7 +369,7 @@ export const createComment = async (data: CommentPost) => {
         comment_id: validComment,
         created_at: now,
         updated_at: now,
-      }
+      },
     );
     return parseStringify(comment);
   } catch (error) {
@@ -319,5 +387,124 @@ export const getCommentsByPostId = async (postId: string) => {
   } catch (error) {
     console.error("Error fetching comments:", error);
     return [];
+  }
+};
+
+export const likePost = async (data: LikePost) => {
+  const { like_post_id } = data;
+  const now = dayjs().toISOString(); // current timestamp
+  const validLike = generateValidPostId(like_post_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    console.log("Post exists", postExists);
+    const like = await databases.createDocument(
+      db,
+      likePostCollection,
+      validLike,
+      {
+        ...data,
+        post_id: postExists.post_id,
+        like_post_id: validLike,
+        created_at: now,
+        updated_at: now,
+      },
+    );
+    console.log("Like created", like);
+    return parseStringify(like);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const unlike = async (likeId: string) => {
+  let like;
+  if (!likeId) {
+    console.error("Error: Missing likeId for unlike operation");
+    throw new Error("Missing likeId for unlike operation");
+  }
+
+  try {
+    const { databases } = await createAdminClient();
+    // Check if the document exists
+    const likeDocument = await databases.getDocument(
+      db,
+      likePostCollection,
+      likeId,
+    );
+
+    if (likeDocument) {
+      console.log("Deleting like:", likeId);
+      like = await databases.deleteDocument(db, likePostCollection, likeId);
+      console.log("Like deleted successfully");
+    } else {
+      console.warn("Like document does not exist.");
+    }
+    return parseStringify(like);
+  } catch (error) {
+    console.error("Error deleting like:", error);
+  }
+};
+
+export const getLikesByPostId = async (postId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.listDocuments(db, likePostCollection, [
+      Query.equal("post_id", postId),
+    ]);
+    return parseStringify(response.documents);
+  } catch (error) {
+    console.error("Error fetching likes:", error);
+    return [];
+  }
+};
+
+export const toggleLike = async (data: LikePost) => {
+  const { like_post_id } = data;
+  const now = dayjs().toISOString(); // Current timestamp
+  const validLike = generateValidPostId(like_post_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const postExists = await getPost(data.post_id);
+    console.log("Post exists:", postExists);
+
+    // Check if the like already exists
+    const existingLike = await databases.getDocument(
+      db,
+      likePostCollection,
+      validLike,
+    );
+
+    if (existingLike) {
+      // If like exists, remove it
+      console.log("Like exists. Removing...");
+      const removedLike = await databases.deleteDocument(
+        db,
+        likePostCollection,
+        validLike,
+      );
+      return parseStringify(removedLike);
+    } else {
+      // If like does not exist, add it
+      console.log("Like does not exist. Adding...");
+      const newLike = await databases.createDocument(
+        db,
+        likePostCollection,
+        validLike,
+        {
+          ...data,
+          post_id: postExists.post_id,
+          like_post_id: validLike,
+          created_at: now,
+          updated_at: now,
+        },
+      );
+      return parseStringify(newLike);
+    }
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    throw new Error("Failed to toggle like.");
   }
 };

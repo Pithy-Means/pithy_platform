@@ -31,14 +31,14 @@ const QuickLinks: React.FC = () => {
         </Link>
         <div className="flex lg:space-x-2 text-center justify-center flex-wrap lg:flex-row flex-col">
           <Link
-            href="/login"
+            href="/signIn"
             className="text-[12px] md:text-sm lg:text-base text-gray-600 hover:text-white transition duration-300 ease-in-out"
           >
             Login
           </Link>
           <span className="text-gray-600 hidden lg:block">|</span>
           <Link
-            href="/signup"
+            href="/signUp"
             className="text-[12px] md:text-sm lg:text-base text-gray-600 hover:text-white transition duration-300 ease-in-out"
           >
             Sign Up

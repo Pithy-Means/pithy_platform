@@ -11,7 +11,9 @@ interface InputContactProps {
   isTextarea?: boolean;
   value: string | number;
   onChange?: (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >,
   ) => void;
 }
 
@@ -27,7 +29,7 @@ const InputContact: React.FC<InputContactProps> = ({
   const [isValid, setIsValid] = useState<boolean>(false);
 
   const handleValidation = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const inputValue = e.target.value;
 
@@ -57,8 +59,8 @@ const InputContact: React.FC<InputContactProps> = ({
             onChange={handleValidation}
             required
             className={`px-6 h-24 py-4 ${className} text-lg ${
-              isValid ? "bg-green-100" : "bg-red-100"
-            } border rounded-lg border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
+              isValid ? "bg-green-100" : "bg-white"
+            } border rounded border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
           />
         ) : (
           <Input
@@ -68,8 +70,8 @@ const InputContact: React.FC<InputContactProps> = ({
             onChange={handleValidation}
             required
             className={`px-6 h-10 ${className} text-lg ${
-              isValid ? "bg-green-300/50" : "bg-white"
-            } border rounded-lg border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
+              isValid ? "bg-white" : "bg-white"
+            } border rounded border-black border-opacity-50 outline-none focus:text-black transition duration-200`}
           />
         )}
         <span className="text-lg text-black text-opacity-80 absolute top-0 left-0 mx-4 py-1 px-2 transition duration-200 input-text">
