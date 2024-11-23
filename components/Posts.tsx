@@ -241,18 +241,14 @@ const Posts = () => {
     setShowOptions(showOptions === postId ? null : postId);
   };
 
-  const handleFetchComments = async (postId: string) => {
-    if (!comments[postId]) {
-      // Only fetch if not already fetched
-      const postComments = await getCommentsByPostId(postId);
-      setComments((prev) => ({ ...prev, [postId]: postComments }));
-    }
-  };
-
   // Use `useCallback` to memoize the function
   const memoizedFetchComments = useCallback(
-    (postId: string) => {
-      handleFetchComments(postId);
+    async (postId: string) => {
+      if (!comments[postId]) {
+        // Only fetch if not already fetched
+        const postComments = await getCommentsByPostId(postId);
+        setComments((prev) => ({ ...prev, [postId]: postComments }));
+      }
     },
     [comments],
   );
