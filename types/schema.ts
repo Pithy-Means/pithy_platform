@@ -106,6 +106,8 @@ export type Post = {
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
   content?: string; // Content of the post
+  mediaUrl?: string; // URL of the media file (image or video)
+  mediaType?: string; // Type of media file (image or video)
   created_at?: string; // Optional, creation date
   updated_at?: string; // Optional, last updated date
   repost_of?: string; // ID of the original post if this is a repost
