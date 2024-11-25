@@ -1,6 +1,13 @@
 import { Permission, Role } from "node-appwrite";
 import { postAttachementBucket } from "../name";
-import { storage } from "./config";
+
+import { createAdminClient } from "@/utils/appwrite";
+// import { storage } from "./config";
+
+const { storage } = createAdminClient();
+
+//Export postAttachementBucket
+export { postAttachementBucket };
 
 export default async function setupStorage() {
   try {
@@ -9,6 +16,7 @@ export default async function setupStorage() {
     console.log("Bucket already exists");
   } catch (error) {
     try {
+      // Create the bucket
       await storage.createBucket(
         postAttachementBucket,
         postAttachementBucket,
