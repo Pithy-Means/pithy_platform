@@ -44,4 +44,4 @@ export const createAdminClient = () => {
       return new Storage(client);
     }
   };
-};
+}
