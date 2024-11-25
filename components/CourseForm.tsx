@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Course, UserInfo } from "@/types/schema";
-import { createCourse, getLoggedInUser } from "@/lib/actions/user.actions";
+import { createCourse } from "@/lib/actions/course.actions";
+import { Course } from "@/types/schema";
+import React, { useState, useEffect } from "react";
 
-const CourseAdmin: React.FC = () => {
+const CourseForm = () => {
   const [formData, setFormData] = useState<Course>({
     course_id: "",
     user_id: "",
@@ -12,42 +12,20 @@ const CourseAdmin: React.FC = () => {
     description: "",
     price: 0,
     duration: "",
-    video: null as File | null, // Initial value for the video
+    video: null, // Initial value for the video
   });
-  const [user, setUser] = useState<UserInfo | null>(null);
 
-  
+  const [isClient, setIsClient] = useState(false);
+
   useEffect(() => {
-    const fetchUser = async () => {
-      const userLogged = await getLoggedInUser();
-      setUser(userLogged);
-    }
-
-    fetchUser();
+    setIsClient(true);
   }, []);
 
+  if (!isClient) {
+    return null; // Or a loading state
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const data: Course = {
-      course_id: formData.course_id,
-      user_id: user?.user_id || "",
-      title: formData.title,
-      description: formData.description,
-      price: formData.price,
-      duration: formData.duration,
-      video: formData.video,
-    }
-    try {
-      const newCourse = await createCourse(data);
-      console.log("Course created:", newCourse);
-    } catch (error) {
-      console.error("Failed to create course:", error);
-    }
-  };
-
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -55,6 +33,16 @@ const CourseAdmin: React.FC = () => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setFormData({ ...formData, video: e.target.files[0] });
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const newCourse = await createCourse(formData);
+      console.log("Course created:", newCourse);
+    } catch (error) {
+      console.error("Failed to create course:", error);
     }
   };
 
@@ -73,7 +61,7 @@ const CourseAdmin: React.FC = () => {
               id="title"
               placeholder="Course Title"
               value={formData.title}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
@@ -87,7 +75,7 @@ const CourseAdmin: React.FC = () => {
               id="description"
               placeholder="Course Description"
               value={formData.description}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
@@ -102,7 +90,7 @@ const CourseAdmin: React.FC = () => {
               id="price"
               placeholder="Course Price"
               value={formData.price}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
@@ -117,7 +105,7 @@ const CourseAdmin: React.FC = () => {
               id="duration"
               placeholder="Course Duration (e.g., 10 hours)"
               value={formData.duration}
-              onChange={handleInputChange}
+              onChange={handleChange}
               required
               className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
@@ -148,16 +136,4 @@ const CourseAdmin: React.FC = () => {
   );
 };
 
-export default CourseAdmin;
-// "use client";
-// import CourseForm from "@/components/CourseForm";
-
-// const CourseAdmin = () => {
-//   return (
-//     <div>
-//       <CourseForm />
-//     </div>
-//   )
-// }
-
-// export default CourseAdmin;
+export default CourseForm;

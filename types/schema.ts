@@ -186,3 +186,22 @@ export interface CardPaymentData {
   phone_number: string;
   enckey: string;
 }
+
+export type Course = {
+  course_id: string; // Unique identifier for the course
+  user_id: string; // ID of the user who created the course
+  title: string; // Title of the course
+  description: string; // Detailed description of the course
+  price: number; // Price of the course
+  duration: string; // Duration of the course (e.g., "2 hours", "3 weeks")
+  video: File | null; // Optional: URL or path to the course video
+  syllabus?: string; // Optional: Detailed syllabus of the course
+  requirements?: string; // Optional: Prerequisites for the course
+  outcomes?: string; // Optional: What students will achieve
+  students?: string; // Optional: IDs or count of enrolled students
+  rating?: number; // Optional: Average rating of the course
+  reviews?: string; // Optional: IDs or count of reviews
+  enrolled?: number; // Optional: Number of enrolled students
+  created_at?: string; // Optional: Date when the course was created
+  updated_at?: string; // Optional: Last update date
+};

@@ -2,6 +2,7 @@
 
 import {
   CommentPost,
+  Course,
   GetUserInfo,
   LikePost,
   LoginInfo,
@@ -14,15 +15,19 @@ import {
 import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
-import { ID, Query } from "node-appwrite";
+import { Account, Client, ID, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify, generateValidId } from "../utils";
 import {
+  courseCollection,
   db,
   likePostCollection,
+  postAttachementBucket,
   postCollection,
   postCommentCollection,
   userCollection,
 } from "@/models/name";
+import env from "@/env";
+import { databases, storage } from "@/models/server/config";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -506,5 +511,50 @@ export const toggleLike = async (data: LikePost) => {
   } catch (error) {
     console.error("Error toggling like:", error);
     throw new Error("Failed to toggle like.");
+  }
+};
+
+// export const createCourse = async (course: Course) => {
+//   const {course_id } = course;
+//   const now = new Date().toISOString();
+//   const validCourseId = generateValidPostId(course_id);
+//   const videoId = generateValidId();
+//   console.log('Creating course', course);
+//   try {
+//     console.log("Created course")
+//     // // const { databases, storage } = await createAdminClient();
+//     // if (!databases || !storage) {
+//     //   throw new Error("Failed to initialize Appwrite databases or storage clients");
+//     // }
+//     // console.log('Database and storage clients initialized');
+//     // if (!course.video) {
+//     //   throw new Error('Course video is required');
+//     // };
+//     // const courseVideo = await storage.createFile(postAttachementBucket, videoId, course.video);
+//     // console.log('Course video uploaded', courseVideo);
+//     // const modules = await databases.createDocument(db, courseCollection, validCourseId, {
+//     //   ...course,
+//     //   user_id: course.user_id,
+//     //   // video: courseVideo.$id,
+//     //   created_at: now,
+//     //   update_at: now,
+//     // });
+//     // console.log('Course created', modules);
+//     // return {
+//     //   ...modules,
+//     // };
+//   } catch (error) {
+//     console.log('Error creating course', error);
+//   }
+// };
+
+export const createCourse = async (course: Course) => {
+  console.log('Creating course:', course);
+  try {
+    const validCourseId = generateValidPostId(course.course_id);
+    console.log('Valid course ID:', validCourseId);
+    return { validCourseId };
+  } catch (error) {
+    console.error('Error:', error);
   }
 };

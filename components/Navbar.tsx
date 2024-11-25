@@ -5,11 +5,15 @@ import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useState, useEffect, useRef } from "react";
+import { UserInfo } from "@/types/schema";
+import { getSession } from "@/lib/actions/user.actions";
 
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const [loggedUser, setLoggedUser] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -18,6 +22,29 @@ const Navbar = () => {
   const handleCloseMenu = () => {
     setIsOpen(false);
   };
+
+  // Get logged-in user info
+  useEffect(() => {
+
+    const fetchUser = async () => {
+      setLoading(true);
+      try {
+        const userLogged = await getSession();
+        if (!userLogged) {
+          console.log("No user logged in");
+        }
+        setLoggedUser(userLogged);
+      } catch (error) {
+        console.error("Error fetching user session:", error);
+        setLoggedUser(null); // Fallback to null if fetching fails
+      } finally {
+        setLoading(false);
+      }
+    };
+        
+
+    fetchUser();
+  }, []);
 
   // Close the menu when clicking outside
   useEffect(() => {
@@ -44,7 +71,7 @@ const Navbar = () => {
 
   return (
     <div className="px-10 pt-6 bg-black">
-      <div className="flex justify-between ">
+      <div className="flex justify-between">
         <div className="text-2xl font-bold">
           <Logo />
         </div>
@@ -106,23 +133,41 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="flex space-x-12">
-            <div className="flex items-center gap-x-2">
-              <Link
-                href="/signIn"
-                prefetch={true}
-                className="text-[#5AC35A] hover:text-white transition duration-300"
-              >
-                Login
-              </Link>
-              <div className="bg-white h-3 w-0.5"></div>
-              <Link
-                href="/signUp"
-                prefetch={true}
-                className="text-white hover:text-[#5AC35A] transition duration-300"
-              >
-                Sign Up
-              </Link>
-            </div>
+            {loading ? (
+              <div className="flex items-center gap-x-2">Loading...</div> // Optional loading indicator
+            ) : loggedUser ? (
+              <div className="flex items-center gap-x-4">
+                <Link
+                  href="/dashboard"
+                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/logout"
+                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                >
+                  Logout
+                </Link>
+              </div>
+            ) : (
+              <div className="flex items-center gap-x-2">
+                <Link
+                  href="/signIn"
+                  className="text-[#5AC35A] hover:text-white transition duration-300"
+                >
+                  Login
+                </Link>
+                <div className="bg-white h-3 w-0.5"></div>
+                <Link
+                  href="/signUp"
+                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
+
             <div>
               <Button className="bg-[#5AC35A] px-8 py-0">Take Test</Button>
             </div>

@@ -34,6 +34,8 @@ export default async function createPostCollection() {
       100,
       false,
     ),
+    databases.createStringAttribute(db, postCollection, "mediaurl", 10000, false),
+    databases.createStringAttribute(db, postCollection, "mediatype", 100, false),
     databases.createStringAttribute(
       db,
       postCollection,

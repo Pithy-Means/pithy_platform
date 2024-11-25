@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { reset } from "@/lib/actions/user.actions";
+import { useRouter } from "next/navigation";
 
 type ResetFormData = {
   user_id: string;
@@ -20,6 +21,7 @@ const PasswordRecoveryForm: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     // Extract query parameters from URL using URLSearchParams
@@ -67,6 +69,9 @@ const PasswordRecoveryForm: React.FC = () => {
       const response = await reset(formData);
       setSuccess("Password reset successful!");
       console.log("Response:", response);
+      if (response.status === 200) {
+        router.push("/login");
+      }
     } catch (err) {
       setError("An error occurred while resetting the password.");
       console.error("Error:", err);
