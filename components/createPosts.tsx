@@ -8,6 +8,7 @@ interface CreatePostProps {
   onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
 }
 
+
 const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>({
@@ -65,6 +66,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       setLoading(false);
     }
   };
+
   return (
     <>
       {loading ? (
