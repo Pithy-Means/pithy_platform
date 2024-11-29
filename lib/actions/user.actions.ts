@@ -325,6 +325,8 @@ export const createPost = async (data: Post) => {
   } catch (error) {
     console.error(error);
   }
+
+  
 };
 
 export const updatePost = async (
