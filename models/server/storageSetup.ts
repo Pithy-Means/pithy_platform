@@ -1,20 +1,30 @@
+'use server';
 import { Permission, Role } from "node-appwrite";
-import { postAttachementBucket } from "../name";
-
 import { createAdminClient } from "@/utils/appwrite";
-// import { storage } from "./config";
+import { postAttachementBucket } from "@/utils/constants";
 
-const { storage } = createAdminClient();
-
-//Export postAttachementBucket
-export { postAttachementBucket };
+console.log(postAttachementBucket);
 
 export default async function setupStorage() {
+  console.log(`Initializing storage setup for bucket: ${postAttachementBucket}`);
+
+  //Ensure admin client is fully initialized
+  const adminClient = await createAdminClient();
+
+  // Wait for the storage to be initialized and available
+  const storage = adminClient.storage;
+  if (!storage) {
+    console.error("Failed to initialize storage");
+    return null;
+  }
+  console.log("Storage initialized successfully");
+
   try {
     // Get the bucket
     await storage.getBucket(postAttachementBucket);
     console.log("Bucket already exists");
   } catch (error) {
+    console.log("Bucket does not exist, creating it now");
     try {
       // Create the bucket
       await storage.createBucket(
@@ -27,9 +37,9 @@ export default async function setupStorage() {
           Permission.update(Role.team("admin")), // Admins can update
           Permission.delete(Role.team("admin")), // Admins can delete
         ],
-      false, undefined, undefined, [
-          "jpg", "png", "gif", "jpeg", "webp", "mp4",
-        ]);
+        false, undefined, undefined, [
+        "jpg", "png", "gif", "jpeg", "webp", "mp4",
+      ]);
 
       //set allowed file type and maximum file size
       // await storage.updateBucket(postAttachementBucket, {
@@ -42,5 +52,6 @@ export default async function setupStorage() {
       console.log("Error creating bucket", error);
     }
   }
+  // Return the storage instance after setup
   return storage;
 }
