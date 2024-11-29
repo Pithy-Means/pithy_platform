@@ -15,6 +15,7 @@
     "email": "email dev --dir ./emails"
   },
   "dependencies": {
+    "@ffmpeg/ffmpeg": "^0.12.10",
     "@googlemaps/js-api-loader": "^1.16.8",
     "@next/bundle-analyzer": "^15.0.3",
     "@radix-ui/react-hover-card": "^1.1.2",
@@ -27,6 +28,7 @@
     "appwrite": "^16.0.2",
     "axios": "^1.7.8",
     "bcryptjs": "^2.4.3",
+    "browser-image-compression": "^2.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dayjs": "^1.11.13",
