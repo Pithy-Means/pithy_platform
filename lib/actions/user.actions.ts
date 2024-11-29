@@ -6,6 +6,7 @@ import {
   LikePost,
   LoginInfo,
   Post,
+  PostWithUser,
   // ResetPass,
   UpdateUser,
   UserInfo,
@@ -219,23 +220,49 @@ export const getLoggedInUser = async () => {
   }
 };
 
-export const createPost = async (data: Post) => {
-  const { post_id } = data;
-  const now = dayjs().toISOString(); // current timestamp
-  const validPost = generateValidPostId(post_id);
+// createPost function with API route
+export const createPost = async (data: Post): Promise<PostWithUser | null> => {
+  // const { post_id, mediaUrl, mediaType } = data;
+  // const now = dayjs().toISOString(); // current timestamp
+  // const validPost = generateValidPostId(post_id);
 
+  // try {
+  //   const { databases } = await createAdminClient();
+  //   const post = await databases.createDocument(db, postCollection, validPost, {
+  //     ...data,
+  //     post_id: validPost,
+  //     created_at: now,
+  //     updated_at: now,
+  //     mediaUrl: mediaUrl,  // Add media URL (file ID or URL) to the post
+  //     mediaType: mediaType,  // Add media type (e.g., image/video MIME type)
+  //   });
+  //   console.log("Post created:", post);
+  //   return parseStringify(post);
+  // } catch (error) {
+  //   console.error('Error creating post:',error);
+  //   throw new Error("Failed to create the post in the database.");
+  // }
   try {
-    const { databases } = await createAdminClient();
-    const post = await databases.createDocument(db, postCollection, validPost, {
-      ...data,
-      post_id: validPost,
-      created_at: now,
-      updated_at: now,
+    //send a POST request to the server (/api/posts route)
+    const response = await fetch("/api/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json", //set the content type to JSON
+      },
+      body: JSON.stringify(data), //serialize the post data
     });
-    console.log("Post", post);
-    return parseStringify(post);
+
+    //if the response is not ok, throw an error
+    if (!response.ok) {
+      throw new Error(`Failed to create post: ${response.statusText}`);
+    }
+
+    const post: PostWithUser = await response.json(); //parse the JSON response body, which should contain the created post with user details
+    console.log("Post created successfully:", post);
+    return post; //return the post object
   } catch (error) {
-    console.error(error);
+    console.error("Error creating post:", error);
+    throw new Error('Failed to create the post via the API'); //re-throw the error for better debugging
   }
 };
 
