@@ -63,16 +63,16 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoading(false); //Reset loading state
     }
   };
 
   return (
     <>
       {loading ? (
-        <p>Creating post...</p>
+        <p>Creating post, please wait...</p>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4 text-black">
           <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
 
           <div className="flex flex-col">
