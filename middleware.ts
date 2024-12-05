@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 import getOrCreateDB from './models/server/seed';
 import { getSession } from './lib/actions/user.actions';
 import setupStorage from './models/server/storageSetup';
+import courseStorage from './models/server/courseStorage';
 
 let dbPromise: Promise<any> | null = null;
 
@@ -15,6 +17,7 @@ export async function middleware(request: NextRequest) {
     dbPromise = getOrCreateDB();
     // Ensure storage setup is done asynchronously if needed
     await setupStorage();
+    await courseStorage();
   }
 
   // Wait for DB and Storage initialization to complete
