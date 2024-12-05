@@ -9,7 +9,7 @@ interface CreatePostProps {
 }
 
 
-const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
+const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>({
     user_id: userId,
@@ -80,6 +80,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
               Content
             </label>
             <textarea
+              disabled={loading}
               id="content"
               name="content"
               value={post.content}
@@ -118,4 +119,4 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   );
 };
 
-export default CreatePost;
+export default CreatePosts;
