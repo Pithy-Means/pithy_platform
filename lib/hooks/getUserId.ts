@@ -18,7 +18,7 @@ const authenticateSessionToken = async (req: NextApiRequest, res: NextApiRespons
     // Verify the session using the session token
     const session = await account.getSession('current'); // You may need to adjust this based on your auth service's method
 
-    if (!session) {
+    if (!session || session.$id !== token) {
       return res.status(401).json({ message: 'Invalid session. Please log in again.' });
     }
 
