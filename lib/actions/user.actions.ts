@@ -37,6 +37,7 @@ export const getUserInfo = async ({ userId }: GetUserInfo) => {
   }
 };
 
+// Login function with email and password
 export const login = async ({ email, password }: LoginInfo) => {
   try {
     const { account } = (await createAdminClient()) || {};
@@ -45,6 +46,7 @@ export const login = async ({ email, password }: LoginInfo) => {
       throw new Error("Account creation failed.");
     }
 
+    // create a new session with the email and password
     const session = await account.createEmailPasswordSession(email, password);
     console.log("Session", session);
 
@@ -52,21 +54,38 @@ export const login = async ({ email, password }: LoginInfo) => {
       throw new Error("Session creation failed");
     }
 
-    cookies().set("my-session", session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
+    // // store the session token as a cookie for server-side use
+    // cookies().set("my-session", session.secret, {
+    //   path: "/",
+    //   httpOnly: true,
+    //   sameSite: "strict",
+    //   secure: true,
+    // });
+
+    // Store the session token in a secure cookie
+    cookies().set("authToken", session.secret, {
+      path: "/", // Accessible across the site
+      httpOnly: true, // Prevent client-side access
+      secure: process.env.NODE_ENV === 'production', // Only sent over HTTPS
+      sameSite: "strict", // prevent CSRF attacks (protection)
     });
 
+    // store the session token in localStorage for client-side use (browser-only)
+    // if (typeof localStorage !== "undefined"){
+    //   localStorage.setItem("authToken", session.secret);
+    // }
+
+    // fetch the user information using the session token
     const user = await getUserInfo({ userId: session.userId });
     console.log("User", user);
 
     if (!user) {
       throw new Error("User information could not be retrieved");
     }
-
-    return { success: true, data: parseStringify(user) }; // Success response
+    return {
+      success: true,
+      data:{ user: parseStringify(user), token: session.secret },
+    }; // Success response
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes("Invalid `password` param")) {
@@ -86,12 +105,31 @@ export const login = async ({ email, password }: LoginInfo) => {
   }
 };
 
+// Gets the current session details
 export const getSession = async () => {
   try {
+    // Get the session token from the cookie
+    const authToken = cookies().get("authToken")?.value; // Get the session token from the cookie
+    if (!authToken) {
+      throw new Error("Session token not found");
+    }
+    // Ensure localStorage is only accessed in the browser
+    // if (typeof localStorage === "undefined") {
+    //   throw new Error("localStorage is not available in this environment");
+    // }
+
+    // // Get the session token from localStorage
+    // const token = localStorage.getItem("authToken");
+    // if (!token) {
+    //   throw new Error("Session token not found");
+    // }
+    // Create a new Appwrite client
     const { account } = await createSessionClient();
+    // Get the session details using the token
     const session = await account.get();
-    return parseStringify(session);
+    return parseStringify(session);  // Return the session details
   } catch (error) {
+    console.error("Error getting session:", error);
     return null;
   }
 };
@@ -222,32 +260,14 @@ export const getLoggedInUser = async () => {
 
 // createPost function with API route
 export const createPost = async (data: Post): Promise<PostWithUser | null> => {
-  // const { post_id, mediaUrl, mediaType } = data;
-  // const now = dayjs().toISOString(); // current timestamp
-  // const validPost = generateValidPostId(post_id);
-
-  // try {
-  //   const { databases } = await createAdminClient();
-  //   const post = await databases.createDocument(db, postCollection, validPost, {
-  //     ...data,
-  //     post_id: validPost,
-  //     created_at: now,
-  //     updated_at: now,
-  //     mediaUrl: mediaUrl,  // Add media URL (file ID or URL) to the post
-  //     mediaType: mediaType,  // Add media type (e.g., image/video MIME type)
-  //   });
-  //   console.log("Post created:", post);
-  //   return parseStringify(post);
-  // } catch (error) {
-  //   console.error('Error creating post:',error);
-  //   throw new Error("Failed to create the post in the database.");
-  // }
   try {
     //send a POST request to the server (/api/posts route)
     const response = await fetch("/api/posts", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", //set the content type to JSON
+        // "Content-Type": "multipart/form-data", //set the content type to multipart/form-data
+        // Authorization: `Bearer ${token}`
       },
       body: JSON.stringify(data), //serialize the post data
     });
@@ -258,6 +278,10 @@ export const createPost = async (data: Post): Promise<PostWithUser | null> => {
     }
 
     const post: PostWithUser = await response.json(); //parse the JSON response body, which should contain the created post with user details
+
+    if (!post) {
+      throw new Error("Invalid response format. Post creation failed");
+    }
     console.log("Post created successfully:", post);
     return post; //return the post object
   } catch (error) {
