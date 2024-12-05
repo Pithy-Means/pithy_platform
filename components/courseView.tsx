@@ -3,20 +3,20 @@ import React, { useState, useEffect } from "react";
 import { FaListUl } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
 import CourseCard from './CourseCard';
-import {getData} from '@/utils/apiUtils';
-
+import { Courses } from "@/types/schema";
 
 
 const CourseView: React.FC = () => {
-  const [courses, setCourses] = useState([]);
+  const [courses, setCourses] = useState<Courses[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const data = await getData();
-      setCourses(data);
+      const data = await fetch("/api/get-courses", {method: "GET"});
+      const response = await data.json();
+      setCourses(response.data);
     } catch (error) {
       setLoading(false);
       console.error("Error fetching courses:", error);
