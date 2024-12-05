@@ -12,6 +12,7 @@ export type BaseUserInfo = {
   address?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
+  secret?: string;
 };
 
 //User categories
@@ -187,21 +188,37 @@ export interface CardPaymentData {
   enckey: string;
 }
 
-export type Course = {
+export type Courses = {
   course_id: string; // Unique identifier for the course
   user_id: string; // ID of the user who created the course
   title: string; // Title of the course
   description: string; // Detailed description of the course
   price: number; // Price of the course
   duration: string; // Duration of the course (e.g., "2 hours", "3 weeks")
-  video: File | null; // Optional: URL or path to the course video
-  syllabus?: string; // Optional: Detailed syllabus of the course
+  image: string; // Optional: URL or path to the course image
   requirements?: string; // Optional: Prerequisites for the course
-  outcomes?: string; // Optional: What students will achieve
   students?: string; // Optional: IDs or count of enrolled students
-  rating?: number; // Optional: Average rating of the course
-  reviews?: string; // Optional: IDs or count of reviews
-  enrolled?: number; // Optional: Number of enrolled students
   created_at?: string; // Optional: Date when the course was created
   updated_at?: string; // Optional: Last update date
 };
+
+export type VideoFile = {
+  vid: File;
+}
+
+// types/job.ts
+export interface Job {
+  job_id: string;
+  user_id: string;
+  job_title: string;
+  job_description?: string;
+  job_location?: string;
+  job_status: "open" | "closed";
+  job_experience: "entry" | "mid" | "senior";
+  job_education: "high_school" | "bachelor" | "master" | "phd";
+  job_employment: "full_time" | "part_time" | "contract" | "internship";
+  job_type: "remote" | "office" | "hybrid";
+  job_salary?: string;
+  created_at: string;
+  updated_at: string;
+}
