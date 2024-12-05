@@ -3,15 +3,18 @@ import { createPost } from '@/lib/actions/user.actions';
 import { Post, PostWithUser } from '@/types/schema';
 import React, { useState } from 'react'
 import Image from 'next/image';
-import { isImage, isVideo, compressImage, compressVideo, validateFile} from '../utils/videoImageFormats';
+// import { createAdminClient } from '@/utils/appwrite';
+import { isImage, isVideo, compressImage, compressVideo, validateFile } from '../utils/videoImageFormats';
+// import { parseStringify } from '@/lib/utils';
+import { getSession } from '@/lib/actions/user.actions';
+import { parseCookies } from 'nookies';
 
 interface CreatePostProps {
   userId: string; // Pass the logged-in user ID as a prop 
   onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
-
 }
 
-const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
+const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>(() => ({ user_id: userId }));
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,24 +23,10 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   const [error, setError] = useState<string | null>(null);
   // const [uploading, setUploading] = useState<boolean>(false);
 
-  // const storage = setupStorage();
-  // const [storage, setStorage] = useState<Storage | null>(null);
-  // const [isStorageReady, setIsStorageReady] = useState<boolean>(false);
-
-  // useEffect(() => {
-  //   const initializeStorage = async () => {
-  //     try{
-  //       const storageInstance = await setupStorage();
-  //       console.log('Storage instance:', storageInstance);
-  //       setStorage(storageInstance);
-  //       setIsStorageReady(true);
-  //     } catch (error) {
-  //       console.error('Failed to initialize storage:', error);
-  //       setError('Failed to initialize storage. Please try again later.');
-  //     }
-  //   };
-  //   initializeStorage();
-  // }, []);
+  // const useAuth = async () => {
+  // const { client } = await createAdminClient();
+  // return new Account(client);
+  // };
 
   // Handle input change
   const handleInputChange = (
@@ -56,25 +45,18 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     if (!file) return;
 
     const validationError = validateFile(file);
-    if (error) {
+    if (validationError) {
       setError(validationError);
       return;
     }
-  
-    try {
-      // let processedFile = file;
-      // if (isImage(file)) {
-      //   processedFile = await compressImage(file);
-      // } else if (isVideo(file)) {
-      //   processedFile = await compressVideo(file);
-      // }
 
+    try {
       const processedFile = isImage(file)
         ? await compressImage(file)
         : isVideo(file)
-        ? await compressVideo(file)
-        : file;
-  
+          ? await compressVideo(file)
+          : file;
+
       setSelectedFile(processedFile);
       // setFileType(file.type.includes('image') ? 'image' : 'video');
       setFileType(isImage(processedFile) ? 'image' : 'video');
@@ -84,47 +66,75 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       throw new Error(`Compression failed: ${err}`);
     }
   };
-  
-  // reset 
+
+  // Reset file selection 
   const handleRemoveFile = () => {
     setSelectedFile(null);
     setFileType(null);
     setError(null);
   };
 
-  const uploadFileToAppwrite = async (file: File): Promise<string | null> => {
-       try {
+  // Upload file to Appwrite
+  const uploadFileToAppwrite = async (selectedFile: File): Promise<string | null> => {
+    try {
       setLoading(true); // Set the loading state
+
+      // Check if a session token is available
+      const cookies = parseCookies();
+      const token = cookies.authToken;
+      if (!token) {
+        // If no session token is available, get a new one
+        const sessionToken = await getSession();
+        if (!sessionToken) return null;
+      }
+
+      // Create a new form data for the file upload
       const formData = new FormData();
-      formData.append('file', file); // attach the file to the form data
+      formData.append('file', selectedFile); // attach the file to the form data
       // formData.set('file', file); // set the file with the name
 
       // Send the file to the server
       const response = await fetch('/api/upload-files', {
         method: 'POST',
+        headers: {
+          // 'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        // body: JSON.stringify({ media_url: selectedFile }),
         body: formData,
       });
-
-      if (!response.ok) {
-        const result = await response.json(); // Parse the response body as JSON
-        // const errorData = await response.text(); // Parse the response body as JSON
-        console.error('File upload failed:', result); // Log the error to the console
-        setError(result.error || 'File upload failed. Please try again.'); // Set the error state
+      const data = await response.json();
+      if (data.error) {
+        setError(data.error || 'Failed to upload file.');
         return null;
-        // handleRemoveFile();
+      } else {
+        return data.fileId;
       }
-
-      const { fileId } = await response.json(); // Extract 'fileId' from the response
-      return fileId; // Return the file 
     } catch (err) {
-      console.error('File upload failed:', err); // Log the error to the console
-      setError('An unexpected error occurred during file uplaod, please try again.'); // Set the error state
+      console.error('File upload failed:', err);
+      setError('An unexpected error occurred during file upload, please try again.');
       return null;
-    } finally { // Reset the loading state
+    } finally {
       setLoading(false);
-    };
+    }
+    // if (!response.ok) {
+    //   const result = await response.json(); // Parse the response body as JSON
+    //   // const errorData = await response.text(); // Parse the response body as JSON
+    //   console.error('File upload failed:', result); // Log the error to the console
+    //   setError(result.error || 'File upload failed. Please try again.'); // Set the error state
+    //   return null;
+    //   // handleRemoveFile();
+    // }
 
-
+    //   const { fileId } = await response.json(); // Extract 'fileId' from the response
+    //   return fileId; // Return the file 
+    // } catch (err) {
+    //   console.error('File upload failed:', err); // Log the error to the console
+    //   setError('An unexpected error occurred during file uplaod, please try again.'); // Set the error state
+    //   return null;
+    // } finally { // Reset the loading state
+    //   setLoading(false);
+    // };
   };
 
   // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -145,7 +155,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedFile) {
-      setError('Please upload a vilde image or video.');
+      setError('Please upload a valid image or video.');
       return;
     }
 
@@ -153,32 +163,36 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       // setLoading(true); //Start loading state
       // Upload file to Appwrite
       const fileId = await uploadFileToAppwrite(selectedFile);
+      // const { fileId} = await uploadFileToAppwrite.json();
+
       if (!fileId) {
         setError('File upload failed. Please check and try again.');
         return; // If file upload failed, stop further execution
       }
 
-      // Create the post with the file ID
-      const newPost = await createPost({
+      const postData = {
         ...post, // Include the post content
-        mediaUrl: fileId, // Update the post with the media URL
+        // mediaUrl: fileId, // Update the post with the media URL
+        mediaUrl: `storage/files/${fileId}/view`, // Construct the media url for viewing
         mediaType: selectedFile.type, // Update the post with the media type
-      });
+      }
+      // Create the post with the file ID
+      const newPost = await createPost({ ...postData });
 
       // If post creation failed, stop further execution
-      if (!newPost) {
-        setError('Failed to create post. Please try again.');
-        return;
+      // if (!newPost) {
+      //   setError('Failed to create post. Please try again.');
+      //   return;
+      // }
+
+      if (newPost) {
+        // Post creation successful, update UI
+        onPostCreated(newPost); // Update the post list with new post | notify parent component
+        // Reset form state
+        setPost({ user_id: userId }); // Reset post
+        handleRemoveFile(); // clear file input
+
       }
-
-      // Post creation successful, update UI
-      onPostCreated(newPost); // Update the post list with new post
-
-      // Reset form state
-      setPost({ user_id: userId }); // Reset post
-      // setSelectedFile(null); // Reset file
-      // setFileType(null); // Reset file type
-      handleRemoveFile(); // optionally handle file removal/reset
     } catch (err) {
       console.error('Post creation failed:', err);
       setError('An unexpected error occure while creating the post.');
@@ -200,10 +214,12 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
               Content
             </label>
             <textarea
+              disabled={loading}
               id="content"
               name="content"
               value={post.content || ''}
               onChange={handleInputChange}
+              placeholder='What do you want to share?'
               required
               className="border border-gray-300 rounded-md p-2"
             />
@@ -214,6 +230,7 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
               Upload Media (JPG, PNG, GIF, MP4
             </label>
             <input
+              disabled={loading}
               type='file'
               id='media'
               accept='image/*, video/*'
@@ -269,4 +286,4 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   );
 };
 
-export default CreatePost;
+export default CreatePosts;
