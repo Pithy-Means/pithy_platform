@@ -56,19 +56,27 @@ export function validateFile(file: File): string | null {
 
   // Compressed video
   export const compressVideo = async (file: File): Promise<File> => {
-    // const ffmpeg = createFFmpeg({ log: true });
-    const ffmpeg = createFFmpeg({ log: process.env.NODE_ENV !== 'production' });
+    const ffmpeg = createFFmpeg({ log: true });
+    // const ffmpeg = createFFmpeg({ log: process.env.NODE_ENV !== 'production' });
 
     await ffmpeg.load();
     ffmpeg.FS('writeFile', file.name, await fetchFile(file));
   
-    await ffmpeg.run('-i', file.name, '-b:v', '1M', '-preset', 'fast', 'output.mp4');
+    const orifinalSizeMB = file.size / (1024 * 1024); // calculate original file size in MB
+
+    //Dynamically adjust bitrate: lower for larger files
+    const bitrate = orifinalSizeMB > 10 ? '500k' : '1M';
+
+    await ffmpeg.run('-i', file.name, '-b:v', bitrate, '-preset', 'fast', 'output.mp4');
     const compressedVideo = ffmpeg.FS('readFile', 'output.mp4') as Uint8Array;
+
     const compressedBlob = new Blob([compressedVideo], { type: 'video/mp4' });
   
     const compressedSize = compressedBlob.size / (1024 * 1024); // in MB
-    if (compressedSize > 10) {
-      throw new Error('Video size is too large. Please upload a video less than 10MB.');
+
+    // Ensure compressed video is below 20MB
+    if (compressedSize > 20) {
+      throw new Error('Video size exceeds 20MB after compression. Please upload a smaller video.');
     }
   
     return new File([compressedBlob], 'compressed.mp4', { type: 'video/mp4' });
