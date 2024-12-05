@@ -1,75 +1,95 @@
-// pages/api/posts.js
-
 import { NextApiRequest, NextApiResponse } from "next";
 import { Client, Databases } from "appwrite";
+import env from "@/env";
+import { db, postCollection } from "@/models/name";
+import { Permission, Role } from "node-appwrite";
+import authenticateSessionToken from "@/lib/hooks/getUserId";
 
-// Initialize Appwrite client
+
 const client = new Client();
 const database = new Databases(client);
 
 client
-  .setEndpoint(process.env.APPWRITE_ENDPOINT || "") // Your Appwrite endpoint
-  .setProject(process.env.APPWRITE_PROJECT_ID || ""); // Your Appwrite project ID
+  .setEndpoint(env.appwrite.endpoint)
+  .setProject(env.appwrite.projectId);
 
-const databaseId = process.env.APPWRITE_DATABASE_ID || "";
-const collectionId = process.env.APPWRITE_COLLECTION_ID || "";
+const databaseId = db;
+const collectionId = postCollection;
 
+// Wrapp the handler with the session authentication middleware
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  try {
-    if (req.method === "POST") {
-      // Handle the creation of a new post
-      const { userId, postId, fileId, content, mediaUrl, mediaType, } = req.body;
+  await authenticateSessionToken(req, res, async () => {
+    try {
+      switch (req.method) {
+        case "POST": {
+          const { userId, content, mediaUrl, mediaType } = req.body;
 
-      if (!userId || !postId || !fileId || !content) {
-        return res.status(400).json({ error: "Missing required fields." });
+          if (!userId || !content) {
+            return res.status(400).json({ error: "Missing required fields." });
+          }
+          // Generate unique post ID if not provided
+          const postId = `post_${new Date().getTime()}`;
+
+          // Prepare the post data
+          const postData = {
+            post_id: postId,
+            user_id: userId,
+            content: content || null,
+            media_url: mediaUrl || null,
+            media_type: mediaType || null,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          };
+
+          const permissions = [
+            Permission.read(Role.user(userId)),
+            Permission.write(Role.user(userId)),
+            Permission.delete(Role.user(userId)),
+          ];
+
+          // save the post data to the database
+          const document = await database.createDocument(
+            databaseId,
+            collectionId,
+            postId,
+            postData,
+            permissions
+          );
+
+          if (!document) {
+            return res.status(500).json({ error: "Failed to create document." });
+          } else {
+            // return res.status(201).json(document);
+            return res.status(201).json({ success: true, post: document });
+          }
+        }
+
+        case "GET": {
+          const { userId, limit = 10, offset = 0 } = req.query;
+
+          if (!userId) {
+            return res.status(400).json({ error: "User ID is required." });
+          }
+
+          const documents = await database.listDocuments(
+            databaseId,
+            collectionId,
+            [
+              `equal("userId", "${userId}")`,
+              `limit(${limit})`,
+              `offset(${offset})`,
+            ]
+          );
+
+          return res.status(200).json(documents);
+        }
+
+        default:
+          return res.status(405).json({ error: "Method not allowed." });
       }
-
-      // Create a new post document
-      const document = await database.createDocument(databaseId, collectionId, "unique()", {
-        userId,
-        postId,
-        fileId,
-        content,
-        mediaUrl,
-        mediaType,
-        createdAt: new Date().toISOString(),
-      });
-
-      // Return the created post
-      return res.status(201).json({ message: "Post created successfully.", document });
+    } catch (error) {
+      console.error("Error handling user data:", error);
+      res.status(500).json({ error: "Internal server error." });
     }
-
-    if (req.method === "GET") {
-      // Fetch posts for a specific user
-      const { userId } = req.query;
-
-      // Validate the user ID
-      if (!userId) {
-        return res.status(400).json({ error: "User ID is required." });
-      }
-
-      // Fetch all documents for the user
-      const documents = await database.listDocuments(databaseId, collectionId, [
-        `equal("userId", "${userId}")`
-      ]);
-
-      // // Fetch user details (for all posts)
-      // const userDetails = await database.getDocument(databaseId, "usersCollectionId", userId); // Replace `usersCollectionId` with actual ID
-
-      // // Attach user info to each post
-      // const postsWithUser = documents.documents.map((doc) => ({
-      //   ...doc,
-      //   user: userDetails,
-      // }));
-
-      // Return the documents
-      return res.status(200).json({ documents});
-    }
-
-    // Handle other HTTP methods
-    return res.status(405).json({ error: "Method not allowed." });
-  } catch (error) {
-    console.error("Error handling user data:", error);
-    res.status(500).json({ error: "Internal server error." });
-  }
-}
+  });
+};
