@@ -2,8 +2,9 @@
 
 import {
   CommentPost,
-  Course,
+  // Course,
   GetUserInfo,
+  Job,
   LikePost,
   LoginInfo,
   Post,
@@ -15,19 +16,20 @@ import {
 import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
-import { Account, Client, ID, Query } from "node-appwrite";
+import { ID, OAuthProvider, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify, generateValidId } from "../utils";
 import {
   courseCollection,
+  // courseCollection,
   db,
+  jobCollection,
   likePostCollection,
-  postAttachementBucket,
+  // postAttachementBucket,
   postCollection,
   postCommentCollection,
   userCollection,
 } from "@/models/name";
-import env from "@/env";
-import { databases, storage } from "@/models/server/config";
+
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -157,6 +159,30 @@ export const reset = async (data: UpdateUser) => {
     console.error("Password reset failed:", error);
   }
 };
+
+export const registerWithGoogle = async (data: UserInfo) => {
+  try {
+    const {account, databases} = await createAdminClient();
+    const info = await account.createOAuth2Token(OAuthProvider.Google, 'http://localhost:3000/dashboard', 'http://localhost:3000');
+    console.log("Google info", info);
+    if (!info) {
+      throw new Error("Access token not provided");
+    }
+    const newUser = await databases.createDocument(db, userCollection, ID.unique(), {
+      ...data,
+      user_id: ID.unique(),
+    });
+    console.log("New user created", newUser);
+    if (!data.user_id || !data.secret) {
+      throw new Error("User ID and secret must be provided");
+    }
+    const session = await account.createSession(data.user_id, data.secret);
+    console.log("Session created", session);
+    
+  } catch (error) {
+    console.error("Error registering with Google:", error);    
+  }
+}
 
 export const register = async (userdata: UserInfo) => {
   const { email, password, firstname, lastname, categories } = userdata;
@@ -465,96 +491,47 @@ export const getLikesByPostId = async (postId: string) => {
   }
 };
 
-export const toggleLike = async (data: LikePost) => {
-  const { like_post_id } = data;
-  const now = dayjs().toISOString(); // Current timestamp
-  const validLike = generateValidPostId(like_post_id);
-
+export const getCourses = async () => {
   try {
     const { databases } = await createAdminClient();
-    const postExists = await getPost(data.post_id);
-    console.log("Post exists:", postExists);
-
-    // Check if the like already exists
-    const existingLike = await databases.getDocument(
-      db,
-      likePostCollection,
-      validLike,
-    );
-
-    if (existingLike) {
-      // If like exists, remove it
-      console.log("Like exists. Removing...");
-      const removedLike = await databases.deleteDocument(
-        db,
-        likePostCollection,
-        validLike,
-      );
-      return parseStringify(removedLike);
-    } else {
-      // If like does not exist, add it
-      console.log("Like does not exist. Adding...");
-      const newLike = await databases.createDocument(
-        db,
-        likePostCollection,
-        validLike,
-        {
-          ...data,
-          post_id: postExists.post_id,
-          like_post_id: validLike,
-          created_at: now,
-          updated_at: now,
-        },
-      );
-      return parseStringify(newLike);
-    }
+    const courses = await databases.listDocuments(db, courseCollection);
+    console.log("Courses", courses);
+    return parseStringify(courses);
   } catch (error) {
-    console.error("Error toggling like:", error);
-    throw new Error("Failed to toggle like.");
+    console.log("Error fetching courses:", error);
   }
 };
 
-// export const createCourse = async (course: Course) => {
-//   const {course_id } = course;
-//   const now = new Date().toISOString();
-//   const validCourseId = generateValidPostId(course_id);
-//   const videoId = generateValidId();
-//   console.log('Creating course', course);
-//   try {
-//     console.log("Created course")
-//     // // const { databases, storage } = await createAdminClient();
-//     // if (!databases || !storage) {
-//     //   throw new Error("Failed to initialize Appwrite databases or storage clients");
-//     // }
-//     // console.log('Database and storage clients initialized');
-//     // if (!course.video) {
-//     //   throw new Error('Course video is required');
-//     // };
-//     // const courseVideo = await storage.createFile(postAttachementBucket, videoId, course.video);
-//     // console.log('Course video uploaded', courseVideo);
-//     // const modules = await databases.createDocument(db, courseCollection, validCourseId, {
-//     //   ...course,
-//     //   user_id: course.user_id,
-//     //   // video: courseVideo.$id,
-//     //   created_at: now,
-//     //   update_at: now,
-//     // });
-//     // console.log('Course created', modules);
-//     // return {
-//     //   ...modules,
-//     // };
-//   } catch (error) {
-//     console.log('Error creating course', error);
-//   }
-// };
+export const createJob = async (job: Job) => {
+  const { job_id } = job;
+  const now = new Date().toISOString();
+  const validJobId = generateValidPostId(job_id);
 
-export const createCourse = async (course: Course) => {
-  console.log('Creating course:', course);
+  console.log("Creating job", job);
+
   try {
-    const validCourseId = generateValidPostId(course.course_id);
-    console.log('Valid course ID:', validCourseId);
-    return { validCourseId };
+    // Initialize Appwrite clients
+    const { databases } = await createAdminClient();
+    console.log("Database client initialized");
+
+    // Create a new job document
+    const response = await databases.createDocument(
+      db, // Database ID
+      jobCollection, // Collection ID
+      validJobId, // Document ID
+      {
+        ...job,
+        user_id: job.user_id,
+        job_id: validJobId,
+        created_at: now,
+        updated_at: now, // Fixed typo (was `update_at`)
+      }
+    );
+
+    console.log("Job created", response);
+    return JSON.parse(JSON.stringify(response)); // Ensure no circular references
   } catch (error) {
-    console.error('Error:', error);
+    console.error("Error creating job", error);
+    throw new Error((error as Error).message || "Failed to create job");
   }
 };
