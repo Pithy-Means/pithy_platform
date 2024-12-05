@@ -1,4 +1,5 @@
 import DashboardNavBar from "@/components/dashboard_navBar";
+import OverView from "@/components/OverView";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 export default async function DashboardLayout({
@@ -12,7 +13,9 @@ export default async function DashboardLayout({
       <DashboardNavBar
         user={loggedIn ? loggedIn.firstname.charAt(0).toUpperCase() : "G"}
       >
-        {children}
+        <OverView>
+          <>{children}</>
+        </OverView>
       </DashboardNavBar>
     </div>
   );
