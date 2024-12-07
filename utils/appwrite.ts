@@ -11,15 +11,29 @@ export async function createSessionClient() {
     
 
   const session = cookies().get("authToken");
+  // console.log("Session cookie value:", session?.value);
+
   if (!session || !session.value) {
     throw new Error("No session");
   }
 
   client.setSession(session.value);
 
+  // Check if the session is valid
+  const account = new Account(client);
+  try {
+    // Validate the session to get the user details
+    const user = await account.get();
+    console.log("Session is valid for user:", user);
+  } catch (error) {
+    console.error("Session is invalid:", error);
+    throw new Error("Invalid or expired session token");
+  }
+
   return {
     get account() {
-      return new Account(client);
+      // return new Account(client);
+      return account;
     },
   };
 }
