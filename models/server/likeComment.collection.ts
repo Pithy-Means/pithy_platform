@@ -50,7 +50,7 @@ export default async function createLikeCommentCollection() {
       100,
       true,
     ),
-    databases.createBooleanAttribute(db, likeCommentCollection, "👍", false),
+    databases.createBooleanAttribute(db, likeCommentCollection, "like", false),
     databases.createStringAttribute(
       db,
       likeCommentCollection,
