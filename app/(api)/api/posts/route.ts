@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { Client, Databases } from "appwrite";
 import env from "@/env";
 import { db, postCollection } from "@/models/name";
@@ -17,15 +17,24 @@ const databaseId = db;
 const collectionId = postCollection;
 
 // Wrapp the handler with the session authentication middleware
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  await authenticateSessionToken(req, res, async () => {
+export default async function handler(req: NextRequest ) {
+  // Call the authenticateSessionToken function to verify the session token
+  const authResult = await authenticateSessionToken();
+  if (!authResult || authResult.status !== 200) {
+    return NextResponse.json({ error: authResult.message }, { status: authResult.status });
+  }
+
+  // Extract the userId from the validated session
+  const { userId } = authResult; 
+  // await authenticateSessionToken().then(async () => {
     try {
+      const body = await req.json();
       switch (req.method) {
         case "POST": {
-          const { userId, content, mediaUrl, mediaType } = req.body;
+          const { content, mediaUrl, mediaType } = body;
 
           if (!userId || !content) {
-            return res.status(400).json({ error: "Missing required fields." });
+            return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
           }
           // Generate unique post ID if not provided
           const postId = `post_${new Date().getTime()}`;
@@ -38,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             media_url: mediaUrl || null,
             media_type: mediaType || null,
             created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString(),
+            // updated_at?: new Date().toISOString(),
           };
 
           const permissions = [
@@ -57,18 +66,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           );
 
           if (!document) {
-            return res.status(500).json({ error: "Failed to create document." });
+            return NextResponse.json({ error: "Failed to create document." }, { status: 500 });
           } else {
             // return res.status(201).json(document);
-            return res.status(201).json({ success: true, post: document });
+            return NextResponse.json({ success: true, post: document }, { status: 201 });
           }
         }
 
         case "GET": {
-          const { userId, limit = 10, offset = 0 } = req.query;
+          const { searchParams } = new URL(req.url);
+          const userId = searchParams.get("userId");
+          const limit = parseInt(searchParams.get("limit") || "10");
+          const offset = parseInt(searchParams.get("offset") || "0");
 
           if (!userId) {
-            return res.status(400).json({ error: "User ID is required." });
+            return NextResponse.json({ error: "User ID is required." }, { status: 400 });
           }
 
           const documents = await database.listDocuments(
@@ -81,15 +93,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             ]
           );
 
-          return res.status(200).json(documents);
+          return NextResponse.json(documents, { status: 200 });
         }
 
         default:
-          return res.status(405).json({ error: "Method not allowed." });
+          return NextResponse.json({ error: "Method not allowed." }, { status: 405 });
       }
     } catch (error) {
       console.error("Error handling user data:", error);
-      res.status(500).json({ error: "Internal server error." });
+      return NextResponse.json({ error: "Internal server error." }, { status: 500 });
     }
-  });
+  
 };
