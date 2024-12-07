@@ -1,7 +1,7 @@
 'use server';
 import { Permission, Role } from "node-appwrite";
 import { createAdminClient } from "@/utils/appwrite";
-import { postAttachementBucket } from "@/utils/constants";
+import { postAttachementBucket } from "@/models/name";
 
 console.log(postAttachementBucket);
 
