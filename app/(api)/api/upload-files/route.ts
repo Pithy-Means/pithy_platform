@@ -1,18 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/appwrite";
-import { postAttachementBucket } from "@/utils/constants";
+import { postAttachementBucket } from "@/models/name";
 import { Permission, Role, Account } from "node-appwrite";
-import { parseCookies } from "nookies";  // For cookie parsing to extract session token
+// import { NextApiRequest } from "next";
+// import { parseCookies } from "nookies";  // For cookie parsing to extract session token
+import authenticateSessionToken from "@/lib/hooks/getUserId";
+
 
 
 export async function POST(req: NextRequest) {
   try {
+    // 0. Validate session token befor proceeding
+    const cookies = await authenticateSessionToken();
+    if (!cookies || cookies.status !== 200) {
+      return NextResponse.json({ error: cookies.message }, { status: 401 });
+    }
     // 1. Retrieve session token from cookies (assuming token is stored as 'sessionToken')
-    const cookies = parseCookies({ req }); // Parse the cookies from the request
+    // const cookies = parseCookies({ req }); // Parse the cookies from the request
     // const sessionToken = cookies.get('sessionToken'); // Get the session token from the cookie
-    const sessionToken = cookies.sessionToken; // Get the session token from the cookie
+    // const sessionToken = cookies.sessionToken; // Get the session token from the cookie
 
-    console.log("Session token:", sessionToken);
+    //1. Retrieve session token from cookies
+    const sessionToken = cookies.userId;
+    console.log("authenticated user ID:", sessionToken);
+
+    // console.log("Session token:", sessionToken);
 
     if (!sessionToken) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -34,6 +46,7 @@ export async function POST(req: NextRequest) {
     console.log("Session validated:", session);
     // Optional: Check session expiry or user roles
     if (parseInt(session.expire) < Date.now() / 1000) {
+      // const refreshToken = await account.refreshSession("current");
       return NextResponse.json({ error: "Session expired" }, { status: 401 });
     }
 
