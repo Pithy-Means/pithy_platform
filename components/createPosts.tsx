@@ -117,41 +117,9 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     } finally {
       setLoading(false);
     }
-    // if (!response.ok) {
-    //   const result = await response.json(); // Parse the response body as JSON
-    //   // const errorData = await response.text(); // Parse the response body as JSON
-    //   console.error('File upload failed:', result); // Log the error to the console
-    //   setError(result.error || 'File upload failed. Please try again.'); // Set the error state
-    //   return null;
-    //   // handleRemoveFile();
-    // }
-
-    //   const { fileId } = await response.json(); // Extract 'fileId' from the response
-    //   return fileId; // Return the file 
-    // } catch (err) {
-    //   console.error('File upload failed:', err); // Log the error to the console
-    //   setError('An unexpected error occurred during file uplaod, please try again.'); // Set the error state
-    //   return null;
-    // } finally { // Reset the loading state
-    //   setLoading(false);
-    // };
   };
 
-  // const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   try {
-  //     setLoading(true);
-  //     // Call the createPost function from user.actions.ts
-  //     const newPost = await createPost(post);
-  //     onPostCreated(newPost);
-  //     // Redirect to the dashboard after successful post creation
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
+  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!selectedFile) {
