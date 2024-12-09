@@ -329,7 +329,7 @@ const Posts = () => {
                     <p>{post.content}</p>
                     <Image
                       src="/assets/post_image.png"
-                      width={600}
+                      width={800}
                       height={100}
                       alt="Image of User"
                       className="h-78 object-cover rounded-md"
