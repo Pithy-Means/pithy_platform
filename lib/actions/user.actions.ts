@@ -185,13 +185,14 @@ export const registerWithGoogle = async (data: UserInfo) => {
 }
 
 export const register = async (userdata: UserInfo) => {
-  const { email, password, firstname, lastname, categories } = userdata;
+  const { user_id, email, password, firstname, lastname, categories } = userdata;
+  const userId = generateValidPostId(user_id);
   let newUserAccount;
   try {
     const { account, databases } = await createAdminClient();
 
     newUserAccount = await account.create(
-      ID.unique(),
+      userId,
       email,
       password,
       `${firstname} ${lastname}`,
@@ -204,10 +205,10 @@ export const register = async (userdata: UserInfo) => {
     const userinfo = await databases.createDocument(
       db,
       userCollection,
-      newUserAccount.$id,
+      userId,
       {
         ...userdata,
-        user_id: newUserAccount.$id,
+        user_id: userId,
         categories: categories || [],
       },
     );
@@ -499,6 +500,16 @@ export const getCourses = async () => {
     return parseStringify(courses);
   } catch (error) {
     console.log("Error fetching courses:", error);
+  }
+};
+
+export const getCourse = async (courseId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const course = await databases.getDocument(db, courseCollection, courseId);
+    return parseStringify(course);
+  } catch (error) {
+    console.error("Error fetching course:", error);
   }
 };
 
