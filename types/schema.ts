@@ -198,8 +198,6 @@ export type Courses = {
   image: string; // Optional: URL or path to the course image
   requirements?: string; // Optional: Prerequisites for the course
   students?: string; // Optional: IDs or count of enrolled students
-  created_at?: string; // Optional: Date when the course was created
-  updated_at?: string; // Optional: Last update date
 };
 
 export type VideoFile = {
@@ -221,4 +219,17 @@ export interface Job {
   job_salary?: string;
   created_at: string;
   updated_at: string;
+}
+
+type ModuleStatus = 'open' | 'closed';
+
+export type Modules = {
+  module_id: string;                // Required: Unique identifier for the module
+  course_id?: string;                // Required: Identifier for the course this module belongs to
+  module_title?: string;            // Optional: Title of the module
+  module_description?: string;      // Optional: Short description of the module
+  video: string;            // Optional: Link or identifier to the video content
+  module_duration?: string;         // Optional: Duration of the module (e.g., "30 minutes")
+  module_comment?: string;          // Optional: Any comments or notes about the module
+  module_status?: ModuleStatus;     // Optional: Status of the module (either "open" or "closed")
 }
