@@ -77,19 +77,5 @@ export default async function createPaymentCollection() {
       100,
       true,
     ),
-    databases.createStringAttribute(
-      db,
-      paymentCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      paymentCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

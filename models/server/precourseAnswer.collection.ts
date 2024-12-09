@@ -55,19 +55,5 @@ export default async function createPreCourseAnswerCollection() {
       100,
       true,
     ),
-    databases.createStringAttribute(
-      db,
-      preCourseAnswerCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      preCourseAnswerCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

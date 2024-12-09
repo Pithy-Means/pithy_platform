@@ -51,19 +51,5 @@ export default async function createCourseCommentCollection() {
       100,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      courseCommentCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      courseCommentCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

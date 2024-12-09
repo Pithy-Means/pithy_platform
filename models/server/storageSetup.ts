@@ -23,8 +23,8 @@ export default async function setupStorage() {
           Permission.delete(Role.team("admin")), // Admins can delete
         ],
         false,
-        false,
-        50,
+        true,
+        50000000,
         [
           "jpg",
           "png",

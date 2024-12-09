@@ -19,3 +19,4 @@ export const postAttachementBucket = "post-attachments";
 export const courseAttachementBucket = "course-attachments";
 export const postCommentCollection = "postComments";
 export const postLikeCollection = "postLikes";
+export const moduleCollection = "modules";

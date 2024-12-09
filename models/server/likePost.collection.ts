@@ -38,20 +38,6 @@ export default async function createLikePostCollection() {
       100,
       true,
     ),
-    databases.createBooleanAttribute(db, likePostCollection, "👍", false),
-    databases.createStringAttribute(
-      db,
-      likePostCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      likePostCollection,
-      "updated_at",
-      100,
-      false,
-    ),
+    databases.createBooleanAttribute(db, likePostCollection, "like", false),
   ]);
 }

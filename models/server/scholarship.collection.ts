@@ -41,19 +41,5 @@ export default async function createScholarshipCollection() {
       1000,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      scholarshipCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      scholarshipCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

@@ -43,19 +43,5 @@ export default async function createPostCollection() {
       10000,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }
