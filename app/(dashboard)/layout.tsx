@@ -9,13 +9,12 @@ export default async function DashboardLayout({
 }) {
   const loggedIn = await getLoggedInUser();
   return (
-    <div className="">
+    <div className="relative">
       <DashboardNavBar
         user={loggedIn ? loggedIn.firstname.charAt(0).toUpperCase() : "G"}
       >
-        <OverView>
-          <>{children}</>
-        </OverView>
+        <OverView>{children}</OverView>
+        {/* The bar will appear on small screens */}
       </DashboardNavBar>
     </div>
   );
