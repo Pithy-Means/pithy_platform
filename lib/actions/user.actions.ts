@@ -546,3 +546,19 @@ export const createJob = async (job: Job) => {
     throw new Error((error as Error).message || "Failed to create job");
   }
 };
+
+export const getModules = async () => {
+  try {
+    const response = await fetch("/api/get-modules");
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch modules");
+    }
+
+    const result = await response.json();
+    console.log("Modules fetched successfully:", result);
+    return result;
+  } catch (error) {
+    console.log("Error fetching modules:", error);
+  }
+};
