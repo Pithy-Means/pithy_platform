@@ -101,6 +101,18 @@ const CreateCourseForm = () => {
       const result = await response.json();
 
       console.log("Course created:", result);
+      // Reset the form
+      setCourse({
+        course_id: "",
+        user_id: user?.user_id || "",
+        title: "",
+        description: "",
+        price: 0,
+        duration: "",
+        image: "",
+        requirements: "",
+        students: "",
+      });
       return result;
     } catch (err) {
       console.error("Error creating course:", err);
