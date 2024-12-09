@@ -66,8 +66,6 @@ export async function POST(req: Request) {
       ...data,
       course_id: moduleId,
       image: imageUpload.$id,
-      created_at: Date.now().toString(),
-      updated_at: Date.now().toString(),
     });
 
     console.log('Course created successfully:', courseModule);
