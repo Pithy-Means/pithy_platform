@@ -79,7 +79,7 @@ const CourseView: React.FC = () => {
         {user?.role === "admin" && (
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mr-16"
-            onClick={() => router.push('/admin/addcourse')}
+            onClick={() => router.push("/admin/addcourse")}
           >
             Create Course
           </button>
@@ -89,8 +89,8 @@ const CourseView: React.FC = () => {
       {/* Content Section */}
       <div className="container mx-auto px-6 py-4">
         {loading ? (
-          <div className="flex justify-center items-center h-48">
-            <p className="text-gray-600 text-lg">Loading courses...</p>
+          <div className="flex items-center justify-center h-screen">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
           </div>
         ) : error ? (
           <div className="flex justify-center items-center h-48">
