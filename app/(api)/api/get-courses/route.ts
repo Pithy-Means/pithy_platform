@@ -3,13 +3,11 @@
 import { courseCollection, courseAttachementBucket, db } from '@/models/name';
 import { createAdminClient } from '@/utils/appwrite';
 import { NextResponse } from 'next/server';
-import env from '../../../../env';
+import env from '@/env';
 
 export async function GET() {
   try {
     const { databases } = await createAdminClient();
-
-    console.log('Fetching courses from Appwrite...');
     const courses = await databases.listDocuments(db, courseCollection);
 
     const coursesWithImages = await Promise.all(
@@ -32,8 +30,6 @@ export async function GET() {
         };
       })
     );
-
-    console.log('Fetched courses with images:', coursesWithImages);
     return NextResponse.json({ message: 'Courses fetched successfully', data: coursesWithImages });
   } catch (error) {
     console.error('Error fetching courses:', error);
