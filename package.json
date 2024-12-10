@@ -9,7 +9,7 @@
     "start": "next start",
     "dev": "next dev",
     "build-and-serve": "npm run build && npm run start",
-    "prod-watch": "nodemon --watch . -e js,json,jsx,ts,tsx,css --exec \"npm run build-and-serve\"",
+    "prod-watch": "nodemon --watch . -e mjs,js,json,jsx,ts,tsx,css --exec \"npm run build-and-serve\"",
     "ci": "npm run lint && npm run type-check && npm run build",
     "format": "prettier --write '*/**/*.{js,jsx,ts,tsx,json,css,md}'",
     "email": "email dev --dir ./emails"
