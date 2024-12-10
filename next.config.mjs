@@ -60,6 +60,12 @@ const nextConfig = {
       ],
   },
 
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '50mb',
+    },
+  },
+
   // // Incremental Static Regeneration not configured globally but per page basis
   // async revalidate() {
   //     return {
