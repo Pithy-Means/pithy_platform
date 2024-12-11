@@ -16,7 +16,7 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
 }) => {
   return (
     <div className="bg-white/90">
-      <nav className="flex h-20 w-full bg-white justify-evenly items-center px-6">
+      <nav className="flex h-20 w-full bg-white justify-evenly items-center px-4">
         <div className="text-2xl font-bold  text-black">
           <Logo />
         </div>
