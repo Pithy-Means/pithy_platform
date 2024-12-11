@@ -10,17 +10,25 @@ interface SubscriptionEvent<Tpayload = string> {
 
 export const fetchPosts = async () => {
   try {
-    const response  = await getPosts();
-    console.log('Posts:', response);
-    const postsWithUserInfo = await Promise.all(response.documents.map(
-      async (post: { user_id: unknown; }) => {
-        const user = await getUserInfo({ userId: post.user_id  as string});
+    const response = await getPosts();
+    console.log('Response from getPosts:', response); // Log full response
+
+    if (!response || !Array.isArray(response)) {
+      console.error("No posts found in response");
+      console.log('Full Response:', response); // Log full response here for debugging
+      return [];
+    }
+
+    const postsWithUserInfo = await Promise.all(
+      response.map(async (post: { user_id: unknown }) => {
+        const user = await getUserInfo({ userId: post.user_id as string });
         return {
           ...post,
           user,
         };
-      }),
+      })
     );
+
     console.log("Posts with user info:", postsWithUserInfo);
     return postsWithUserInfo;
   } catch (error) {
@@ -28,19 +36,6 @@ export const fetchPosts = async () => {
     return [];
   }
 };
-
-// Adjusted subscription logic
-// export const subscribeToPostChanges = (callback: (posts: PostWithUser) => void): (() => void) => {
-//   const unsubscription = client.subscribe(
-//     `databases.${db}.collections.${postCollection}.documents`,
-//     callback
-//   );
-
-//   return () => {
-//     unsubscription();
-//   }
-// };
-
 
 export const subscribeToPostChanges = (
   callback: (event: SubscriptionEvent<Post>) => void
