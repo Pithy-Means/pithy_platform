@@ -24,11 +24,13 @@ import {
   db,
   jobCollection,
   likePostCollection,
+  postAttachementBucket,
   // postAttachementBucket,
   postCollection,
   postCommentCollection,
   userCollection,
 } from "@/models/name";
+import env from "@/env";
 
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
@@ -252,17 +254,71 @@ export const getLoggedInUser = async () => {
 };
 
 export const createPost = async (data: Post) => {
-  const { post_id } = data;
-  const now = dayjs().toISOString(); // current timestamp
+  const { post_id, image, video } = data;
   const validPost = generateValidPostId(post_id);
+  const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
+  let base64Match;
+
+
+
+  if (image && image.startsWith('data:image')) {
+    base64Match = image.match(/^data:(image)\/(\w+);base64,/);
+  } else if (video && video.startsWith('data:video')) {
+    base64Match = video.match(/^data:(video)\/(\w+);base64,/);
+  }
+
+  console.log("Incoming data:", data);
+  console.log("Base64 match", base64Match);
+  if (!base64Match) {
+    console.error("Invalid Base64 format");
+    throw new Error("Invalid image format");
+  }
+
+  const fileType = base64Match[2]; // Extract the file extension
+  console.log("Extracted file type:", fileType);
+
+  // Validate against allowed extensions
+  if (!allowedExtensions.includes(fileType)) {
+    console.error("Unsupported file type:", fileType);
+    throw new Error("Unsupported file type");
+  }
+
+  const base64Prefix = base64Match[0];
+  const base64Data = image ? image.replace(base64Prefix, "") : (video ? video.replace(base64Prefix, "") : "");
+  const binaryData = Buffer.from(base64Data, "base64");
+
+  // Create a File object from binary data
+  const fileName = `uploaded-file.${fileType}`;
+  const mimeType = `${base64Match[1]}/${fileType}`;
+  const file = new File([binaryData], fileName, { type: mimeType });
+  
 
   try {
-    const { databases } = await createAdminClient();
+    const { databases, storage } = await createAdminClient();
+
+    console.log("Uploading file to Appwrite...");
+    const fileUpload = await storage.createFile(
+      postAttachementBucket,
+      ID.unique(),
+      file,
+    );
+
+    console.log("Uploaded file:", fileUpload);
+
+    let imageId = "";
+    let videoId = "";
+
+    // Check if the mediaInfo is an image or a video
+    if (image && image.startsWith('data:image')) {
+      imageId = fileUpload.$id;
+    } else if (video && video.startsWith('data:video')) {
+      videoId = fileUpload.$id;
+    }
     const post = await databases.createDocument(db, postCollection, validPost, {
       ...data,
       post_id: validPost,
-      created_at: now,
-      updated_at: now,
+      image: imageId,
+      video: videoId,
     });
     console.log("Post", post);
     return parseStringify(post);
@@ -367,9 +423,48 @@ export const getPosts = async () => {
   try {
     const { databases } = await createAdminClient();
     const posts = await databases.listDocuments(db, postCollection);
-    return parseStringify(posts);
+    if (!posts || !posts.documents) {
+      console.error("No documents found in the posts collection");
+      return [];
+    }
+
+    if (!Array.isArray(posts.documents)) {
+      console.error("posts.documents is not an array");
+      return [];
+    }
+
+    const postWithFiles = await Promise.all(
+      posts.documents.map(async (post) => {
+        let imageUrl = null;
+        let videoUrl = null;
+
+        if (post.image) {
+          try {
+            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}&mode=admin`;
+          } catch (error) {
+            console.error(`Failed to fetch image for post ${post.$id}:`, error);
+          }
+        }
+
+        if (post.video) {
+          try {
+            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}&mode=admin`;
+          } catch (error) {
+            console.error(`Failed to fetch video for post ${post.$id}:`, error);
+          }
+        }
+
+        return {
+          ...post,
+          image: imageUrl,
+          video: videoUrl,
+        };
+      }),
+    );
+    return parseStringify(postWithFiles);
   } catch (error) {
-    console.error(error);
+    console.error("Error in getPosts:", error);
+    return [];
   }
 };
 
@@ -385,7 +480,6 @@ export const getPost = async (postId: string) => {
 
 export const createComment = async (data: CommentPost) => {
   const { comment_id } = data;
-  const now = dayjs().toISOString(); // current timestamp
   const validComment = generateValidPostId(comment_id);
 
   try {
@@ -399,8 +493,6 @@ export const createComment = async (data: CommentPost) => {
         ...data,
         post_id: postExists.post_id,
         comment_id: validComment,
-        created_at: now,
-        updated_at: now,
       },
     );
     return parseStringify(comment);
@@ -424,7 +516,6 @@ export const getCommentsByPostId = async (postId: string) => {
 
 export const likePost = async (data: LikePost) => {
   const { like_post_id } = data;
-  const now = dayjs().toISOString(); // current timestamp
   const validLike = generateValidPostId(like_post_id);
 
   try {
@@ -439,8 +530,6 @@ export const likePost = async (data: LikePost) => {
         ...data,
         post_id: postExists.post_id,
         like_post_id: validLike,
-        created_at: now,
-        updated_at: now,
       },
     );
     console.log("Like created", like);
