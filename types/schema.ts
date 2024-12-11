@@ -107,8 +107,9 @@ export type Post = {
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
   content?: string; // Content of the post
-  created_at?: string; // Optional, creation date
-  updated_at?: string; // Optional, last updated date
+  image?: string; // URL or path to the post image
+  video?: string; // URL or path to the post video
+  mediaInfo?: string; // URL or path to the post video or image
   repost_of?: string; // ID of the original post if this is a repost
   user_comment?: string; // Additional user content on top of the reposted content
 };
@@ -124,8 +125,6 @@ export interface CommentPost {
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters
-  created_at?: string; // Timestamp when the comment was created
-  updated_at?: string; // Timestamp when the comment was last updated
   user?: Partial<UserInfo>; // User information associated with the comment
 }
 
@@ -134,8 +133,6 @@ export type LikePost = {
   user_id: string; // ID of the user who liked the post
   post_id: string; // ID of the post being liked
   isLiked?: boolean; // Boolean to indicate a like
-  created_at?: string; // Optional timestamp for when the like was created
-  updated_at?: string; // Optional timestamp for the last update
   user?: Partial<UserInfo>; // User information associated with the like
 };
 
