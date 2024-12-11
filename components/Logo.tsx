@@ -1,13 +1,20 @@
 import React from "react";
+import Image from "next/image";
+import Link from "next/link";
 
 const Logo = () => {
   return (
-    <div className="flex items-center">
-      <img src="assets/logo.png" alt="Logo" className="w-8 h-8" />
+    <Link href="/" className="flex items-center">
+      <Image 
+        src="/assets/logo.png" 
+        alt="Logo" 
+        width={32} 
+        height={32} 
+        className="w-8 h-8" 
+      />
       <span className="text-xl font-bold ml-2">Pithy Means</span>
-    </div>
+    </Link>
   );
 };
 
 export default Logo;
-
