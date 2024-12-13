@@ -76,6 +76,13 @@ export const login = async ({ email, password }: LoginInfo) => {
     //     "Invalid session ID format. It must be alphanumeric and at most 36 characters, without leading underscores.",
     //   );
     // }
+
+    // Validate the session token format using a regular expression
+    // const validSessionPattern = /^[a-zA-Z0-9_]{1,36}$/;
+    // if (!validSessionPattern.test(session.secret)) {
+    //   throw new Error("Invalid session token format.");
+    // }
+
     // // store the session token as a cookie for server-side use
     // cookies().set("my-session", session.secret, {
     //   path: "/",
@@ -145,9 +152,9 @@ export const getSession = async () => {
     // }
 
     // // Ensure session ID does not start with an underscore
-    // if (sessionId[0] === "_") {
-    //   throw new Error("Session ID cannot start with an underscore.");
-    // }
+    if (sessionId[0] === "_") {
+      throw new Error("Session ID cannot start with an underscore.");
+    }
 
     // Create a new Appwrite client
     // if (typeof localStorage === "undefined") {
@@ -163,12 +170,13 @@ export const getSession = async () => {
     const { account } = await createSessionClient();
 
     // Attach the session token to the client
-    account.client.setSession(sessionId); // Set the session token
+    // account.client.setSession(sessionId); // Set the session token
 
     // Get the session details using the token
     const session = await account.get();
     console.log("Session details:", session);
-    return parseStringify(session);  // Return the session details
+    // return parseStringify(session);  // Return the session details
+    return session; // Return the session details
   } catch (error) {
     console.error("Error getting session:", error);
     return null;
