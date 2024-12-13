@@ -81,17 +81,36 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
 
       // Check if a session token is available
       const cookies = parseCookies();
-      const token = cookies.authToken;
+      let token = cookies.authToken || (await getSession());
       if (!token) {
         // If no session token is available, get a new one
-        const sessionToken = await getSession();
-        if (!sessionToken) return null;
+        // const sessionToken = await getSession();
+        // if (!sessionToken) return null;
+        setError('No session token found. ');
+        return null;
+      }
+
+      // Ensure the token is a string
+      if (typeof token !== 'string') {
+        token = String(token);
+        console.warn('Session token was not a string, converted:', token);
       }
 
       // Create a new form data for the file upload
       const formData = new FormData();
       formData.append('file', selectedFile); // attach the file to the form data
       // formData.set('file', file); // set the file with the name
+
+       // Convert the file to a buffer
+    // const arrayBuffer = await selectedFile.arrayBuffer();
+    // const buffer = new Uint8Array(arrayBuffer);
+
+    // Prepare the payload with buffer
+    // const payload = JSON.stringify({
+    //   file: Array.from(buffer), // Send as an array to retain buffer format
+    //   filename: selectedFile.name,
+    //   type: selectedFile.type,
+    // });
 
       // Send the file to the server
       const response = await fetch('/api/upload-files', {
@@ -102,11 +121,14 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
         },
         // body: JSON.stringify({ media_url: selectedFile }),
         body: formData,
+        // body: payload,
       });
+      console.log('Response:', response);
       const data = await response.json();
       if (data.error) {
         setError(data.error || 'Failed to upload file.');
-        return null;
+        throw new Error('Invalid or expired token');
+        // return null;
       } else {
         return data.fileId;
       }
@@ -140,8 +162,8 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
 
       const postData = {
         ...post, // Include the post content
-        // mediaUrl: fileId, // Update the post with the media URL
-        mediaUrl: `storage/files/${fileId}/view`, // Construct the media url for viewing
+        mediaUrl: fileId, // Update the post with the media URL
+        // mediaUrl: `storage/files/${fileId}/view`, // Construct the media url for viewing
         mediaType: selectedFile.type, // Update the post with the media type
       }
       // Create the post with the file ID
