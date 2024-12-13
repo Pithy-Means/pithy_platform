@@ -19,7 +19,7 @@ const collectionId = postCollection;
 // Wrapp the handler with the session authentication middleware
 export default async function handler(req: NextRequest ) {
   // Call the authenticateSessionToken function to verify the session token
-  const authResult = await authenticateSessionToken();
+  const authResult = await authenticateSessionToken(req);
   if (!authResult || authResult.status !== 200) {
     return NextResponse.json({ error: authResult.message }, { status: authResult.status });
   }
@@ -37,7 +37,8 @@ export default async function handler(req: NextRequest ) {
             return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
           }
           // Generate unique post ID if not provided
-          const postId = `post_${new Date().getTime()}`;
+          // const postId = `post_${new Date().getTime()}`;
+          const postId = `post_${Date.now()}`;
 
           // Prepare the post data
           const postData = {
@@ -46,7 +47,7 @@ export default async function handler(req: NextRequest ) {
             content: content || null,
             media_url: mediaUrl || null,
             media_type: mediaType || null,
-            created_at: new Date().toISOString(),
+            // created_at: new Date().toISOString(),
             // updated_at?: new Date().toISOString(),
           };
 
