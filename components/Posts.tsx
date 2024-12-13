@@ -328,7 +328,7 @@ const Posts = () => {
                   <div className="flex flex-col space-y-4">
                     <p>{post.content}</p>
                     <Image
-                      src="/assets/post_image.png"
+                      src={post.mediaUrl || ""}
                       width={600}
                       height={100}
                       alt="Image of User"
