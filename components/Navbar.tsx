@@ -6,7 +6,7 @@ import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useState, useEffect, useRef } from "react";
 import { UserInfo } from "@/types/schema";
-import { getSession } from "@/lib/actions/user.actions";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -29,7 +29,8 @@ const Navbar = () => {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const userLogged = await getSession();
+        const userLogged = await getLoggedInUser();
+        console.log("User logged in:", userLogged);
         if (!userLogged) {
           console.log("No user logged in");
         }
