@@ -76,19 +76,5 @@ export default async function createJobCollection() {
       100,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      jobCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      jobCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

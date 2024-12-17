@@ -34,25 +34,13 @@ export default async function createPostCollection() {
       100,
       false,
     ),
+    databases.createStringAttribute(db, postCollection, "mediaurl", 10000, false),
+    databases.createStringAttribute(db, postCollection, "mediatype", 100, false),
     databases.createStringAttribute(
       db,
       postCollection,
       "user_comment",
       10000,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "updated_at",
-      100,
       false,
     ),
   ]);

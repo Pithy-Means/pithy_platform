@@ -82,8 +82,8 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     }`;
 
   return (
-    <div className="flex space-x-4 w-full pr-8">
-      <div className="flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
+    <div className="flex">
+      <div className="hidden md:flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
         <div className="flex flex-col space-y-2">
           <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
           <div className="flex flex-col space-y-2">
@@ -91,13 +91,14 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               <GoHome size={24} />
               <p className="text-base hidden lg:block">Home</p>
             </Link>
-            <button
-              onClick={() => setCoursesModalOpen(true)}
+            <Link
+              href="/courses"
               className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
+              onClick={() => getLinkClassName("/courses")}
             >
               <HiMiniClipboardDocumentList size={24} />
               <p className="text-base hidden lg:block">Courses</p>
-            </button>
+            </Link>
             <Link
               href="/community"
               className={getLinkClassName("/community")}

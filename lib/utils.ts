@@ -22,6 +22,15 @@ export function parseStringify(data: unknown) {
   return data; // Return data as is if already an object
 }
 
+export const parseString = (data: string) => {
+  try {
+    return JSON.parse(data);
+  } catch (error) {
+    console.error("Error parsing JSON:", error);
+  }
+  return data;
+}
+
 export const generateValidPostId = (post_id?: string): string => {
   const isValidPostId = post_id && /^[a-zA-Z0-9._-]{1,36}$/.test(post_id);
   return isValidPostId ? post_id : uuidv4();

@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { IoIosPeople } from "react-icons/io";
 
-const communty = () => {
+const Community = () => {
   return (
     <div className="flex flex-col bg-white  text-black  justify-start rounded-lg w-full ">
       <div>
@@ -30,4 +30,4 @@ const communty = () => {
   );
 };
 
-export default communty;
+export default Community;

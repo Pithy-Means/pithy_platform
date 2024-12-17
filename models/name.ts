@@ -16,5 +16,7 @@ export const certificateCollection = "certificates";
 export const scholarshipCollection = "scholarships";
 export const jobCollection = "jobs";
 export const postAttachementBucket = "post-attachments";
+export const courseAttachementBucket = "course-attachments";
 export const postCommentCollection = "postComments";
 export const postLikeCollection = "postLikes";
+export const moduleCollection = "modules";

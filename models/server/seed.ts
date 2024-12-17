@@ -13,8 +13,9 @@ import createPreCourseAnswerCollection from "./precourseAnswer.collection";
 import createPostCourseAnswerCollection from "./postcourseAnswer.collection";
 import createScholarshipCollection from "./scholarship.collection";
 import createJobCollection from "./job.collection";
-import createCertificateCollection from "./certificate.collection";
+// import createCertificateCollection from "./certificate.collection";
 import createPaymentCollection from "./payment.collection";
+import createModuleCollection from "./module.collection";
 
 const isDbSetup = false;
 
@@ -39,13 +40,14 @@ export default async function getOrCreateDB() {
         createCourseCommentCollection(),
         createPostCourseQuestionCollection(),
         createPostCourseAnswerCollection(),
-        createCertificateCollection(),
+        // createCertificateCollection(),
         createPostCollection(),
         createCommentCollection(),
         createLikeCollection(),
         createLikeCommentCollection(),
         createScholarshipCollection(),
         createJobCollection(),
+        createModuleCollection(),
       ]);
       console.log("Database setup complete");
     } catch (error) {

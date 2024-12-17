@@ -1,3 +1,4 @@
+// import { z} from 'zod';
 //Base user info type (common fields for all users)
 export type BaseUserInfo = {
   user_id: string;
@@ -12,6 +13,7 @@ export type BaseUserInfo = {
   address?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
+  secret?: string;
 };
 
 //User categories
@@ -106,8 +108,9 @@ export type Post = {
   post_id?: string; // Unique identifier for the post
   user_id?: string; // User ID of the post creator
   content?: string; // Content of the post
-  created_at?: string; // Optional, creation date
-  updated_at?: string; // Optional, last updated date
+  image?: string; // URL or path to the post image
+  video?: string; // URL or path to the post video
+  mediaInfo?: string; // URL or path to the post video or image
   repost_of?: string; // ID of the original post if this is a repost
   user_comment?: string; // Additional user content on top of the reposted content
 };
@@ -123,8 +126,6 @@ export interface CommentPost {
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters
-  created_at?: string; // Timestamp when the comment was created
-  updated_at?: string; // Timestamp when the comment was last updated
   user?: Partial<UserInfo>; // User information associated with the comment
 }
 
@@ -133,8 +134,6 @@ export type LikePost = {
   user_id: string; // ID of the user who liked the post
   post_id: string; // ID of the post being liked
   isLiked?: boolean; // Boolean to indicate a like
-  created_at?: string; // Optional timestamp for when the like was created
-  updated_at?: string; // Optional timestamp for the last update
   user?: Partial<UserInfo>; // User information associated with the like
 };
 
@@ -185,4 +184,50 @@ export interface CardPaymentData {
   fullname: string;
   phone_number: string;
   enckey: string;
+}
+
+export type Courses = {
+  course_id: string; // Unique identifier for the course
+  user_id: string; // ID of the user who created the course
+  title: string; // Title of the course
+  description: string; // Detailed description of the course
+  price: number; // Price of the course
+  duration: string; // Duration of the course (e.g., "2 hours", "3 weeks")
+  image: string; // Optional: URL or path to the course image
+  requirements?: string; // Optional: Prerequisites for the course
+  students?: string; // Optional: IDs or count of enrolled students
+};
+
+export type VideoFile = {
+  vid: File;
+}
+
+// types/job.ts
+export interface Job {
+  job_id: string;
+  user_id: string;
+  job_title: string;
+  job_description?: string;
+  job_location?: string;
+  job_status: "open" | "closed";
+  job_experience: "entry" | "mid" | "senior";
+  job_education: "high_school" | "bachelor" | "master" | "phd";
+  job_employment: "full_time" | "part_time" | "contract" | "internship";
+  job_type: "remote" | "office" | "hybrid";
+  job_salary?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+type ModuleStatus = 'open' | 'closed';
+
+export type Modules = {
+  module_id: string;                // Required: Unique identifier for the module
+  course_id?: string;                // Required: Identifier for the course this module belongs to
+  module_title?: string;            // Optional: Title of the module
+  module_description?: string;      // Optional: Short description of the module
+  video: string;            // Optional: Link or identifier to the video content
+  module_duration?: string;         // Optional: Duration of the module (e.g., "30 minutes")
+  module_comment?: string;          // Optional: Any comments or notes about the module
+  module_status?: ModuleStatus;     // Optional: Status of the module (either "open" or "closed")
 }

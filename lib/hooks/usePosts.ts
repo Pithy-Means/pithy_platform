@@ -10,7 +10,10 @@ export const usePosts = () => {
 
   useEffect(() => {
     const loadPosts = async () => {
-      const initialPosts = await fetchPosts();
+      const initialPosts = (await fetchPosts()).map(post => ({
+        ...post,
+        user_id: post.user_id as string | undefined,
+      }));
       setPosts(initialPosts);
     };
     loadPosts();
@@ -19,12 +22,6 @@ export const usePosts = () => {
   useEffect(() => {
     const unsubscribe = subscribeToPostChanges(async (res) => {
       const { events, payload } = res;
-
-      //checking if user_is is absent or empty in payload
-      // if (!payload.user_id) {
-      //   console.warn("Received event with missing user_id:", payload);
-      //   return; // Skip processing this event
-      // }
 
       //checking if the user_id is present in the payload
       if (payload.user_id) {

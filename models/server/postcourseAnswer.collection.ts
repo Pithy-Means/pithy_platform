@@ -55,19 +55,5 @@ export default async function createPostCourseAnswerCollection() {
       100,
       true,
     ),
-    databases.createStringAttribute(
-      db,
-      postCourseAnswerCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCourseAnswerCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

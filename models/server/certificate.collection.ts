@@ -36,20 +36,6 @@ export default function createCertificateCollection() {
       100,
       true,
     ),
-    databases.createDocument(db, certificateCollection, "certificate", true),
-    databases.createStringAttribute(
-      db,
-      certificateCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      certificateCollection,
-      "updated_at",
-      100,
-      false,
-    ),
+    databases.createStringAttribute(db, certificateCollection, "certificate", 100, true),
   ]);
 }

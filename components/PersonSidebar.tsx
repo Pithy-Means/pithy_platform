@@ -40,7 +40,7 @@ const PersonSidebar = () => {
           <div className="flex flex-col justify-center items-center -mt-10">
             <div className="bg-white rounded-full p-5">
               <p className="text-black text-2xl font-extrabold">
-                {user.firstname.charAt(0)}
+                {user.firstname.charAt(0).toUpperCase()}
               </p>
             </div>
             <div className="text-black items-center flex flex-col space-y-2">
@@ -48,7 +48,7 @@ const PersonSidebar = () => {
                 {user.firstname} {user.lastname}
               </p>
               <button className="text-base bg-gray-400 rounded-sm px-2 py-1">
-                {user.categories}
+                {user.categories.charAt(0).toUpperCase()}{user.categories.slice(1)}
               </button>
             </div>
           </div>

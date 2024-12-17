@@ -51,19 +51,5 @@ export default async function createCommentCollection() {
       1000,
       true,
     ),
-    databases.createStringAttribute(
-      db,
-      postCommentCollection,
-      "created_at",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCommentCollection,
-      "updated_at",
-      100,
-      false,
-    ),
   ]);
 }

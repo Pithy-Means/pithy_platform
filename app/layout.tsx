@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
+import Head from "next/head";
 // import Navbar from "@/components/Navbar";
 // import DashboardNavBar from "@/components/dashboard_navBar";
 // import { usePathname } from "next/navigation";
@@ -29,6 +30,25 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        {/* Favicon for all devices */}
+        <link rel="icon" href="/favicon.ico" />
+
+        {/* Optionally, add more sizes for better support */}
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/favicon-16x16.png"
+        />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+      </Head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >

@@ -15,19 +15,22 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
   children,
 }) => {
   return (
-    <div className="bg-gray-300">
-      <nav className="flex h-20 w-full bg-white justify-evenly items-center">
+    <div className="bg-white/90">
+      <nav className="flex h-20 w-full bg-white justify-evenly items-center px-4">
         <div className="text-2xl font-bold  text-black">
           <Logo />
         </div>
         <div className="relative w-1/2 ">
-          <div className="relative flex items-center">
+          <div className="hidden relative lg:flex items-center">
             <FaSearch className="absolute left-3 text-black/35 " size={20} />
             <input
               className="bg-gray-300 border outline-none w-full p-2 pl-10 rounded-lg text-black/65"
               placeholder="search Course"
               id="searchHere"
             />
+          </div>
+          <div className="flex lg:hidden items-center justify-center">
+            <FaSearch className="absolute left-3 text-black/55 " size={20} />
           </div>
         </div>
         <div>
@@ -40,7 +43,6 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
           <div className="bg-gray-600 py-1 px-2 rounded-full border border-black">
             {user}
           </div>
-          <p className="text-black ">Me</p>
         </div>
       </nav>
       {children}
