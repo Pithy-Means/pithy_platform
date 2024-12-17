@@ -27,7 +27,10 @@ const AssCards = () => {
                alt="Frame" 
                width={60}
                height={60}
-               className=" "
+               priority
+               className=""
+               style={{ height: "50px", width: "30%" }}
+      />
                />
             </div>
           </Card>
@@ -43,6 +46,7 @@ const AssCards = () => {
             alt="Take"
             width={20}
             height={100}
+
             className=" " 
             />
           </div>
@@ -73,7 +77,9 @@ const AssCards = () => {
             alt="Frame"
             width={60}
             height={60}
+            priorty
             className=""
+            style={{ height: "50px", width: "30%" }}
              />
           </div>
         </Card>
@@ -91,6 +97,7 @@ const AssCards = () => {
            alt="Take" 
            width={50}
            height={50}
+           priority
            className="mb-[300px]  lg:block hidden"
            />
         </div>
@@ -115,7 +122,9 @@ const AssCards = () => {
             alt="Frame" 
             width={60}
             height={60}
+            prority
             className=""
+            style={{ height: "50px", width: "30%" }}
             />
           </div>
         </Card>
