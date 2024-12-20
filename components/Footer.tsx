@@ -24,7 +24,7 @@ const Footer = () => {
                       <Logo />
                     </div>
                   </div>
-                  <p className="text-white text-[12px] md:text-sm lg:text-base md:text-start text-center break-normal">
+                  <p className="text-white text-[12px] md:text-[16px] lg:text-base md:text-start text-center break-normal">
                     Lorem psum aoka psuma lroe taray aoksa mdak djskas aso
                   </p>
                   <SocialMediaLinks className="text-white" />
@@ -39,7 +39,7 @@ const Footer = () => {
               }
               email={"contact@pithymeans.com"}
               phone={["+1 (307) 374-0993", " +1 (307) 205-5983"]}
-              className="text-white text-center  mb-4 md:mb-0 break-normal"
+              className="text-white text-center  mb-4 md:mb-0 break-normal md:text-base"
             />
             <ContactInfo
               title={"office uganda"}
@@ -68,7 +68,7 @@ const Footer = () => {
             <div className="mx-4 border border-gray-600 "></div>
             <div className="flex justify-between flex-col-reverse md:flex-row items-center px-4 md:px-10">
               <div>
-                <p className="text-white text-center py-4 text-[12px]">
+                <p className="text-white text-center py-4 text-[12px] md:text-xl">
                   © 2024 Pithy Means. All Rights Reserved
                 </p>
               </div>
