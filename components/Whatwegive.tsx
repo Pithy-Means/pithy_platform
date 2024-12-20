@@ -7,13 +7,13 @@ const Whatwegive = () => {
   return (
     <div className="p-10 bg-white">
       <div className="flex flex-col space-y-4 lg:items-start items-center">
-        <h1 className="text-lg md:text-base text-[#5AC35A] md:text-center">
+        <h1 className="text-lg md:text-base text-[#5AC35A] md:text-center md:text-3xl">
           WHAT WE GIVE YOU
         </h1>
 
         {/* For larger screens, show this */}
         <div className="hidden lg:flex space-x-2 items-center">
-          <TitleDot title={"unlock your potential"} />
+          <TitleDot title={"unlock your potential"}/>
           <TitleDot title={"future"} />
           <div className="flex space-x-2 items-center">
             <h1 className="text-xl sm:text-base md:text-lg lg:text-3xl text-black font-extrabold capitalize">
@@ -37,7 +37,7 @@ const Whatwegive = () => {
 
         {/* For smaller screens, show this */}
         <div className="flex lg:hidden flex-col space-y-4 items-center">
-          <h1 className="text-[14px] text-black font-extrabold capitalize text-center">
+          <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
             Unlock your potential
             <span className="mx-2 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
             Future
@@ -45,7 +45,7 @@ const Whatwegive = () => {
             Finance with
           </h1>
           <div className="flex flex-col">
-            <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase">
+            <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase md:text-xl">
               Pithy means
             </h1>
             <Image
@@ -58,17 +58,17 @@ const Whatwegive = () => {
           </div>
         </div>
 
-        <p className="capitalize text-black text-center md:text-left">
+        <p className="capitalize text-black text-center md:text-left md:text-lg">
           avoid costly mistakes and find your perfect fit
         </p>
-        <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize">
+        <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize md:text-xl">
           Start your journey
         </Button>
 
-        <div className="flex flex-wrap justify-center md:justify-between gap-6 py-6">
+        <div className="flex flex-wrap justify-center md:justify-evenly lg:justify-evenly gap-6 py-6">
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
-              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
+              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded md:h-14 md:w-14">
                 <Image
                   src="/assets/briefcase-04.png"
                   alt="briefcase"
@@ -77,10 +77,10 @@ const Whatwegive = () => {
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
-              <h1 className="text-lg text-black font-extrabold capitalize text-center">
+              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
                 find your ideal path
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center md:text-lg">
                 Discover suitable study, professional, or business areas
                 tailored to your strengths.
               </p>
@@ -89,7 +89,7 @@ const Whatwegive = () => {
 
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
-              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
+              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded md:h-14 md:w-14">
                 <Image
                   src="/assets/cancel-circle.png"
                   alt="cancel"
@@ -98,10 +98,10 @@ const Whatwegive = () => {
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
-              <h1 className="text-lg text-black font-extrabold capitalize text-center">
+              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
                 avoid costly mistakes
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center md:text-lg">
                 Minimize risks and wasted time and resources.
               </p>
             </div>
@@ -109,7 +109,7 @@ const Whatwegive = () => {
 
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
-              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
+              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded md:h-14 md:w-14">
                 <Image
                   src="/assets/strike - stroke.png"
                   alt="strike"
@@ -118,10 +118,10 @@ const Whatwegive = () => {
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
-              <h1 className="text-lg text-black font-extrabold capitalize text-center">
+              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
                 Boost confidence
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center md:text-lg" >
                 Ensure success in your chosen path.
               </p>
             </div>
@@ -129,7 +129,7 @@ const Whatwegive = () => {
 
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
-              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
+              <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded md:h-14 md:w-14">
                 <Image
                   src="/assets/square-lock-02.png"
                   alt="secure"
@@ -138,10 +138,10 @@ const Whatwegive = () => {
                   className="absolute top-[-10px] left-[-10px]"
                 />
               </div>
-              <h1 className="text-lg text-black font-extrabold capitalize text-center">
+              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl md:text-xl">
                 Secure your future
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center md:text-lg">
                 Make informed decisions for yourself and your collaborators.
               </p>
             </div>
