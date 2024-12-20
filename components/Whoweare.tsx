@@ -11,7 +11,7 @@ const Whoweare = () => {
           <p className="capitalize text-black">
             Empowering informed decisions for a fulfing career
           </p>
-          <p className="text-black">
+          <p className="text-black text-base md:text-2xl lg:text-3xl">
             At pithy means, we believe that everyone deserves to find their
             perfect fit. our mission is to guide students, professionals, and
             business managers towards their most suitable study, professional,
@@ -19,10 +19,10 @@ const Whoweare = () => {
           </p>
           <div className="flex justify-between">
             <div className="flex flex-col space-y-4">
-              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md">
+              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md md:text-xl">
                 Our Story
               </div>
-              <p className="capitalize text-black">
+              <p className="capitalize text-black md:text-xl">
                 Founded in the US and Uganda, our team saw the need to prevent:
               </p>
               <div className="flex flex-col ml-4">
@@ -47,10 +47,10 @@ const Whoweare = () => {
               </div>
             </div>
             <div className="flex flex-col space-y-4">
-              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md">
+              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md md:text-3xl">
                 Our vision
               </div>
-              <p className="capitalize text-black">
+              <p className="capitalize text-black md:text-xl">
                 A world where everyone thrives in their chosen path.
               </p>
               <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
