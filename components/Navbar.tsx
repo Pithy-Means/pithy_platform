@@ -47,7 +47,7 @@ const Navbar = () => {
     fetchUser();
   }, []);
 
-  // Close the menu when clicking outside
+   // Handle outside clicks and Escape key to close the menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
