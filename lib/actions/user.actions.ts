@@ -53,44 +53,18 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!account) {
       throw new Error("Account creation failed.");
     }
-
     // create a new session with the email and password
     const session = await account.createEmailPasswordSession(email, password);
     console.log("Session", session.$id);
 
-
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
-
     // const expirationTime = dayjs().add(1, "day").toDate(); // Set the expiration time for the cookie
-
     const sessionId = session.$id;
     if (!sessionId) {
       throw new Error("Session ID not found");
     }
-
-    // const validateSessionPattern = /^[a-zA-Z0-9_]{1,36}$/;
-    // if (!validateSessionPattern.test(sessionId)) {
-    //   throw new Error(
-    //     "Invalid session ID format. It must be alphanumeric and at most 36 characters, without leading underscores.",
-    //   );
-    // }
-
-    // Validate the session token format using a regular expression
-    // const validSessionPattern = /^[a-zA-Z0-9_]{1,36}$/;
-    // if (!validSessionPattern.test(session.secret)) {
-    //   throw new Error("Invalid session token format.");
-    // }
-
-    // // store the session token as a cookie for server-side use
-    // cookies().set("my-session", session.secret, {
-    //   path: "/",
-    //   httpOnly: true,
-    //   sameSite: "strict",
-    //   secure: true,
-    // });
-
     // Store the session token in a secure cookie
     cookies().set("authToken", session.secret, {
       path: "/", // Accessible across the site
@@ -99,11 +73,6 @@ export const login = async ({ email, password }: LoginInfo) => {
       sameSite: "strict", // prevent CSRF attacks (protection)
       maxAge: 60 * 60, // 1 hour in seconds
     });
-
-    // store the session token in localStorage for client-side use (browser-only)
-    // if (typeof localStorage !== "undefined"){
-    //   localStorage.setItem("authToken", session.secret);
-    // }
 
     // fetch the user information using the session token
     const user = await getUserInfo({ userId: session.userId });
