@@ -1,11 +1,15 @@
 import { flw } from "@/flutterwave.config";
-import { PaymentData, PaymentResponse } from "@/types/schema";
+import { generateValidPostId } from "@/lib/utils";
+import { db, paymentCollection } from "@/models/name";
+import { PaymentData } from "@/types/schema";
+import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const data: PaymentData = await req.json();
 
-  const { amount, currency, tx_ref, email, phone_number, network } = data;
+  const { amount, currency, tx_ref, email, phone_number, network, payment_id } = data;
+  const payId = generateValidPostId(payment_id);
 
   try {
     const payload = {
@@ -26,15 +30,21 @@ export async function POST(req: Request) {
     if (response.status === "success") {
       const redirectLink = response.meta?.authorization?.redirect;
 
+      const { databases } = await createAdminClient();
+
+      const payment = await databases.createDocument(db, paymentCollection, payId, {
+        ...data, payment_id: payId, status: response.status,
+      });
+      console.log("Payment data: ", payment);
+
       if (redirectLink) {
-        const successResponse: PaymentResponse = {
+
+        return NextResponse.json({
           status: "success",
           message: "Payment initiated successfully",
+          data: payment,
           redirect: redirectLink,
-          tx_ref,
-        };
-
-        return NextResponse.json(successResponse);
+        });
       } else {
         return NextResponse.json({
           status: "error",
