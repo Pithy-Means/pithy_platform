@@ -259,8 +259,6 @@ export const createPost = async (data: Post) => {
   const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
   let base64Match;
 
-
-
   if (image && image.startsWith('data:image')) {
     base64Match = image.match(/^data:(image)\/(\w+);base64,/);
   } else if (video && video.startsWith('data:video')) {
@@ -291,7 +289,6 @@ export const createPost = async (data: Post) => {
   const fileName = `uploaded-file.${fileType}`;
   const mimeType = `${base64Match[1]}/${fileType}`;
   const file = new File([binaryData], fileName, { type: mimeType });
-  
 
   try {
     const { databases, storage } = await createAdminClient();
@@ -301,6 +298,9 @@ export const createPost = async (data: Post) => {
       postAttachementBucket,
       ID.unique(),
       file,
+    );
+
+    console.log("Uploaded file:",
     );
 
     console.log("Uploaded file:", fileUpload);
@@ -331,12 +331,11 @@ export const updatePost = async (
   postId: string,
   updatedData: Partial<Post>,
 ) => {
-  const now = dayjs().toISOString(); // current timestamp
   try {
     const { databases } = await createAdminClient();
+
     const post = await databases.updateDocument(db, postCollection, postId, {
       ...updatedData,
-      updated_at: now,
     });
     return parseStringify(post);
   } catch (error) {
@@ -495,6 +494,7 @@ export const createComment = async (data: CommentPost) => {
         comment_id: validComment,
       },
     );
+    console.log("Comment created", comment);
     return parseStringify(comment);
   } catch (error) {
     console.error(error);
@@ -539,32 +539,46 @@ export const likePost = async (data: LikePost) => {
   }
 };
 
-export const unlike = async (likeId: string) => {
-  let like;
-  if (!likeId) {
-    console.error("Error: Missing likeId for unlike operation");
-    throw new Error("Missing likeId for unlike operation");
-  }
+export const toggleLike = async (data: LikePost) => {
+  const { post_id, user_id } = data;
+  const validLike = ID.unique();
 
   try {
     const { databases } = await createAdminClient();
-    // Check if the document exists
-    const likeDocument = await databases.getDocument(
-      db,
-      likePostCollection,
-      likeId,
-    );
 
-    if (likeDocument) {
+    // Check if the like already exists
+    const existingLike = await databases.listDocuments(db, likePostCollection, [
+      Query.equal("post_id", post_id),
+      Query.equal("user_id", user_id),
+    ]);
+
+    if (existingLike.total > 0) {
+      // If like exists, delete it (unlike)
+      const likeId = existingLike.documents[0].$id;
       console.log("Deleting like:", likeId);
-      like = await databases.deleteDocument(db, likePostCollection, likeId);
+      await databases.deleteDocument(db, likePostCollection, likeId);
       console.log("Like deleted successfully");
+      return { success: true, message: "Like removed" };
     } else {
-      console.warn("Like document does not exist.");
+      // If like does not exist, create it (like)
+      const postExists = await getPost(post_id);
+      console.log("Post exists", postExists);
+      const like = await databases.createDocument(
+        db,
+        likePostCollection,
+        validLike,
+        {
+          ...data,
+          post_id: postExists.post_id,
+          like_post_id: validLike,
+        },
+      );
+      console.log("Like created", like);
+      return parseStringify(like);
     }
-    return parseStringify(like);
   } catch (error) {
-    console.error("Error deleting like:", error);
+    console.error("Error toggling like:", error);
+    return { success: false, message: "Error toggling like" };
   }
 };
 
