@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import RecommendationTopics from "./RecommendationTopics";
-import TraitsAndWorkstyle from "./TraitsAndWorkstyle";
 import CareerValues from "./CareerValues";
 import { getLoggedInUser } from "@/lib/actions/user.actions";
 
@@ -14,8 +13,8 @@ const sampleTraits = [
   "Intuitive",
   "Judging",
 ];
-const valueList = [""];
-const interests = [""];
+const valueList = ["Integrity", "Innovation", "Teamwork"];
+const interests = ["Technology", "Science", "Art"];
 
 const PersonSidebar = () => {
   const [user, setUser] = useState<{
@@ -33,7 +32,7 @@ const PersonSidebar = () => {
     getUser();
   }, []);
   return (
-    <div className="flex flex-col bg-white w-full text-black  justify-start h-[calc(100vh-64px)] overflow-y-auto mt-6 mr-4 rounded-lg overflow-hidden">
+    <div className="flex flex-col bg-white w-full text-black justify-start h-[calc(100vh-64px)] overflow-y-auto mt-6 mr-4 rounded-lg overflow-hidden">
       <div className="bg-green-500 h-20 rounded-t-lg w-full"></div>
       <div className="flex flex-col items-center justify-center gap-4 bg-white">
         {user && (
@@ -44,20 +43,27 @@ const PersonSidebar = () => {
               </p>
             </div>
             <div className="text-black items-center flex flex-col space-y-2">
-              <p className=" text-lg">
+              <span className="text-lg">
                 {user.firstname} {user.lastname}
-              </p>
+              </span>
               <button className="text-base bg-gray-400 rounded-sm px-2 py-1">
-                {user.categories.charAt(0).toUpperCase()}{user.categories.slice(1)}
+                {user.categories.charAt(0).toUpperCase()}
+                {user.categories.slice(1)}
               </button>
             </div>
           </div>
         )}
         <div>
-          <RecommendationTopics majors={majorsList} />
+          <RecommendationTopics
+            majors={majorsList}
+            title={"Top Recommended Major"}
+          />
         </div>
         <div>
-          <TraitsAndWorkstyle traits={sampleTraits} />
+          <RecommendationTopics
+            majors={sampleTraits}
+            title="Traits & Works Style"
+          />
         </div>
         <div>
           <CareerValues values={valueList} interests={interests} />

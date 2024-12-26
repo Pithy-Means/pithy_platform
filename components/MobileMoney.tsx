@@ -1,89 +1,82 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
-import { initiatePayment } from "@/utils/initiaze-payment/mobile-money-ug";
-import Modal from "@/components/Modal";
+import { useEffect, useState } from "react";
+import { useLoggedInUser } from "@/lib/hooks/useLoggedInUser";
+import { PaymentStatusModal } from "./PaymentSuccessful";
+import { generateValidId } from "@/lib/utils";
+import usePayment from "@/lib/hooks/usePayment";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function MobileMoney() {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const { user } = useLoggedInUser();
   const [network, setNetwork] = useState("AIRTEL"); // Default to Airtel
+  const { initiatePayment } = usePayment();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
+  const [paymentStatus, setPaymentStatus] = useState<{
+    status: 'idle' | 'success' | 'failed';
+    details: string | null;
+    message: string;
+  }>({
+    status: "idle",
+    details: null,
+    message: "",
+  });
+  const router = useRouter();
 
   const handlePayment = async () => {
-    if (!email || !phoneNumber) {
-      alert("Please enter both email and phone number.");
+    setLoading(true);
+    if (!user) {
+      console.log("User not logged in");
+      setLoading(false);
       return;
     }
 
-    setLoading(true);
-    setIsModalOpen(true);
-    setModalContent(<p>Processing payment...</p>);
-
     const paymentData = {
-      amount: 1000000,
+      amount: 10000,
       currency: "UGX",
-      tx_ref: `tx_ref_${Math.floor(Math.random() * 1000000)}`,
-      email: email,
-      phone_number: phoneNumber,
+      tx_ref: `tx_ref_${generateValidId()}`,
+      email: user?.email || "",
+      phone_number: user?.phone || "",
       network: network,
+      redirect_url: `${window.location.origin}/payment-status`, // Use current origin
     };
 
     try {
-      const res = await initiatePayment(paymentData);
-
-      if (res.status === "success" && res.redirect) {
-        const proxyUrl = `/api/proxy-flutterwave/fetch-redirect-content?url=${encodeURIComponent(
-          res.redirect,
-        )}`;
-
-        const redirectContent = await fetch(proxyUrl).then((response) =>
-          response.text(),
-        );
-
-        setModalContent(
-          <div className="overflow-auto max-h-[80vh] p-4">
-            <h2 className="text-lg font-bold mb-2">Payment Page</h2>
-            <div
-              className="border p-4 bg-gray-100"
-              dangerouslySetInnerHTML={{ __html: redirectContent }}
-            ></div>
-          </div>,
-        );
-      } else {
-        setModalContent(<p>Payment initiation failed. Please try again.</p>);
+      const response = await initiatePayment(paymentData);
+      if (response && response.status === "success") {
+        // Redirect handled by Flutterwave
+        console.log("Payment initiated successfully");
+        console.log("Redirecting to payment gateway...");
       }
     } catch (error) {
       console.error("Error initiating payment:", error);
-      setModalContent(<p>Something went wrong. Please try again later.</p>);
+      alert("An error occurred while processing your payment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setModalContent(null);
-  };
+  const searchParams = useSearchParams();
+  // Check if redirected back from payment
+  useEffect(() => {
+    const status = searchParams.get('status');
+    if (status) {
+      // Assume searchParams contains payment status
+      if (status === 'success' || status === 'failed' || status === 'idle') {
+        setPaymentStatus({
+          status,
+          details: Array.isArray(searchParams.get('details')) ? searchParams.getAll('details')[0] : searchParams.get('details') || "",
+          message: Array.isArray(searchParams.get('message')) ? searchParams.getAll('message')[0] : "",
+        });
+      }
+      setIsModalOpen(true);
+    }
+  }, [router, searchParams]);
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen space-y-4">
-      <input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="px-4 py-2 border rounded w-80"
-      />
-      <input
-        type="text"
-        placeholder="Enter your phone number"
-        value={phoneNumber}
-        onChange={(e) => setPhoneNumber(e.target.value)}
-        className="px-4 py-2 border rounded w-80"
-      />
+    <div className="flex flex-col justify-center items-center min-h-screen space-y-4 text-black">
       <select
         value={network}
         onChange={(e) => setNetwork(e.target.value)}
@@ -95,12 +88,18 @@ export default function MobileMoney() {
       <button
         className="bg-blue-700 text-white px-6 py-2 shadow-xl rounded"
         onClick={handlePayment}
-        disabled={loading}
+        disabled={loading} // Disable while loading
       >
         {loading ? "Processing..." : "Buy Now"}
       </button>
-
-      <Modal isOpen={isModalOpen} content={modalContent} onClose={closeModal} />
+      {isModalOpen && (
+        <PaymentStatusModal 
+          status={paymentStatus.status} 
+          details={paymentStatus.details} 
+          message={paymentStatus.message} 
+          onClose={() => setIsModalOpen(false)} 
+        />
+      )}
     </div>
   );
 }

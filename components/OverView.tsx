@@ -163,7 +163,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
       {/* Conditionally render the modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
             <CreatePost
               userId={user?.user_id || ""}
               onPostCreated={addNewPost}

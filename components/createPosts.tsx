@@ -1,6 +1,10 @@
 import { createPost } from "@/lib/actions/user.actions";
 import { Post, PostWithUser } from "@/types/schema";
 import React, { useState } from "react";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface CreatePostProps {
   userId: string; // Pass the logged-in user ID as a prop
@@ -71,13 +75,13 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
         <p>Creating post...</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-          <h2 className="text-xl font-semibold mb-4">Create a New Post</h2>
+          <h2 className="text-xl font-semibold mb-2 text-black/30">Create a New Post</h2>
 
           <div className="flex flex-col">
-            <label htmlFor="content" className="font-medium">
+            <Label htmlFor="content" className="font-medium text-black/30 mb-1">
               Content
-            </label>
-            <textarea
+            </Label>
+            <Textarea
               id="content"
               name="content"
               value={post.content}
@@ -89,27 +93,27 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
 
           {/* Course image */}
           <div className="mb-4">
-            <label
+            <Label
               htmlFor="image"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-sm font-medium text-black/30 mb-1"
             >
               Post Image
-            </label>
-            <input
+            </Label>
+            <Input
               type="file"
               name="image"
               onChange={handleFileChange}
-              required
+              accept="image/*, video/*"
               className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             className="bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
           >
             Create Post
-          </button>
+          </Button>
         </form>
       )}
     </>

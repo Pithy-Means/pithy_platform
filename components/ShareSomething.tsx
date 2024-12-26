@@ -32,7 +32,7 @@ const ShareSomething = () => {
         </div>
       </div>
       {/* Scrollable Posts Section */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-6">
+      <div className="flex-1 overflow-y-auto no-scrollbar px-6 h-full">
         <Posts />
       </div>
     </div>

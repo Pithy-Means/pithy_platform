@@ -6,7 +6,7 @@ import Logo from "./Logo";
 import { Button } from "./ui/button";
 import { useState, useEffect, useRef } from "react";
 import { UserInfo } from "@/types/schema";
-import { getSession } from "@/lib/actions/user.actions";
+import { getLoggedInUser } from "@/lib/actions/user.actions";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -29,7 +29,7 @@ const Navbar = () => {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const userLogged = await getSession();
+        const userLogged = await getLoggedInUser();
         if (!userLogged) {
           console.log("No user logged in");
         }
@@ -78,7 +78,7 @@ const Navbar = () => {
 
         {/* Hamburger Menu Icon for Small Screens */}
         <div className="lg:hidden">
-          <button
+          <Button
             onClick={handleToggle}
             className="text-white focus:outline-none"
           >
@@ -97,7 +97,7 @@ const Navbar = () => {
                 d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
               />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Links - Hidden on Small Screens, shown on larger */}
