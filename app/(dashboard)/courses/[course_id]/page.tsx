@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Courses } from "@/types/schema";
 import ModuleForm from "@/components/ModuleForm"; // Import ModuleForm
 import ModulesPage from "@/components/ModulePage";
+import { Button } from "@/components/ui/button";
 
 const CourseDetail = () => {
   const { course_id } = useParams(); // Get the course_id from the URL
@@ -47,18 +48,18 @@ const CourseDetail = () => {
         <>
           <>
             {/* Button to open the Create Module modal */}
-            <button
+            <Button
               onClick={() => setIsModalOpen(true)}
               className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             >
               Create Module
-            </button>
+            </Button>
 
             {isModalOpen && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                 <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
                   <button
-                    className="absolute top-2 right-2 text-gray-600 hover:text-black"
+                    className="absolute top-2 right-2 text-gray-600 text-2xl hover:text-black"
                     onClick={() => setIsModalOpen(false)}
                   >
                     ✕

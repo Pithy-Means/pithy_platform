@@ -1,10 +1,12 @@
 import MobileMoney from "@/components/MobileMoney";
-import React from "react";
+import React, { Suspense } from "react";
 
 const Payment = () => {
   return (
     <div>
-      <MobileMoney />
+      <Suspense>
+        <MobileMoney />
+      </Suspense>
     </div>
   );
 };
