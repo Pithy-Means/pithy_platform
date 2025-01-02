@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -12,11 +12,12 @@ import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
 import { IoMdLogOut } from "react-icons/io";
 import { BriefcaseBusiness, School } from "lucide-react";
-import { getLoggedInUser, logoutUser } from "@/lib/actions/user.actions";
+import { logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
+import { UserContext } from "@/context/UserContext";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -28,17 +29,10 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
-  const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const loggedInUser = await getLoggedInUser(); // Fetch logged in user
-      setUser(loggedInUser);
-    };
-    fetchUser();
-  }, []);
+  const { user } = useContext(UserContext);
 
   // Function to open the modal
   const openModal = () => {
