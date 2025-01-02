@@ -1,16 +1,16 @@
 "use client";
 
-import { useLoggedInUser } from "@/lib/hooks/useLoggedInUser";
 import {useCreateCourse} from "@/lib/hooks/useCreateCourse"
 import { Courses } from "@/types/schema";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { UserContext } from "@/context/UserContext";
 
 const CreateCourseForm = () => {
-  const { user } = useLoggedInUser(); // Use the hook
+  const { user } = useContext(UserContext); // Use the hook
   const [course, setCourse] = useState<Courses>({
     course_id: "",
     user_id: "", // You should set this based on the logged-in user's ID
