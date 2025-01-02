@@ -1,17 +1,17 @@
 "use client";
 
-import { useLoggedInUser } from "@/lib/hooks/useLoggedInUser";
 import { generateValidPostId } from "@/lib/utils";
 import { PostCourseQuestion } from "@/types/schema";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { createPostCourseQuestions } from "../lib/actions/user.actions";
+import { UserContext } from "@/context/UserContext";
 
 const AddQuestionForm = () => {
   const [questionText, setQuestionText] = useState<string>("");
   const [choices, setChoices] = useState<string[]>([""]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { user } = useLoggedInUser();
+  const { user } = useContext(UserContext);
 
   const handleAddChoice = () => setChoices((prev) => [...prev, ""]);
 
