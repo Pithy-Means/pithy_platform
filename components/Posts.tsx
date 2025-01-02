@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { usePosts } from "@/lib/hooks/usePosts";
 import {
   deletePost,
-  getLoggedInUser,
   updatePost,
   createComment,
   // getCommentsByPostId,
@@ -14,15 +13,12 @@ import {
 import { CommentPost, PostWithUser } from "@/types/schema";
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
+import { UserContext } from "@/context/UserContext";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
   const fetchedPosts = usePosts();
   const [posts, setPosts] = useState<PostWithUser[]>([]);
-  const [loggedIn, setLoggedIn] = useState<{
-    user_id: string;
-    firstname: string;
-  } | null>(null);
   const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
     {}
   );
@@ -40,7 +36,7 @@ const Posts = () => {
 
       const repostData = {
         post_id: post.post_id,
-        user_id: loggedIn?.user_id,
+        user_id: user?.user_id,
         content: post.content, // Original post content
         repost_of: post.post_id, // Indicate it's a repost
         user_comment: repostContent[post.post_id], // User's additional comment
@@ -79,7 +75,7 @@ const Posts = () => {
 
       const data = {
         post_id: postId,
-        user_id: loggedIn?.user_id || "",
+        user_id: user?.user_id || "",
         like_post_id: likePostId,
       };
 
@@ -107,18 +103,11 @@ const Posts = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchLoggedInUser = async () => {
-      const user = await getLoggedInUser();
-      console.log("LoggedIn user", user);
-      setLoggedIn(user);
-    };
-    fetchLoggedInUser();
-  }, []);
+  const { user } = useContext(UserContext);
 
   usePostInitialization(
     fetchedPosts,
-    loggedIn,
+    user,
     setPosts,
     setComments,
     setLikeStatus,
@@ -153,7 +142,7 @@ const Posts = () => {
     const commentData: CommentPost = {
       comment_id: "",
       post_id: postId,
-      userid: loggedIn?.user_id ?? "",
+      userid: user?.user_id ?? "",
       comment,
     };
 
@@ -197,7 +186,7 @@ const Posts = () => {
             <PostItem
               key={post.post_id}
               post={post}
-              loggedInUserId={loggedIn?.user_id || null}
+              loggedInUserId={user?.user_id || null}
               likeStatus={post.post_id ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 } : { isLiked: false, likeCount: 0 }}
               comments={post.post_id ? comments[post.post_id] || [] : []}
               onLike={handleLike}
