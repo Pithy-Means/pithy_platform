@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Job, UserInfo } from "@/types/schema"; // Assuming Job interface exists
-import { createJob, getLoggedInUser } from "@/lib/actions/user.actions"; // Assuming createJob function is exported
+import { useContext, useEffect, useState } from "react";
+import { Job } from "@/types/schema"; // Assuming Job interface exists
+import { createJob } from "@/lib/actions/user.actions"; // Assuming createJob function is exported
+import { UserContext } from "@/context/UserContext";
 
 const JobForm = () => {
   const [formData, setFormData] = useState<Job>({
@@ -21,20 +22,11 @@ const JobForm = () => {
     updated_at: "",
   });
 
-  const [user, setUser] = useState<UserInfo | null>(null); // Assuming UserInfo interface exists
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fetch the logged-in user on component mount
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userLogged = await getLoggedInUser();
-      setUser(userLogged); // Set the logged-in user in state
-    };
-
-    fetchUser();
-  }, []); // Only run on mount
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     // When the user data is fetched, update the formData with the user_id
