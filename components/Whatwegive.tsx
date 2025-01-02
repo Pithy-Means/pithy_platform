@@ -7,20 +7,20 @@ const Whatwegive = () => {
   return (
     <div className="p-10 bg-white">
       <div className="flex flex-col space-y-4 lg:items-start items-center">
-        <h1 className="text-lg md:text-base text-[#5AC35A] md:text-center">
+        <h1 className="text-2xl md:text-base text-[#5AC35A] md:text-center">
           WHAT WE GIVE YOU
         </h1>
 
         {/* For larger screens, show this */}
-        <div className="hidden lg:flex space-x-2 items-center">
+        <div className="hidden lg:flex space-x-6 items-center">
           <TitleDot title={"unlock your potential"} />
           <TitleDot title={"future"} />
           <div className="flex space-x-2 items-center">
-            <h1 className="text-xl sm:text-base md:text-lg lg:text-3xl text-black font-extrabold capitalize">
+            <h1 className="text-xl sm:text-base md:text-lg text-black capitalize">
               finance with
             </h1>
             <div className="flex flex-col pt-[16px]">
-              <h1 className="text-3xl sm:text-lg md:text-xl lg:text-3xl text-[#5AC35A] font-extrabold uppercase">
+              <h1 className="text-3xl sm:text-lg md:text-xl text-[#5AC35A]  uppercase">
                 Pithy means
               </h1>
               <Image
