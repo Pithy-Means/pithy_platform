@@ -1,12 +1,12 @@
 "use client";
 
-import { useLoggedInUser } from "@/lib/hooks/useLoggedInUser";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "./ui/button";
+import { UserContext } from "@/context/UserContext";
 
 const PaymentButton = () => {
   const [loading, setLoading] = useState(false);
-  const { user } = useLoggedInUser();
+  const { user } = useContext(UserContext);
 
   console.log("User", user);
 
