@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button } from "./ui/button";
 import { createPostCourseAnswer, fetchAllPostCourseQuestions } from "@/lib/actions/user.actions";
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
-import { useLoggedInUser } from "@/lib/hooks/useLoggedInUser";
 import { PostCourseQuestionAnswer } from "@/types/schema";
 import PaymentButton from "./PaymentButton";
+import { UserContext } from "@/context/UserContext";
 
 const QuestionSlider: React.FC = () => {
   const [questions, setQuestions] = useState<{ id: string; question: string; choices: string[] }[]>([]);
@@ -14,7 +14,7 @@ const QuestionSlider: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
 
-  const { user } = useLoggedInUser();
+  const { user } = useContext(UserContext);
   const { currentQuestionIndex, setCurrentQuestionIndex } = useQuestionStore();
 
   useEffect(() => {
