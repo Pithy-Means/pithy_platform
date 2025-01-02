@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
 import RecommendationTopics from "./RecommendationTopics";
 import CareerValues from "./CareerValues";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { UserContext } from "@/context/UserContext";
 
 const majorsList = ["Computer Science", "Engineering", "Data Analysis"];
 const sampleTraits = [
@@ -17,20 +17,9 @@ const valueList = ["Integrity", "Innovation", "Teamwork"];
 const interests = ["Technology", "Science", "Art"];
 
 const PersonSidebar = () => {
-  const [user, setUser] = useState<{
-    user_id: string;
-    firstname: string;
-    lastname: string;
-    categories: string;
-  } | null>(null);
 
-  const getUser = async () => {
-    const loggedUser = await getLoggedInUser();
-    setUser(loggedUser);
-  };
-  useEffect(() => {
-    getUser();
-  }, []);
+  const { user } = useContext(UserContext);
+
   return (
     <div className="flex flex-col bg-white w-full text-black justify-start h-[calc(100vh-64px)] overflow-y-auto mt-6 mr-4 rounded-lg overflow-hidden">
       <div className="bg-green-500 h-20 rounded-t-lg w-full"></div>
@@ -39,7 +28,7 @@ const PersonSidebar = () => {
           <div className="flex flex-col justify-center items-center -mt-10">
             <div className="bg-white rounded-full p-5">
               <p className="text-black text-2xl font-extrabold">
-                {user.firstname.charAt(0).toUpperCase()}
+                {user?.firstname?.charAt(0).toUpperCase() || ""}
               </p>
             </div>
             <div className="text-black items-center flex flex-col space-y-2">
@@ -47,8 +36,8 @@ const PersonSidebar = () => {
                 {user.firstname} {user.lastname}
               </span>
               <button className="text-base bg-gray-400 rounded-sm px-2 py-1">
-                {user.categories.charAt(0).toUpperCase()}
-                {user.categories.slice(1)}
+                {user?.categories?.charAt(0).toUpperCase()}
+                {user?.categories?.slice(1)}
               </button>
             </div>
           </div>
