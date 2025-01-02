@@ -253,3 +253,17 @@ export type Modules = {
   module_comment?: string;          // Optional: Any comments or notes about the module
   module_status?: ModuleStatus;     // Optional: Status of the module (either "open" or "closed")
 }
+
+export type PostCourseQuestion = {
+  post_course_question_id: string;
+  user_id: string;
+  question: string;
+  choices?: string[];
+}
+
+export type PostCourseQuestionAnswer = {
+  post_course_question_id: string;
+  username: string;
+  answer_id: string;
+  answer: string;
+}
