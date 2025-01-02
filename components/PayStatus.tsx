@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const PaymentStatus = () => {
   const searchParams = useSearchParams();
-  const tx_ref = searchParams.get("tx_ref");
+  const transaction_id = searchParams.get("transaction_id");
   const status = searchParams.get("status");
   const [message, setMessage] = useState("Processing payment...");
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
@@ -14,10 +14,12 @@ const PaymentStatus = () => {
     if (status) {
       const verifyPayment = async () => {
         try {
-          const response = await fetch(`/api/proxy-flutterwave/payment-status?tx_ref=${tx_ref}`);
+          const response = await fetch(`/api/proxy-flutterwave/payment-status?transaction_id=${transaction_id}`);
           const data = await response.json();
 
-          if (data.status === "success") {
+          console.log("Payment verification data", data);
+
+          if (data.data.status === "success") {
             setMessage("Payment successful! Thank you for your purchase.");
             setMessageStyle("text-green-600 bg-green-50 border border-green-200");
           } else {
@@ -35,7 +37,7 @@ const PaymentStatus = () => {
 
       verifyPayment();
     }
-  }, [status, tx_ref]);
+  }, [transaction_id, status]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
