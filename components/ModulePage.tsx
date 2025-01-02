@@ -1,27 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Modules, UserInfo } from '@/types/schema';
+import { useContext, useEffect, useState } from 'react';
+import { Modules } from '@/types/schema';
 import { Video } from './Video';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
 import { useRouter } from 'next/navigation';
+import { UserContext } from '@/context/UserContext';
 
 export default function ModulesPage() {
-  const [modules, setModules] = useState<Modules[]>([]);
-  const [user, setUser] = useState<UserInfo | null>(null);
 
+  // State variables
+  const [modules, setModules] = useState<Modules[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Router instance
   const router = useRouter();
 
-  const getUser = async () => {
-    try {
-      const loggedUser = await getLoggedInUser();
-      console.log("Logged in user:", loggedUser);
-      setUser(loggedUser);
-    } catch (error) {
-      console.log("Error fetching user:", error);
-    }
-  };
+  // User context
+  const { user } = useContext(UserContext);
+
 
   const fetchModules = async () => {
     try {
@@ -41,7 +36,6 @@ export default function ModulesPage() {
     }
   };
   useEffect(() => {
-    getUser();
     fetchModules();
   }, []);
 
