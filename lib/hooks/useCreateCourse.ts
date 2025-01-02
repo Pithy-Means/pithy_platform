@@ -1,10 +1,11 @@
 import { Courses } from "@/types/schema";
 import { useFetch } from "./useFetch";
-import {useLoggedInUser} from "./useLoggedInUser";
+import { useContext } from "react";
+import { UserContext } from "@/context/UserContext";
 
 export const useCreateCourse = () => {
   const { data, error, loading, fetchData } = useFetch();
-  const { user } = useLoggedInUser();
+  const { user } = useContext(UserContext);
 
   const handleSubmit = async (course: Courses) => {
     if (!user?.user_id) {
