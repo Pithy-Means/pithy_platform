@@ -27,7 +27,7 @@ export const useLoggedInUser = () => {
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
 
   return { user, error, loading };
 };
