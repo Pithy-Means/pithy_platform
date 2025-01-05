@@ -58,7 +58,7 @@ const PostItem: React.FC<PostItemProps> = ({
 
   return (
     <div className="border border-gray-300 rounded-md p-4 bg-white/10">
-      <div className="flex flex-col ">
+      <div className="flex flex-col space-y-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <CircleUserRound size={40} />
@@ -119,7 +119,7 @@ const PostItem: React.FC<PostItemProps> = ({
               height={100}
               alt="Post Image"
               unoptimized
-              className="h-56 object-cover rounded-md"
+              className="h-56 w-full object-cover rounded-md"
             />
           )}
           {post.video && (
@@ -128,7 +128,7 @@ const PostItem: React.FC<PostItemProps> = ({
               controls
               width="800"
               height="100"
-              className="h-56 object-cover rounded-md"
+              className="h-56 w-full object-cover rounded-md"
             />
           )}
         </div>
