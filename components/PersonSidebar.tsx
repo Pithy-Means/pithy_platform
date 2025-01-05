@@ -22,16 +22,16 @@ const PersonSidebar = () => {
 
   return (
     <div className="flex flex-col bg-white w-full text-black justify-start h-[calc(100vh-64px)] overflow-y-auto mt-6 mr-4 rounded-lg overflow-hidden">
-      <div className="bg-green-500 h-20 rounded-t-lg w-full"></div>
+      <div className="bg-green-500 h-16 rounded-t-lg w-full"></div>
       <div className="flex flex-col items-center justify-center gap-4 bg-white">
         {user && (
-          <div className="flex flex-col justify-center items-center -mt-10">
-            <div className="bg-white rounded-full p-5">
+          <div className="flex flex-col justify-center items-center -mt-7">
+            <div className="bg-white rounded-full p-2">
               <p className="text-black text-2xl font-extrabold">
                 {user?.firstname?.charAt(0).toUpperCase() || ""}
               </p>
             </div>
-            <div className="text-black items-center flex flex-col space-y-2">
+            <div className="text-black items-center flex flex-col space-y-1">
               <span className="text-lg">
                 {user.firstname} {user.lastname}
               </span>
