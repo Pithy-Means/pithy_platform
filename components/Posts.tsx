@@ -163,7 +163,7 @@ const Posts = () => {
   return (
     <div className="flex flex-col gap-4 text-black w-full">
       {loading ? (
-        <div className="py-4">
+        <div className="py-4 flex flex-col space-y-4">
           <div className="border border-gray-300 shadow rounded-md p-4 w-full">
             <div className="animate-pulse flex flex-col space-y-4">
               <div className="flex space-x-4">
