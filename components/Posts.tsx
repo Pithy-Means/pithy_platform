@@ -28,7 +28,9 @@ const Posts = () => {
     [key: string]: { isLiked: boolean; likeCount: number };
   }>({});
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
-  const [repostContent, setRepostContent] = useState<{ [key: string]: string }>({});
+  const [repostContent, setRepostContent] = useState<{ [key: string]: string }>(
+    {}
+  );
 
   const handleRepost = async (post: PostWithUser) => {
     try {
@@ -161,25 +163,75 @@ const Posts = () => {
   return (
     <div className="flex flex-col gap-4 text-black w-full">
       {loading ? (
-        <div className="border border-gray-300 shadow rounded-md p-4 max-w-3xl w-full">
-          <div className="animate-pulse flex flex-col space-y-4">
-            <div className="flex space-x-4">
-              <div className="rounded-full bg-slate-700 h-8 w-8"></div>
-              <div className="h-2 bg-slate-700 rounded w-1/2"></div>
-              <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
-            </div>
-            <div className="flex-1 space-y-6 py-1">
-              <div className="space-y-3">
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="h-2 bg-slate-700 rounded col-span-2"></div>
-                  <div className="h-2 bg-slate-700 rounded col-span-1"></div>
-                  <div className="h-2 bg-slate-700 rounded"></div>
+        <div className="py-4">
+          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
+            <div className="animate-pulse flex flex-col space-y-4">
+              <div className="flex space-x-4">
+                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
+                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
                 </div>
-                <div className="h-16 bg-slate-800 rounded"></div>
+              </div>
+              <div className="flex-1 space-y-6 py-1">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                    <div className="h-2 bg-slate-700 rounded"></div>
+                  </div>
+                  <div className="h-16 bg-slate-800 rounded"></div>
+                </div>
               </div>
             </div>
           </div>
+
+          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
+            <div className="animate-pulse flex flex-col space-y-4">
+              <div className="flex space-x-4">
+                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
+                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
+                </div>
+              </div>
+              <div className="flex-1 space-y-6 py-1">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                    <div className="h-2 bg-slate-700 rounded"></div>
+                  </div>
+                  <div className="h-16 bg-slate-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
+            <div className="animate-pulse flex flex-col space-y-4">
+              <div className="flex space-x-4">
+                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
+                <div className="flex flex-col space-y-2 w-full">
+                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
+                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
+                </div>
+              </div>
+              <div className="flex-1 space-y-6 py-1">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
+                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
+                    <div className="h-2 bg-slate-700 rounded"></div>
+                  </div>
+                  <div className="h-16 bg-slate-800 rounded"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
+
       ) : (
         <>
           {posts.map((post) => (
@@ -187,7 +239,11 @@ const Posts = () => {
               key={post.post_id}
               post={post}
               loggedInUserId={user?.user_id || null}
-              likeStatus={post.post_id ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 } : { isLiked: false, likeCount: 0 }}
+              likeStatus={
+                post.post_id
+                  ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
+                  : { isLiked: false, likeCount: 0 }
+              }
               comments={post.post_id ? comments[post.post_id] || [] : []}
               onLike={handleLike}
               onDelete={handleDelete}
