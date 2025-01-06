@@ -7,7 +7,7 @@ const Whatwegive = () => {
   return (
     <div className="p-10 bg-white">
       <div className="flex flex-col space-y-4 lg:items-start items-center">
-        <h1 className="text-lg md:text-base text-[#5AC35A] md:text-center">
+        <h1 className="text-lg md:text-base lg:text-lg text-[#5AC35A] md:text-center">
           WHAT WE GIVE YOU
         </h1>
 
@@ -20,13 +20,13 @@ const Whatwegive = () => {
               finance with
             </h1>
             <div className="flex flex-col pt-[16px]">
-              <h1 className="text-3xl sm:text-lg md:text-xl lg:text-3xl text-[#5AC35A] font-extrabold uppercase">
+              <h1 className="text-xl sm:text-lg md:text-xl lg:text-xl text-[#5AC35A] font-extrabold uppercase">
                 Pithy means
               </h1>
               <Image
                 src="/assets/green-line.png"
                 alt="line"
-                width={40}
+                width={150}
                 height={40}
                 priority
                 className="object-cover"
@@ -58,14 +58,14 @@ const Whatwegive = () => {
           </div>
         </div>
 
-        <p className="capitalize text-black text-center md:text-left">
-          avoid costly mistakes and find your perfect fit
+        <p className="capitalize text-black text-center md:text-left text-base">
+          avoid costly mistakes and find your perfect fit. 
         </p>
         <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize">
           Start your journey
         </Button>
 
-        <div className="flex flex-wrap justify-center md:justify-between gap-6 py-6">
+        <div className="flex flex-wrap justify-center md:justify-between gap-6 py-6 lg:flex-nowrap ">
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
             <div className="flex flex-col items-center px-4 py-6 space-y-2">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
