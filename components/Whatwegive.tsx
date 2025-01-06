@@ -58,7 +58,7 @@ const Whatwegive = () => {
           </div>
         </div>
 
-        <p className="capitalize text-black text-center md:text-left text-base">
+        <p className="capitalize text-black text-center md:text-left  text-base ">
           avoid costly mistakes and find your perfect fit. 
         </p>
         <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize">
@@ -80,7 +80,7 @@ const Whatwegive = () => {
               <h1 className="text-lg text-black font-extrabold capitalize text-center">
                 find your ideal path
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center text-sm sm:text-base ">
                 Discover suitable study, professional, or business areas
                 tailored to your strengths.
               </p>
@@ -101,7 +101,7 @@ const Whatwegive = () => {
               <h1 className="text-lg text-black font-extrabold capitalize text-center">
                 avoid costly mistakes
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center text-sm sm:text-base">
                 Minimize risks and wasted time and resources.
               </p>
             </div>
@@ -121,14 +121,14 @@ const Whatwegive = () => {
               <h1 className="text-lg text-black font-extrabold capitalize text-center">
                 Boost confidence
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center text-sm sm:text-base">
                 Ensure success in your chosen path.
               </p>
             </div>
           </Card>
 
           <Card className="bg-white w-full sm:w-72 rounded drop-shadow-2xl border-none">
-            <div className="flex flex-col items-center px-4 py-6 space-y-2">
+            <div className="flex flex-col items-center px-4 py-6 space-y-2 text-base">
               <div className="relative bg-gradient-to-r from-[#5AC35A] to-[#00AE76] h-8 w-8 rounded-tl-3xl rounded">
                 <Image
                   src="/assets/square-lock-02.png"
@@ -141,7 +141,7 @@ const Whatwegive = () => {
               <h1 className="text-lg text-black font-extrabold capitalize text-center">
                 Secure your future
               </h1>
-              <p className="text-black capitalize text-center">
+              <p className="text-black capitalize text-center text-sm sm:text-base">
                 Make informed decisions for yourself and your collaborators.
               </p>
             </div>
