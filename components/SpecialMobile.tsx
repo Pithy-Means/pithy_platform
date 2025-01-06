@@ -9,7 +9,7 @@ const SpecialMobile = () => {
     <div className="p-10 bg-white">
       <Card className="bg-[#61BC5B] flex flex-col items-center py-12 space-y-6 lg:w-full w-fit mx-auto px-6">
         {/* The main image container */}
-        <div className="flex items-center justify-center relative lg:h-56 h-48">
+        <div className="flex items-center justify-center relative lg:h-72 2xl:h-96 h-48">
           {/* First Image (woman.png) */}
           <Image
             src="/assets/woman.png"
