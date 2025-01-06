@@ -219,6 +219,7 @@ export type Courses = {
   image: string; // Optional: URL or path to the course image
   requirements?: string; // Optional: Prerequisites for the course
   students?: string; // Optional: IDs or count of enrolled students
+  locked?: boolean; // Optional: Indicates if the course is locked or not
 };
 
 export type VideoFile = {
