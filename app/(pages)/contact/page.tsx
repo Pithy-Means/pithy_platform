@@ -60,7 +60,7 @@ const Contact = () => {
 
   return (
     <div>
-      <div className="">
+      <div className="overflow-hidden">
         <div className="flex justify-center bg-black items-center h-96">
           <h3 className="text-lg lg:text-4xl md:text-2xl text-[#5AC35A]">
             Contact
@@ -71,7 +71,7 @@ const Contact = () => {
             <div className="flex flex-col lg:items-start items-center space-y-8 w-full">
               <div className="text-center mt-4 -mb-4">
                 <TitleDot title="get in touch" />
-                <p className="text-base text-black capitalize">
+                <p className="text-sm sm:text-base text-black capitalize">
                   contact us for questions, feedback or support
                 </p>
               </div>
@@ -100,36 +100,36 @@ const Contact = () => {
               <SocialMediaLinks className="text-black" />
             </div>
             {!responseMessage ? (
-              <Card className="bg-white py-20 px-6 h-fit w-full">
+              <Card className="bg-white py-20 px-6 h-fit w-full text-sm sm:text-base">
                 <form
                   onSubmit={handleSubmit}
-                  className="flex flex-col space-y-4"
+                  className="flex flex-col space-y-4 text-sm sm:text-base"
                 >
                   <InputContact
                     label="Name"
                     type="text"
-                    className="w-full"
+                    className="w-full "
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                   <InputContact
                     label="Email"
                     type="email"
-                    className="w-full"
+                    className="w-full text-sm sm:text-base"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                   <InputContact
                     label="Phone Number"
                     type="tel"
-                    className="w-full"
+                    className="w-full text-sm sm:text-base"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                   />
                   <InputContact
                     label="Message"
                     isTextarea={true}
-                    className="w-full"
+                    className="w-full text-sm sm:text-base"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
@@ -171,7 +171,7 @@ const Contact = () => {
           <div className="bg-gradient-to-b from-[#61BC5B] to-white z-10 py-10">
             <div className="flex justify-center items-center flex-col space-y-4 py-10">
               <h3 className="text-black text-xl font-bold">Find Us Here</h3>
-              <p className="text-black capitalize">
+              <p className="text-black capitalize text-sm sm:text-base text-center">
                 our uganda office location
               </p>
               <Card className="bg-white w-5/6 flex items-center justify-center">
