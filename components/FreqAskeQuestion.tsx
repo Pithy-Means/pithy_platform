@@ -16,11 +16,11 @@ const FreqAskeQuestion = () => {
     <div className="px-10 py-4 bg-white">
       <div className="flex flex-col space-y-4 lg:items-start items-center">
         <TitleDot title="Frequently asked questions" />
-        <p className="capitalize text-black lg:text-start text-center">
+        <p className="capitalize text-black lg:text-start text-center text-sm sm:text-base">
           Get answers to your questions about pithy means
         </p>
         <div className="w-full max-w-full overflow-x-auto">
-          <div className="flex space-x-4 items-center scroll-scroll-smooth snap-mandatory snap-x">
+          <div className="flex space-x-4 items-center scroll-scroll-smooth snap-mandatory snap-x text-sm sm:text-base">
             {arraybutton.map((arr, index) => (
               <button
                 key={index}
@@ -42,7 +42,7 @@ const FreqAskeQuestion = () => {
                 <ArrowLeft size={16} />
               </div>
             </div>
-            <p className="text-black capitalize lg:text-base text-[12px]">
+            <p className="text-black capitalize lg:text-base text-sm sm:text-base">
               Pithy means is career and business assessment platform helping
               students, professionals, and business adventurers find their most
               suitable study, professional, or business areas.
