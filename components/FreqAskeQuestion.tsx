@@ -42,7 +42,7 @@ const FreqAskeQuestion = () => {
                 <ArrowLeft size={16} />
               </div>
             </div>
-            <p className="text-black capitalize lg:text-base text-sm sm:text-base">
+            <p className="text-black capitalize  text-sm sm:text-base">
               Pithy means is career and business assessment platform helping
               students, professionals, and business adventurers find their most
               suitable study, professional, or business areas.
@@ -58,7 +58,7 @@ const FreqAskeQuestion = () => {
                 <ArrowLeft />
               </div>
             </div>
-            <p className="text-black capitalize">
+            <p className="text-black capitalize text-sm sm:text-base">
               Take our online assessment, receive personalized results, and
               explore suitable career and business paths.
             </p>
