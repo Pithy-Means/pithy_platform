@@ -13,6 +13,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  // const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
