@@ -68,11 +68,11 @@ const Footer = () => {
             <div className="mx-4 border border-gray-600 "></div>
             <div className="flex justify-between flex-col-reverse md:flex-row items-center px-4 md:px-10">
               <div>
-                <p className="text-white text-center py-4 text-[12px] md:text-xl">
+                <p className="text-white text-center py-4 text-[12px] md:text-[16px]">
                   © 2024 Pithy Means. All Rights Reserved
                 </p>
               </div>
-              <div className="flex space-x-2 md:space-x-4 items-center  text-[12px]">
+              <div className="flex space-x-2 md:space-x-4 items-center  text-[12px] md:text-[16px]">
                 <p>Privacy Policy</p>
                 <div className="w-0.5 h-4 bg-gray-600"></div>
                 <p>Help</p>
