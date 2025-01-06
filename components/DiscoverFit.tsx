@@ -8,11 +8,11 @@ const DiscoverFit = () => {
       <div className="text-black">
         <div className="sm:text-center lg:text-start md:text-start">
           <TitleDot title={"Discover Your Perfect Fit"} />
-          <p className="hidden sm:block lg:text-2xl sm:text-md md:text-base">
+          <p className="md:block hideen xl:text-base text-sm sm:text-base md:mb-6 ">
             Our 3-step process to guide you to your ideal career or business
-            path
+            path.
           </p>
-          <p className="block sm:hidden text-base sm:text-start">
+          <p className="block md:hidden text-base sm:text-start">
             contact us for questions, feedback or support .
           </p>
         </div>
@@ -82,10 +82,11 @@ const DiscoverFit = () => {
                       />
                     </div>
                   </div>
-                  <h2 className="font-bold text-2xl">Take Our Assessment</h2>
-                  <p className="lg:text-xl sm:text-sm md:text-base">
+                  <h2 className="font-bold text-xl lg:text-2xl">Take Our Assessment</h2>
+                  <p className="xl:text-lg text-sm sm:text-base">
                     Answer our comprehensive questionnaire, designed to identify
-                    your
+                    your 
+
                     <span className="hidden md:inline">
                       <br />
                     </span>
@@ -95,15 +96,15 @@ const DiscoverFit = () => {
                     <ul className="flex flex-col space-y-3">
                       <li className="flex flex-col md:flex-row lg:flex-row space-y-2 space-x-3 items-center">
                         <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                        <p className="lg:text-xl">15 -minute assessment</p>
+                        <p className=" text-sm sm:text-base">15 -minute assessment</p>
                       </li>
                       <li className="flex flex-col md:flex-row lg:flex-rowspace-x-3 space-y-2 items-center">
                         <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                        <p className="lg:text-xl ">~100 questions</p>
+                        <p className=" text-sm sm:text-base ">~100 questions</p>
                       </li>
                       <li className="flex flex-col md:flex-row lg:flex-row space-y-2 space-x-3 items-center">
                         <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                        <p className="lg:text-xl">
+                        <p className=" text-sm sm:text-base">
                           our Proprietary algorithm analyzes your responses.
                         </p>
                       </li>
@@ -141,24 +142,23 @@ const DiscoverFit = () => {
               </div>
               <div className="flex flex-row items-center space-x-4">
                 <div className="flex flex-col space-y-4 md:space-y-1">
-                  <h2 className="font-bold text-2xl">
+                  <h2 className="font-bold text-xl lg:text-2xl">
                     Get Personalized Results
                   </h2>
-                  <p className="lg:text-xl sm:text-sm md:text-base">
+                  <p className="xl:text-lg text-sm sm:text-base">
                     Receive a detailed report highlighting your most suitable
-                    career or <br /> business paths.
+                    career or  business paths.
                   </p>
                   <div className="flex lg:flex-row md:flex-row flex-col space-y-2 items-center  justify-between">
                     <div className="flex flex-row items-center justify-between">
                       <ul className="flex flex-col space-y-3">
                         <li className="flex flex-col md:flex-row lg:flex-row space-x-3 space-y-2 items-center md:jusitify-start">
                           <div className="border-2 border-[#5AC35A] rotate-45 lg:h-2 lg:w-2 lg:p-1 h-1 w-1 p-0.5"></div>
-                          <p className="lg:text-xl ">Customized report</p>
+                          <p className="text-sm sm:text-base ">Customized report</p>
                         </li>
                         <li className="flex flex-col md:flex-row lg:flex-row space-x-3 items-center space-y-2">
                           <div className="border-2 border-[#5AC35A] rotate-45 lg:h-2 lg:w-2 lg:p-1 h-1 w-1 p-0.5"></div>
-                          <p className="lg:text-xl">
-                            Career and business
+                          <p className="text-sm sm:text-base ">
                             <span className="block sm:hidden -mt-6">
                               <br />
                             </span>{" "}
@@ -167,7 +167,7 @@ const DiscoverFit = () => {
                         </li>
                         <li className="flex flex-col md:flex-row lg:flex-row space-x-3 space-y-2 items-center">
                           <div className="border-2 border-[#5AC35A] rotate-45 lg:h-2 lg:w-2 lg:p-1 h-1 w-1 p-0.5"></div>
-                          <p className="lg:text-xl ">Actionable insights</p>
+                          <p className=" text-sm sm:text-base  ">Actionable insights</p>
                         </li>
                       </ul>
                     </div>
@@ -202,12 +202,12 @@ const DiscoverFit = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row items-center space-x-4">
+              <div className="flex flex-row items-center justify-center space-x-4">
                 <div className="flex flex-col space-y-4 md:space-y-1">
-                  <h2 className="font-bold text-2xl sm:text-center lg:text-start md:text-start">
+                  <h2 className="font-bold text-xl lg:text-2xl sm:text-center lg:text-start md:text-start">
                     Actionable insights
                   </h2>
-                  <p className="lg:text-xl sm:text-sm md:text-base ">
+                  <p className="xl:text-lg text-sm sm:text-base  ">
                     Review your results, explore recommended paths, and start
                     making informed decisions.
                   </p>
@@ -216,17 +216,17 @@ const DiscoverFit = () => {
                       <ul className="flex flex-col space-y-3 md:space-y-1">
                         <li className="flex flex-col md:flex-row lg:flex-row space-y-2 space-x-3 items-center">
                           <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:h-2 lg:w-2 lg:p-1"></div>
-                          <p className="lg:text-xl">
+                          <p className=" text-sm sm:text-base ">
                             Career and business resources (courses & Community)
                           </p>
                         </li>
                         <li className="flex flex-col md:flex-row lg:flex-row space-y-2 space-x-3 items-center">
                           <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                          <p className="lg:text-xl">Guidance and support</p>
+                          <p className="text-sm sm:text-base ">Guidance and support</p>
                         </li>
                         <li className="flex flex-col md:flex-row lg:flex-row  space-y-2 space-x-3 items-center">
                           <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                          <p className="lg:text-xl">
+                          <p className=" text-sm sm:text-base ">
                             Ongoing assessment and refinement
                           </p>
                         </li>
