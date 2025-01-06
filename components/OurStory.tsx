@@ -9,7 +9,7 @@ const OurStory = () => {
       <div className="text-black px-4 sm:px-8 lg:px-20 w-full lg:w-3/4 flex flex-col items-center lg:items-start">
         <div className="pb-6">
           <TitleDot title={"Our story"} />
-          <p className="text-sm sm:text-base text-center lg:text-left">
+          <p className="text-sm sm:text-base text-center md:text-start lg:text-left">
             Pithy means was founded to address the growing concern of academic
             regrets, professional issues, and business collapse. Our team
             realized that many people invest time and resources in the wrong
