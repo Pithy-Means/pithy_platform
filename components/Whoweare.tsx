@@ -11,7 +11,7 @@ const Whoweare = () => {
           <p className="capitalize text-black md:text-lg lg:text-lg xl:-text-2xl 2xl:text-2xl 3xl:text-2xl">
             Empowering informed decisions for a fulfing career
           </p>
-          <p className="text-black text-base">
+          <p className="text-black text-base text-start">
             At pithy means, we believe that everyone deserves to find their
             perfect fit. our mission is to guide students, professionals, and
             business managers towards their most suitable study, professional,
