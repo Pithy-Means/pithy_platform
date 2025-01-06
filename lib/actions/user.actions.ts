@@ -63,18 +63,16 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
-    // const expirationTime = dayjs().add(1, "day").toDate(); // Set the expiration time for the cookie
-    const sessionId = session.$id;
-    if (!sessionId) {
-      throw new Error("Session ID not found");
-    }
-    // Store the session token in a secure cookie
-    cookies().set("authToken", session.secret, {
-      path: "/", // Accessible across the site
-      httpOnly: true, // Prevent client-side access
-      secure: process.env.NODE_ENV === 'production', // Only sent over HTTPS
-      sameSite: "strict", // prevent CSRF attacks (protection)
-      maxAge: 60 * 60, // 1 hour in seconds
+
+    // Set a cookie valid for one month (30 days in seconds)
+    const oneMonthInSeconds = 30 * 24 * 60 * 60;
+
+    cookies().set("my-session", session.secret, {
+      path: "/",
+      httpOnly: true,
+      sameSite: "strict",
+      secure: true,
+      maxAge: oneMonthInSeconds,
     });
 
     // fetch the user information using the session token
@@ -319,13 +317,12 @@ export const getLoggedInUser = async () => {
     const { account } = await createSessionClient();
     const response = await account.get();
     const user = await getUserInfo({ userId: response.$id });
-    return parseStringify(user);;
+    return parseStringify(user);
   } catch (error) {
     console.error("Error in getLoggedInUser:", error);
     return null;
   }
 };
-
 
 export const createPost = async (data: Post) => {
   const { post_id, image, video } = data;
@@ -854,14 +851,18 @@ export const deletePostCourseQuestion = async (questionId: string) => {
   }
 };
 
-export const createPostCourseAnswer = async (data: PostCourseQuestionAnswer) => {
+export const createPostCourseAnswer = async (
+  data: PostCourseQuestionAnswer
+) => {
   const { answer_id } = data;
   const validAnswerId = generateValidPostId(answer_id);
   try {
     const { databases } = await createAdminClient();
-    const getQuestionId = await databases.listDocuments(db, postCourseQuestionCollection, [
-      Query.equal("post_course_question_id", data.post_course_question_id)
-    ]);
+    const getQuestionId = await databases.listDocuments(
+      db,
+      postCourseQuestionCollection,
+      [Query.equal("post_course_question_id", data.post_course_question_id)]
+    );
 
     console.log("Question ID", getQuestionId.documents[0].$id);
 
