@@ -66,6 +66,14 @@ const config: Config = {
 				// '8k': '7680px'
 			},
 
+		},
+		screens: {
+			'md': '640px',
+			'lg': '930px',
+			'xl': '1440px',
+			'2xl': '1536px',
+			'3xl': '1920px',
+
 		}
 	},
 	plugins: [require("tailwindcss-animate"),
