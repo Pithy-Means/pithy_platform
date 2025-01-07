@@ -13,9 +13,10 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  swcMinify: true,  // No longer configurable
 
   webpack: (config) => {
+    // console.log('webpack config', config);
     config.cache = {
       type: "filesystem",
       buildDependencies: {
@@ -50,15 +51,15 @@ const nextConfig = {
       },
     ];
   },
-  images: {
-    remotePatterns: [
-        {
-          protocol: 'https',
-          hostname: 'api.microlink.io',
-          pathname: '/**', // This allows images from any path on this domain
-        },
-      ],
-  },
+  // images: {
+  //   remotePatterns: [
+  //       {
+  //         protocol: 'https',
+  //         hostname: 'api.microlink.io',
+  //         pathname: '/**', // This allows images from any path on this domain
+  //       },
+  //     ],
+  // },
 
   experimental: {
     serverActions: {
