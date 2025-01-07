@@ -33,22 +33,22 @@ const SpecialMobile = () => {
           </div>
         </div>
         <div className=" text-black flex flex-col items-center space-y-4">
-          <h1 className="text-xl capitalize font-bold">special offer!</h1>
+          <h1 className="text-xl capitalize font-bold md:text-2xl">special offer!</h1>
           <div className="flex flex-col space-y-4 items-center px-6 md:px-0">
-            <p className="text-[14px] capitalize text-center">
+            <p className="text-[14px] capitalize text-center md:text-lg">
               Join now and get up to <b>40%</b> discount globally
             </p>
-            <p className="text-[14px] capitalize text-center">
+            <p className="text-[14px] capitalize text-center md:text-lg">
               Ugandan resident: get additional <b>90%</b> discount through local
               partnership
             </p>
           </div>
           <div className="flex flex-col items-center space-y-6">
-            <Button className="bg-black text-white capitalize flex-grow">
+            <Button className="bg-black text-white capitalize flex-grow md:text-xl">
               Take the assessment
             </Button>
             <Button className="flex items-center space-x-2 bg-transparent text-black border-none outline-none hover:text-white">
-              <span className="text-[14px]">Contact Us</span>
+              <span className="text-[14px] md:text-xl">Contact Us</span>
               <ArrowRight />
             </Button>
           </div>
