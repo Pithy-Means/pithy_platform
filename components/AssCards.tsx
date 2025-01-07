@@ -62,6 +62,7 @@ const AssCards = () => {
           alt="Join"
           width={150}
           height={100}
+          priority
           className="hidden lg:block"
         />
       </div>
@@ -96,6 +97,7 @@ const AssCards = () => {
           alt="Explore"
           width={150}
           height={100}
+          priority
           className="hidden lg:block"
         />
       </div>
