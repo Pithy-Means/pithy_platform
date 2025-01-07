@@ -23,7 +23,7 @@ const Pricing = () => {
           />
         </div>
         <div className="flex flex-col space-y-4 w-full lg:items-start items-center md:w-auto text-center md:text-left">
-          <div className="text-black font-extrabold capitalize">
+          <div className="text-black font-extrabold capitalize md:text-xl">
             Only For you
           </div>
           <div className="flex flex-col space-y-4">
@@ -40,7 +40,7 @@ const Pricing = () => {
                 Become an affiliate and earn 10% referral fees.
               </p>
             </div>
-            <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] lg:mx-0 mx-auto w-fit">
+            <Button className="text-white md:text-xl bg-gradient-to-r from-[#5AC35A] to-[#00AE76] lg:mx-0 mx-auto w-fit">
               Get Started
             </Button>
           </div>
