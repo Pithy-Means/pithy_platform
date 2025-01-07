@@ -9,6 +9,7 @@ import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { UserContext } from "@/context/UserContext";
 
+
 const CreateCourseForm = () => {
   const { user } = useContext(UserContext); // Use the hook
   const [course, setCourse] = useState<Courses>({
@@ -21,6 +22,7 @@ const CreateCourseForm = () => {
     image: "",
     requirements: "",
     students: "",
+    category: "student",
   });
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const CreateCourseForm = () => {
 
   // Handle input changes
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setCourse((prevCourse) => ({
@@ -211,6 +213,27 @@ const CreateCourseForm = () => {
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
+      </div>
+
+      <div className="mb-4">
+      <Label
+          htmlFor="Category"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Requirements (Optional)
+        </Label>
+        <select
+          id="category"
+          name="category"
+          value={course.category}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        >
+          <option value="student">Student</option>
+          <option value="professional">Job Seeker</option>
+          <option value="business">Owner</option>
+          <option value="other">Other</option>
+        </select>
       </div>
 
       {/* Submit Button */}
