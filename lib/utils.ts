@@ -38,3 +38,11 @@ export const generateValidPostId = (post_id?: string): string => {
 
 export const generateValidId = () =>
   `${Date.now()}_${Math.random().toString(36).substr(2, 35)}`;
+
+// Utility function to get the current date in ISO 8601 format
+export const timeFetcher = (date: string, daysOffset: number): string => {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + daysOffset);
+  return newDate.toISOString(); // Ensure it returns the ISO string
+};
+
