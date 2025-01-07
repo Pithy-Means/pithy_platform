@@ -44,7 +44,7 @@ const AssCards = () => {
             alt="Take"
             width={20}
             height={100}
-
+            priority
             className=" "
           />
         </div>
