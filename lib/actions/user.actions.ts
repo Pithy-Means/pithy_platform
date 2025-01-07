@@ -8,6 +8,8 @@ import {
   LikePost,
   LoginInfo,
   Post,
+  PostCourseQuestion,
+  PostCourseQuestionAnswer,
   // ResetPass,
   UpdateUser,
   UserInfo,
@@ -28,10 +30,11 @@ import {
   // postAttachementBucket,
   postCollection,
   postCommentCollection,
+  postCourseAnswerCollection,
+  postCourseQuestionCollection,
   userCollection,
 } from "@/models/name";
 import env from "@/env";
-
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -53,44 +56,18 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!account) {
       throw new Error("Account creation failed.");
     }
-
     // create a new session with the email and password
     const session = await account.createEmailPasswordSession(email, password);
     console.log("Session", session.$id);
 
-
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
-
     // const expirationTime = dayjs().add(1, "day").toDate(); // Set the expiration time for the cookie
-
     const sessionId = session.$id;
     if (!sessionId) {
       throw new Error("Session ID not found");
     }
-
-    // const validateSessionPattern = /^[a-zA-Z0-9_]{1,36}$/;
-    // if (!validateSessionPattern.test(sessionId)) {
-    //   throw new Error(
-    //     "Invalid session ID format. It must be alphanumeric and at most 36 characters, without leading underscores.",
-    //   );
-    // }
-
-    // Validate the session token format using a regular expression
-    // const validSessionPattern = /^[a-zA-Z0-9_]{1,36}$/;
-    // if (!validSessionPattern.test(session.secret)) {
-    //   throw new Error("Invalid session token format.");
-    // }
-
-    // // store the session token as a cookie for server-side use
-    // cookies().set("my-session", session.secret, {
-    //   path: "/",
-    //   httpOnly: true,
-    //   sameSite: "strict",
-    //   secure: true,
-    // });
-
     // Store the session token in a secure cookie
     cookies().set("authToken", session.secret, {
       path: "/", // Accessible across the site
@@ -99,11 +76,6 @@ export const login = async ({ email, password }: LoginInfo) => {
       sameSite: "strict", // prevent CSRF attacks (protection)
       maxAge: 60 * 60, // 1 hour in seconds
     });
-
-    // store the session token in localStorage for client-side use (browser-only)
-    // if (typeof localStorage !== "undefined"){
-    //   localStorage.setItem("authToken", session.secret);
-    // }
 
     // fetch the user information using the session token
     const user = await getUserInfo({ userId: session.userId });
@@ -244,7 +216,7 @@ export const reset = async (data: UpdateUser) => {
     const response = await account.updateRecovery(
       data.user_id,
       data.secret,
-      data.password,
+      data.password
     );
     console.log("Password reset response", response);
 
@@ -256,30 +228,39 @@ export const reset = async (data: UpdateUser) => {
 
 export const registerWithGoogle = async (data: UserInfo) => {
   try {
-    const {account, databases} = await createAdminClient();
-    const info = await account.createOAuth2Token(OAuthProvider.Google, 'http://localhost:3000/dashboard', 'http://localhost:3000');
+    const { account, databases } = await createAdminClient();
+    const info = await account.createOAuth2Token(
+      OAuthProvider.Google,
+      "http://localhost:3000/dashboard",
+      "http://localhost:3000"
+    );
     console.log("Google info", info);
     if (!info) {
       throw new Error("Access token not provided");
     }
-    const newUser = await databases.createDocument(db, userCollection, ID.unique(), {
-      ...data,
-      user_id: ID.unique(),
-    });
+    const newUser = await databases.createDocument(
+      db,
+      userCollection,
+      ID.unique(),
+      {
+        ...data,
+        user_id: ID.unique(),
+      }
+    );
     console.log("New user created", newUser);
     if (!data.user_id || !data.secret) {
       throw new Error("User ID and secret must be provided");
     }
     const session = await account.createSession(data.user_id, data.secret);
     console.log("Session created", session);
-    
   } catch (error) {
-    console.error("Error registering with Google:", error);    
+    console.error("Error registering with Google:", error);
   }
-}
+};
 
 export const register = async (userdata: UserInfo) => {
-  const { user_id, email, password, firstname, lastname, categories } = userdata;
+  const { user_id, email, password, firstname, lastname, categories } =
+    userdata;
   const userId = generateValidPostId(user_id);
   let newUserAccount;
   try {
@@ -289,7 +270,7 @@ export const register = async (userdata: UserInfo) => {
       userId,
       email,
       password,
-      `${firstname} ${lastname}`,
+      `${firstname} ${lastname}`
     );
 
     if (!newUserAccount) {
@@ -304,7 +285,7 @@ export const register = async (userdata: UserInfo) => {
         ...userdata,
         user_id: userId,
         categories: categories || [],
-      },
+      }
     );
     const session = await account.createEmailPasswordSession(email, password);
     console.log(userinfo);
@@ -332,18 +313,19 @@ export const updateUserSession = async () => {
   }
 };
 
-export const remove = async () => { };
-
 export const getLoggedInUser = async () => {
+  console.log("Getting logged in user..."); // Debugging
   try {
     const { account } = await createSessionClient();
     const response = await account.get();
     const user = await getUserInfo({ userId: response.$id });
-    return parseStringify(user);
+    return parseStringify(user);;
   } catch (error) {
+    console.error("Error in getLoggedInUser:", error);
     return null;
   }
 };
+
 
 export const createPost = async (data: Post) => {
   const { post_id, image, video } = data;
@@ -351,11 +333,9 @@ export const createPost = async (data: Post) => {
   const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
   let base64Match;
 
-
-
-  if (image && image.startsWith('data:image')) {
+  if (image && image.startsWith("data:image")) {
     base64Match = image.match(/^data:(image)\/(\w+);base64,/);
-  } else if (video && video.startsWith('data:video')) {
+  } else if (video && video.startsWith("data:video")) {
     base64Match = video.match(/^data:(video)\/(\w+);base64,/);
   }
 
@@ -376,14 +356,17 @@ export const createPost = async (data: Post) => {
   }
 
   const base64Prefix = base64Match[0];
-  const base64Data = image ? image.replace(base64Prefix, "") : (video ? video.replace(base64Prefix, "") : "");
+  const base64Data = image
+    ? image.replace(base64Prefix, "")
+    : video
+      ? video.replace(base64Prefix, "")
+      : "";
   const binaryData = Buffer.from(base64Data, "base64");
 
   // Create a File object from binary data
   const fileName = `uploaded-file.${fileType}`;
   const mimeType = `${base64Match[1]}/${fileType}`;
   const file = new File([binaryData], fileName, { type: mimeType });
-  
 
   try {
     const { databases, storage } = await createAdminClient();
@@ -392,8 +375,10 @@ export const createPost = async (data: Post) => {
     const fileUpload = await storage.createFile(
       postAttachementBucket,
       ID.unique(),
-      file,
+      file
     );
+
+    console.log("Uploaded file:");
 
     console.log("Uploaded file:", fileUpload);
 
@@ -401,9 +386,9 @@ export const createPost = async (data: Post) => {
     let videoId = "";
 
     // Check if the mediaInfo is an image or a video
-    if (image && image.startsWith('data:image')) {
+    if (image && image.startsWith("data:image")) {
       imageId = fileUpload.$id;
-    } else if (video && video.startsWith('data:video')) {
+    } else if (video && video.startsWith("data:video")) {
       videoId = fileUpload.$id;
     }
     const post = await databases.createDocument(db, postCollection, validPost, {
@@ -423,14 +408,13 @@ export const createPost = async (data: Post) => {
 
 export const updatePost = async (
   postId: string,
-  updatedData: Partial<Post>,
+  updatedData: Partial<Post>
 ) => {
-  const now = dayjs().toISOString(); // current timestamp
   try {
     const { databases } = await createAdminClient();
+
     const post = await databases.updateDocument(db, postCollection, postId, {
       ...updatedData,
-      updated_at: now,
     });
     return parseStringify(post);
   } catch (error) {
@@ -502,7 +486,7 @@ export const repost = async (data: Post) => {
         user_comment: user_comment || "", // Optional user comment
         created_at: now,
         updated_at: now,
-      },
+      }
     );
 
     console.log("Repost created successfully:", repost);
@@ -553,7 +537,7 @@ export const getPosts = async () => {
           image: imageUrl,
           video: videoUrl,
         };
-      }),
+      })
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -587,8 +571,9 @@ export const createComment = async (data: CommentPost) => {
         ...data,
         post_id: postExists.post_id,
         comment_id: validComment,
-      },
+      }
     );
+    console.log("Comment created", comment);
     return parseStringify(comment);
   } catch (error) {
     console.error(error);
@@ -624,7 +609,7 @@ export const likePost = async (data: LikePost) => {
         ...data,
         post_id: postExists.post_id,
         like_post_id: validLike,
-      },
+      }
     );
     console.log("Like created", like);
     return parseStringify(like);
@@ -633,32 +618,46 @@ export const likePost = async (data: LikePost) => {
   }
 };
 
-export const unlike = async (likeId: string) => {
-  let like;
-  if (!likeId) {
-    console.error("Error: Missing likeId for unlike operation");
-    throw new Error("Missing likeId for unlike operation");
-  }
+export const toggleLike = async (data: LikePost) => {
+  const { post_id, user_id } = data;
+  const validLike = ID.unique();
 
   try {
     const { databases } = await createAdminClient();
-    // Check if the document exists
-    const likeDocument = await databases.getDocument(
-      db,
-      likePostCollection,
-      likeId,
-    );
 
-    if (likeDocument) {
+    // Check if the like already exists
+    const existingLike = await databases.listDocuments(db, likePostCollection, [
+      Query.equal("post_id", post_id),
+      Query.equal("user_id", user_id),
+    ]);
+
+    if (existingLike.total > 0) {
+      // If like exists, delete it (unlike)
+      const likeId = existingLike.documents[0].$id;
       console.log("Deleting like:", likeId);
-      like = await databases.deleteDocument(db, likePostCollection, likeId);
+      await databases.deleteDocument(db, likePostCollection, likeId);
       console.log("Like deleted successfully");
+      return { success: true, message: "Like removed" };
     } else {
-      console.warn("Like document does not exist.");
+      // If like does not exist, create it (like)
+      const postExists = await getPost(post_id);
+      console.log("Post exists", postExists);
+      const like = await databases.createDocument(
+        db,
+        likePostCollection,
+        validLike,
+        {
+          ...data,
+          post_id: postExists.post_id,
+          like_post_id: validLike,
+        }
+      );
+      console.log("Like created", like);
+      return parseStringify(like);
     }
-    return parseStringify(like);
   } catch (error) {
-    console.error("Error deleting like:", error);
+    console.error("Error toggling like:", error);
+    return { success: false, message: "Error toggling like" };
   }
 };
 
@@ -743,5 +742,146 @@ export const getModules = async () => {
     return result;
   } catch (error) {
     console.log("Error fetching modules:", error);
+  }
+};
+
+export const createPostCourseQuestions = async (
+  data: PostCourseQuestion,
+  questions: Array<{ text: string; choices: string[] }>
+) => {
+  try {
+    const { databases } = await createAdminClient();
+
+    let questionDocument;
+
+    for (const [index, question] of questions.entries()) {
+      const validQuestionId = generateValidPostId(
+        `${data.post_course_question_id}-${index}`
+      );
+
+      questionDocument = await databases.createDocument(
+        db,
+        postCourseQuestionCollection,
+        validQuestionId,
+        {
+          ...data,
+          question: question.text,
+          choices: question.choices,
+          user_id: data.user_id,
+          post_course_question_id: validQuestionId,
+        }
+      );
+      console.log("Question created", questionDocument);
+    }
+
+    return parseStringify(questionDocument);
+  } catch (error) {
+    console.error("Error creating questions:", error);
+  }
+};
+
+export const fetchAllPostCourseQuestions = async () => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const response = await databases.listDocuments(
+      db,
+      postCourseQuestionCollection
+    );
+
+    console.log("Fetched questions:", response.documents);
+
+    // Optionally, parse or format the response if needed
+    const data = response.documents.map((doc) => ({
+      id: doc.$id,
+      question: doc.question,
+      choices: doc.choices,
+      user_id: doc.user_id,
+      post_course_question_id: doc.post_course_question_id,
+      createdAt: doc.$createdAt,
+    }));
+
+    return parseStringify(data);
+  } catch (error) {
+    console.error("Error fetching questions:", error);
+    throw error;
+  }
+};
+
+export const fetchPostCourseQuestion = async (questionId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.getDocument(
+      db,
+      postCourseQuestionCollection,
+      questionId
+    );
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error fetching question:", error);
+  }
+};
+
+export const updatePostCourseQuestion = async (
+  questionId: string,
+  data: Partial<PostCourseQuestion>
+) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.updateDocument(
+      db,
+      postCourseQuestionCollection,
+      questionId,
+      data
+    );
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error updating question:", error);
+  }
+};
+
+export const deletePostCourseQuestion = async (questionId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.deleteDocument(
+      db,
+      postCourseQuestionCollection,
+      questionId
+    );
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error deleting question:", error);
+  }
+};
+
+export const createPostCourseAnswer = async (data: PostCourseQuestionAnswer) => {
+  const { answer_id } = data;
+  const validAnswerId = generateValidPostId(answer_id);
+  try {
+    const { databases } = await createAdminClient();
+    const getQuestionId = await databases.listDocuments(db, postCourseQuestionCollection, [
+      Query.equal("post_course_question_id", data.post_course_question_id)
+    ]);
+
+    console.log("Question ID", getQuestionId.documents[0].$id);
+
+    const questionId = getQuestionId.documents[0].$id;
+
+    const answer = await databases.createDocument(
+      db,
+      postCourseAnswerCollection,
+      validAnswerId,
+      {
+        ...data,
+        answer: data.answer,
+        post_course_question_id: questionId,
+        answer_id: validAnswerId,
+      }
+    );
+
+    console.log("Answer created", answer);
+    return parseStringify(answer);
+  } catch (error) {
+    console.error("Error creating answer:", error);
   }
 };
