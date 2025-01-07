@@ -1,48 +1,51 @@
-import { LinkPreview } from "./ui/link-preview";
+// import { LinkPreview } from "./ui/link-preview";
+
+import Link from "next/link";
+
 
 const QuickLinks: React.FC = () => {
   return (
     <div className="flex flex-col space-y-4 md:w-1/5 text-center justify-center w-full ">
       <h3 className="text-lg font-bold text-white">Quick Links</h3>
       <nav className="flex flex-col space-y-2 ">
-        <LinkPreview
-          url="https://pithy-means.netlify.app/"
+        <Link
+          href="https://pithy-means.netlify.app/"
           className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600 transition duration-300 ease-in-out"
         >
           Home
-        </LinkPreview>
-        <LinkPreview
-          url="https://pithy-means.netlify.app/about"
+        </Link>
+        <Link
+          href="https://pithy-means.netlify.app/about"
           className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600transition duration-300 ease-in-out"
         >
           About
-        </LinkPreview>
-        <LinkPreview
-          url="https://pithy-means.netlify.app/how-it-works"
+        </Link>
+        <Link
+          href="https://pithy-means.netlify.app/how-it-works"
           className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600 transition duration-300 ease-in-out"
         >
           How It Works
-        </LinkPreview>
-        <LinkPreview
-          url="https://pithy-means.netlify.app/contact"
+        </Link>
+        <Link
+          href="https://pithy-means.netlify.app/contact"
           className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600 transition duration-300 ease-in-out"
         >
           Contact
-        </LinkPreview>
+        </Link>
         <div className="flex lg:space-x-2 text-center justify-center flex-wrap lg:flex-row flex-col">
-          <LinkPreview
-            url="https://pithy-means.netlify.app/signIn"
+          <Link
+            href="https://pithy-means.netlify.app/signIn"
             className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600 transition duration-300 ease-in-out"
           >
             Login
-          </LinkPreview>
+          </Link>
           <span className="text-gray-600 hidden lg:block">|</span>
-          <LinkPreview
-            url="https://pithy-means.netlify.app/signUp"
+          <Link
+            href="https://pithy-means.netlify.app/signUp"
             className="text-[12px] md:text-sm lg:text-base text-white hover:text-green-600transition duration-300 ease-in-out"
           >
             Sign Up
-          </LinkPreview>
+          </Link>
         </div>
       </nav>
     </div>
