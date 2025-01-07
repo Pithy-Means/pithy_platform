@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -7,6 +8,7 @@ import { LoginInfo } from "@/types/schema";
 import { login } from "@/lib/actions/user.actions";
 import Image from "next/image";
 import Link from "next/link";
+import useAuth from "@/lib/hooks/useAuth";
 
 const MAX_ATTEMPTS = 5;
 
@@ -20,6 +22,7 @@ const SignInForm = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [attempts, setAttempts] = useState<number>(0);
 
+  const setUser = useAuth((state) => state.setUser); // Access Zustand's setUser
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -29,7 +32,7 @@ const SignInForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setFormdata((prev) => ({ ...prev, [name]: value }));
@@ -40,24 +43,22 @@ const SignInForm = () => {
     setLoading(true);
     setErrorMessage(null);
 
-    // Ensure no undefined values in formdata
     if (!formdata.email || !formdata.password) {
       setErrorMessage("Email or Password is missing.");
       setLoading(false);
       return;
     }
+
     try {
       const response = await login(formdata as LoginInfo);
 
       if (response.success) {
-        // Only navigate if login is successful
+        setUser(response.data); // Save user info in Zustand store
         router.push("/dashboard");
       } else {
-        // Show error message and increment attempts on failure
         setErrorMessage(response.message ?? "An unknown error occurred.");
         setAttempts((prev) => prev + 1);
 
-        // Redirect to forgot-password after 5 attempts
         if (attempts >= 4) {
           router.push("/forgot-password");
         }
