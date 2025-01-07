@@ -1,31 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import CourseCard from "./CourseCard";
 import CourseList from "./CourseList";
-import { Courses, UserInfo } from "@/types/schema";
+import { Courses } from "@/types/schema";
 import { LayoutGrid, List } from "lucide-react";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import { UserContext } from "@/context/UserContext";
 
 const CourseView: React.FC = () => {
   const [courses, setCourses] = useState<Courses[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
-  const [user, setUser] = useState<UserInfo | null>(null);
 
   const router = useRouter();
 
-  const getUser = async () => {
-    try {
-      const loggedUser = await getLoggedInUser();
-      console.log("Logged in user:", loggedUser);
-      setUser(loggedUser);
-    } catch (error) {
-      console.log("Error fetching user:", error);
-    }
-  };
+  const { user } = useContext(UserContext);
+
 
   const fetchCourses = async () => {
     setLoading(true);
@@ -42,7 +34,6 @@ const CourseView: React.FC = () => {
   };
 
   useEffect(() => {
-    getUser();
     fetchCourses();
   }, []);
 
