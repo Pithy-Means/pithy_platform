@@ -33,27 +33,27 @@ const Whoweare = () => {
                   </p>
                 </div>
                 <div className="flex space-x-2 items-center">
-                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1"></div>
-                  <p className="capitalize text-black">
+                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1 xl:h-2 xl:w-2 4k:h-4 4k:w-4 xl:w-2 xl:p-1 4k:p-2"></div>
+                  <p className="capitalize text-black text-base md:text-lg lg:text-xl xl:text-xl 4k:text-5xl">
                     Explore suitable career and business paths
                   </p>
                 </div>
                 <div className="flex space-x-2 items-center">
-                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1"></div>
-                  <p className="capitalize text-black">
+                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1 xl:h-2 xl:w-2 4k:h-4 4k:w-4 xl:p-1 4k:p-2"></div>
+                  <p className="capitalize text-black text-base md:text-lg lg:text-xl xl:text-xl 4k:text-5xl xl:mb-2 4k:mb-4">
                     Make informed decisions
                   </p>
                 </div>
               </div>
             </div>
-            <div className="flex flex-col space-y-4">
-              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md">
+            <div className="flex flex-col space-y-4 4k:space-y-8">
+              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md text-base md:text-lg lg:text-xl xl-text-2xl 4k:text-5xl 4k:py-4 4k:mt-4">
                 Our vision
               </div>
               <p className="capitalize text-black text-base">
                 A world where everyone thrives in their chosen path.
               </p>
-              <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
+              <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit text-base md:text-lg lg:text-xl xl-text-2xl 4k:text-5xl 4k:p-10 4k:mt-4">
                 Learn More
               </Button>
             </div>
