@@ -8,6 +8,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { UserContext } from "@/context/UserContext";
 import { logoutUser } from "@/lib/actions/user.actions";
 
+
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -26,7 +27,7 @@ const Navbar = () => {
   // Get logged-in user info
   const { user } = useContext(UserContext);
 
-  // Close the menu when clicking outside
+   // Handle outside clicks and Escape key to close the menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {

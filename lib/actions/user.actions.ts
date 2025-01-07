@@ -48,6 +48,7 @@ export const getUserInfo = async ({ userId }: GetUserInfo) => {
   }
 };
 
+// Login function with email and password
 export const login = async ({ email, password }: LoginInfo) => {
   try {
     const { account } = (await createAdminClient()) || {};
@@ -55,29 +56,38 @@ export const login = async ({ email, password }: LoginInfo) => {
     if (!account) {
       throw new Error("Account creation failed.");
     }
-
+    // create a new session with the email and password
     const session = await account.createEmailPasswordSession(email, password);
-    console.log("Session", session);
+    console.log("Session", session.$id);
 
     if (!session || !session.secret || !session.userId) {
       throw new Error("Session creation failed");
     }
-
-    cookies().set("my-session", session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
+    // const expirationTime = dayjs().add(1, "day").toDate(); // Set the expiration time for the cookie
+    const sessionId = session.$id;
+    if (!sessionId) {
+      throw new Error("Session ID not found");
+    }
+    // Store the session token in a secure cookie
+    cookies().set("authToken", session.secret, {
+      path: "/", // Accessible across the site
+      httpOnly: true, // Prevent client-side access
+      secure: process.env.NODE_ENV === 'production', // Only sent over HTTPS
+      sameSite: "strict", // prevent CSRF attacks (protection)
+      maxAge: 60 * 60, // 1 hour in seconds
     });
 
+    // fetch the user information using the session token
     const user = await getUserInfo({ userId: session.userId });
     console.log("User", user);
 
     if (!user) {
       throw new Error("User information could not be retrieved");
     }
-
-    return { success: true, data: parseStringify(user) }; // Success response
+    return {
+      success: true,
+      data: { user: parseStringify(user), token: session.secret },
+    }; // Success response
   } catch (error) {
     if (error instanceof Error) {
       if (error.message.includes("Invalid `password` param")) {
@@ -97,12 +107,50 @@ export const login = async ({ email, password }: LoginInfo) => {
   }
 };
 
+// Gets the current session details
 export const getSession = async () => {
   try {
+    // Get the session token from the cookie
+    const sessionId = cookies().get("authToken")?.value; // Get the session token from the cookie
+    // console.log('Retrieved session ID from cookie:', sessionId);
+    if (!sessionId) {
+      throw new Error("Session token not found");
+    }
+
+    // // Validate the session token format using a regular expression
+    // const validSessionIdPattern = /^[a-zA-Z0-9_]{1,36}$/;
+    // if (!validSessionIdPattern.test(sessionId)) {
+    //   throw new Error("Invalid session ID format. It must be alphanumeric and at most 36 characters, without leading underscores.");
+    // }
+
+    // // Ensure session ID does not start with an underscore
+    if (sessionId[0] === "_") {
+      throw new Error("Session ID cannot start with an underscore.");
+    }
+
+    // Create a new Appwrite client
+    // if (typeof localStorage === "undefined") {
+    //   throw new Error("localStorage is not available in this environment");
+    // }
+
+    // // Get the session token from localStorage
+    // const token = localStorage.getItem("authToken");
+    // if (!token) {
+    //   throw new Error("Session token not found");
+    // }
+    // Create a new Appwrite client
     const { account } = await createSessionClient();
+
+    // Attach the session token to the client
+    // account.client.setSession(sessionId); // Set the session token
+
+    // Get the session details using the token
     const session = await account.get();
-    return parseStringify(session);
+    console.log("Session details:", session);
+    // return parseStringify(session);  // Return the session details
+    return session; // Return the session details
   } catch (error) {
+    console.error("Error getting session:", error);
     return null;
   }
 };
@@ -110,9 +158,22 @@ export const getSession = async () => {
 export const logoutUser = async () => {
   try {
     const { account } = await createSessionClient();
-    cookies().delete("my-session");
+
+    // Delete all Appwrite sessions
     await account.deleteSessions();
+    cookies().set("authToken", "", {
+      path: "/",
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: "strict",
+      maxAge: 0,
+    }); // Clear the session token cookie
+    // cookies().delete("authToken");
+    // await account.deleteSessions();
+
+    console.log("User logged out successfully");
   } catch (error) {
+    console.error("Error logging out user:", error);
     return null;
   }
 };
@@ -226,10 +287,9 @@ export const register = async (userdata: UserInfo) => {
         categories: categories || [],
       }
     );
-
     const session = await account.createEmailPasswordSession(email, password);
     console.log(userinfo);
-    cookies().set("my-session", session.secret, {
+    cookies().set("authToken", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -239,6 +299,7 @@ export const register = async (userdata: UserInfo) => {
     return parseStringify(userinfo);
   } catch (error) {
     console.error(error);
+    throw new Error("Failed to create user account");
   }
 };
 
@@ -341,6 +402,8 @@ export const createPost = async (data: Post) => {
   } catch (error) {
     console.error(error);
   }
+
+  
 };
 
 export const updatePost = async (

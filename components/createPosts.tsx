@@ -12,7 +12,8 @@ interface CreatePostProps {
   onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
 }
 
-const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
+
+const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>({
     user_id: userId,
@@ -66,17 +67,17 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setLoading(false); //Reset loading state
     }
   };
+
   return (
     <>
       {loading ? (
-        <p>Creating post...</p>
+        <p>Creating post, please wait...</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
           <h2 className="text-xl font-semibold mb-2 text-black/30">Create a New Post</h2>
-
           <div className="flex flex-col">
             <Label htmlFor="content" className="font-medium text-black/30 mb-1">
               Content
@@ -120,4 +121,4 @@ const CreatePost: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   );
 };
 
-export default CreatePost;
+export default CreatePosts;

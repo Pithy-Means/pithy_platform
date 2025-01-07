@@ -19,11 +19,11 @@ const SpecialOffer = () => {
           >
             <div className="flex justify-between">
               <div className="pl-48 pt-10 text-black flex flex-col space-y-4">
-                <h1 className="text-3xl capitalize font-bold">
+                <h1 className="text-3xl capitalize font-bold xl:text-4xl">
                   special offer!
                 </h1>
                 <div>
-                  <p className="text-base capitalize">
+                  <p className="text-base capitalize ">
                     Join now and get up to <b>40%</b> discount globally
                   </p>
                   <p className="text-base capitalize">
@@ -36,7 +36,7 @@ const SpecialOffer = () => {
                     Take the assessment
                   </Button>
                   <Button className="flex items-center space-x-2 bg-transparent text-black border-none outline-none hover:text-white">
-                    <span className="text-base">Contact Us</span>
+                    <span className="text-base md:text-xl">Contact Us</span>
                     <ArrowRight />
                   </Button>
                 </div>
