@@ -62,7 +62,7 @@ const Contact = () => {
     <div>
       <div className="overflow-hidden">
         <div className="flex justify-center bg-black items-center h-96">
-          <h3 className="text-lg lg:text-4xl md:text-2xl text-[#5AC35A]">
+          <h3 className="text-lg md:text-2xl lg:text-3xl xl:text-5xl 4k:text-6xl text-[#5AC35A]">
             Contact
           </h3>
         </div>
