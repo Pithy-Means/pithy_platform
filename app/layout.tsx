@@ -52,8 +52,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
-        <ConditionalLayout>{children}</ConditionalLayout>
-        {/* {children} */}
+          <>
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+          </>
       </body>
     </html>
   );
