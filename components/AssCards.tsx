@@ -119,7 +119,7 @@ const AssCards = () => {
       <div className="flex flex-col items-center space-y-2">
         <Card className="bg-white w-64 md:w-96 lg:w-64 lg:relative xl:w-[20rem] 2xl:w-[22rem] 3xl:w-[28rem]">
           <div className="bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-t-sm px-4 py-2">
-            <h3 className="text-lg font-extrabold text-black capitalize">
+            <h3 className="text-lg md:text-xl xl:text-2xl 4k:text-3xl font-extrabold text-black capitalize">
               Explore and take action
             </h3>
           </div>
