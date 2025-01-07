@@ -1,19 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
-import { useState, useEffect, useRef } from "react";
-import { UserInfo } from "@/types/schema";
-import { getLoggedInUser } from "@/lib/actions/user.actions";
+import { useState, useEffect, useRef, useContext } from "react";
+import { UserContext } from "@/context/UserContext";
+import { logoutUser } from "@/lib/actions/user.actions";
+
 
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const [loggedUser, setLoggedUser] = useState<UserInfo | null>(null);
-  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
@@ -24,30 +25,9 @@ const Navbar = () => {
   };
 
   // Get logged-in user info
-  useEffect(() => {
+  const { user } = useContext(UserContext);
 
-    const fetchUser = async () => {
-      setLoading(true);
-      try {
-        const userLogged = await getLoggedInUser();
-        console.log("User logged in:", userLogged);
-        if (!userLogged) {
-          console.log("No user logged in");
-        }
-        setLoggedUser(userLogged);
-      } catch (error) {
-        console.error("Error fetching user session:", error);
-        setLoggedUser(null); // Fallback to null if fetching fails
-      } finally {
-        setLoading(false);
-      }
-    };
-        
-
-    fetchUser();
-  }, []);
-
-  // Close the menu when clicking outside
+   // Handle outside clicks and Escape key to close the menu
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -70,6 +50,11 @@ const Navbar = () => {
     };
   }, []);
 
+    const handleLogout = async () => {
+      await logoutUser();
+      router.push("/");
+    };
+
   return (
     <div className="px-10 pt-6 bg-black">
       <div className="flex justify-between">
@@ -79,7 +64,7 @@ const Navbar = () => {
 
         {/* Hamburger Menu Icon for Small Screens */}
         <div className="lg:hidden">
-          <button
+          <Button
             onClick={handleToggle}
             className="text-white focus:outline-none"
           >
@@ -98,7 +83,7 @@ const Navbar = () => {
                 d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
               />
             </svg>
-          </button>
+          </Button>
         </div>
 
         {/* Links - Hidden on Small Screens, shown on larger */}
@@ -134,9 +119,7 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="flex space-x-12">
-            {loading ? (
-              <div className="flex items-center gap-x-2">Loading...</div> // Optional loading indicator
-            ) : loggedUser ? (
+            { user ? (
               <div className="flex items-center gap-x-4">
                 <Link
                   href="/dashboard"
@@ -144,12 +127,12 @@ const Navbar = () => {
                 >
                   Dashboard
                 </Link>
-                <Link
-                  href="/logout"
-                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                <Button
+                  onClick={handleLogout}
+                  className="text-white hover:text-[#5AC35A] transition duration-300 bg-transparent border border-white"
                 >
                   Logout
-                </Link>
+                </Button>
               </div>
             ) : (
               <div className="flex items-center gap-x-2">
@@ -218,7 +201,7 @@ const Navbar = () => {
               >
                 Login
               </Link>
-              <div className="bg-white h-3 w-0.5"></div>
+              <div className="bg-white h-1 w-1/2"></div>
               <Link
                 href="/signUp"
                 className="text-white hover:text-[#5AC35A] transition duration-300"
