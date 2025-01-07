@@ -17,10 +17,10 @@ const OurStory = () => {
           </p>
         </div>
         <div className="flex flex-col lg:justify-start justify-center">
-          <h2 className="font-extrabold font-sans text-lg lg:text-xl text-black bg-[#5AC35A] rounded-md px-2 py-1 w-fit text-center lg:text-left">
+          <h2 className="font-extrabold font-sans text-lg  lg:text-xl text-black bg-[#5AC35A] rounded-md px-2 py-1 w-fit text-center lg:text-left 4k:text-4xl 4k:p-4">
             Our mission & vision
           </h2>
-          <p className="mt-4 w-full lg:w-2/3 text-sm sm:text-base text-center lg:text-left">
+          <p className="mt-4 w-full text-base text-center lg:text-left md:text-lg  md:px-4 md:text-start lg:text-xl xl:text-xl 4k:text-5xl 4k:w-[56rem]">
             Our mission is to provide personalized career and business
             assessments, empowering individuals to make informed decisions. Our
             vision is a world where everyone thrives in their chosen paths.
