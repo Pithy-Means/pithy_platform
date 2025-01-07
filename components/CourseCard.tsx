@@ -25,7 +25,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ courses }) => {
   return (
     <div className="max-w-screen-xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
       {courses.map((course: Courses) => (
-        <Link href={`/courses/${course.course_id}`} key={course.course_id}>
+        <Link href={`/dashboard/courses/${course.course_id}`} key={course.course_id}>
           <div
             className="bg-white shadow-lg rounded-lg overflow-hidden w-full flex flex-col"
             style={{ minHeight: "350px" }} // Ensures consistent card height
