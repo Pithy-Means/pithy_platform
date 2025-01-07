@@ -115,6 +115,7 @@ const Whatwegive = () => {
                   alt="strike"
                   width={40}
                   height={40}
+                  priority
                   className="absolute top-[-10px] left-[-10px] lg:top-[-15px] lg:left-[-15px] xl:top-[-20px] xl:left-[-20px] 4k:top-[-24px] 4k:left-[-24px]"
                 />
               </div>
@@ -138,7 +139,7 @@ const Whatwegive = () => {
                   className="absolute top-[-10px] left-[-10px] lg:top-[-15px] lg:left-[-15px] xl:top-[-20px] xl:left-[-20px] 4k:top-[-24px] 4k:left-[-24px]"
                 />
               </div>
-              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl md:text-xl lg:text-lg xl:text-xl 4k:text-4xl">
+              <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl lg:text-lg xl:text-xl 4k:text-4xl">
                 Secure your future
               </h1>
               <p className="text-black capitalize text-center text-sm sm:text-base">
