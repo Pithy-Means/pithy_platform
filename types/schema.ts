@@ -220,7 +220,7 @@ export type Courses = {
   requirements?: string; // Optional: Prerequisites for the course
   students?: string; // Optional: IDs or count of enrolled students
   locked?: boolean; // Optional: Indicates if the course is locked or not
-  category?: CourseCategory; // Optional: Category of the course
+  categories?: CourseCategory; // Optional: Category of the course
 };
 
 type CourseCategory = "student" | "job seeker" | "owner" | "other";
