@@ -13,22 +13,12 @@ const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  // const [loading, setLoading] = useState<boolean>(false);
-
   const router = useRouter();
-
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleCloseMenu = () => {
-    setIsOpen(false);
-  };
-
-  // Get logged-in user info
   const { user } = useContext(UserContext);
 
-   // Handle outside clicks and Escape key to close the menu
+  const handleToggle = () => setIsOpen((prev) => !prev);
+  const handleCloseMenu = () => setIsOpen(false);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -51,10 +41,21 @@ const Navbar = () => {
     };
   }, []);
 
-    const handleLogout = async () => {
+  const handleLogout = async () => {
+    try {
       await logoutUser();
       router.push("/");
-    };
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
+  };
+
+  const navLinks = [
+    { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
+    { href: "/how-it-works", label: "How It Works" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   return (
     <div className="px-10 pt-6 bg-black">
@@ -68,8 +69,8 @@ const Navbar = () => {
           <Button
             onClick={handleToggle}
             className="text-white focus:outline-none"
+            aria-label="Toggle menu"
           >
-            {/* Hamburger Icon */}
             <svg
               className="w-8 h-8"
               fill="none"
@@ -87,41 +88,23 @@ const Navbar = () => {
           </Button>
         </div>
 
-        {/* Links - Hidden on Small Screens, shown on larger */}
+        {/* Links for larger screens */}
         <div className={"hidden lg:flex items-center space-x-6"}>
-          <div className="flex space-x-4">
+          {navLinks.map((link) => (
             <Link
-              href="/"
+              key={link.href}
+              href={link.href}
               prefetch={true}
-              className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/" ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""}`}
+              className={`text-white hover:text-[#5AC35A] transition duration-300 ${
+                pathname === link.href ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""
+              }`}
             >
-              Home
+              {link.label}
             </Link>
-            <Link
-              href="/about"
-              prefetch={true}
-              className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/about" ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""}`}
-            >
-              About
-            </Link>
-            <Link
-              href="/how-it-works"
-              prefetch={true}
-              className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/how-it-works" ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""}`}
-            >
-              How It Works
-            </Link>
-            <Link
-              href="/contact"
-              prefetch={true}
-              className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/contact" ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""}`}
-            >
-              Contact
-            </Link>
-          </div>
-          <div className="flex space-x-12">
-            { user ? (
-              <div className="flex items-center gap-x-4">
+          ))}
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <>
                 <Link
                   href="/dashboard"
                   className="text-white hover:text-[#5AC35A] transition duration-300"
@@ -131,89 +114,86 @@ const Navbar = () => {
                 <Button
                   onClick={handleLogout}
                   className="text-white hover:text-[#5AC35A] transition duration-300 bg-transparent border border-white"
+                  aria-label="Logout"
                 >
                   Logout
                 </Button>
-              </div>
+              </>
             ) : (
-              <div className="flex items-center gap-x-2">
+              <>
                 <Link
                   href="/signIn"
                   className="text-[#5AC35A] hover:text-white transition duration-300"
                 >
                   Login
                 </Link>
-                <div className="bg-white h-3 w-0.5"></div>
                 <Link
                   href="/signUp"
                   className="text-white hover:text-[#5AC35A] transition duration-300"
                 >
                   Sign Up
                 </Link>
-              </div>
+              </>
             )}
-
-            <div>
-              <Button className="bg-[#5AC35A] px-8 py-0">Take Test</Button>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu - Visible only when toggled open */}
+      {/* Mobile Menu */}
       {isOpen && (
         <div
           ref={menuRef}
-          className="lg:hidden flex flex-col space-y-4 mt-4 items-center text-center animate-slide-in"
+          className="lg:hidden flex flex-col space-y-4 mt-4 items-center text-center"
         >
-          <Link
-            href="/"
-            className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/" ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""}`}
-            onClick={handleCloseMenu}
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/about" ? "underline decoration-[#5AC35A] underline-offset-4 decoration-2" : ""}`}
-            onClick={handleCloseMenu}
-          >
-            About
-          </Link>
-          <Link
-            href="/how-it-works"
-            className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/how-it-works" ? "underline decoration-[#5AC35A] underline-offset-4 decoration-2" : ""}`}
-            onClick={handleCloseMenu}
-          >
-            How It Works
-          </Link>
-          <Link
-            href="/contact"
-            className={`text-white hover:text-[#5AC35A] transition duration-300 ${pathname === "/contact" ? "underline decoration-[#5AC35A] underline-offset-4 decoration-2" : ""}`}
-            onClick={handleCloseMenu}
-          >
-            Contact
-          </Link>
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center gap-x-2">
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={handleCloseMenu}
+              className={`text-white hover:text-[#5AC35A] transition duration-300 ${
+                pathname === link.href ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""
+              }`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          {user ? (
+            <>
+              <Link
+                href="/dashboard"
+                onClick={handleCloseMenu}
+                className="text-white hover:text-[#5AC35A] transition duration-300"
+              >
+                Dashboard
+              </Link>
+              <Button
+                onClick={() => {
+                  handleLogout();
+                  handleCloseMenu();
+                }}
+                className="text-white hover:text-[#5AC35A] transition duration-300 bg-transparent border border-white"
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
               <Link
                 href="/signIn"
+                onClick={handleCloseMenu}
                 className="text-[#5AC35A] hover:text-white transition duration-300"
               >
                 Login
               </Link>
-              <div className="bg-white h-1 w-1/2"></div>
               <Link
                 href="/signUp"
+                onClick={handleCloseMenu}
                 className="text-white hover:text-[#5AC35A] transition duration-300"
               >
                 Sign Up
               </Link>
-            </div>
-            <div>
-              <Button className="bg-[#5AC35A] w-full">Take Test</Button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       )}
     </div>
@@ -221,3 +201,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
