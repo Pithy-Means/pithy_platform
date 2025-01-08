@@ -40,8 +40,8 @@ const CourseView: React.FC = () => {
   return (
     <div className="w-full min-h-screen">
       {/* Header Section */}
-      <div className="w-[calc(100vw-410px)] py-8">
-        <div className="flex justify-between items-center px-16 max-w-screen-xl mx-auto">
+      <div className="w-[calc(100vw-410px)] py-8 px-16">
+        <div className="flex justify-between items-center">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
             <button
