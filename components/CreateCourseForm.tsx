@@ -22,7 +22,7 @@ const CreateCourseForm = () => {
     image: "",
     requirements: "",
     students: "",
-    category: "student",
+    categories: "student",
   });
 
   useEffect(() => {
@@ -91,11 +91,10 @@ const CreateCourseForm = () => {
     }
   };
 
-
   return (
     <form
       onSubmit={handleData}
-      className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md"
+      className="w-full bg-white p-6 rounded-lg shadow-md"
     >
       <h1 className="text-2xl font-bold mb-6 text-gray-800">
         Create a New Course
@@ -223,9 +222,9 @@ const CreateCourseForm = () => {
           Requirements (Optional)
         </Label>
         <select
-          id="category"
-          name="category"
-          value={course.category}
+          id="categories"
+          name="categories"
+          value={course.categories}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
