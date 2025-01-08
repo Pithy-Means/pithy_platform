@@ -6,6 +6,7 @@ import { UserContext } from "@/context/UserContext";
 export const useCreateCourse = () => {
   const { data, error, loading, fetchData } = useFetch();
   const { user } = useContext(UserContext);
+  console.log("User", user);
 
   const handleSubmit = async (course: Courses) => {
     if (!user?.user_id) {
