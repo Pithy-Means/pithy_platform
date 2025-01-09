@@ -41,7 +41,7 @@ const OurImpact = () => {
         <div className="">
           {/* <h1 className='text-black font-extrabold'>Our impact<b className='text-green-600 text-xl'>.</b></h1> */}
           <TitleDot title="Our impact" />
-          <p className="md:text-left text-base lg:text-lg xl:text-xl 4k:text-3xl">Hear what others have to say about us</p>
+          <p className="md:text-left">Hear what others have to say about us</p>
 
           <StarRating />
           <div className="flex justify-center md:justify-start text-green-500 transform -scale-x-100 ">
