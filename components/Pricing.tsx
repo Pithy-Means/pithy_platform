@@ -8,7 +8,7 @@ const Pricing = () => {
     <div className="bg-white px-10 pb-4">
       <div className="flex flex-col space-y-4 lg:items-start items-center mb-6">
         <TitleDot title={"Pricing"} className="md:text-3xl md:pt-4"/>
-        <p className="capitalize text-black md:text-lg lg:text-lg xl:text-lg 4k:text-2xl">One time payment</p>
+        <p className="capitalize text-black md:text-xl">One time payment</p>
       </div>
       <Card className="bg-white flex flex-col lg:flex-row md:space-x-8 space-y-8 lg:space-y-0 p-6 lg:p-10 items-center border border-black/10 rounded-md drop-shadow-2xl shadow lg:w-full w-fit mx-auto">
         <div className="bg-[#37BB65] rounded-lg">

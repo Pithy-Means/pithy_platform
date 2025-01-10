@@ -16,7 +16,7 @@ const FreqAskeQuestion = () => {
     <div className="px-10 py-4 bg-white">
       <div className="flex flex-col space-y-4 lg:items-start items-center">
         <TitleDot title="Frequently asked questions" className="md:text-3xl"/>
-        <p className="capitalize text-black lg:text-start text-center md:text-lg lg:text-lg xl:text-xl 4k:text-2xl">
+        <p className="capitalize text-black lg:text-start text-center md:text-xl">
           Get answers to your questions about pithy means
         </p>
         <div className="w-full max-w-full overflow-x-auto">
@@ -35,11 +35,11 @@ const FreqAskeQuestion = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <Card className="bg-white p-5">
             <div className="flex justify-between py-2 items-center">
-              <h3 className=" md:text-lg lg:text-lg xl:text-xl 4k:text-2xl text-[14px] text-black capitalize font-extrabold">
+              <h3 className="lg:text-xl md:text-xl text-[14px] text-black capitalize font-extrabold">
                 what is pithy means?
               </h3>
               <div className="lg:bg-[#5AC35A] lg:p-1 p-0 lg:rounded-full rounded-none bg-none">
-                <ArrowLeft size={16}/>
+                <ArrowLeft size={16} className="md:text-xl"/>
               </div>
             </div>
             <p className="text-black capitalize lg:text-base text-[12px] md:text-lg">
@@ -51,14 +51,14 @@ const FreqAskeQuestion = () => {
 
           <Card className="bg-white pt-5 px-5 row-span-1/2 hidden lg:block">
             <div className="flex justify-between py-1">
-              <h3 className="md:text-lg lg:text-lg xl:text-xl 4k:text-2xl text-[14px] text-black capitalize font-extrabold">
+              <h3 className="lg:text-xl md:text-xl text-lg text-black capitalize font-extrabold">
                 how does pithy means work?
               </h3>
               <div className="bg-[#5AC35A] rounded-full">
                 <ArrowLeft />
               </div>
             </div>
-            <p className="text-black capitalize lg:text-base text-[12px] md:text-lg">
+            <p className="text-black capitalize md:text-lg">
               Take our online assessment, receive personalized results, and
               explore suitable career and business paths.
             </p>
@@ -66,7 +66,7 @@ const FreqAskeQuestion = () => {
 
           <Card className="bg-white p-5">
             <div className="flex justify-between py-1">
-              <h3 className="md:text-lg lg:text-lg xl:text-xl 4k:text-2xl text-[14px] text-black capitalize font-extrabold">
+              <h3 className="lg:text-xl md:text-xl text-[14px] text-black capitalize font-extrabold">
                 Is pithy means trustworthy?
               </h3>
               <div className="border p-1 rounded-full">
@@ -77,7 +77,7 @@ const FreqAskeQuestion = () => {
 
           <Card className="bg-white p-5 hidden lg:block">
             <div className="flex justify-between py-1">
-              <h3 className="md:text-lg lg:text-lg xl:text-xl 4k:text-2xl text-[14px] text-black capitalize font-extrabold">
+              <h3 className="text-xl text-black capitalize font-extrabold">
                 is pithy means only in the USA and Uganda?
               </h3>
               <div className="border p-1 rounded-full">
