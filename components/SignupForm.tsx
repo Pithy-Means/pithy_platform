@@ -4,9 +4,12 @@ import { register } from "@/lib/actions/user.actions";
 import { UserInfo } from "@/types/schema";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import InputContact from "./InputContact";
 import PersonInfo from "./PersonalInfo";
 import ProgressBar from "./ProgressBar";
+import { BasicInfoStep } from "./BaseInfoStep";
+import { StudentFields } from "./StudentFields";
+import { JobSeekerFields } from "./JobSeekerFields";
+import { EmployerFields } from "./EmployerFields";
 
 const SignupForm = () => {
   // Form state
@@ -91,50 +94,7 @@ const SignupForm = () => {
         return (
           <>
             {/* Student specific fields */}
-            <div className="mb-4">
-              <label className="block text-gray-700">Education Level</label>
-              <select
-                name="education_level"
-                value={formData.studentInfo.education_level|| ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              >
-                <option value="">Select</option>
-                <option value="Tertiary">Tertiary</option>
-                <option value="High School">High School</option>
-                <option value="Bachelor’s">Bachelor’s</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Master’s">Master’s</option>
-                <option value="PhD">PhD</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Institution Name"
-                type="text"
-                name="institution_name"
-                value={formData.studentInfo.institution_name || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Major Subject"
-                type="text"
-                name="major_subject"
-                value={formData.studentInfo.major_subject || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Expected Graduation Year"
-                type="number"
-                name="expected_graduation_year"
-                value={formData.studentInfo.expected_graduation_year || ""}
-                onChange={handleChange}
-              />
-            </div>
+            <StudentFields data={formData.studentInfo} onChange={handleChange} />
           </>
         );
       }
@@ -144,59 +104,7 @@ const SignupForm = () => {
         return (
           <>
             {/* Job seeker specific fields */}
-            <div className="mb-4">
-              <InputContact
-                label="Desired Job Title"
-                type="text"
-                name="desired_job_title"
-                value={formData.jobSeekerInfo.desired_job_title || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Skills"
-                type="text"
-                name="skills"
-                value={formData.jobSeekerInfo.skills || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Years of Work Experience"
-                type="number"
-                name="years_of_work_experience"
-                value={formData.jobSeekerInfo.years_of_work_experience || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Resume Link"
-                type="text"
-                name="resume_link"
-                value={formData.jobSeekerInfo.resume_link || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Availability Status</label>
-              <select
-                name="availability_status"
-                value={formData.jobSeekerInfo.availability_status || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              >
-                <option value="">Select</option>
-                <option value="immediately available">
-                  Immediately Available
-                </option>
-                <option value="open to opportunities">
-                  Open to Opportunities
-                </option>
-              </select>
-            </div>
+            <JobSeekerFields data={formData.jobSeekerInfo} onChange={handleChange} />
           </>
         );
       }
@@ -206,58 +114,7 @@ const SignupForm = () => {
         return (
           <>
             {/* Employer specific fields */}
-            <div className="mb-4">
-              <InputContact
-                label="Company Name"
-                type="text"
-                name="company_name"
-                value={formData.employerInfo.company_name || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700">Company Size</label>
-              <select
-                name="company_size"
-                value={formData.employerInfo.company_size || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-              >
-                <option value="">Select</option>
-                <option value="1-10 employees">1-10 employees</option>
-                <option value="11-50 employees">11-50 employees</option>
-                <option value="51-200 employees">51-200 employees</option>
-                <option value="201-500 employees">201-500 employees</option>
-                <option value="501+ employees">501+ employees</option>
-              </select>
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Industry Type"
-                type="text"
-                name="industry_type"
-                value={formData.employerInfo.industry_type || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Position in Company"
-                type="text"
-                name="position_in_company"
-                value={formData.employerInfo.position_in_company || ""}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="mb-4">
-              <InputContact
-                label="Job Posting Count"
-                type="number"
-                name="job_posting_count"
-                value={formData.employerInfo.job_posting_count || ""}
-                onChange={handleChange}
-              />
-            </div>
+            <EmployerFields data={formData.employerInfo} onChange={handleChange} />
           </>
         );
       }
@@ -276,59 +133,7 @@ const SignupForm = () => {
         {/* Basic fields */}
         <div className="flex items-center justify-center h-[400px] px-10 py-6">
           {currentStep === 0 && (
-            <div className="flex flex-col justify-center space-y-4 w-2/5 mx-auto">
-              {/**First Name */}
-              <InputContact
-                label="First Name"
-                type="text"
-                name="firstname"
-                value={formData.firstname || ""}
-                onChange={handleChange}
-              />
-
-              {/**Last Name */}
-              <InputContact
-                label="Last Name"
-                type="text"
-                name="lastname"
-                value={formData.lastname || ""}
-                onChange={handleChange}
-              />
-
-              {/**Email */}
-              <InputContact
-                label="Email"
-                type="email"
-                name="email"
-                value={formData.email || ""}
-                onChange={handleChange}
-              />
-
-              <InputContact
-                label="Phone"
-                type="tel"
-                name="phone"
-                value={formData.phone || ""}
-                onChange={handleChange}
-              />
-
-              <InputContact
-                label="Address"
-                type="text"
-                name="address"
-                value={formData.address || ""}
-                onChange={handleChange}
-              />
-
-              <InputContact
-                type="password"
-                name="password"
-                value={formData.password || ""}
-                onChange={handleChange}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                label={"Password"}
-              />
-            </div>
+            <BasicInfoStep formData={formData} onChange={handleChange} />
           )}
           {currentStep === 1 && (
             <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">

@@ -1,9 +1,8 @@
-'use server';
-import { Permission, Role } from "node-appwrite";
-import { createAdminClient } from "@/utils/appwrite";
-import { postAttachementBucket } from "@/models/name";
+import { postAttachementBucket } from "../name";
+import { storage } from "./config";
 
-console.log(postAttachementBucket);
+
+
 
 export default async function setupStorage() {
   console.log(`Initializing storage setup for bucket: ${postAttachementBucket}`);
@@ -30,16 +29,7 @@ export default async function setupStorage() {
       await storage.createBucket(
         postAttachementBucket,
         postAttachementBucket,
-        [
-          Permission.read(Role.users()), // Everyone can read
-          Permission.create(Role.users()), // Everyone can write
-          Permission.update(Role.users()), // Everyone can update
-          Permission.delete(Role.users()), // Everyone can delete
-          Permission.read(Role.team("admin")), // Admins can read
-          Permission.create(Role.team("admin")), // Admins can write
-          Permission.update(Role.team("admin")), // Admins can update
-          Permission.delete(Role.team("admin")), // Admins can delete
-        ],
+        [],
         false,
         true,
         50000000,

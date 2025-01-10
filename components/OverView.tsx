@@ -1,22 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoHome } from "react-icons/go";
-import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { IoIosPeople } from "react-icons/io";
-import { MdOutlineAddCircle } from "react-icons/md";
 import { IoPersonOutline } from "react-icons/io5";
-import { IoNotifications } from "react-icons/io5";
 import { IoMdHelpCircleOutline } from "react-icons/io";
-import { IoMdLogOut } from "react-icons/io";
-import { BriefcaseBusiness, School } from "lucide-react";
-import { getLoggedInUser, logoutUser } from "@/lib/actions/user.actions";
+import { Bell, BriefcaseBusiness, CirclePlus, GraduationCap, LogOut, School } from "lucide-react";
+import { logoutUser } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
 import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
+import { UserContext } from "@/context/UserContext";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -28,17 +25,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const router = useRouter();
   const pathname = usePathname(); // Get the current path
   const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
-  const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const loggedInUser = await getLoggedInUser(); // Fetch logged in user
-      setUser(loggedInUser);
-    };
-    fetchUser();
-  }, []);
+  const { user } = useContext(UserContext);
+
+  const isCoursesPage = /^\/dashboard\/courses\/[^/]+$/.test(pathname);
 
   // Function to open the modal
   const openModal = () => {
@@ -63,7 +55,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    linkName: string,
+    linkName: string
   ) => {
     if (notAuthorizedLinks.includes(linkName)) {
       e.preventDefault();
@@ -77,93 +69,118 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   };
 
   const getLinkClassName = (href: string) =>
-    `flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] ${
+    `${
       pathname === href ? "text-green-500 font-bold" : ""
-    }`;
+    } text-lg cursor-pointer hover:text-[#37BB65]`;
 
   return (
     <div className="flex">
-      <div className="hidden md:flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
-        <div className="flex flex-col space-y-2">
-          <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
+      <div className="hidden md:flex h-screen flex-col justify-between bg-white text-black py-20 items-center rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 lg:w-[250px] w-[100px]">
+      <div className="flex flex-col justify-center space-y-12 items-center">
+        <div className={`${"flex flex-col space-y-2 mb-10"}`}>
+          {!isCoursesPage && (
+            <p className="text-lg text-black/50">Overview</p>
+          )}
           <div className="flex flex-col space-y-2">
-            <Link href="/dashboard" className={getLinkClassName("/dashboard")}>
-              <GoHome size={24} />
-              <p className="text-base hidden lg:block">Home</p>
+            <Link href="/dashboard" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+              <GoHome className={getLinkClassName('/dashboard')} size={24} />
+              {!isCoursesPage && (
+                <p className={getLinkClassName('/dashboard')}>Home</p>
+              )}
             </Link>
             <Link
-              href="/courses"
+              href="/dashboard/courses"
               className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
-              onClick={() => getLinkClassName("/courses")}
             >
-              <HiMiniClipboardDocumentList size={24} />
-              <p className="text-base hidden lg:block">Courses</p>
+              <GraduationCap className={getLinkClassName('/dashboard/courses')} size={24} />
+              {!isCoursesPage && (
+                <p className={getLinkClassName('/dashboard/courses')}>Courses</p>
+              )}
             </Link>
             <Link
-              href="/community"
-              className={getLinkClassName("/community")}
+              href="/dashboard/community"
+              className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
               onClick={(e) => handleLinkClick(e, "Community")}
             >
-              <IoIosPeople size={24} />
-              <p className="text-base hidden lg:block">Community</p>
+              <IoIosPeople className={getLinkClassName('/dashboard/community')} size={24} />
+              {!isCoursesPage && (
+                <p className={getLinkClassName('/dashboard/community')}>Community</p>
+              )}
             </Link>
-            <button onClick={openModal} className={getLinkClassName("/post")}>
-              <MdOutlineAddCircle size={24} />
-              <p className="text-base hidden lg:block">Post</p>
+            <button onClick={openModal} className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] p-0 bg-transparent">
+            <CirclePlus className={getLinkClassName('/posts')} size={24} />
+              {!isCoursesPage && (
+                <p className="text-lg">Post</p>
+              )}
             </button>
             <Link
-              href="/jobs"
-              className={getLinkClassName("/jobs")}
+              href="/dashboard/jobs"
+              className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
               onClick={(e) => handleLinkClick(e, "Job")}
             >
-              <BriefcaseBusiness size={24} />
-              <p className="text-base hidden lg:block">Job</p>
+              <BriefcaseBusiness className={getLinkClassName('/dashboard/jobs')} size={24} />
+              {!isCoursesPage && <p className={getLinkClassName('/dashboard/jobs')}>Job</p>}
             </Link>
             <Link
-              href="/scholarships"
-              className={getLinkClassName("/scholarships")}
+              href="/dashboard/scholarships"
+              className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
               onClick={(e) => handleLinkClick(e, "Scholarship")}
             >
-              <School size={24} />
-              <p className="text-base hidden lg:block">Scholarship</p>
+              <School className={getLinkClassName('/dashboard/scholarships')} size={24} />
+              {!isCoursesPage && (
+                <p className={getLinkClassName('/dashboard/scholarships')}>Scholarship</p>
+              )}
             </Link>
           </div>
         </div>
+
         <div className="flex flex-col space-y-2">
-          <p className="text-lg py-4 font-semibold hidden lg:block">Account</p>
-          <Link href="/profile" className={getLinkClassName("/profile")}>
-            <IoPersonOutline size={24} />
-            <p className="text-base hidden lg:block">Profile & settings</p>
+          {!isCoursesPage && <p className="text-lg text-black/50">Account</p>}
+          <Link href="/profile" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+            <IoPersonOutline className={getLinkClassName('/profile')} size={24} />
+            {!isCoursesPage && (
+              <p className={getLinkClassName('/profile')}>Profile & settings</p>
+            )}
           </Link>
           <Link
             href="/notifications"
-            className={getLinkClassName("/notifications")}
+            className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
           >
-            <IoNotifications size={24} />
-            <p className="text-base hidden lg:block">Notifications</p>
+            <Bell className={getLinkClassName('/notifications')} size={24} />
+            {!isCoursesPage && (
+              <p className={getLinkClassName('/notifications')}>Notifications</p>
+            )}
           </Link>
         </div>
+
+      </div>
         <div className="flex flex-col space-y-2">
-          <p className="text-lg py-2 font-semibold hidden lg:block">
-            Other features
-          </p>
-          <Link href="/help" className={getLinkClassName("/help")}>
-            <IoMdHelpCircleOutline size={24} />
-            <p className="text-base hidden lg:block">Help & support</p>
+          {!isCoursesPage && (
+            <p className="text-lg py-2 font-semibolg">
+              Other features
+            </p>
+          )}
+          <Link href="/help" className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]">
+            <IoMdHelpCircleOutline className={getLinkClassName('/help')} size={24} />
+            {!isCoursesPage && (
+              <p className={getLinkClassName('/help')}>Help & support</p>
+            )}
           </Link>
           <div
             className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
             onClick={handleLogout}
           >
-            <IoMdLogOut size={24} />
-            <p className="text-base hidden lg:block">Logout</p>
+            <LogOut size={24} />
+            {!isCoursesPage && (
+              <p className="text-lg">Logout</p>
+            )}
           </div>
         </div>
       </div>
       {/* Conditionally render the modal */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
             <CreatePost
               userId={user?.user_id || ""}
               onPostCreated={addNewPost}

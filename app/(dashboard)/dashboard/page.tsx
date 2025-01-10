@@ -1,11 +1,13 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import Community from "@/components/communty";
-import PersonSidebar from "@/components/PersonSidebar";
 import ShareSomething from "@/components/ShareSomething";
 import { BriefcaseBusiness, School } from "lucide-react";
 import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { MdOutlineAddCircle } from "react-icons/md";
+
+const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
 
 function Dashboard() {
   return (
@@ -16,7 +18,7 @@ function Dashboard() {
       </div>
 
       {/* Sidebar for larger screens */}
-      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4">
+      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4 my-6">
         <PersonSidebar />
         <Community />
       </div>

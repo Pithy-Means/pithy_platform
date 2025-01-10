@@ -23,7 +23,7 @@ export default async function createPostCourseAnswerCollection() {
     databases.createStringAttribute(
       db,
       postCourseAnswerCollection,
-      "post_course_answer_id",
+      "post_course_question_id",
       100,
       true,
     ),
@@ -37,14 +37,7 @@ export default async function createPostCourseAnswerCollection() {
     databases.createStringAttribute(
       db,
       postCourseAnswerCollection,
-      "course_id",
-      100,
-      true,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCourseAnswerCollection,
-      "question_id",
+      "answer_id",
       100,
       true,
     ),
