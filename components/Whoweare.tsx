@@ -33,7 +33,7 @@ const Whoweare = () => {
                   </p>
                 </div>
                 <div className="flex space-x-2 items-center">
-                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1 xl:h-2 xl:w-2 4k:h-4 4k:w-4 xl:w-2 xl:p-1 4k:p-2"></div>
+                  <div className="border-2 border-[#5AC35A] rotate-45 p-0.5 h-1 w-1 xl:h-2 4k:h-4 4k:w-4 xl:w-2 xl:p-1 4k:p-2"></div>
                   <p className="capitalize text-black text-base md:text-lg lg:text-xl xl:text-xl 4k:text-5xl">
                     Explore suitable career and business paths
                   </p>
