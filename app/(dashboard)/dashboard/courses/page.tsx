@@ -1,11 +1,13 @@
-import React from "react";
+import React, { Suspense } from "react";
 import CourseView from "@/components/courseView";
 
 const page = () => {
   return (
     <div className="flex h-screen">
       <div className="w-full">
-        <CourseView />
+        <Suspense fallback={<div>Loading...</div>}>
+          <CourseView />
+        </Suspense>
       </div>
     </div>
   );
