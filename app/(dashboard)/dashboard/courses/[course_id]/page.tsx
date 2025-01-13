@@ -1,17 +1,19 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Courses } from "@/types/schema";
 import ModuleForm from "@/components/ModuleForm"; // Import ModuleForm
 import ModulesPage from "@/components/ModulePage";
 import { Button } from "@/components/ui/button";
+import { UserContext } from "@/context/UserContext";
 
 const CourseDetail = () => {
   const { course_id } = useParams(); // Get the course_id from the URL
   const [course, setCourse] = useState<Courses | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal visibility
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     if (course_id) {
@@ -48,13 +50,16 @@ const CourseDetail = () => {
         <>
           <>
             {/* Button to open the Create Module modal */}
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Create Module
-            </Button>
+            {user?.role === "admin" && (
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
+              >
+                Create Module
+              </Button>
+            )}
 
+            {/* Modal to create a new module */}
             {isModalOpen && (
               <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                 <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
