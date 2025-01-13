@@ -77,8 +77,6 @@ export const login = async ({ email, password }: LoginInfo) => {
 
     // fetch the user information using the session token
     const user = await getUserInfo({ userId: session.userId });
-    console.log("User", user);
-
     if (!user) {
       throw new Error("User information could not be retrieved");
     }
@@ -108,47 +106,10 @@ export const login = async ({ email, password }: LoginInfo) => {
 // Gets the current session details
 export const getSession = async () => {
   try {
-    // Get the session token from the cookie
-    const sessionId = cookies().get("authToken")?.value; // Get the session token from the cookie
-    // console.log('Retrieved session ID from cookie:', sessionId);
-    if (!sessionId) {
-      throw new Error("Session token not found");
-    }
-
-    // // Validate the session token format using a regular expression
-    // const validSessionIdPattern = /^[a-zA-Z0-9_]{1,36}$/;
-    // if (!validSessionIdPattern.test(sessionId)) {
-    //   throw new Error("Invalid session ID format. It must be alphanumeric and at most 36 characters, without leading underscores.");
-    // }
-
-    // // Ensure session ID does not start with an underscore
-    if (sessionId[0] === "_") {
-      throw new Error("Session ID cannot start with an underscore.");
-    }
-
-    // Create a new Appwrite client
-    // if (typeof localStorage === "undefined") {
-    //   throw new Error("localStorage is not available in this environment");
-    // }
-
-    // // Get the session token from localStorage
-    // const token = localStorage.getItem("authToken");
-    // if (!token) {
-    //   throw new Error("Session token not found");
-    // }
-    // Create a new Appwrite client
     const { account } = await createSessionClient();
-
-    // Attach the session token to the client
-    // account.client.setSession(sessionId); // Set the session token
-
-    // Get the session details using the token
     const session = await account.get();
-    console.log("Session details:", session);
-    // return parseStringify(session);  // Return the session details
-    return session; // Return the session details
+    return parseStringify(session);
   } catch (error) {
-    console.error("Error getting session:", error);
     return null;
   }
 };
@@ -158,17 +119,8 @@ export const logoutUser = async () => {
     const { account } = await createSessionClient();
 
     // Delete all Appwrite sessions
+    cookies().delete("my-session"); // Clear the session token cookie
     await account.deleteSessions();
-    cookies().set("authToken", "", {
-      path: "/",
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: "strict",
-      maxAge: 0,
-    }); // Clear the session token cookie
-    // cookies().delete("authToken");
-    // await account.deleteSessions();
-
     console.log("User logged out successfully");
   } catch (error) {
     console.error("Error logging out user:", error);
@@ -312,14 +264,11 @@ export const updateUserSession = async () => {
 };
 
 export const getLoggedInUser = async () => {
-  console.log("Getting logged in user..."); // Debugging
   try {
-    const { account } = await createSessionClient();
-    const response = await account.get();
+    const response = await getSession();
     const user = await getUserInfo({ userId: response.$id });
     return parseStringify(user);
   } catch (error) {
-    console.error("Error in getLoggedInUser:", error);
     return null;
   }
 };
@@ -694,7 +643,6 @@ export const getCourse = async (courseId: string) => {
 
 export const createJob = async (job: Job) => {
   const { job_id } = job;
-  const now = new Date().toISOString();
   const validJobId = generateValidPostId(job_id);
 
   console.log("Creating job", job);
@@ -713,8 +661,6 @@ export const createJob = async (job: Job) => {
         ...job,
         user_id: job.user_id,
         job_id: validJobId,
-        created_at: now,
-        updated_at: now, // Fixed typo (was `update_at`)
       }
     );
 
@@ -725,6 +671,26 @@ export const createJob = async (job: Job) => {
     throw new Error((error as Error).message || "Failed to create job");
   }
 };
+
+export const getJobs = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const jobs = await databases.listDocuments(db, jobCollection);
+    return parseStringify(jobs);
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+  }
+};
+
+export const getJob = async (jobId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const job = await databases.getDocument(db, jobCollection, jobId);
+    return parseStringify(job);
+  } catch (error) {
+    console.error("Error fetching job:", error);
+  }
+}
 
 export const getModules = async () => {
   try {
