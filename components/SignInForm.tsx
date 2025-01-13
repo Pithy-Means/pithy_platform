@@ -53,7 +53,7 @@ const SignInForm = () => {
       const response = await login(formdata as LoginInfo);
 
       if (response.success) {
-        setUser(response.data); // Save user info in Zustand store
+        setUser(response.data?.user); // Save user info in Zustand store
         router.push("/dashboard");
       } else {
         setErrorMessage(response.message ?? "An unknown error occurred.");
