@@ -23,10 +23,6 @@ export default function ModulesPage() {
 
   useEffect(() => {
     const fetchModules = async () => {
-      if (!user) {
-        router.push("/signIn");
-        return;
-      }
       try {
         const response = await fetch("/api/get-modules", { method: "GET" });
         if (!response.ok) {
@@ -69,7 +65,7 @@ export default function ModulesPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 p-6 lg:p-12">
+    <div className="flex flex-col lg:flex-row gap-8 p-6 lg:p-12 w-full">
       {/* Main Content - Active Module */}
       {modules[activeModuleIndex] && (
         <div className="flex-1">
