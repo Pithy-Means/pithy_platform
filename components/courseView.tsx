@@ -18,29 +18,32 @@ const CourseView: React.FC = () => {
   const router = useRouter();
   const { user } = useContext(UserContext);
 
+  // Fetch courses from the API
   const fetchCourses = async () => {
     setLoading(true);
     try {
-      const data = await fetch("/api/get-courses", { method: "GET" });
-      const response = await data.json();
-      console.log("Courses:", response.data);
-      setCourses(response.data);
+      const response = await fetch("/api/get-courses", { method: "GET" });
+      const data = await response.json();
+      if (!response.ok || !data?.data) {
+        throw new Error(data?.message || "Failed to fetch courses.");
+      }
+      setCourses(data.data);
     } catch (error) {
-      console.error("Error fetching courses:", error);
-      setError("Error fetching courses");
+      setError((error as Error).message || "Error fetching courses");
     } finally {
       setLoading(false);
     }
   };
 
+  // Fetch courses once when the component mounts
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, []); // Empty dependency array ensures it's called only on mount
 
   return (
-    <div className="w-full min-h-screen">
+    <div className="w-full h-full">
       {/* Header Section */}
-      <div className="w-[calc(100vw-410px)] py-8 px-16">
+      <div className="w-[calc(100vw-210px)] p-16 ">
         <div className="flex justify-between items-center">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
@@ -64,6 +67,7 @@ const CourseView: React.FC = () => {
         </div>
       </div>
 
+      {/* Admin and User Welcome Section */}
       <div className="flex justify-end items-center">
         <p className="text-gray-800 text-lg px-16">
           Welcome: <span className="font-bold">{user?.firstname}</span>
@@ -89,7 +93,7 @@ const CourseView: React.FC = () => {
             <p className="text-red-600">{error}</p>
           </div>
         ) : layout === "grid" ? (
-          <CourseCard courses={courses} />
+          <CourseCard selectedCourse={courses} />
         ) : (
           <CourseList courses={courses} />
         )}
