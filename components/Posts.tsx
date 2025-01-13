@@ -106,7 +106,6 @@ const Posts = () => {
   };
 
   const { user } = useContext(UserContext);
-  console.log("User,:", user);
 
   usePostInitialization(
     fetchedPosts,
