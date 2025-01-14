@@ -42,7 +42,7 @@ const FreqAskeQuestion = () => {
                 <ArrowLeft size={16} className="md:text-xl"/>
               </div>
             </div>
-            <p className="text-black capitalize lg:text-base text-[12px] md:text-lg">
+            <p className="text-black capitalize text-lg">
               Pithy means is career and business assessment platform helping
               students, professionals, and business adventurers find their most
               suitable study, professional, or business areas.
@@ -50,15 +50,15 @@ const FreqAskeQuestion = () => {
           </Card>
 
           <Card className="bg-white pt-5 px-5 row-span-1/2 hidden lg:block">
-            <div className="flex justify-between py-1">
-              <h3 className="lg:text-xl md:text-xl text-lg text-black capitalize font-extrabold">
+            <div className="flex justify-between py-2 items-center">
+              <h3 className="lg:text-xl md:text-xl text-[14px] text-black capitalize font-extrabold">
                 how does pithy means work?
               </h3>
-              <div className="bg-[#5AC35A] rounded-full">
-                <ArrowLeft />
+              <div className="lg:bg-[#5AC35A] lg:p-1 p-0 lg:rounded-full rounded-none bg-none">
+                <ArrowLeft size={16} className="md:text-xl"/>
               </div>
             </div>
-            <p className="text-black capitalize md:text-lg">
+            <p className="text-black capitalize text-lg">
               Take our online assessment, receive personalized results, and
               explore suitable career and business paths.
             </p>

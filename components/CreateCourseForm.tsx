@@ -1,10 +1,17 @@
 "use client";
 
-import { getLoggedInUser } from "@/lib/actions/user.actions";
-import { Courses, UserInfo } from "@/types/schema";
-import React, { useEffect, useState } from "react";
+import {useCreateCourse} from "@/lib/hooks/useCreateCourse"
+import { Courses } from "@/types/schema";
+import React, { useContext, useEffect, useState } from "react";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
+import { Button } from "./ui/button";
+import { UserContext } from "@/context/UserContext";
+
 
 const CreateCourseForm = () => {
+  const { user } = useContext(UserContext); // Use the hook
   const [course, setCourse] = useState<Courses>({
     course_id: "",
     user_id: "", // You should set this based on the logged-in user's ID
@@ -12,34 +19,21 @@ const CreateCourseForm = () => {
     description: "",
     price: 0,
     duration: "",
-    image: '',
+    image: "",
     requirements: "",
-    students: "",
+    students: [],
+    categories: "",
   });
 
-  const [user, setUser] = useState<UserInfo | null>(null);
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
-    const getUser = async () => {
-      try {
-        const loggedUser = await getLoggedInUser();
-        setUser(loggedUser);
-
+    if ( course.user_id ) {
         // Update the user_id in the course object
         setCourse((prevCourse) => ({
           ...prevCourse,
-          user_id: loggedUser?.$id,
+          user_id: user?.user_id || "",
         }));
-      } catch (error) {
-        console.log('Error fetching user:', error);
-      }
     };
-    getUser();    
-  }, [])
-  
+  }, [course.user_id, user?.user_id]);
 
   // Handle file change (image file)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,10 +57,9 @@ const CreateCourseForm = () => {
     }
   };
 
-
   // Handle input changes
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setCourse((prevCourse) => ({
@@ -75,72 +68,51 @@ const CreateCourseForm = () => {
     }));
   };
 
+  const { handleSubmit, loading, error } = useCreateCourse();
+
   // Submit form to the backend
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleData = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
     try {
-      // Ensure the user is logged in
-      if (!course.user_id) {
-        throw new Error("User not logged in");
-      }
-      const response = await fetch("/api/create-course", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(course),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
-      const result = await response.json();
-
-      console.log("Course created:", result);
-      // Reset the form
+      await handleSubmit(course);
       setCourse({
-        course_id: "",
-        user_id: user?.user_id || "",
-        title: "",
-        description: "",
+        course_id: '',
+        user_id: course.user_id,
+        title: '',
+        description: '',
         price: 0,
-        duration: "",
-        image: "",
-        requirements: "",
-        students: "",
+        duration: '',
+        image: '',
+        requirements: '',
+        students: [],
+        categories: ''
       });
-      return result;
-    } catch (err) {
-      console.error("Error creating course:", err);
-      setError("Failed to create course. Please try again later.");
-    } finally {
-      setLoading(false);
+    } catch (err: unknown) {
+      console.error("Failed to create course:", err);
     }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
-      className="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md"
+      onSubmit={handleData}
+      className="w-full bg-white p-6 rounded-lg shadow-md"
     >
       <h1 className="text-2xl font-bold mb-6 text-gray-800">
         Create a New Course
       </h1>
-      {user && <p className="text-sm text-gray-600 mb-4">Logged in as: {user.email}</p>}
+      {user && (
+        <p className="text-sm text-gray-600 mb-4">Logged in as: {user.email}</p>
+      )}
 
       {/* Course Title */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="title"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Course Title
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="title"
           name="title"
@@ -153,13 +125,13 @@ const CreateCourseForm = () => {
 
       {/* Course Description */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="description"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Course Description
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="description"
           name="description"
           value={course.description}
@@ -171,13 +143,13 @@ const CreateCourseForm = () => {
 
       {/* Course Price */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="price"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Course Price
-        </label>
-        <input
+        </Label>
+        <Input
           type="number"
           id="price"
           name="price"
@@ -190,13 +162,13 @@ const CreateCourseForm = () => {
 
       {/* Course Duration */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="duration"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Course Duration
-        </label>
-        <input
+        </Label>
+        <Input
           type="text"
           id="duration"
           name="duration"
@@ -209,13 +181,13 @@ const CreateCourseForm = () => {
 
       {/* Course image */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="image"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Course image
-        </label>
-        <input
+        </Label>
+        <Input
           type="file"
           id="image"
           name="image"
@@ -228,13 +200,13 @@ const CreateCourseForm = () => {
 
       {/* Requirements */}
       <div className="mb-4">
-        <label
+        <Label
           htmlFor="requirements"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
           Requirements (Optional)
-        </label>
-        <textarea
+        </Label>
+        <Textarea
           id="requirements"
           name="requirements"
           value={course.requirements}
@@ -243,19 +215,67 @@ const CreateCourseForm = () => {
         />
       </div>
 
+      <div className="mb-4">
+      <Label
+          htmlFor="Category"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
+          Requirements (Optional)
+        </Label>
+        <select
+          id="categories"
+          name="categories"
+          value={course.categories}
+          onChange={handleInputChange}
+          className="w-full p-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        >
+          <option value="student">Student</option>
+          <option value="professional">Job Seeker</option>
+          <option value="business">Owner</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
       {/* Submit Button */}
       <div className="flex items-center justify-between">
-        <button
-          type="submit"
-          disabled={loading}
-          className={`px-4 py-2 text-white font-semibold rounded-md ${
-            loading
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
-          }`}
-        >
-          {loading ? "Creating Course..." : "Create Course"}
-        </button>
+      <Button
+        type="submit"
+        disabled={loading}
+        className={`px-4 py-2 text-white font-semibold rounded-md ${
+          loading
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
+        }`}
+      >
+        {loading ? (
+          <div className="flex items-center">
+            <span>Creating Course...</span>
+            <svg
+              className="animate-spin h-5 w-5 ml-2 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+              ></path>
+            </svg>
+          </div>
+        ) : (
+          "Create Course"
+        )}
+      </Button>
+
       </div>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}

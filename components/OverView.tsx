@@ -1,22 +1,27 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
-import { HiMiniClipboardDocumentList } from "react-icons/hi2";
-import { IoIosPeople } from "react-icons/io";
-import { MdOutlineAddCircle } from "react-icons/md";
 import { IoPersonOutline } from "react-icons/io5";
-import { IoNotifications } from "react-icons/io5";
-import { IoMdHelpCircleOutline } from "react-icons/io";
-import { IoMdLogOut } from "react-icons/io";
-import { BriefcaseBusiness, School } from "lucide-react";
-import { getLoggedInUser, logoutUser } from "@/lib/actions/user.actions";
-import { useRouter } from "next/navigation";
+import { IoIosPeople, IoMdHelpCircleOutline } from "react-icons/io";
+import {
+  Bell,
+  BriefcaseBusiness,
+  CirclePlus,
+  GraduationCap,
+  LogOut,
+  School,
+} from "lucide-react";
+import { logoutUser } from "@/lib/actions/user.actions";
 import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
+import { UserContext } from "@/context/UserContext";
+import { Button } from "./ui/button";
+import ProfilePage from "./ProfilePage";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -24,51 +29,39 @@ interface OverViewProps {
 }
 
 const OverView: React.FC<OverViewProps> = ({ children }) => {
-  const [isCoursesModalOpen, setCoursesModalOpen] = useState(false); // State for Courses modal
+  const [isCoursesModalOpen, setCoursesModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const openProfileModal = () => setIsProfileModalOpen(true);
+  const closeProfileModal = () => setIsProfileModalOpen(false);
+
+  const { user } = useContext(UserContext);
+
   const router = useRouter();
-  const pathname = usePathname(); // Get the current path
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to handle modal visibility
-  const [user, setUser] = useState<{ user_id: string } | null>(null); // State to store logged in user
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [posts, setPosts] = useState<PostWithUser[]>([]); // State to store posts
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      const loggedInUser = await getLoggedInUser(); // Fetch logged in user
-      setUser(loggedInUser);
-    };
-    fetchUser();
-  }, []);
-
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  // Function to add a new post to the state
-  const addNewPost = (newPost: PostWithUser) => {
-    setPosts((prevPosts) => {
-      console.log("Previous posts:", prevPosts); // Debugging line
-      return [newPost, ...(Array.isArray(prevPosts) ? prevPosts : [])];
-    });
-    closeModal(); // Close the modal after adding the post
-  };
+  const isCoursesPage = /^\/dashboard\/courses\/[^/]+$/.test(pathname);
 
   const notAuthorizedLinks = ["Community", "Scholarship"];
 
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    linkName: string,
+    linkName: string
   ) => {
     if (notAuthorizedLinks.includes(linkName)) {
       e.preventDefault();
       alert(`You are not authorized to access "${linkName}"`);
     }
+  };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const addNewPost = (newPost: PostWithUser) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+    closeModal();
   };
 
   const handleLogout = async () => {
@@ -77,93 +70,132 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   };
 
   const getLinkClassName = (href: string) =>
-    `flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] ${
-      pathname === href ? "text-green-500 font-bold" : ""
-    }`;
+    `${pathname === href ? "text-green-500 font-bold" : ""} text-lg cursor-pointer`;
 
   return (
-    <div className="flex">
-      <div className="hidden md:flex flex-col space-y-4 bg-white text-black py-4 items-center rounded-tr-xl mt-6 shadow-lg shadow-black lg:w-[250px] w-[100px]">
-        <div className="flex flex-col space-y-2">
-          <p className="text-lg py-4 font-semibold hidden lg:block">Overview</p>
+    <div className="flex space-x-3 pr-8">
+      <div className="hidden md:flex h-screen flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 w-[250px]">
+        <div className="flex flex-col space-y-12">
+          <div className="flex flex-col space-y-2 mb-10">
+            {!isCoursesPage && (
+              <p className="text-lg text-black/50 lg:block hidden">Overview</p>
+            )}
+            <div className="flex flex-col space-y-2">
+              {[
+                { href: "/dashboard", icon: GoHome, label: "Home" },
+                {
+                  href: "/dashboard/courses",
+                  icon: GraduationCap,
+                  label: "Courses",
+                },
+                {
+                  href: "/dashboard/community",
+                  icon: IoIosPeople,
+                  label: "Community",
+                  restricted: true,
+                },
+                {
+                  href: "/dashboard/jobs",
+                  icon: BriefcaseBusiness,
+                  label: "Job",
+                },
+                {
+                  href: "/dashboard/scholarships",
+                  icon: School,
+                  label: "Scholarship",
+                },
+                {
+                  href: "/dashboard/fundings",
+                  icon: CirclePlus,
+                  label: "Funding",
+                },
+              ].map(({ href, icon: Icon, label, restricted }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={(e) => restricted && handleLinkClick(e, label)}
+                  className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
+                >
+                  <Icon className={getLinkClassName(href)} size={24} />
+                  {!isCoursesPage && (
+                    <p className={`${getLinkClassName(href)} lg:block hidden`}>
+                      {label}
+                    </p>
+                  )}
+                </Link>
+              ))}
+              <button
+                onClick={openModal}
+                className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] p-0 bg-transparent"
+              >
+                <CirclePlus className={getLinkClassName("/posts")} size={24} />
+                {!isCoursesPage && (
+                  <p className="text-lg lg:block hidden">Post</p>
+                )}
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col space-y-2">
-            <Link href="/dashboard" className={getLinkClassName("/dashboard")}>
-              <GoHome size={24} />
-              <p className="text-base hidden lg:block">Home</p>
-            </Link>
-            <Link
-              href="/courses"
-              className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65]"
-              onClick={() => getLinkClassName("/courses")}
-            >
-              <HiMiniClipboardDocumentList size={24} />
-              <p className="text-base hidden lg:block">Courses</p>
-            </Link>
-            <Link
-              href="/community"
-              className={getLinkClassName("/community")}
-              onClick={(e) => handleLinkClick(e, "Community")}
-            >
-              <IoIosPeople size={24} />
-              <p className="text-base hidden lg:block">Community</p>
-            </Link>
-            <button onClick={openModal} className={getLinkClassName("/post")}>
-              <MdOutlineAddCircle size={24} />
-              <p className="text-base hidden lg:block">Post</p>
+            {!isCoursesPage && (
+              <p className="text-lg text-black/50 lg:block hidden">Account</p>
+            )}
+            <button onClick={openProfileModal} className="flex flex-row gap-3 items-center">
+              <IoPersonOutline
+                className={getLinkClassName("/profile")}
+                size={24}
+              />
+              {!isCoursesPage && (
+                <p
+                  className={`${getLinkClassName("/profile")} lg:block hidden`}
+                >
+                  Profile & settings
+                </p>
+              )}
             </button>
             <Link
-              href="/jobs"
-              className={getLinkClassName("/jobs")}
-              onClick={(e) => handleLinkClick(e, "Job")}
+              href="/notifications"
+              className="flex flex-row gap-3 items-center"
             >
-              <BriefcaseBusiness size={24} />
-              <p className="text-base hidden lg:block">Job</p>
-            </Link>
-            <Link
-              href="/scholarships"
-              className={getLinkClassName("/scholarships")}
-              onClick={(e) => handleLinkClick(e, "Scholarship")}
-            >
-              <School size={24} />
-              <p className="text-base hidden lg:block">Scholarship</p>
+              <Bell className={getLinkClassName("/notifications")} size={24} />
+              {!isCoursesPage && (
+                <p
+                  className={`${getLinkClassName("/notifications")} lg:block hidden`}
+                >
+                  Notifications
+                </p>
+              )}
             </Link>
           </div>
         </div>
+
         <div className="flex flex-col space-y-2">
-          <p className="text-lg py-4 font-semibold hidden lg:block">Account</p>
-          <Link href="/profile" className={getLinkClassName("/profile")}>
-            <IoPersonOutline size={24} />
-            <p className="text-base hidden lg:block">Profile & settings</p>
-          </Link>
-          <Link
-            href="/notifications"
-            className={getLinkClassName("/notifications")}
-          >
-            <IoNotifications size={24} />
-            <p className="text-base hidden lg:block">Notifications</p>
-          </Link>
-        </div>
-        <div className="flex flex-col space-y-2">
-          <p className="text-lg py-2 font-semibold hidden lg:block">
-            Other features
-          </p>
-          <Link href="/help" className={getLinkClassName("/help")}>
-            <IoMdHelpCircleOutline size={24} />
-            <p className="text-base hidden lg:block">Help & support</p>
+          <Link href="/help" className="flex flex-row gap-3 items-center">
+            <IoMdHelpCircleOutline
+              className={getLinkClassName("/help")}
+              size={24}
+            />
+            {!isCoursesPage && (
+              <p className={`${getLinkClassName("/help")} lg:block hidden`}>
+                Help & support
+              </p>
+            )}
           </Link>
           <div
-            className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
             onClick={handleLogout}
+            className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
           >
-            <IoMdLogOut size={24} />
-            <p className="text-base hidden lg:block">Logout</p>
+            <LogOut size={24} />
+            {!isCoursesPage && (
+              <p className="text-lg lg:block hidden">Logout</p>
+            )}
           </div>
         </div>
       </div>
-      {/* Conditionally render the modal */}
+
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
+          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
             <CreatePost
               userId={user?.user_id || ""}
               onPostCreated={addNewPost}
@@ -178,7 +210,21 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Profile Modal */}
+      {isProfileModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
+          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
+            <ProfilePage />
+            <button
+              onClick={closeProfileModal}
+              className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
       <ModalComp
         isOpen={isCoursesModalOpen}
         onClose={() => setCoursesModalOpen(false)}

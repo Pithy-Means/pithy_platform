@@ -122,7 +122,7 @@ export type PostWithUser = Post & {
 
 // Define the type for the CommentPost collection
 export interface CommentPost {
-  user_id: string; // Unique ID of the user who made the comment
+  userid: string; // Unique ID of the user who made the comment
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters
@@ -156,19 +156,43 @@ export type FormDataState =
       });
 
 export interface PaymentData {
+  status?: string;
+  user_id?: string;
+  payment_id?: string;
   amount: number;
-  currency: string;
+  currency?: string;
   tx_ref: string;
-  email: string;
-  phone_number: string;
-  network: string;
+  email?: string;
+  phone_number?: string;
+  network?: string;
+  redirect_url?: string;
+  voucher?: string;
+  course_choice?: string;
 }
 
 export interface PaymentResponse {
   status: string;
   message: string;
   redirect?: string;
-  tx_ref?: string;
+  data?: FlutterwaveWebhookData;
+}
+
+export type FlutterwaveWebhookData = {
+  id: number;
+  tx_ref: string;
+  status: Status;
+  message: string;
+  amount: number;
+  currency: string;
+  customer: UserInfo;
+};
+
+type Status = "success" | "error";
+
+export interface VerifyPaymentResponse {
+  status: 'success' | 'failed';
+  message?: string;
+  data?: PaymentData;
 }
 
 export interface CardPaymentData {
@@ -195,8 +219,11 @@ export type Courses = {
   duration: string; // Duration of the course (e.g., "2 hours", "3 weeks")
   image: string; // Optional: URL or path to the course image
   requirements?: string; // Optional: Prerequisites for the course
-  students?: string; // Optional: IDs or count of enrolled students
+  students?: string[]; // Array of student objects with name, email, and locked status
+  student_email?: string[]; // Array of student emails
+  categories?: string; // Optional: Category of the course (e.g., "Programming", "Design")
 };
+
 
 export type VideoFile = {
   vid: File;
@@ -207,16 +234,13 @@ export interface Job {
   job_id: string;
   user_id: string;
   job_title: string;
-  job_description?: string;
-  job_location?: string;
-  job_status: "open" | "closed";
-  job_experience: "entry" | "mid" | "senior";
-  job_education: "high_school" | "bachelor" | "master" | "phd";
-  job_employment: "full_time" | "part_time" | "contract" | "internship";
-  job_type: "remote" | "office" | "hybrid";
-  job_salary?: string;
-  created_at: string;
-  updated_at: string;
+  location_of_work: string;
+  job_description: string;
+  country_of_work: string;
+  job_earlier: string;
+  closing_date: string;
+  application_link: string;
+  employer: string;
 }
 
 type ModuleStatus = 'open' | 'closed';
@@ -230,4 +254,18 @@ export type Modules = {
   module_duration?: string;         // Optional: Duration of the module (e.g., "30 minutes")
   module_comment?: string;          // Optional: Any comments or notes about the module
   module_status?: ModuleStatus;     // Optional: Status of the module (either "open" or "closed")
+}
+
+export type PostCourseQuestion = {
+  post_course_question_id: string;
+  user_id: string;
+  question: string;
+  choices?: string[];
+}
+
+export type PostCourseQuestionAnswer = {
+  post_course_question_id: string;
+  username: string;
+  answer_id: string;
+  answer: string;
 }

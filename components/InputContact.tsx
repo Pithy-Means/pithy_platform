@@ -41,7 +41,7 @@ const InputContact: React.FC<InputContactProps> = ({
       setIsValid(!isNaN(Number(inputValue)));
     } else {
       // For text, tel, and password, check if the field is not empty
-      setIsValid(inputValue.trim() !== "");
+      setIsValid(inputValue !== "");
     }
 
     // Call the external onChange handler if provided

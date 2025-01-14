@@ -29,7 +29,6 @@ export const usePosts = () => {
           const user = await getUserInfo({ userId: payload.user_id });
           setPosts((prev) => [...prev, { ...payload, user }]);
         }
-
         if (events.includes("update")) {
           setPosts((prev) =>
             prev.map((post) =>

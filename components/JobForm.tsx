@@ -1,40 +1,30 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Job, UserInfo } from "@/types/schema"; // Assuming Job interface exists
-import { createJob, getLoggedInUser } from "@/lib/actions/user.actions"; // Assuming createJob function is exported
+import { useContext, useEffect, useState } from "react";
+import { Job } from "@/types/schema"; // Assuming Job interface exists
+import { createJob } from "@/lib/actions/user.actions"; // Assuming createJob function is exported
+import { UserContext } from "@/context/UserContext";
 
 const JobForm = () => {
+
   const [formData, setFormData] = useState<Job>({
     job_id: "",
-    user_id: "", // Set this dynamically based on the logged-in user
+    user_id: "",
     job_title: "",
     job_description: "",
-    job_location: "",
-    job_status: "open", // Default to "open"
-    job_experience: "entry", // Default to "entry"
-    job_education: "bachelor", // Default to "bachelor"
-    job_employment: "full_time", // Default to "full_time"
-    job_type: "remote", // Default to "remote"
-    job_salary: "",
-    created_at: "",
-    updated_at: "",
+    location_of_work: "",
+    employer: "",
+    job_earlier: "",
+    country_of_work: "",
+    closing_date: new Date().toISOString().split('T')[0],
+    application_link: ""
   });
 
-  const [user, setUser] = useState<UserInfo | null>(null); // Assuming UserInfo interface exists
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  // Fetch the logged-in user on component mount
-  useEffect(() => {
-    const fetchUser = async () => {
-      const userLogged = await getLoggedInUser();
-      setUser(userLogged); // Set the logged-in user in state
-    };
-
-    fetchUser();
-  }, []); // Only run on mount
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     // When the user data is fetched, update the formData with the user_id
@@ -48,12 +38,10 @@ const JobForm = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prevState: Job) => ({ ...prevState, [name]: value }));
-  };
-
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState: Job) => ({ ...prevState, [name]: value }));
+    setFormData((prevState: Job) => ({
+      ...prevState,
+      [name]: name === "closing_date" ? new Date(value).toISOString().split('T')[0] : value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -68,18 +56,29 @@ const JobForm = () => {
       }
 
       // Ensure user_id is set
-      const now = new Date().toISOString();
       setFormData((prevState: Job) => ({
         ...prevState,
         job_id: formData.job_id, // Assuming generateJobId is a function to generate job IDs
-        created_at: now,
-        updated_at: now,
+        user_id: user.user_id,
       }));
 
       // Create job document by calling the createJob function
       const createdJob = await createJob(formData);
-      setSuccess("Job created successfully!");
-      console.log("Created Job: ", createdJob);
+      if (createdJob) {
+        setSuccess("Job created successfully!");
+        setFormData({
+          job_id: "",
+          user_id: "",
+          job_title: "",
+          job_description: "",
+          location_of_work: "",
+          employer: "",
+          job_earlier: "",
+          country_of_work: "",
+          closing_date: new Date().toISOString().split('T')[0],
+          application_link: ""
+        });
+      }
     } catch (error) {
       setError("Failed to create job. Please try again.");
       console.error(error);
@@ -90,91 +89,114 @@ const JobForm = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-lg bg-white shadow-lg rounded-lg p-6">
+      <div className="w-full p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Create a Job</h2>
+        <div className="mb-4">
+          <p className="text-sm text-gray-600">Welcome, {user?.firstname}! Fill in the form below to create a job.</p>
+        </div>
+        {/* Job Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="job_title" className="block text-sm font-medium text-gray-700">Job Title</label>
+            <label htmlFor="job_title" className="block text-sm font-medium text-black">Job Title</label>
             <input
               id="job_title"
               name="job_title"
               placeholder="Job Title"
               value={formData.job_title}
               onChange={handleInputChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="job_description" className="block text-sm font-medium text-gray-700">Job Description</label>
+            <label htmlFor="job_description" className="block text-sm font-medium text-black">Job Description</label>
             <textarea
               id="job_description"
               name="job_description"
               placeholder="Job Description"
               value={formData.job_description}
               onChange={handleInputChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
               required
             />
           </div>
 
           <div>
-            <label htmlFor="job_location" className="block text-sm font-medium text-gray-700">Job Location</label>
+            <label htmlFor="location_of_work" className="block text-sm font-medium text-black">Location of Work</label>
             <input
               type="text"
-              id="job_location"
-              name="job_location"
-              placeholder="Job Location"
-              value={formData.job_location}
+              id="location_of_work"
+              name="location_of_work"
+              placeholder="Location of Work"
+              value={formData.location_of_work}
               onChange={handleInputChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label htmlFor="job_salary" className="block text-sm font-medium text-gray-700">Salary</label>
+            <label htmlFor="job_earlier" className="block text-sm font-medium text-black">Job Earlier</label>
             <input
               type="text"
-              id="job_salary"
-              name="job_salary"
-              placeholder="Salary"
-              value={formData.job_salary}
+              id="job_earlier"
+              name="job_earlier"
+              placeholder="Job Earlier"
+              value={formData.job_earlier}
               onChange={handleInputChange}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
 
-          <div className="flex justify-between">
-            <div>
-              <label htmlFor="job_type" className="block text-sm font-medium text-gray-700">Job Type</label>
-              <select
-                id="job_type"
-                name="job_type"
-                value={formData.job_type}
-                onChange={handleSelectChange}
-                className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="remote">Remote</option>
-                <option value="office">Office</option>
-                <option value="hybrid">Hybrid</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="country_of_work" className="block text-sm font-medium text-black">Country of Work</label>
+            <input
+              type="text"
+              id="country_of_work"
+              name="country_of_work"
+              placeholder="Country of Work"
+              value={formData.country_of_work}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
 
-            <div>
-              <label htmlFor="job_experience" className="block text-sm font-medium text-gray-700">Experience Level</label>
-              <select
-                id="job_experience"
-                name="job_experience"
-                value={formData.job_experience}
-                onChange={handleSelectChange}
-                className="w-full mt-1 p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-              >
-                <option value="entry">Entry</option>
-                <option value="mid">Mid</option>
-                <option value="senior">Senior</option>
-              </select>
-            </div>
+          <div>
+            <label htmlFor="employer" className="block text-sm font-medium text-black">Employer</label>
+            <input
+              type="text"
+              id="employer"
+              name="employer"
+              placeholder="Employer"
+              value={formData.employer}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="closing_date" className="block text-sm font-medium text-black">Closing Date</label>
+            <input
+              type="date"
+              id="closing_date"
+              name="closing_date"
+              value={formData.closing_date.toString().split('T')[0]}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="application_link" className="block text-sm font-medium text-black">Application Link</label>
+            <input
+              type="url"
+              id="application_link"
+              name="application_link"
+              placeholder="Application Link"
+              value={formData.application_link}
+              onChange={handleInputChange}
+              className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+            />
           </div>
 
           <button

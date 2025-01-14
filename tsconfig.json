@@ -9,6 +9,7 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "target": "ES2022",
     "esModuleInterop": true,
     "module": "esnext",
     "moduleResolution": "bundler",
@@ -33,7 +34,6 @@
       "history",
       "json-schema"
     ],
-    "target": "ES2017"
   },
   "include": [
     "next-env.d.ts",

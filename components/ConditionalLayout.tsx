@@ -15,8 +15,7 @@ const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <div>
-      {shouldDisplayNavbar ? <Navbar /> : null}  {/* Render nothing if not on the specified routes */}
-      {children}
+      {shouldDisplayNavbar ? <Navbar /> : null}  
       {/* Render nothing if not on the specified routes */}
       {children}
     </div>
