@@ -13,7 +13,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 const nextConfig = {
   reactStrictMode: true,  // keep react strict for better practices
-  swcMinify: true,  // No longer configurable
+  // swcMinify: true,  // No longer configurable
 
   webpack: (config) => {
     config.cache = {
