@@ -9,9 +9,9 @@ import { Button } from "./ui/button";
 
 const ShareSomething = () => {
   return (
-    <div className="flex flex-col w-full no-scrollbar max-h-screen">
+    <div className="flex flex-col w-full no-scrollbar  max-h-screen md:mt-2 justify-center">
       {/* Header Section */}
-      <div className="flex flex-col bg-white text-black px-6 justify-center rounded h-16 p-4 m-6">
+      <div className="flex flex-col bg-white text-black rounded h-16  sm:mx-4 mx-0">
         <div className="flex items-center w-full space-x-4">
           {/* Icon */}
           <CircleUserRound size={32} className="flex-shrink-0" />
@@ -20,7 +20,7 @@ const ShareSomething = () => {
           <input
             type="text"
             placeholder="Share something"
-            className="border-2 border-gray-300 rounded flex-1 py-1.5 px-4" 
+            className="border-2 border-gray-300 rounded flex-1 py-1.5 px-4 sm:w-fit " 
             value="" // Add the value property
             onChange={() => {}} // Open modal when the input is clicked
           />
@@ -33,7 +33,7 @@ const ShareSomething = () => {
       </div>
 
       {/* Scrollable Posts Section */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-6 h-full">
+      <div className="flex-1 space-y-auto no-scrollbar h-full  sm:px-2  sm:mt-10">
         <Posts />
       </div>
     </div>
