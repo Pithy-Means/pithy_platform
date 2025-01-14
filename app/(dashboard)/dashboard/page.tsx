@@ -15,18 +15,18 @@ function Dashboard() {
   return (
     <div className="flex space-x-4">
       {/* Main content area */}
-      <div className="w-full md:w-[calc(100vw-5rem)] lg:w-[calc(100vw-600px)]">
+      <div className="w-full lg:w-[calc(100vw-600px)] h-screen overflow-y-auto">
         <ShareSomething />
       </div>
 
       {/* Sidebar for larger screens */}
-      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4 my-6">
+      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4 my-6 lg:relative right-0 lg:top:40">
         <PersonSidebar />
         <Community />
       </div>
 
       {/* Fixed bottom bar for smaller screens */}
-      <div className="fixed left-0 bottom-0 h-20 w-full md:block lg:hidden bg-[#5AC35A] py-4 z-50">
+      <div className="fixed left-0 bottom-0 h-20 w-full sm:block md:hidden bg-[#5AC35A] py-4 sm:px-0">
         <div className="flex justify-around items-center text-white">
           <GoHome size={36} />
           <HiMiniClipboardDocumentList size={36} />
