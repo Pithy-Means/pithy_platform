@@ -1,6 +1,9 @@
 import { postAttachementBucket } from "../name";
 import { storage } from "./config";
 
+
+
+
 export default async function setupStorage() {
   try {
     // Get the bucket

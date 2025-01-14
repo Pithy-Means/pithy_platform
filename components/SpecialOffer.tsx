@@ -20,6 +20,7 @@ const SpecialOffer = () => {
             <div className="flex justify-between">
               <div className="pl-48 pt-10 text-black flex flex-col space-y-4">
                 <h1 className="text-3xl capitalize font-bold xl:text-4xl">
+              
                   special offer!
                 </h1>
                 <div>

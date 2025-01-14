@@ -123,6 +123,7 @@ export type PostWithUser = Post & {
 // Define the type for the CommentPost collection
 export interface CommentPost {
   userid: string; // Unique ID of the user who made the comment
+ 
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters

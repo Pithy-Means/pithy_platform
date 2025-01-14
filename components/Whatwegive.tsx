@@ -14,8 +14,8 @@ const Whatwegive = () => {
         <div className="hidden lg:flex space-x-2 items-center lg:w-2/3 ">
           <TitleDot title={"unlock your potential"}/>
           <TitleDot title={"future"} />
-          <div className="flex space-x-2 items-center">
-            <h1 className="text-xl sm:text-base md:text-lg lg:text-3xl text-black font-extrabold capitalize">
+          <div className="flex space-x-2 items-center ">
+            <h1 className="text-base  text-black font-extrabold capitalize lg:text-xl xl:text-xl 4k:text-5xl">
               finance with
             </h1>
             <div className="flex flex-col pt-[16px]">
@@ -28,7 +28,7 @@ const Whatwegive = () => {
                 width={150}
                 height={40}
                 priority
-                className="object-cover"
+                className="object-cover lg:w-28 lg:h-2 xl:w-34 xl:h-2 4k:w-44 4k:h-4"
               />
             </div>
           </div>
@@ -37,6 +37,7 @@ const Whatwegive = () => {
         {/* For smaller screens, show this */}
         <div className="flex lg:hidden flex-col space-y-4 items-center">
           <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
+          <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
             Unlock your potential
             <span className="mx-4 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
             Future
@@ -44,6 +45,7 @@ const Whatwegive = () => {
             Finance with
           </h1>
           <div className="flex flex-col">
+            <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase md:text-xl">
             <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase md:text-xl">
               Pithy means
             </h1>

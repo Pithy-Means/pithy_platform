@@ -27,6 +27,7 @@ export const createAdminClient = () => {
     .setProject(env.appwrite.projectId)
     .setKey(env.appwrite.apiKey);
   return {
+    client,
     get account() {
       return new Account(client);
     },

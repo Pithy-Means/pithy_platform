@@ -53,7 +53,7 @@ const Whoweare = () => {
               <p className="capitalize text-black text-base lg:text-lg">
                 A world where everyone thrives in their chosen path.
               </p>
-              <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
+              <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit text-base md:text-lg lg:text-xl xl-text-2xl 4k:text-5xl 4k:p-10 4k:mt-4">
                 Learn More
               </Button>
             </div>
