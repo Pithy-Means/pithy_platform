@@ -36,9 +36,11 @@ const FreqAskeQuestion = () => {
           <Card className="bg-white p-5">
             <div className="flex justify-between py-2 items-center">
               <h3 className="lg:text-xl md:text-xl text-[14px] text-black capitalize font-extrabold">
+              
                 what is pithy means?
               </h3>
               <div className="lg:bg-[#5AC35A] lg:p-1 p-0 lg:rounded-full rounded-none bg-none">
+                <ArrowLeft size={16} className="md:text-xl"/>
                 <ArrowLeft size={16} className="md:text-xl"/>
               </div>
             </div>
@@ -54,8 +56,8 @@ const FreqAskeQuestion = () => {
               <h3 className="lg:text-xl md:text-xl text-lg text-black capitalize font-extrabold">
                 how does pithy means work?
               </h3>
-              <div className="bg-[#5AC35A] rounded-full">
-                <ArrowLeft />
+              <div className="lg:bg-[#5AC35A] lg:p-1 p-0 lg:rounded-full rounded-none bg-none">
+                <ArrowLeft size={16} className="md:text-xl"/>
               </div>
             </div>
             <p className="text-black capitalize text-sm sm:text-base lg:text-lg">

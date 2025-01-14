@@ -8,7 +8,7 @@
     try {
       // Parse the request body
       const body = await req.json(); // Use req.json() to parse the body
-      const { tx_ref, amount, email, name, paymentId } = body;
+      const { tx_ref, amount, email, name, paymentId, course_choice } = body;
       const payId = generateValidPostId(paymentId);
 
       const response = await fetch("https://api.flutterwave.com/v3/payments", {
@@ -46,6 +46,7 @@
           amount,
           email,
           payment_id: payId,
+          course_choice,
           status: "pending",
         });
 

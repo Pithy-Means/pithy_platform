@@ -29,7 +29,7 @@ function DashboardContent({
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
         <TopNav user={user?.firstname} />
-        <main className="flex-1 p-4 bg-gray-50">{children}</main>
+        <main className="flex-1 px-4 bg-gray-50">{children}</main>
       </div>
     </div>
   );

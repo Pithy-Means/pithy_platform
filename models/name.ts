@@ -20,3 +20,7 @@ export const courseAttachementBucket = "course-attachments";
 export const postCommentCollection = "postComments";
 export const postLikeCollection = "postLikes";
 export const moduleCollection = "modules";
+export const commentJobsCollection = "commentJobs";
+export const fundingCollection = "fundings";
+export const commentFundingCollection = "commentFundings";
+export const commentScholarshipCollection = "commentScholarships";

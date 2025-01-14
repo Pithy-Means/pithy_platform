@@ -21,8 +21,8 @@ const CreateCourseForm = () => {
     duration: "",
     image: "",
     requirements: "",
-    students: "",
-    categories: "student",
+    students: [],
+    categories: "",
   });
 
   useEffect(() => {
@@ -84,7 +84,8 @@ const CreateCourseForm = () => {
         duration: '',
         image: '',
         requirements: '',
-        students: ''
+        students: [],
+        categories: ''
       });
     } catch (err: unknown) {
       console.error("Failed to create course:", err);

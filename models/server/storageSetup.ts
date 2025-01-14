@@ -1,23 +1,7 @@
 import { postAttachementBucket } from "../name";
 import { storage } from "./config";
 
-
-
-
 export default async function setupStorage() {
-  console.log(`Initializing storage setup for bucket: ${postAttachementBucket}`);
-
-  //Ensure admin client is fully initialized
-  // const adminClient = await createAdminClient();
-
-  // Wait for the storage to be initialized and available
-  // const storage = adminClient.storage;
-  // if (!storage) {
-  //   console.error("Failed to initialize storage");
-  //   return null;
-  // }
-  // console.log("Storage initialized successfully");
-
   try {
     // Get the bucket
     await storage.getBucket(postAttachementBucket);

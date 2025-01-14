@@ -167,6 +167,7 @@ export interface PaymentData {
   network?: string;
   redirect_url?: string;
   voucher?: string;
+  course_choice?: string;
 }
 
 export interface PaymentResponse {
@@ -218,12 +219,11 @@ export type Courses = {
   duration: string; // Duration of the course (e.g., "2 hours", "3 weeks")
   image: string; // Optional: URL or path to the course image
   requirements?: string; // Optional: Prerequisites for the course
-  students?: string; // Optional: IDs or count of enrolled students
-  locked?: boolean; // Optional: Indicates if the course is locked or not
-  categories?: CourseCategory; // Optional: Category of the course
+  students?: string[]; // Array of student objects with name, email, and locked status
+  student_email?: string[]; // Array of student emails
+  categories?: string; // Optional: Category of the course (e.g., "Programming", "Design")
 };
 
-type CourseCategory = "student" | "job seeker" | "owner" | "other";
 
 export type VideoFile = {
   vid: File;
@@ -234,16 +234,13 @@ export interface Job {
   job_id: string;
   user_id: string;
   job_title: string;
-  job_description?: string;
-  job_location?: string;
-  job_status: "open" | "closed";
-  job_experience: "entry" | "mid" | "senior";
-  job_education: "high_school" | "bachelor" | "master" | "phd";
-  job_employment: "full_time" | "part_time" | "contract" | "internship";
-  job_type: "remote" | "office" | "hybrid";
-  job_salary?: string;
-  created_at: string;
-  updated_at: string;
+  location_of_work: string;
+  job_description: string;
+  country_of_work: string;
+  job_earlier: string;
+  closing_date: string;
+  application_link: string;
+  employer: string;
 }
 
 type ModuleStatus = 'open' | 'closed';

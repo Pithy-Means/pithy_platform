@@ -6,7 +6,7 @@ const DiscoverFit = () => {
   return (
     <div className="flex flex-col bg-white p-6 md:p-10  w-full ">
       <div className="text-black">
-        <div className="sm:text-center lg:text-start md:text-start">
+        <div className="sm:text-center text-start">
           <TitleDot title={"Discover Your Perfect Fit"} />
           <p className="md:block hideen lg:text-lg text-sm sm:text-base md:mb-6 ">
             Our 3-step process to guide you to your ideal career or business
@@ -16,7 +16,7 @@ const DiscoverFit = () => {
             contact us for questions, feedback or support .
           </p>
         </div>
-        <div className="w-full lg:w-4/5 lg:my-10 lg:px-6 md:py-8">
+        <div className="w-full lg:w-4/5 lg:my-10">
           <div className="flex flex-col md:flex-row space-y-6 md:space-y-0 md:space-x-6">
             <div className="hidden relative lg:flex md:flex flex-col items-center justify-center">
               <div className="relative z-10 lg:-mt-40 md:-mt-48">
@@ -82,6 +82,8 @@ const DiscoverFit = () => {
                       />
                     </div>
                   </div>
+                  <h2 className="font-bold text-2xl">Take Our Assessment</h2>
+                  <p className="lg:text-xl sm:text-sm md:text-base">
                   <h2 className="font-bold text-2xl">Take Our Assessment</h2>
                   <p className="lg:text-xl sm:text-sm md:text-base">
                     Answer our comprehensive questionnaire, designed to identify

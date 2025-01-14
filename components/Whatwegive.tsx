@@ -1,5 +1,4 @@
 import { Button } from "./ui/button";
-import TitleDot from "./TitleDot";
 import { Card } from "./ui/card";
 import Image from "next/image";
 
@@ -39,9 +38,9 @@ const Whatwegive = () => {
         <div className="flex lg:hidden flex-col space-y-4 items-center">
           <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
             Unlock your potential
-            <span className="mx-2 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
+            <span className="mx-4 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
             Future
-            <span className="mx-2 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
+            <span className="mx-4 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
             Finance with
           </h1>
           <div className="flex flex-col">
@@ -78,6 +77,7 @@ const Whatwegive = () => {
                 />
               </div>
               <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
+             
                 find your ideal path
               </h1>
               <p className="text-black capitalize text-center text-sm sm:text-base lg:text-lg ">
@@ -99,6 +99,7 @@ const Whatwegive = () => {
                 />
               </div>
               <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
+             
                 avoid costly mistakes
               </h1>
               <p className="text-black capitalize text-center text-sm sm:text-base lg:text-lg">
@@ -120,6 +121,7 @@ const Whatwegive = () => {
                 />
               </div>
               <h1 className="text-lg text-black font-extrabold capitalize text-center md:text-xl">
+             
                 Boost confidence
               </h1>
               <p className="text-black capitalize text-center text-sm sm:text-base lg:text-lg">

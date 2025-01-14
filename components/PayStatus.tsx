@@ -1,6 +1,6 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const PaymentStatus = () => {
@@ -9,6 +9,7 @@ const PaymentStatus = () => {
   const status = searchParams.get("status");
   const [message, setMessage] = useState("Processing payment...");
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
+  const router = useRouter();
 
   useEffect(() => {
     if (status) {
@@ -19,9 +20,10 @@ const PaymentStatus = () => {
 
           console.log("Payment verification data", data);
 
-          if (data.data.status === "success") {
+          if (data.success === true) {
             setMessage("Payment successful! Thank you for your purchase.");
             setMessageStyle("text-green-600 bg-green-50 border border-green-200");
+            router.replace("/dashboard/courses");
           } else {
             setMessage("Payment failed. Please try again.");
             setMessageStyle("text-red-600 bg-red-50 border border-red-200");
@@ -37,7 +39,7 @@ const PaymentStatus = () => {
 
       verifyPayment();
     }
-  }, [transaction_id, status]);
+  }, [transaction_id, router, status]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
