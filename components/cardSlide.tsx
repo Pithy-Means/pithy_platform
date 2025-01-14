@@ -82,7 +82,7 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
   };
 
   return (
-    <div className="w-full ">
+    <div className="w-full">
       {cards.length > 0 ? (
         <>
           <Slider {...settings}>
@@ -95,7 +95,6 @@ const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
                   imageSrc={card.imageSrc}
                   name={card.name}
                   role={card.role}
-                  
                 />
               </div>
             ))}

@@ -2,23 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
-// import  Navbar from '@/components/NavbarSet';
 
 const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
-  const pathname = usePathname();
+  const pathname = usePathname() || '/';
+  const normalizePathname = pathname.replace(/\/$/, "");
 
   // Determine if the current pathname matches the desired routes
-  const shouldDisplayNavbar = ['/', '/about', '/contact', '/how-it-works'].includes(
-    pathname ,
-    // pathname.replace(/\/$/, "")
-  );
-
+  const shouldDisplayNavbar = ['/', '/about', '/contact', '/how-it-works'].includes(normalizePathname);
   return (
     <div>
-      {shouldDisplayNavbar ? <Navbar /> : null}  {/* Render nothing if not on the specified routes */}
+      {shouldDisplayNavbar ? <Navbar /> : null}
       {children}
-      {/* Render nothing if not on the specified routes */}
-      {/* {children} */}
     </div>
   );
 };

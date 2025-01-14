@@ -16,12 +16,12 @@ const AssCards = () => {
         </div>
         <Card className="bg-white w-64 md:w-96 lg:w-64 xl:w-[20rem] 2xl:w-[22rem] 3xl:w-[28rem]">
           <div className="bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-t-sm px-4 py-2">
-            <h3 className="text-lg xl:text-xl 4k:text-2xl font-extrabold text-black capitalize">
+            <h3 className="text-lg xl:text-xl 2xl:text-2xl font-extrabold text-black capitalize">
               Take our assessment
             </h3>
           </div>
           <div className="flex flex-col items-center space-y-2 py-4">
-            <p className="capitalize text-black text-sm sm:text-base">Answer a series of questions</p>
+            <p className="capitalize text-black text-sm sm:text-base lg:text-lg">Answer a series of questions</p>
             <Image
               src="/assets/Frame 87.png"
               alt="Frame"
@@ -44,7 +44,7 @@ const AssCards = () => {
             alt="Take"
             width={20}
             height={100}
-
+            priority
             className=" "
           />
         </div>
@@ -62,6 +62,7 @@ const AssCards = () => {
           alt="Join"
           width={150}
           height={100}
+          priority
           className="hidden lg:block"
         />
       </div>
@@ -71,12 +72,12 @@ const AssCards = () => {
       <div className="flex flex-col items-center space-y-2">
         <Card className="bg-white w-64 md:w-96 lg:w-64 lg:relative xl:w-[20rem]  2xl:w-[22rem] 3xl:w-[28rem] md:mt-[-50px] lg:ml-[-5rem] lg:mt-[10rem] xl:mt-[10rem] ">
           <div className="bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-t-sm px-4 py-2">
-            <h3 className="text-lg font-extrabold text-black capitalize ">
+            <h3 className="text-lg xl:text-xl 2xl:text-2xl font-extrabold text-black capitalize ">
               Get personalized results
             </h3>
           </div>
           <div className="flex flex-col items-center space-y-2 py-4 text-base">
-            <p className="capitalize text-black text-sm sm:text-base">Receive a customized report</p>
+            <p className="capitalize text-black text-sm sm:text-base lg:text-lg">Receive a customized report</p>
             <Image
               src="/assets/Frame 88.png"
               alt="Frame"
@@ -96,6 +97,7 @@ const AssCards = () => {
           alt="Explore"
           width={150}
           height={100}
+          priority
           className="hidden lg:block"
         />
       </div>
@@ -119,12 +121,12 @@ const AssCards = () => {
       <div className="flex flex-col items-center space-y-2">
         <Card className="bg-white w-64 md:w-96 lg:w-64 lg:relative xl:w-[20rem] 2xl:w-[22rem] 3xl:w-[28rem]">
           <div className="bg-gradient-to-r from-[#5AC35A] to-[#00AE76] rounded-t-sm px-4 py-2">
-            <h3 className="text-lg md:text-xl xl:text-2xl 4k:text-3xl font-extrabold text-black capitalize">
+            <h3 className="text-lg xl:text-xl 2xl:text-2xl font-extrabold text-black capitalize">
               Explore and take action
             </h3>
           </div>
           <div className="flex flex-col items-center space-y-2 py-4 px-6 text-base">
-            <p className="capitalize text-black text-sm sm:text-base">
+            <p className="capitalize text-black text-sm sm:text-base lg:text-lg">
               Review your results & explore recommendations
             </p>
             <Image

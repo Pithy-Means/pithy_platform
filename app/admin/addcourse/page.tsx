@@ -2,9 +2,9 @@ import CreateCourseForm from "@/components/CreateCourseForm";
 
 const AddCourse = () => {
   return (
-    <div>
+    <>
       <CreateCourseForm />
-    </div>
+    </>
   );
 };
 

@@ -12,11 +12,23 @@ const bundleAnalyzer = withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
 });
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: true,  // keep react strict for better practices
   swcMinify: true,  // No longer configurable
 
   webpack: (config) => {
+    // // Ensure Leaflet's CSS is handled correctly
+    // config.module.rules.push({
+    //   test: /\.css$/,
+    //   use: ["style-loader", "css-loader"],
+    // });
+
+    // // Fix Leaflet's icon paths
+    // config.resolve.alias = {
+    //   ...(config.resolve.alias || {}),
+    //   "leaflet$": "leaflet/dist/leaflet.js",
+    // };
     // console.log('webpack config', config);
+    // Ensure proper caching for Webpack
     config.cache = {
       type: "filesystem",
       buildDependencies: {
@@ -51,15 +63,15 @@ const nextConfig = {
       },
     ];
   },
-  // images: {
-  //   remotePatterns: [
-  //       {
-  //         protocol: 'https',
-  //         hostname: 'api.microlink.io',
-  //         pathname: '/**', // This allows images from any path on this domain
-  //       },
-  //     ],
-  // },
+  images: {
+    remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'api.microlink.io',
+          pathname: '/**', // This allows images from any path on this domain
+        },
+      ],
+  },
 
   experimental: {
     serverActions: {

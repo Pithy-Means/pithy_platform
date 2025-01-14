@@ -74,6 +74,7 @@ export const createAdminClient = async() => {
     // console.log('Appwrite client created', client);
   
   return {
+    client,
     get account() {
       return new Account(client);
     },

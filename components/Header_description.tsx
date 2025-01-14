@@ -15,7 +15,7 @@ const Header_description = () => {
         Venture For You
       </p>
       {/* Responsive button */}
-      <Button className="bg-gradient-to-tr from-[#5AC35A] to-[#00AE76] w-fit text-sm sm:text-base md:text-xl lg:text-2xl xl:text-2xl 4k:text-6xl px-4 py-2 4k:px-8 4k:py-10 4k:rounded-md">
+      <Button className="bg-gradient-to-tr from-[#5AC35A] to-[#00AE76] w-fit text-sm sm:text-base md:text-2xl xl:text-3xl 4k:text-6xl px-4 py-2 4k:px-8 4k:py-10 4k:rounded-md">
         Start Your Journey
       </Button>
     </div>

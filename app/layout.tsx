@@ -1,8 +1,9 @@
+import Head from "next/head";   
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
-import Head from "next/head";
+import { UserProvider } from "@/context/UserContext";
 // import Navbar from "@/components/Navbar";
 // import DashboardNavBar from "@/components/dashboard_navBar";
 // import { usePathname } from "next/navigation";
@@ -52,11 +53,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
-          <>
+          <UserProvider>
             <ConditionalLayout>
               {children}
             </ConditionalLayout>
-          </>
+          </UserProvider>
       </body>
     </html>
   );

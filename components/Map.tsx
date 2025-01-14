@@ -1,6 +1,9 @@
+'use client';
+
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import L from "leaflet";
+import L, {Map as leafletMap} from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useRef, useEffect } from 'react';
 
 // Fix the marker icon issue by defining a custom icon
 const customIcon = new L.Icon({
@@ -13,15 +16,42 @@ const customIcon = new L.Icon({
 });
 
 const Map = () => {
+  // Ref  to store the map instance
+  const mapRef = useRef<leafletMap | null>(null);
+
+  //Handler for when the map is created
+  // const handleMapCreated = (mapInstance: L.Map) => {
+  //   if (!mapRef.current) {
+  //     mapRef.current = mapInstance;
+  //   } else {
+  //     return;
+  //   }
+  // };
+
+  useEffect(() => {
+    // cleanup on unmount
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, []);
+
   return (
     <MapContainer
       style={{
         height: "300px",
-        width: "1000px",
+        width: "100%",
       }}
       center={[0.287225, 32.607778]}
       zoom={19} // zoom level
       scrollWheelZoom={true}
+      // whenCreated={handleMapCreated}  //use to get the map instance
+      whenReady={() => {
+        if (mapRef.current) return;  // store the map instance
+        mapRef.current = mapRef.current;  // Assign mapRef
+      }}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

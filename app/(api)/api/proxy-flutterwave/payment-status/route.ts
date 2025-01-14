@@ -2,6 +2,7 @@ import { db, paymentCollection } from "@/models/name";
 import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 import { Query } from "node-appwrite";
+import env from '@/env';
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
   try {
     const response = await fetch(`https://api.flutterwave.com/v3/transactions/${transaction_id}/verify`, {
       headers: {
-        Authorization: `Bearer ${process.env.FLUTTERWAVE_SECRET_KEY}`,
+        Authorization: `Bearer ${env.payment.secret}`,
       },
     });
 

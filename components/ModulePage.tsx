@@ -10,14 +10,16 @@ export default function ModulesPage() {
   const [modules, setModules] = useState<Modules[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeModuleIndex, setActiveModuleIndex] = useState(0); // Track active module
+  const [activeModuleIndex, setActiveModuleIndex] = useState(0);
 
   const router = useRouter();
   const { user } = useContext(UserContext);
 
-  // Calculate total modules and watched modules
   const totalModules = modules.length;
-  const watchedModules = activeModuleIndex + 1;
+  const progressPercentage =
+    totalModules > 0
+      ? ((activeModuleIndex + 1) / totalModules) * 100
+      : 0;
 
   useEffect(() => {
     const fetchModules = async () => {
@@ -27,15 +29,13 @@ export default function ModulesPage() {
       }
       try {
         const response = await fetch("/api/get-modules", { method: "GET" });
-
         if (!response.ok) {
           throw new Error("Failed to fetch modules");
         }
-
         const result = await response.json();
         setModules(result.data);
-      } catch (error) {
-        setError((error as Error).message);
+      } catch (err) {
+        setError((err as Error).message);
       } finally {
         setLoading(false);
       }
@@ -43,6 +43,14 @@ export default function ModulesPage() {
 
     fetchModules();
   }, [user, router]);
+
+  const handleModuleChange = (index: number) => {
+    if (index <= activeModuleIndex) {
+      setActiveModuleIndex(index);
+    } else {
+      alert("Complete the current module to unlock this one.");
+    }
+  };
 
   if (loading) {
     return (
@@ -95,7 +103,7 @@ export default function ModulesPage() {
               Previous
             </button>
             <button
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-200 disabled:cursor-not-allowed"
               onClick={() => setActiveModuleIndex((prev) => prev + 1)}
               disabled={activeModuleIndex === modules.length - 1}
             >
@@ -129,20 +137,17 @@ export default function ModulesPage() {
           <h2 className="text-lg font-semibold">
             Entrepreneurship in East Africa - Case Study UG
           </h2>
-          {/* Added Progress Percentage */}
           <p className="text-sm text-green-600 mt-1">
-            {totalModules > 0
-              ? `${((watchedModules / totalModules) * 100).toFixed(2)}%`
-              : "0%"}
+            {progressPercentage.toFixed(2)}%
           </p>
           <ul className="mt-4 space-y-2">
             {modules.map((module, index) => (
               <li
                 key={module.module_id}
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => {
-                  if (index <= activeModuleIndex) setActiveModuleIndex(index);
-                }}
+                className={`flex items-center gap-2 cursor-pointer ${
+                  index > activeModuleIndex && "cursor-not-allowed"
+                }`}
+                onClick={() => handleModuleChange(index)}
               >
                 {index <= activeModuleIndex ? (
                   <CheckCircle className="w-5 h-5 text-green-600" />
@@ -160,35 +165,6 @@ export default function ModulesPage() {
             ))}
           </ul>
         </div>
-
-        {/* Other Courses Section */}
-        {/* <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold">Other Courses</h2>
-          <ul className="mt-4 space-y-4">
-            {Array(3)
-              .fill({
-                title:
-                  "Psychological Assessment in A Unhealthy Working Environment",
-                duration: "3 Hours",
-                modules: "3 Modules",
-              })
-              .map((course, index) => (
-                <li key={index} className="flex items-center gap-4">
-                  <img
-                    src="/path-to-thumbnail.jpg"
-                    alt="Course Thumbnail"
-                    className="w-16 h-16 rounded-lg object-cover"
-                  />
-                  <div>
-                    <h3 className="text-sm font-medium">{course.title}</h3>
-                    <p className="text-xs text-gray-500">
-                      {course.duration} • {course.modules}
-                    </p>
-                  </div>
-                </li>
-              ))}
-          </ul>
-        </div> */}
       </div>
     </div>
   );

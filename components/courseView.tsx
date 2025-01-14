@@ -13,17 +13,17 @@ const CourseView: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
 
   const router = useRouter();
-
   const { user } = useContext(UserContext);
-
 
   const fetchCourses = async () => {
     setLoading(true);
     try {
       const data = await fetch("/api/get-courses", { method: "GET" });
       const response = await data.json();
+      console.log("Courses:", response.data);
       setCourses(response.data);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -40,8 +40,8 @@ const CourseView: React.FC = () => {
   return (
     <div className="w-full min-h-screen">
       {/* Header Section */}
-      <div className="w-[calc(100vw-410px)] py-8">
-        <div className="flex justify-between items-center px-16 max-w-screen-xl mx-auto">
+      <div className="w-[calc(100vw-410px)] py-8 px-16">
+        <div className="flex justify-between items-center">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
             <button
@@ -63,6 +63,7 @@ const CourseView: React.FC = () => {
           </div>
         </div>
       </div>
+
       <div className="flex justify-end items-center">
         <p className="text-gray-800 text-lg px-16">
           Welcome: <span className="font-bold">{user?.firstname}</span>
@@ -93,6 +94,23 @@ const CourseView: React.FC = () => {
           <CourseList courses={courses} />
         )}
       </div>
+
+      {/* Modal */}
+      {modalMessage && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-lg font-medium text-gray-800">{modalMessage}</p>
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => setModalMessage(null)}
+                className="bg-red-600 text-white px-4 py-2 rounded-md"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

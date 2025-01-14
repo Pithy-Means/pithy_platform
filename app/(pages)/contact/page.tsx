@@ -15,6 +15,7 @@ import SpecialMobile from "@/components/SpecialMobile";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
+  
 });
 
 const Contact = () => {
@@ -71,7 +72,7 @@ const Contact = () => {
             <div className="flex flex-col lg:items-start items-center space-y-8 w-full">
               <div className="text-center mt-4 -mb-4">
                 <TitleDot title="get in touch" />
-                <p className="text-sm sm:text-base text-black capitalize">
+                <p className="text-sm sm:text-base text-black capitalize lg:text-lg">
                   contact us for questions, feedback or support
                 </p>
               </div>
@@ -82,7 +83,7 @@ const Contact = () => {
                 }
                 email={"contact@pithymeans.com"}
                 phone={["+1 (307) 374-0993", " +1 (307) 205-5983"]}
-                className="text-black break-normal"
+                className="text-black break-normal lg:text-lg"
               />
               <ContactInfo
                 title={"office uganda"}
@@ -95,7 +96,7 @@ const Contact = () => {
                   "+256 760 389 466",
                   "+256 783 184 543",
                 ]}
-                className="text-black"
+                className="text-black lg:text-lg"
               />
               <SocialMediaLinks className="text-black" />
             </div>
@@ -171,12 +172,12 @@ const Contact = () => {
           <div className="bg-gradient-to-b from-[#61BC5B] to-white z-10 py-10">
             <div className="flex justify-center items-center flex-col space-y-4 py-10">
               <h3 className="text-black text-xl font-bold">Find Us Here</h3>
-              <p className="text-black capitalize text-sm sm:text-base text-center">
+              <p className="text-black capitalize text-sm sm:text-base text-center lg:text-lg">
                 our uganda office location
               </p>
-              <Card className="bg-white w-5/6 flex items-center justify-center">
-                <div className="">
-                  <DynamicMap />
+              <Card className="bg-white w-full flex items-center justify-center">
+                <div className=" ">
+                  <DynamicMap  />
                 </div>
               </Card>
             </div>

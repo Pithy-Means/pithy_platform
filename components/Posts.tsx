@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { usePosts } from "@/lib/hooks/usePosts";
 import {
   deletePost,
@@ -106,6 +106,7 @@ const Posts = () => {
   };
 
   const { user } = useContext(UserContext);
+  console.log("User,:", user);
 
   usePostInitialization(
     fetchedPosts,

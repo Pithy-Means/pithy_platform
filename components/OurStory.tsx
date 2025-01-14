@@ -9,7 +9,7 @@ const OurStory = () => {
       <div className="text-black px-4 sm:px-8 lg:px-20 w-full lg:w-3/4 flex flex-col items-center lg:items-start">
         <div className="pb-6">
           <TitleDot title={"Our story"} />
-          <p className="text-sm sm:text-base text-center md:text-start lg:text-left">
+          <p className="text-sm sm:text-base text-center md:text-start lg:text-left lg:text-lg">
             Pithy means was founded to address the growing concern of academic
             regrets, professional issues, and business collapse. Our team
             realized that many people invest time and resources in the wrong
@@ -17,10 +17,10 @@ const OurStory = () => {
           </p>
         </div>
         <div className="flex flex-col lg:justify-start justify-center">
-          <h2 className="font-extrabold font-sans text-lg  lg:text-xl text-black bg-[#5AC35A] rounded-md px-2 py-1 w-fit text-center lg:text-left 4k:text-4xl 4k:p-4">
+          <h2 className="font-extrabold font-sans text-lg  lg:text-xl text-black bg-[#5AC35A] rounded-md px-2 py-1 w-fit text-center lg:text-left">
             Our mission & vision
           </h2>
-          <p className="mt-4 w-full text-base text-center lg:text-left md:text-lg  md:px-4 md:text-start lg:text-xl xl:text-xl 4k:text-5xl 4k:w-[56rem]">
+          <p className="mt-4 w-full text-base text-center lg:text-start md:text-lg  md:px-4 md:text-start lg:text-lg ">
             Our mission is to provide personalized career and business
             assessments, empowering individuals to make informed decisions. Our
             vision is a world where everyone thrives in their chosen paths.
