@@ -11,7 +11,7 @@ const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
   const shouldDisplayNavbar = ['/', '/about', '/contact', '/how-it-works'].includes(normalizePathname);
   return (
     <div>
-      {shouldDisplayNavbar ? <Navbar /> : null}
+      {shouldDisplayNavbar ? <Navbar/> : null}
       {children}
     </div>
   );
