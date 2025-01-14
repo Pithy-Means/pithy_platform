@@ -20,7 +20,7 @@ export async function createSessionClient() {
   };
 }
 
-export const createAdminClient = () => {
+export const createAdminClient = async() => {
   const client = new Client();
   client
     .setEndpoint(env.appwrite.endpoint)
