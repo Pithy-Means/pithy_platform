@@ -19,7 +19,7 @@ import {
 import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
-import { ID, OAuthProvider, Query } from "node-appwrite";
+import { ID, OAuthProvider, Permission, Query, Role } from "node-appwrite";
 import { generateValidPostId, parseStringify, generateValidId } from "../utils";
 import {
   courseCollection,
@@ -70,7 +70,8 @@ export const login = async ({ email, password }: LoginInfo) => {
       throw new Error("Session ID not found");
     }
     // Store the session token in a secure cookie
-    cookies().set("my-session", session.secret, {
+    const cookieStore = await cookies();
+    cookieStore.set("my-session", session.secret, {
       path: "/", // Accessible across the site
       httpOnly: true, // Prevent client-side access
       secure: process.env.NODE_ENV === 'production', // Only sent over HTTPS
@@ -122,7 +123,8 @@ export const logoutUser = async () => {
     const { account } = await createSessionClient();
 
     // Delete all Appwrite sessions
-    cookies().delete("my-session"); // Clear the session token cookie
+    const cookieStore = await cookies();
+    cookieStore.delete("my-session"); // Clear the session token cookie
     await account.deleteSessions();
     console.log("User logged out successfully");
   } catch (error) {
@@ -215,6 +217,7 @@ export const register = async (userdata: UserInfo) => {
   const { user_id, email, password, firstname, lastname, categories } =
     userdata;
   const userId = generateValidPostId(user_id);
+  console.log("Creating user account with data:");
   let newUserAccount;
   try {
     const { account, databases } = await createAdminClient();
@@ -242,7 +245,8 @@ export const register = async (userdata: UserInfo) => {
     );
     const session = await account.createEmailPasswordSession(email, password);
     console.log(userinfo);
-    cookies().set("my-session", session.secret, {
+    const cookieStore = await cookies();
+    cookieStore.set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -267,13 +271,11 @@ export const updateUserSession = async () => {
 };
 
 export const getLoggedInUser = async () => {
-  console.log("Getting logged in user..."); // Debugging
   try {
     const response = await getSession();
     const user = await getUserInfo({ userId: response.$id });
     return parseStringify(user);;
   } catch (error) {
-    console.error("Error in getLoggedInUser:", error);
     return null;
   }
 };
@@ -327,7 +329,8 @@ export const createPost = async (data: Post) => {
     const fileUpload = await storage.createFile(
       postAttachementBucket,
       ID.unique(),
-      file
+      file,
+      [Permission.read(Role.any())],
     );
 
     console.log("Uploaded file:");
@@ -470,7 +473,7 @@ export const getPosts = async () => {
 
         if (post.image) {
           try {
-            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}&mode=admin`;
+            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`;
           } catch (error) {
             console.error(`Failed to fetch image for post ${post.$id}:`, error);
           }
@@ -478,7 +481,7 @@ export const getPosts = async () => {
 
         if (post.video) {
           try {
-            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}&mode=admin`;
+            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`;
           } catch (error) {
             console.error(`Failed to fetch video for post ${post.$id}:`, error);
           }
@@ -671,7 +674,7 @@ export const createJob = async (job: Job) => {
     );
 
     console.log("Job created", response);
-    return JSON.parse(JSON.stringify(response)); // Ensure no circular references
+    return parseStringify(response); // Ensure no circular references
   } catch (error) {
     console.error("Error creating job", error);
     throw new Error((error as Error).message || "Failed to create job");
