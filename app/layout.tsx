@@ -4,9 +4,6 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { UserProvider } from "@/context/UserContext";
-// import Navbar from "@/components/Navbar";
-// import DashboardNavBar from "@/components/dashboard_navBar";
-// import { usePathname } from "next/navigation";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
