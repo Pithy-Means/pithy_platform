@@ -15,8 +15,8 @@ const Footer = () => {
             }}
           />
 
-          <div className="flex flex-col md:flex-row py-10 w-full md:w-4/5 space-x-4 md:items-start items-center md:space-x-6">
-            <div className="flex flex-1 flex-col w-full md:w-1/5 mb-4 md:mb-0 md:items-start items-center">
+          <div className="flex flex-col md:flex-row py-6 w-full md:w-4/5 space-x-4 md:items-start items-center md:space-x-6 md:justify-evenly">
+            <div className="flex flex-1 flex-col w-full md:w-1/5 mb-4 md:mb-0 md:items-start items-center lg:mr-6">
               <div className="flex justify-between">
                 <div className="flex flex-col space-y-4  md:items-start items-center md:-ml-8">
                   <div className="flex space-x-4 items-center">
@@ -68,11 +68,11 @@ const Footer = () => {
             <div className="mx-4 border border-gray-600 "></div>
             <div className="flex justify-between flex-col-reverse md:flex-row items-center px-4 md:px-10">
               <div>
-                <p className="text-white text-center py-4 text-[12px] md:text-xl">
+                <p className="text-white text-center py-4 text-[12px] md:text-lg lg:text-xl">
                   © 2024 Pithy Means. All Rights Reserved
                 </p>
               </div>
-              <div className="flex space-x-2 md:space-x-4 items-center  text-[12px]">
+              <div className="flex space-x-2 md:space-x-4 items-center  text-[12px] text=white md:text-lg lg:text-xl">
                 <p>Privacy Policy</p>
                 <div className="w-0.5 h-4 bg-gray-600"></div>
                 <p>Help</p>
