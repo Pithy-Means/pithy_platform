@@ -15,15 +15,6 @@ const Navbar = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
-  const handleToggle = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-
-  const handleCloseMenu = () => {
-    setIsOpen(false);
-  };
-
   // Get logged-in user info
   const { user } = useContext(UserContext);
 
