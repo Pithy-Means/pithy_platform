@@ -16,19 +16,6 @@ const nextConfig = {
   swcMinify: true,  // No longer configurable
 
   webpack: (config) => {
-    // // Ensure Leaflet's CSS is handled correctly
-    // config.module.rules.push({
-    //   test: /\.css$/,
-    //   use: ["style-loader", "css-loader"],
-    // });
-
-    // // Fix Leaflet's icon paths
-    // config.resolve.alias = {
-    //   ...(config.resolve.alias || {}),
-    //   "leaflet$": "leaflet/dist/leaflet.js",
-    // };
-    // console.log('webpack config', config);
-    // Ensure proper caching for Webpack
     config.cache = {
       type: "filesystem",
       buildDependencies: {
