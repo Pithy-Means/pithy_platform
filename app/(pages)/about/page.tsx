@@ -1,4 +1,4 @@
-// 'use client';
+'use client';
 
 import OurImpact from "@/components/OurImpact";
 import OurStory from "@/components/OurStory";
