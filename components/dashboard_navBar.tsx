@@ -28,12 +28,12 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => 
   };
 
   return (
-    <div className="bg-white/90">
+    <div className="bg-white/90 ">
       <nav className="flex h-20 w-full bg-white justify-evenly items-center px-4">
         <div className="text-2xl font-bold text-black">
           <Logo />
         </div>
-        <div className="relative w-1/2">
+        <div className=" w-1/2 sm:hidden block">
           <div className="hidden relative lg:flex items-center">
             <FaSearch className="absolute left-3 text-black/35" size={20} />
             <input
@@ -64,7 +64,7 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => 
 
       {/* Modal Logic */}
       <Modal isOpen={isOpen} onClose={closeModal}>
-        <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col items-center space-y-4 ">
           {!isTestStarted ? (
             <>
               <h1 className="text-2xl text-black font-bold">Take Test</h1>
