@@ -1,3 +1,4 @@
+import TitleDot from "./TitleDot";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import Image from "next/image";
@@ -37,7 +38,7 @@ const Whatwegive = () => {
         {/* For smaller screens, show this */}
         <div className="flex lg:hidden flex-col space-y-4 items-center">
           <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
-          <h1 className="text-[14px] text-black md:text-xl font-extrabold capitalize text-center">
+          
             Unlock your potential
             <span className="mx-4 bg-gradient-to-t from-[#5AC35A] to-[#00AE76] h-1.5 w-1.5 rounded-full inline-block"></span>
             Future
@@ -46,7 +47,7 @@ const Whatwegive = () => {
           </h1>
           <div className="flex flex-col">
             <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase md:text-xl">
-            <h1 className="text-[14px] text-[#5AC35A] font-extrabold uppercase md:text-xl">
+           
               Pithy means
             </h1>
             <Image
