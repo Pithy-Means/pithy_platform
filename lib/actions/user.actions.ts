@@ -70,7 +70,7 @@ export const login = async ({ email, password }: LoginInfo) => {
       throw new Error("Session ID not found");
     }
     // Store the session token in a secure cookie
-    cookies().set("authToken", session.secret, {
+    cookies().set("my-session", session.secret, {
       path: "/", // Accessible across the site
       httpOnly: true, // Prevent client-side access
       secure: process.env.NODE_ENV === 'production', // Only sent over HTTPS
