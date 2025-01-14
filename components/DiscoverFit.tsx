@@ -83,7 +83,7 @@ const DiscoverFit = () => {
                     </div>
                   </div>
                   <h2 className="font-bold text-2xl">Take Our Assessment</h2>
-                  <p className="lg:text-xl sm:text-sm md:text-base">
+                  <p className="lg:text-xl sm:text-sm md:text-base"></p>
                   <h2 className="font-bold text-2xl">Take Our Assessment</h2>
                   <p className="lg:text-xl sm:text-sm md:text-base">
                     Answer our comprehensive questionnaire, designed to identify
