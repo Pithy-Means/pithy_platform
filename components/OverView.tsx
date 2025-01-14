@@ -73,7 +73,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     `${pathname === href ? "text-green-500 font-bold" : ""} text-lg cursor-pointer`;
 
   return (
-    <div className="flex space-x-3 pr-8">
+    <div className="flex pr-8">
       <div className="hidden md:flex h-screen flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 w-[250px]">
         <div className="flex flex-col space-y-12">
           <div className="flex flex-col space-y-2 mb-10">
