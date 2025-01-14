@@ -27,9 +27,9 @@ const Card: React.FC<CardProps> = ({
   const imagePath = imageSrc ? `${imageSrc}` : null;
 
   return (
-    <div className=" w-full h-full shadow-lg rounded-lg p-6 bg-slate-100">
+    <div className=" w-full h-56 shadow-lg rounded-lg p-6 bg-slate-100">
       <h2 className="text-xl font-bold ">{title}</h2>
-      <p className="text-sm mt-2 ">{description}</p>
+      <p className="text-lg mt-2 ">{description}</p>
       <div className="mt-2 flex flex-row items-center">
         {imagePath ? (
           <Image
@@ -133,7 +133,7 @@ const NextArrow: React.FC<CustomArrowProps> = ({ className, slickNext }) => {
   // const { className, onClick } = props;
   return (
     <div
-      className={`${className} bg-transparent border border-green-400 rounded`}
+      className={`${className} bg-transparent border border-green-400 rounded cursor-pointer`}
       onClick={slickNext}
     >
       <IoMdArrowForward size={40} className="text-green-500 px-2 " />
@@ -145,7 +145,7 @@ const PrevArrow: React.FC<CustomArrowProps> = ({ className, slickPrev }) => {
   // const { className, onClick } = props;
   return (
     <div
-      className={`${className} bg-transparent border border-green-400 rounded`}
+      className={`${className} bg-transparent border border-green-400 rounded cursor-pointer`}
       onClick={slickPrev}
     >
       <IoMdArrowBack size={40} className="text-green-500 px-2" />
