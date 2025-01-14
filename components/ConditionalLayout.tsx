@@ -8,7 +8,7 @@ const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
 
   // Determine if the current pathname matches the desired routes
-  const shouldDisplayNavbar = ['/', '/about', '/contact', '/how-it-works'].includes(
+  const shouldDisplayNavbar = ["/", "/about", "/contact", "/how-it-works"].includes(
     pathname ,
     // pathname.replace(/\/$/, "")
   );
@@ -18,7 +18,7 @@ const ConditionalLayout = ({ children }: { children: React.ReactNode }) => {
       {shouldDisplayNavbar ? <Navbar /> : null}  {/* Render nothing if not on the specified routes */}
       {children}
       {/* Render nothing if not on the specified routes */}
-      {/* {children} */}
+      {children}
     </div>
   );
 };
