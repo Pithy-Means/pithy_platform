@@ -8,7 +8,8 @@ export async function createSessionClient() {
   const client = new Client()
     .setEndpoint(env.appwrite.endpoint)
     .setProject(env.appwrite.projectId);
-  const session = cookies().get("my-session");
+  const sessionCookies = await cookies();
+  const session = sessionCookies.get("my-session");
   if (!session || !session.value) {
     throw new Error("No session");
   }
