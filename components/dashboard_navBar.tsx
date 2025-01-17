@@ -28,12 +28,12 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => 
   };
 
   return (
-    <div className="bg-white/90 ">
-      <nav className="flex h-20 w-full bg-white justify-evenly items-center px-4">
+    <div className="bg-white/90 min-h-screen">
+      <nav className="flex h-20 sm:h-24 lg:h-28 bg-white justify-between items-center px-4">
         <div className="text-2xl font-bold text-black">
           <Logo />
         </div>
-        <div className=" w-1/2 sm:hidden block">
+        <div className="sm:hidden block">
           <div className="hidden relative lg:flex items-center">
             <FaSearch className="absolute left-3 text-black/35" size={20} />
             <input
@@ -42,7 +42,7 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => 
               id="searchHere"
             />
           </div>
-          <div className="flex lg:hidden items-center justify-center">
+          <div className="flex  items-center justify-center">
             <FaSearch className="absolute left-3 text-black/55" size={20} />
           </div>
         </div>
@@ -55,7 +55,7 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ user, children }) => 
           <IoMdNotificationsOutline className="text-black h-8 w-8" />
         </div>
         <div className="flex items-center gap-x-2">
-          <div className="bg-gray-600 py-1 px-2 rounded-full border border-black">
+          <div className="bg-gray-600 py-1 px-2 rounded-full border border-black hidden md:block">
             {user}
           </div>
         </div>
