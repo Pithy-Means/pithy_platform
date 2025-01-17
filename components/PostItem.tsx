@@ -57,9 +57,9 @@ const PostItem: React.FC<PostItemProps> = ({
   };
 
   return (
-    <div className="border border-gray-300 rounded-md p-4 bg-white/10">
+    <div className="border border-gray-500 w-full rounded-md p-4 bg-white/10 ">
       <div className="flex flex-col  py-4 ">
-        <div className="flex items-center justify-between">
+        <div className="flex  flex-wrap items-center justify-between">
           <div className="flex items-center space-x-2">
             <CircleUserRound size={40} />
             <div className="flex flex-col space-y-1">
@@ -80,7 +80,7 @@ const PostItem: React.FC<PostItemProps> = ({
                 onClick={() => setShowOptions(!showOptions)}
               />
               {showOptions && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md flex flex-col space-y-2 shadow-lg z-10">
+                <div className=" absolute mt-2 w-full max-w-[12rem] bg-white border border-gray-300 rounded-md flex flex-col space-y-2 shadow-lg ">
                   <Button
                     onClick={() => {
                       setEditingPostId(post.post_id || "");
@@ -88,7 +88,7 @@ const PostItem: React.FC<PostItemProps> = ({
                       setShowOptions(false);
                     }}
                     type="submit"
-                    className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-green-600"
+                    className="w-full text-black/30  text-left p-2 hover:bg-gray-600"
                   >
                     <FilePenLine />
                     {" "}
@@ -99,7 +99,7 @@ const PostItem: React.FC<PostItemProps> = ({
                       onDelete(post.post_id || "");
                       setShowOptions(false);
                     }}
-                    className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-yellow-200"
+                    className="w-full text-black/30  text-left p-2 hover:bg-red-600"
                   >
                     <Trash2 />
                     {" "}
@@ -110,7 +110,7 @@ const PostItem: React.FC<PostItemProps> = ({
             </div>
           )}
         </div>
-        <div className="flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 mt-4">
           <p>{post.content}</p>
           {post.image && (
             <Image
@@ -118,6 +118,7 @@ const PostItem: React.FC<PostItemProps> = ({
               width={500}
               height={200}
               alt="Post Image"
+              loading='lazy'
               unoptimized
               className="h-56 w-full object-cover rounded-md"
             />
@@ -126,8 +127,9 @@ const PostItem: React.FC<PostItemProps> = ({
             <Video
               src={post.video}
               controls
-              width="500"
+              width="100%"
               height="200"
+              // loading='lazy'
               className="h-56 w-full object-cover rounded-md"
             />
           )}
@@ -141,16 +143,16 @@ const PostItem: React.FC<PostItemProps> = ({
             onChange={(e) => setEditedContent(e.target.value)}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
-          <div className="mt-2">
+          <div className="mt-2 flex space-x-2">
             <button
               onClick={handleUpdate}
-              className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 mr-2"
+              className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-700 "
             >
               Save
             </button>
             <button
               onClick={() => setEditingPostId(null)}
-              className="bg-gray-500 text-white rounded-md px-4 py-2 hover:bg-gray-600"
+              className="bg-gray-500 text-white rounded-md px-4 py-2 hover:bg-red-900"
             >
               Cancel
             </button>
@@ -162,7 +164,7 @@ const PostItem: React.FC<PostItemProps> = ({
         <div className="flex justify-between items-center">
           <div className="flex space-x-2 items-center">
             <div className="bg-green-500 rounded-full p-1 text-white flex items-center justify-center">
-              <ThumbsUp size={16} strokeWidth={1} />
+              <ThumbsUp size={16} strokeWidth={2} />
             </div>
             <span className="font-normal">{likeStatus.likeCount}</span>
           </div>
@@ -175,7 +177,7 @@ const PostItem: React.FC<PostItemProps> = ({
           </button>
         </div>
         <div className="w-full bg-gray-300 h-0.5 rounded" />
-        <div className="flex space-x-8 items-center">
+        <div className="flex flex-wrap space-x-4 items-center">
           <div className="rounded-full bg-gray-300 text-white px-2 py-1 text-xl font-extrabold">
             {loggedInUserId ? loggedInUserId.charAt(0).toUpperCase() : ""}
           </div>
