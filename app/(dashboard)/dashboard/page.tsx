@@ -13,26 +13,37 @@ const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr:
 
 function Dashboard() {
   return (
-    <div className="flex space-x-4">
+    <div className="flex  flex-col lg:flex-row  lg:space-x-4">
       {/* Main content area */}
-      <div className="w-full lg:w-[calc(100vw-600px)] h-screen overflow-y-auto">
+      <div className="px-4 sm:px-6 lg:px-8 w-full lg:w-[70%] ">
         <ShareSomething />
       </div>
 
+
       {/* Sidebar for larger screens */}
-      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4 my-6 lg:relative right-0 lg:top:40">
+      <div className="hidden lg:flex flex-col space-y-4 absolute right-0 top-30 h-screen w-1/4  lg:py-6 lg:px-4  z-10">
         <PersonSidebar />
         <Community />
       </div>
 
       {/* Fixed bottom bar for smaller screens */}
-      <div className="fixed left-0 bottom-0 h-20 w-full sm:block md:hidden bg-[#5AC35A] py-4 sm:px-0">
+      <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4 z-10">
         <div className="flex justify-around items-center text-white">
-          <GoHome size={36} />
-          <HiMiniClipboardDocumentList size={36} />
-          <MdOutlineAddCircle size={36} />
-          <BriefcaseBusiness size={36} />
-          <School size={36} />
+          <button aria-label="Home" className=" hover:text-gray-800">
+            <GoHome size={28} />
+          </button>
+          <button aria-label="Posts">
+            <HiMiniClipboardDocumentList size={28} />
+          </button>
+          <button aria-label="Create Post">
+            <MdOutlineAddCircle size={28} />
+          </button>
+          <button aria-label="Jobs">
+            <BriefcaseBusiness size={28} />
+          </button>
+          <button aria-label="School">
+            <School size={28} />
+          </button>
         </div>
       </div>
     </div>
