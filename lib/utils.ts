@@ -7,6 +7,11 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function parseStringify(data: unknown) {
+  if (data === undefined || data === null){
+    console.error("Error: Input is undefined or null");
+    throw new Error("Input data cannot be undefined or null.");
+  }
+
   if (typeof data === "string") {
     try {
       return JSON.parse(data);
@@ -23,12 +28,17 @@ export function parseStringify(data: unknown) {
 }
 
 export const parseString = (data: string) => {
+  if (!data || typeof data !== "string") {
+    console.error("Error: Input data is not a valid string.");
+    return data;
+  }
+
   try {
     return JSON.parse(data);
   } catch (error) {
     console.error("Error parsing JSON:", error);
+    return data;
   }
-  return data;
 }
 
 export const generateValidPostId = (post_id?: string): string => {
