@@ -3,6 +3,7 @@
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import withBundleAnalyzer from "@next/bundle-analyzer";
+import chokidar from "chokidar";
 
 // Resolve __filename and __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +26,26 @@ const nextConfig = {
     };
     return config;
   },
+  webpackDevMiddleware: (config) => {
+    config.watchOptions = {
+      poll: 1000, // Check for changes every second
+      aggregateTimeout: 300, // Delay rebuild after the first change
+    };
+
+    // Custom watcher using chokidar
+    const watcher = chokidar.watch(resolve(__dirname, "src/**/*"), {
+      ignored: /node_modules/, // Ignore node_modules
+      persistent: true,
+    });
+
+    watcher.on("change", (path) => {
+      console.log(`[chokidar] File changed: ${path}`);
+      // Here you can add additional logic, like triggering a rebuild
+    });
+
+    return config;
+  },
+  
   // Cache-Control Headers
   async headers() {
     return [
