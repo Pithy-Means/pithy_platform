@@ -14,10 +14,22 @@ export async function POST(req: Request) {
   const bodyText = await req.text();
   console.log('Incoming body:', bodyText);
 
-  const data: Courses = JSON.parse(bodyText);
+  let data: Courses;
+  try {
+    data = JSON.parse(bodyText);
+  } catch (err) {
+    console.error('Error parsing JSON:', err);
+    return NextResponse.json({ message: 'Invalid JSON format' }, { status: 400 });
+  }
+
+  // const data: Courses = JSON.parse(bodyText);
   console.log('Incoming data:', data);
   const image = data.image;
 
+  if (!image || typeof image !== 'string'){
+    console.error('Image is inavlid or missing');
+    return NextResponse.json({ message: 'Invalid image' }, { status: 400 });
+  }
   // Extract file extension from Base64 prefix
   const base64Match = image.match(/^data:(image|video|application)\/(\w+);base64,/);
 
@@ -37,8 +49,16 @@ export async function POST(req: Request) {
 
   const base64Prefix = base64Match[0];
   const base64Data = image.replace(base64Prefix, '');
-  const binaryData = Buffer.from(base64Data, 'base64');
 
+  let binaryData: Buffer; 
+  try {
+    // const binaryData = Buffer.from(base64Data, 'base64');
+    binaryData = Buffer.from(base64Data, 'base64');
+  } catch (err) {
+    console.error('Invald Base64 data:', err);
+    return NextResponse.json({ message: 'Invalid Base64 data' }, { status: 400 });  
+  } 
+  
   // Create a File object from binary data
   const fileName = `uploaded-file.${fileType}`;
   const mimeType = `${base64Match[1]}/${fileType}`;
@@ -57,7 +77,14 @@ export async function POST(req: Request) {
     );
 
     console.log('Uploaded image:', imageUpload);
-    const imagePreview = await storage.getFilePreview(courseAttachementBucket, imageUpload.$id);
+    let imagePreview;
+    try {
+     imagePreview = await storage.getFilePreview(courseAttachementBucket, imageUpload.$id);
+      console.log('Image preview:', imagePreview);
+    } catch (err) {
+      console.error('Error getting image preview:', err);
+    }
+      
     console.log('Image preview:', imagePreview);
 
     console.log('Creating course document...');
