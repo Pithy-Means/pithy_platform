@@ -89,7 +89,17 @@ const SignupForm = () => {
   }
 
   return (
-    <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col">
+    <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col relative">
+      <div className="absolute inset-0">
+        <div className="absolute w-[20rem] h-[20rem] bg-green-100 rounded-full blur-3xl top-[-6rem] left-[-8rem]" />
+        <div className="absolute w-[16rem] h-[16rem] bg-green-200 rounded-full blur-2xl bottom-[-6rem] right-[-8rem]" />
+        <div className="absolute w-[12rem] h-[12rem] bg-green-300 rounded-full blur-2xl top-[10rem] left-[5rem]" />
+        <div className="absolute w-[14rem] h-[14rem] bg-green-400 rounded-full blur-xl bottom-[10rem] right-[5rem]" />  
+        <div className="absolute w-[10rem] h-[10rem] bg-green-500 rounded-full blur-xl top-[20rem] right-[20rem]" />
+        <div className="absolute w-[8rem] h-[8rem] bg-green-600 rounded-full blur-xl bottom-[20rem] left-[20rem]" />
+        <div className="absolute w-[6rem] h-[6rem] bg-green-700 rounded-full blur-xl top-[30rem] left-[30rem]" />
+        <div className="absolute w-[4rem] h-[4rem] bg-green-300 rounded-full blur-xl bottom-[5rem] right-[5rem]" />
+      </div>
       {/* Progress Bar */}
       <div className="w-1/5">
         <ProgressBar currentStep={currentStep} />
@@ -219,7 +229,9 @@ const SignupForm = () => {
                       label="Years of Work Experience"
                       type="number"
                       name="years_of_work_experience"
-                      value={formData.years_of_work_experience?.toString() || ""}
+                      value={
+                        formData.years_of_work_experience?.toString() || ""
+                      }
                       onChange={handleChange}
                     />
                     <InputContact
@@ -327,7 +339,7 @@ const SignupForm = () => {
               className={
                 !isFormComplete
                   ? "px-8 py-2 bg-gray-300 text-gray-800 rounded-md"
-                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md z-50"
               }
               disabled={!isFormComplete}
             >
@@ -340,7 +352,7 @@ const SignupForm = () => {
               className={
                 !isFormComplete
                   ? "bg-black text-white/10"
-                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md"
+                  : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md z-50"
               }
               disabled={!isFormComplete}
             >
