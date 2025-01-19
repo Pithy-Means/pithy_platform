@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { createPostCourseAnswer, fetchAllPostCourseQuestions } from "@/lib/actions/user.actions";
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
-import { PostCourseQuestionAnswer } from "@/types/schema";
-import PaymentButton from "./PaymentButton";
-import { UserContext } from "@/context/UserContext";
+import { PostCourseQuestionAnswer, UserInfo } from "@/types/schema";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const QuestionSlider: React.FC = () => {
   const [questions, setQuestions] = useState<{ id: string; question: string; choices: string[] }[]>([]);
@@ -14,7 +13,7 @@ const QuestionSlider: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as UserInfo);
   const { currentQuestionIndex, setCurrentQuestionIndex } = useQuestionStore();
 
   useEffect(() => {
@@ -89,7 +88,7 @@ const QuestionSlider: React.FC = () => {
       <div className="w-full max-w-md mx-auto space-y-4 text-center">
         <h2 className="text-xl font-bold">Thank you for completing the test!</h2>
         <p className="text-gray-600">To proceed, please complete your payment.</p>
-        <PaymentButton />
+        {/* <PaymentButton /> */}
       </div>
     );
   }
