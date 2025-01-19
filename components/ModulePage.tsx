@@ -1,10 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
-import { useContext, useEffect, useState } from "react";
-import { Modules } from "@/types/schema";
+import { useEffect, useState } from "react";
+import { Modules, UserInfo } from "@/types/schema";
 import { Video } from "./Video";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/UserContext";
 import { Lock, CheckCircle } from "lucide-react";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 export default function ModulesPage() {
   const [modules, setModules] = useState<Modules[]>([]);
@@ -13,7 +13,7 @@ export default function ModulesPage() {
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
 
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as UserInfo);
 
   const totalModules = modules.length;
   const progressPercentage =
@@ -38,7 +38,7 @@ export default function ModulesPage() {
     };
 
     fetchModules();
-  }, [user, router]);
+  }, [user?.user, router]);
 
   const handleModuleChange = (index: number) => {
     if (index <= activeModuleIndex) {
