@@ -1,11 +1,10 @@
-import { Courses } from "@/types/schema";
+import { Courses, UserInfo } from "@/types/schema";
 import { useFetch } from "./useFetch";
-import { useContext } from "react";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "../store/useAuthStore";
 
 export const useCreateCourse = () => {
   const { data, error, loading, fetchData } = useFetch();
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as UserInfo);
 
   const handleSubmit = async (course: Courses) => {
     if (!user?.user_id) {
@@ -14,7 +13,7 @@ export const useCreateCourse = () => {
 
     const newCourse = {
       ...course,
-      user_id: user?.user_id,
+      user_id: user?.user.user_id,
     };
 
     const result = await fetchData('/api/create-course', 'POST', { 'Content-Type': 'application/json' } ,newCourse);
