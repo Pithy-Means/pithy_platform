@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import { z} from 'zod';
 //Base user info type (common fields for all users)
 export type BaseUserInfo = {
@@ -14,6 +15,7 @@ export type BaseUserInfo = {
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
   secret?: string;
+  [key: string]: any; // Allow for other fields
 };
 
 //User categories
@@ -102,6 +104,16 @@ export type ResetPass = {
   url?: string;
 };
 
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  error: any;
+  loading: boolean;
+  signup: (data: Partial<UserInfo>) => Promise<any>;
+  signin: (data: LoginInfo) => Promise<any>;
+  signout: () => void;
+}
 // Define the Post type based on the collection's fields
 // Define the Post type based on the collection's fields
 export type Post = {
@@ -122,12 +134,40 @@ export type PostWithUser = Post & {
 
 // Define the type for the CommentPost collection
 export interface CommentPost {
-  userid: string; // Unique ID of the user who made the comment
+  user_id: string; // Unique ID of the user who made the comment
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters
   user?: Partial<UserInfo>; // User information associated with the comment
 }
+
+// Funding Type
+export type Funding = {
+  funding_id: string;
+  user_id: string;
+  title?: string;
+  donor?: string;
+  eligibre_countries?: string;
+  focus_earlier?: string;
+  grant_size?: string;
+  funding_type?: string;
+  closing_date?: string;
+  reference_link?: string;
+};
+
+// Scholarship Type Definition
+export type Scholarship = {
+  scholarship_id: string; // Unique identifier for the scholarship
+  user_id: string; // User associated with the scholarship entry
+  title?: string; // Title of the scholarship
+  provider?: string; // Scholarship provider
+  study_level?: string; // Level of study (e.g., Undergraduate, Masters, PhD)
+  amount?: string; // Scholarship amount
+  deadline?: string; // Application deadline
+  discipline?: string; // Field of study or discipline
+  country_of_study?: string; // Eligible country for the study
+  reference_link?: string; // Reference or application link
+};
 
 export type LikePost = {
   like_post_id: string; // ID for the like
@@ -242,6 +282,13 @@ export interface Job {
   application_link: string;
   employer: string;
 }
+
+export type JobComment = {
+  job_id: string;
+  user_id: string;
+  comment_job_id: string;
+  comment: string;
+} 
 
 type ModuleStatus = 'open' | 'closed';
 
