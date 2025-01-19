@@ -1,48 +1,26 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { MdAccessTimeFilled } from "react-icons/md";
 import { FaBookReader } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { Courses } from "@/types/schema";
-import { UserContext } from "@/context/UserContext";
 import PaymentButton from "./PaymentButton";
+import { useCourseStore } from "@/lib/store/courseStore";
 
-interface CourseCardProps {
-  selectedCourse: Courses[];
-}
-
-const CourseCard: React.FC<CourseCardProps> = ({ selectedCourse }) => {
+const CourseCard: React.FC<{courses: Courses[]}> = ({ courses }) => {
   const router = useRouter();
   const [modalMessage, setModalMessage] = useState<string | null>(null);
-  const { user } = useContext(UserContext);
+  const { isLocked } = useCourseStore();
 
   const handleViewMore = (course: Courses) => {
-    // Check if the user is in the list of students based on their name or email
-    const isStudent = user?.name && course.students?.includes(user.name);
-    const isStudentEmail =
-      user?.email && course.student_email?.includes(user.email);
-
-    // If the user is either not in the list of students by name or email, lock the course
-    if (!isStudent && !isStudentEmail) {
-      setModalMessage("Please complete the payment to access this course.");
-    } else {
-      router.push(`/dashboard/courses/${course.course_id}`);
-    }
+    router.push(`/dashboard/courses/${course.course_id}`);
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {selectedCourse.map((course) => {
-        const student = course.students?.find(
-          (student) => student === user?.name
-        );
-
-        const studentEmail = course.student_email?.find(
-          (student) => student === user?.email
-        );
-        const isLocked = !student && !studentEmail;
+      {courses.map((course) => {
         return (
           <div
             key={course.course_id}
@@ -65,7 +43,11 @@ const CourseCard: React.FC<CourseCardProps> = ({ selectedCourse }) => {
                     This course is locked.
                   </p>
                   <p className="text-gray-600 mb-4">{modalMessage}</p>
-                  <PaymentButton />
+                  <PaymentButton course={{
+                    course_id: course.course_id,
+                    title: course.title,
+                    price: course.price,
+                  }} />
                 </div>
               ) : (
                 <>

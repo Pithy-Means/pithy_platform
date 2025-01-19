@@ -1,44 +1,61 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import CourseCard from "./CourseCard";
 import CourseList from "./CourseList";
-import { Courses } from "@/types/schema";
+import { Courses, UserInfo } from "@/types/schema";
 import { LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/UserContext";
+import { useCourseStore } from "@/lib/store/courseStore";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseView: React.FC = () => {
-  const [courses, setCourses] = useState<Courses[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
-  const [modalMessage, setModalMessage] = useState<string | null>(null);
+  const [courses, setCourses] = useState<Courses[]>([]);
+
+  const { setLocked, isLocked } = useCourseStore();
+
+  console.log("Locked", isLocked);
 
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as UserInfo);
 
   // Fetch courses from the API
-  const fetchCourses = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch("/api/get-courses", { method: "GET" });
-      const data = await response.json();
-      if (!response.ok || !data?.data) {
-        throw new Error(data?.message || "Failed to fetch courses.");
+  const fetchCourses = useCallback(
+    async (userCategory: string) => {
+      setLoading(true);
+      try {
+        const response = await fetch("/api/get-courses", { method: "GET" });
+        const data = await response.json();
+        if (!response.ok || !data?.data) {
+          throw new Error(data?.message || "Failed to fetch courses."); // Throw an error if the response is not okay
+        }
+        console.log("Courses", data.data);
+        const filteredData = data.data.filter((course: Courses) => {
+          console.log("Course Categories", course.categories?.toLowerCase());
+          return course.categories?.toLowerCase() === userCategory;
+        });
+        console.log("Filtered Courses before", filteredData);
+        setLocked(filteredData.isLocked);
+        setCourses(filteredData);
+      } catch (error) {
+        setError((error as Error).message || "Error fetching courses");
+      } finally {
+        setLoading(false);
       }
-      setCourses(data.data);
-    } catch (error) {
-      setError((error as Error).message || "Error fetching courses");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [setLocked] // Re-run the function when the dispatch function changes
+  );
 
   // Fetch courses once when the component mounts
   useEffect(() => {
-    fetchCourses();
-  }, []); // Empty dependency array ensures it's called only on mount
+    if (user && user?.user.categories) {  
+        fetchCourses(user?.user.categories.toLowerCase());
+    }
+  }, [user, fetchCourses]);
 
   return (
     <div className="w-full h-full">
@@ -70,9 +87,9 @@ const CourseView: React.FC = () => {
       {/* Admin and User Welcome Section */}
       <div className="flex justify-end items-center">
         <p className="text-gray-800 text-lg px-16">
-          Welcome: <span className="font-bold">{user?.firstname}</span>
+          Welcome: <span className="font-bold">{user?.user.firstname}</span>
         </p>
-        {user?.role === "admin" && (
+        {user?.user.role === "admin" && (
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mr-16"
             onClick={() => router.push("/admin/addcourse")}
@@ -93,28 +110,11 @@ const CourseView: React.FC = () => {
             <p className="text-red-600">{error}</p>
           </div>
         ) : layout === "grid" ? (
-          <CourseCard selectedCourse={courses} />
+          <CourseCard courses={courses} />
         ) : (
           <CourseList courses={courses} />
         )}
       </div>
-
-      {/* Modal */}
-      {modalMessage && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-medium text-gray-800">{modalMessage}</p>
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setModalMessage(null)}
-                className="bg-red-600 text-white px-4 py-2 rounded-md"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
