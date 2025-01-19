@@ -8,9 +8,7 @@ import ContactInfo from "@/components/ContactInfo";
 import { Card } from "@/components/ui/card";
 import InputContact from "@/components/InputContact";
 import FreqAskeQuestion from "@/components/FreqAskeQuestion";
-import SpecialOffer from "@/components/SpecialOffer";
 import Footer from "@/components/Footer";
-import SpecialMobile from "@/components/SpecialMobile";
 // import GoogleMaps from "@/components/GoogleMaps";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
@@ -76,7 +74,7 @@ const Contact = () => {
                 </p>
               </div>
               <ContactInfo
-                title={"office usa"}
+                title={"Contact In USA"}
                 location={
                   "1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA"
                 }
@@ -85,7 +83,7 @@ const Contact = () => {
                 className="text-black break-normal"
               />
               <ContactInfo
-                title={"office uganda"}
+                title={"Contact In Africa"}
                 location={
                   "Plot No 546, ROFRA house, 4th Floor, Room No 2, Ggaba Road, Kansanga, Kampala."
                 }
@@ -182,12 +180,6 @@ const Contact = () => {
             </div>
           </div>
           <FreqAskeQuestion />
-          <div className="lg:block hidden">
-            <SpecialOffer />
-          </div>
-          <div className="lg:hidden block">
-            <SpecialMobile />
-          </div>
           <Footer />
         </div>
       </div>

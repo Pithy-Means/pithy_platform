@@ -11,7 +11,7 @@ const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr:
 
 function Dashboard() {
   return (
-    <div className="flex space-x-4">
+    <div className="flex space-x-4 ">
       {/* Main content area */}
       <div className="w-full md:w-[calc(100vw-5rem)] lg:w-[calc(100vw-600px)]">
         <ShareSomething />
@@ -24,7 +24,7 @@ function Dashboard() {
       </div>
 
       {/* Fixed bottom bar for smaller screens */}
-      <div className="fixed left-0 bottom-0 h-20 w-full md:block lg:hidden bg-[#5AC35A] py-4 z-50">
+      <div className="fixed left-0 bottom-0 h-20 w-full md:block lg:hidden bg-[#5AC35A] py-4 z-50 overflow-hidden ">
         <div className="flex justify-around items-center text-white">
           <GoHome size={36} />
           <HiMiniClipboardDocumentList size={36} />
