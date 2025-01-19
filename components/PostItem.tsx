@@ -48,6 +48,10 @@ const PostItem: React.FC<PostItemProps> = ({
   const [showComments, setShowComments] = useState<boolean>(false);
   const [repostContent, setRepostContent] = useState<string>("");
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  const truncatedContent =
+  (post?.content?.length ?? 0) > 100 ? post?.content?.slice(0, 100) + "..." : (post?.content ?? "");
 
   const handleUpdate = () => {
     if (editingPostId) {
@@ -111,7 +115,15 @@ const PostItem: React.FC<PostItemProps> = ({
           )}
         </div>
         <div className="flex flex-col space-y-4">
-          <p>{post.content}</p>
+        <p>{isExpanded ? post.content : truncatedContent}</p>
+          {(post?.content?.length ?? 0) > 100 && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-500 underline"
+            >
+              {isExpanded ? "Collapse" : "View"}
+            </button>
+          )}
           {post.image && (
             <Image
               src={post.image}
@@ -176,9 +188,6 @@ const PostItem: React.FC<PostItemProps> = ({
         </div>
         <div className="w-full bg-gray-300 h-0.5 rounded" />
         <div className="flex space-x-8 items-center">
-          <div className="rounded-full bg-gray-300 text-white px-2 py-1 text-xl font-extrabold">
-            {loggedInUserId ? loggedInUserId.charAt(0).toUpperCase() : ""}
-          </div>
           <button
             onClick={() => onLike(post.post_id || "")}
             className={`flex flex-col space-y-1 items-center`}

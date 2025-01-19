@@ -1,22 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { usePosts } from "@/lib/hooks/usePosts";
 import {
   deletePost,
   updatePost,
   createComment,
-  // getCommentsByPostId,
-  // likePost,
   toggleLike,
   repost,
 } from "@/lib/actions/user.actions";
-import { CommentPost, PostWithUser } from "@/types/schema";
+import { CommentPost, PostWithUser, UserInfo } from "@/types/schema";
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
+  
   const fetchedPosts = usePosts();
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
@@ -38,7 +37,7 @@ const Posts = () => {
 
       const repostData = {
         post_id: post.post_id,
-        user_id: user?.user_id,
+        user_id: user?.user.user_id,
         content: post.content, // Original post content
         repost_of: post.post_id, // Indicate it's a repost
         user_comment: repostContent[post.post_id], // User's additional comment
@@ -77,7 +76,7 @@ const Posts = () => {
 
       const data = {
         post_id: postId,
-        user_id: user?.user_id || "",
+        user_id: user?.user.user_id || "",
         like_post_id: likePostId,
       };
 
@@ -105,11 +104,11 @@ const Posts = () => {
     }
   };
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as UserInfo);
 
   usePostInitialization(
     fetchedPosts,
-    user,
+    user?.user,
     setPosts,
     setComments,
     setLikeStatus,
@@ -141,10 +140,13 @@ const Posts = () => {
   const handleAddComment = async (postId: string, comment: string) => {
     if (!comment) return;
 
+    // Set loading state to block input for the current post
+    // setLoading((prev) => ({ ...prev, [postId]: true }));
+
     const commentData: CommentPost = {
       comment_id: "",
       post_id: postId,
-      userid: user?.user_id ?? "",
+      user_id: user?.user.user_id ?? "",
       comment,
     };
 
@@ -158,6 +160,7 @@ const Posts = () => {
     }
     // Empthy the comment input
     setNewComment((prev) => ({ ...prev, [postId]: "" }));
+    // setLoading((prev) => ({ ...prev, [postId]: false }));
   };
 
   return (
@@ -229,16 +232,14 @@ const Posts = () => {
               </div>
             </div>
           </div>
-
         </div>
-
       ) : (
         <>
           {posts.map((post) => (
             <PostItem
               key={post.post_id}
               post={post}
-              loggedInUserId={user?.user_id || null}
+              loggedInUserId={user?.user.user_id || null}
               likeStatus={
                 post.post_id
                   ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
