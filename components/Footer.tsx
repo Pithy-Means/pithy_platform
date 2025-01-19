@@ -33,7 +33,7 @@ const Footer = () => {
             </div>
 
             <ContactInfo
-              title={"office usa"}
+              title={"Contact In USA"}
               location={
                 "1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA"
               }
@@ -42,7 +42,7 @@ const Footer = () => {
               className="text-white text-center  mb-4 md:mb-0 break-normal md:text-base"
             />
             <ContactInfo
-              title={"office uganda"}
+              title={"Contact In Africa"}
               location={
                 "Plot No 546, ROFRA house, 4th Floor,Room No 2, Ggaba Road, Kansanga, Kampala."
               }
@@ -68,16 +68,16 @@ const Footer = () => {
             <div className="mx-4 border border-gray-600 "></div>
             <div className="flex justify-between flex-col-reverse md:flex-row items-center px-4 md:px-10">
               <div>
-                <p className="text-white text-center py-4 text-[12px] md:text-xl">
+                <p className="text-white text-center py-4 text-[18px]">
                   © 2024 Pithy Means. All Rights Reserved
                 </p>
               </div>
-              <div className="flex space-x-2 md:space-x-4 items-center  text-[12px]">
-                <p>Privacy Policy</p>
+              <div className="flex space-x-2 md:space-x-4 items-center">
+                <p className="text-[18px]">Privacy Policy</p>
                 <div className="w-0.5 h-4 bg-gray-600"></div>
-                <p>Help</p>
+                <p className="text-[18px]">Help</p>
                 <div className="w-0.5 h-4 bg-gray-600"></div>
-                <p>Terms and Conditions</p>
+                <p className="text-[18px]">Terms and Conditions</p>
               </div>
             </div>
           </div>
