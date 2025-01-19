@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -12,16 +12,16 @@ import {
   BriefcaseBusiness,
   CirclePlus,
   GraduationCap,
+  HandCoins,
   LogOut,
   School,
 } from "lucide-react";
 import { logoutUser } from "@/lib/actions/user.actions";
 import ModalComp from "./ModalComp";
-import { PostWithUser } from "@/types/schema";
+import { AuthState, PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
-import { UserContext } from "@/context/UserContext";
-import { Button } from "./ui/button";
 import ProfilePage from "./ProfilePage";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -37,7 +37,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
-  const { user } = useContext(UserContext);
+  const { user, signout } = useAuthStore((state) => state as AuthState);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -65,7 +65,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   };
 
   const handleLogout = async () => {
-    await logoutUser();
+    await signout();
     router.push("/");
   };
 
@@ -106,7 +106,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                 },
                 {
                   href: "/dashboard/fundings",
-                  icon: CirclePlus,
+                  icon: HandCoins,
                   label: "Funding",
                 },
               ].map(({ href, icon: Icon, label, restricted }) => (
@@ -149,7 +149,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                 <p
                   className={`${getLinkClassName("/profile")} lg:block hidden`}
                 >
-                  Profile & settings
+                  Profile
                 </p>
               )}
             </button>
