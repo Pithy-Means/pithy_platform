@@ -2,14 +2,17 @@
 
 import {
   CommentPost,
+  Funding,
   // Course,
   GetUserInfo,
   Job,
+  JobComment,
   LikePost,
   LoginInfo,
   Post,
   PostCourseQuestion,
   PostCourseQuestionAnswer,
+  Scholarship,
   // ResetPass,
   UpdateUser,
   UserInfo,
@@ -24,6 +27,7 @@ import {
   courseCollection,
   // courseCollection,
   db,
+  fundingCollection,
   jobCollection,
   likePostCollection,
   postAttachementBucket,
@@ -32,6 +36,7 @@ import {
   postCommentCollection,
   postCourseAnswerCollection,
   postCourseQuestionCollection,
+  scholarshipCollection,
   userCollection,
 } from "@/models/name";
 import env from "@/env";
@@ -208,13 +213,17 @@ export const registerWithGoogle = async (data: UserInfo) => {
   }
 };
 
-export const register = async (userdata: UserInfo) => {
+export const register = async (userdata: Partial<UserInfo>) => {
   const { user_id, email, password, firstname, lastname, categories } =
     userdata;
   const userId = generateValidPostId(user_id);
   let newUserAccount;
   try {
     const { account, databases } = await createAdminClient();
+
+    if (!email || !password) {
+      throw new Error("Email must be provided");
+    }
 
     newUserAccount = await account.create(
       userId,
@@ -239,7 +248,7 @@ export const register = async (userdata: UserInfo) => {
     );
     const session = await account.createEmailPasswordSession(email, password);
     console.log(userinfo);
-    cookies().set("authToken", session.secret, {
+    cookies().set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -321,7 +330,7 @@ export const createPost = async (data: Post) => {
     const fileUpload = await storage.createFile(
       postAttachementBucket,
       ID.unique(),
-      file
+      file,
     );
 
     console.log("Uploaded file:");
@@ -348,8 +357,6 @@ export const createPost = async (data: Post) => {
   } catch (error) {
     console.error(error);
   }
-
-  
 };
 
 export const updatePost = async (
@@ -464,7 +471,7 @@ export const getPosts = async () => {
 
         if (post.image) {
           try {
-            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}&mode=admin`;
+            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`;
           } catch (error) {
             console.error(`Failed to fetch image for post ${post.$id}:`, error);
           }
@@ -472,7 +479,7 @@ export const getPosts = async () => {
 
         if (post.video) {
           try {
-            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}&mode=admin`;
+            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`;
           } catch (error) {
             console.error(`Failed to fetch video for post ${post.$id}:`, error);
           }
@@ -690,7 +697,7 @@ export const getJob = async (jobId: string) => {
   } catch (error) {
     console.error("Error fetching job:", error);
   }
-}
+};
 
 export const getModules = async () => {
   try {
@@ -850,5 +857,166 @@ export const createPostCourseAnswer = async (
     return parseStringify(answer);
   } catch (error) {
     console.error("Error creating answer:", error);
+  }
+};
+
+export const createFunding = async (data: Funding) => {
+  const { funding_id } = data;
+  const validFundingId = generateValidPostId(funding_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const funding = await databases.createDocument(
+      db,
+      fundingCollection,
+      validFundingId,
+      {
+        ...data,
+        funding_id: validFundingId,
+      }
+    );
+    console.log("Funding created", funding);
+    return parseStringify(funding);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getFundings = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const fundings = await databases.listDocuments(db, fundingCollection);
+    return parseStringify(fundings);
+  } catch (error) {
+    console.error("Error fetching fundings:", error);
+  }
+};
+
+export const getFunding = async (fundingId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const funding = await databases.getDocument(db, fundingCollection, fundingId);
+    return parseStringify(funding);
+  } catch (error) {
+    console.error("Error fetching funding:", error);
+  }
+};
+
+export const updateFunding = async (fundingId: string, data: Partial<Funding>) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.updateDocument(db, fundingCollection, fundingId, data);
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error updating funding:", error);
+  }
+};
+
+export const deleteFunding = async (fundingId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.deleteDocument(db, fundingCollection, fundingId);
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error deleting funding:", error);
+  }
+};
+
+export const createScholarship = async (data: Scholarship) => {
+  const { scholarship_id } = data;
+  const validScholarshipId = generateValidPostId(scholarship_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const scholarship = await databases.createDocument(
+      db,
+      scholarshipCollection,
+      validScholarshipId,
+      {
+        ...data,
+        scholarship_id: validScholarshipId,
+      }
+    );
+    console.log("Scholarship created", scholarship);
+    return parseStringify(scholarship);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getScholarships = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const scholarships = await databases.listDocuments(db, scholarshipCollection);
+    return parseStringify(scholarships);
+  } catch (error) {
+    console.error("Error fetching scholarships:", error);
+  }
+};
+
+export const getScholarship = async (scholarshipId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const scholarship = await databases.getDocument(db, scholarshipCollection, scholarshipId);
+    return parseStringify(scholarship);
+  } catch (error) {
+    console.error("Error fetching scholarship:", error);
+  }
+};
+
+export const updateScholarship = async (scholarshipId: string, data: Partial<Scholarship>) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.updateDocument(db, scholarshipCollection, scholarshipId, data);
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error updating scholarship:", error);
+  }
+};
+
+export const deleteScholarship = async (scholarshipId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.deleteDocument(db, scholarshipCollection, scholarshipId);
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error deleting scholarship:", error);
+  }
+};
+
+export const createJobComment = async (data: JobComment) => {
+  const { comment_job_id } = data;
+  const validComment = generateValidPostId(comment_job_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const jobExists = await getJob(data.job_id);
+    const comment = await databases.createDocument(
+      db,
+      postCommentCollection,
+      validComment,
+      {
+        ...data,
+        job_id: jobExists.job_id,
+        comment_job_id: validComment,
+      }
+    );
+    console.log("Comment created", comment);
+    return parseStringify(comment);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getJobCommentsByJobId = async (jobId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const response = await databases.listDocuments(db, postCommentCollection, [
+      Query.equal("job_id", jobId),
+    ]);
+    return parseStringify(response.documents);
+  } catch (error) {
+    console.error("Error fetching comments:", error);
+    return [];
   }
 };
