@@ -8,7 +8,7 @@
     try {
       // Parse the request body
       const body = await req.json(); // Use req.json() to parse the body
-      const { tx_ref, amount, email, name, paymentId, course_choice } = body;
+      const { tx_ref, amount, email, name, paymentId, course_choice, user_id, phone_number } = body;
       const payId = generateValidPostId(paymentId);
 
       const response = await fetch("https://api.flutterwave.com/v3/payments", {
@@ -35,6 +35,8 @@
         }),
       });
 
+      console.log("response", response);
+
       const data = await response.json();
       console.log("data from initiate", data);
 
@@ -42,9 +44,13 @@
         const { databases } = await createAdminClient();
 
         const storePayment = await databases.createDocument(db, paymentCollection, payId, {
+          user_id,
           tx_ref,
           amount,
+          phone_number,
+          network : "flutterwave",
           email,
+          currency: "UGX",
           payment_id: payId,
           course_choice,
           status: "pending",

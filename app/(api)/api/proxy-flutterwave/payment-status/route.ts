@@ -9,7 +9,10 @@ export async function GET(req: Request) {
   const transaction_id = searchParams.get("transaction_id");
 
   if (!transaction_id) {
-    return NextResponse.json({ error: "Transaction reference (transaction_id) is required." }, { status: 400 });
+    return NextResponse.json(
+      { error: "Transaction reference (transaction_id) is required." },
+      { status: 400 }
+    );
   }
 
   try {
@@ -26,7 +29,10 @@ export async function GET(req: Request) {
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {
       return NextResponse.json(
-        { error: "Unexpected response format from Flutterwave.", details: await response.text() },
+        {
+          error: "Unexpected response format from Flutterwave.",
+          details: await response.text(),
+        },
         { status: 500 }
       );
     }
@@ -40,7 +46,10 @@ export async function GET(req: Request) {
       data.data.status !== "successful"
     ) {
       return NextResponse.json(
-        { error: data.message || "Payment verification failed.", details: data },
+        {
+          error: data.message || "Payment verification failed.",
+          details: data,
+        },
         { status: 400 }
       );
     }
@@ -63,20 +72,32 @@ export async function GET(req: Request) {
     ]);
 
     if (!paymentRecord.documents.length) {
-      return NextResponse.json({ error: "Payment record not found." }, { status: 404 });
+      return NextResponse.json(
+        { error: "Payment record not found." },
+        { status: 404 }
+      );
     }
 
     const payment = paymentRecord.documents[0];
 
     // Step 4: Update the payment status
-    const updatedPayment = await databases.updateDocument(db, paymentCollection, payment.$id, {
-      checked: true,
-      currency,
-      method: auth_model,
-      status: "successful",
-    });
+    const updatedPayment = await databases.updateDocument(
+      db,
+      paymentCollection,
+      payment.$id,
+      {
+        checked: true,
+        currency,
+        method: auth_model,
+        status: "successful",
+      }
+    );
 
-    const courseDeatil = await databases.getDocument(db, courseCollection, payment.course_choice);
+    const courseDeatil = await databases.getDocument(
+      db,
+      courseCollection,
+      payment.course_choice
+    );
 
     if (!courseDeatil) {
       return NextResponse.json({ error: "Course not found." }, { status: 404 });
@@ -84,35 +105,41 @@ export async function GET(req: Request) {
 
     const updateStudent = courseDeatil.students || [];
     const updateStudentEmail = courseDeatil.students_email || [];
-    console.log("Update Student:", updateStudent);
-    console.log("Update Student Email:", updateStudentEmail);
-
     // Add the student to the course
-    updateStudent.push(data.data.customer.name);
-    updateStudentEmail.push(data.data.customer.email);
-    console.log("Update Student:", updateStudent);
-    console.log("Update Student Email:", updateStudentEmail);
+    // Check if the name and email already exist in the arrays
+    if (!updateStudent.includes(data.data.customer.name)) {
+      updateStudent.push(data.data.customer.name);
+    }
+
+    if (!updateStudentEmail.includes(data.data.customer.email)) {
+      updateStudentEmail.push(data.data.customer.email);
+    }
 
     // Step 5: Unlock the course associated with the payment
-    const courseUpdate = await databases.updateDocument(db, courseCollection, payment.course_choice, {
-      students: updateStudent,
-      student_email: updateStudentEmail,
-    });
-
-    // Log and respond with success
-    console.log("Updated Payment:", updatedPayment);
-    console.log("Updated Course:", courseUpdate);
+    const courseUpdate = await databases.updateDocument(
+      db,
+      courseCollection,
+      payment.course_choice,
+      {
+        students: updateStudent,
+        student_email: updateStudentEmail,
+      }
+    );
 
     return NextResponse.json({
       success: true,
       payment: updatedPayment,
       course: courseUpdate,
       transaction: data.data,
+      courseUnlocked: true, // Indicate that the course is unlocked
     });
   } catch (error) {
     console.error("Error during payment verification:", error);
     return NextResponse.json(
-      { error: "Internal server error during payment verification.", details: error },
+      {
+        error: "Internal server error during payment verification.",
+        details: error,
+      },
       { status: 500 }
     );
   }
