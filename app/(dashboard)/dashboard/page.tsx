@@ -9,6 +9,8 @@ import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { MdOutlineAddCircle } from "react-icons/md";
 
+import { NavLink } from 'react-router-dom';
+
 const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
 
 function Dashboard() {
@@ -29,21 +31,41 @@ function Dashboard() {
       {/* Fixed bottom bar for smaller screens */}
       <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4 z-10">
         <div className="flex justify-around items-center text-white">
-          <button aria-label="Home" className=" hover:text-gray-800">
+          <NavLink
+            to='/'
+            aria-label="Home"
+            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
+          >
             <GoHome size={28} />
-          </button>
-          <button aria-label="Posts">
+          </NavLink>
+          <NavLink
+            to='/Posts'
+            aria-label="Posts"
+            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
+          >
             <HiMiniClipboardDocumentList size={28} />
-          </button>
-          <button aria-label="Create Post">
+          </NavLink>
+          <NavLink
+            to='/CreatePosts'
+            aria-label="Create Post"
+            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
+          >
             <MdOutlineAddCircle size={28} />
-          </button>
-          <button aria-label="Jobs">
+          </NavLink>
+          <NavLink
+            to='/JobList'
+            aria-label="Jobs"
+            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
+          >
             <BriefcaseBusiness size={28} />
-          </button>
-          <button aria-label="School">
+          </NavLink>
+          <NavLink
+            to='/CourseList'
+            aria-label="School"
+            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
+          >
             <School size={28} />
-          </button>
+          </NavLink>
         </div>
       </div>
     </div>
