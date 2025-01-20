@@ -18,9 +18,15 @@ interface PostsContextType {
 export const PostsContext = createContext<PostsContextType | undefined>(undefined);
 
 export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
+  children
 }) => {
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const [posts, setPosts] = useState<PostWithUser[]>(() => {
+    // Load cached posts from localstorage
+    const cachedPosts = localStorage.getItem("posts");
+    return cachedPosts ? JSON.parse(cachedPosts) : [];
+  });
+
+
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
@@ -48,6 +54,11 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     fetchPosts();
   }, [page]);
+
+  // Save posts to localstorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("posts", JSON.stringify(posts));
+  }, [posts]);
 
   return (
     <PostsContext.Provider
