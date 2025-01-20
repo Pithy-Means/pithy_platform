@@ -33,7 +33,7 @@ const ShareSomething = () => {
         </div>
 
         {/* Scrollable Posts Section */}
-        <div className="flex-1  w-full no-scrollbar mt-4 ">
+        <div className="flex-1  w-full no-scrollbar mt-4 max-w-3xl overflow-y-auto h-screen ">
           <Posts />
         </div>
       </div>
