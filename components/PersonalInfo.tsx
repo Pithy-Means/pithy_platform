@@ -20,7 +20,7 @@ const PersonInfo: React.FC<PersonInfoProps> = ({
   };
 
   return (
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 z-50">
       <div className="p-6">
         {/* Question */}
         <h2 className="text-xl font-semibold text-center mb-2">{question}</h2>
