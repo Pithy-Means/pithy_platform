@@ -89,19 +89,20 @@ const SignupForm = () => {
   }
 
   return (
-    <div className="w-full mx-auto p-6 bg-white h-full  flex justify-center items-center flex-col relative">
+    <div className="w-full mx-auto p-6 bg-white flex justify-center items-center flex-col relative h-screen overflow-y-hidden">
+      {/* Background Decorative Elements */}
       <div className="absolute inset-0">
         <div className="absolute w-[20rem] h-[20rem] bg-green-100 rounded-full blur-3xl top-[-6rem] left-[-8rem]" />
         <div className="absolute w-[16rem] h-[16rem] bg-green-200 rounded-full blur-2xl bottom-[-6rem] right-[-8rem]" />
         <div className="absolute w-[12rem] h-[12rem] bg-green-300 rounded-full blur-2xl top-[10rem] left-[5rem]" />
-        <div className="absolute w-[14rem] h-[14rem] bg-green-400 rounded-full blur-xl bottom-[10rem] right-[5rem]" />  
+        <div className="absolute w-[14rem] h-[14rem] bg-green-400 rounded-full blur-xl bottom-[10rem] right-[5rem]" />
         <div className="absolute w-[10rem] h-[10rem] bg-green-500 rounded-full blur-xl top-[20rem] right-[20rem]" />
-        <div className="absolute w-[8rem] h-[8rem] bg-green-600 rounded-full blur-xl bottom-[20rem] left-[20rem]" />
-        <div className="absolute w-[6rem] h-[6rem] bg-green-700 rounded-full blur-xl top-[30rem] left-[30rem]" />
+        <div className="absolute w-[8rem] h-[8rem] bg-green-100 rounded-full blur-xl bottom-[20rem] left-[20rem]" />
+        <div className="absolute w-[6rem] h-[6rem] bg-green-200 rounded-full blur-xl top-[30rem] left-[30rem]" />
         <div className="absolute w-[4rem] h-[4rem] bg-green-300 rounded-full blur-xl bottom-[5rem] right-[5rem]" />
       </div>
       {/* Progress Bar */}
-      <div className="w-1/5">
+      <div className="mx-50 flex items-center justify-center w-full my-10">
         <ProgressBar currentStep={currentStep} />
       </div>
       <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
@@ -156,9 +157,9 @@ const SignupForm = () => {
                 />
                 {/* Render category-specific fields */}
               </div>
-              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto z-50">
                 {formData.categories === "student" && (
-                  <div className="space-y-4">
+                  <div className="space-y-4 z-50">
                     <div className="mb-4">
                       <h3 className="text-lg font-semibold text-gray-800">
                         Student Information
@@ -233,14 +234,6 @@ const SignupForm = () => {
                         formData.years_of_work_experience?.toString() || ""
                       }
                       onChange={handleChange}
-                    />
-                    <InputContact
-                      label="Resume Link"
-                      type="text"
-                      name="resume_link"
-                      value={formData.resume_link || ""}
-                      onChange={handleChange}
-                      isTextarea
                     />
                     <div className="mb-4">
                       <label className="block text-gray-700">
@@ -322,12 +315,12 @@ const SignupForm = () => {
           )}
         </div>
         {/* Navigation buttons */}
-        <div className="flex justify-center items-center gap-x-4 mt-6">
+        <div className="flex justify-center items-center gap-x-4 my-6">
           {currentStep > 0 && (
             <button
               type="button"
               onClick={handlePrev}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md"
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-md z-50"
             >
               Previous
             </button>
@@ -359,6 +352,16 @@ const SignupForm = () => {
               Sign up
             </button>
           )}
+        </div>
+
+        {/* Bottom Note */}
+        <div className="mt-12 text-center">
+          <p className="text-sm text-gray-600">
+            Already a member?{" "}
+            <a href="/signIn" className="text-green-600 font-medium underline">
+              Sign in
+            </a>
+          </p>
         </div>
       </form>
     </div>
