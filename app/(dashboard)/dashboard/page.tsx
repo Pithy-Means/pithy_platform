@@ -13,9 +13,9 @@ const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr:
 
 function Dashboard() {
   return (
-    <div className="flex  flex-col lg:flex-row  lg:space-x-4">
+    <div className="flex  flex-col lg:flex-row  lg:space-x-4 w-full ">
       {/* Main content area */}
-      <div className="px-4 sm:px-6 lg:px-8 w-full lg:w-[70%] ">
+      <div className="px-4 sm:px-6 lg:px-8 w-full lg:w-[70%] xl:w-[75%]">
         <ShareSomething />
       </div>
 
