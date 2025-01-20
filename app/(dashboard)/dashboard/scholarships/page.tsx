@@ -48,32 +48,32 @@ const ScholarshipList = () => {
       ) : error ? (
         <p className="text-center text-red-500">{error}</p>
       ) : (
-        <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 w-full px-6 z-10">
+        <div className="grid gap-8 grid-cols-1 lg:grid-cols-3 w-full px-6 z-50">
           {scholarships.map((scholarship) => (
             <div
               key={scholarship.scholarship_id}
               className="bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-xl p-6 flex flex-col justify-between z-20 relative overflow-hidden"
             >
               {/* Title */}
-              <h2 className="text-3xl font-semibold text-gray-900 mb-4 z-10 relative">
+              <h2 className="text-3xl font-semibold text-gray-900 mb-4 z-50 relative">
                 {scholarship.title || "Untitled Scholarship"}
               </h2>
 
               {/* Scholarship Details */}
-              <div className="z-10 relative">
+              <div className="z-50 relative">
                 <p className="text-gray-700 mb-2">
                   <span className="font-semibold text-green-400">
                     Provider:
                   </span>{" "}
                   {scholarship.provider || "N/A"}
                 </p>
-                <p className="text-gray-700 mb-2">
+                <p className="text-gray-700 mb-2 z-50">
                   <span className="font-semibold text-green-400">
                     Country of Study:
                   </span>{" "}
                   {scholarship.country_of_study || "All"}
                 </p>
-                <p className="text-gray-700 mb-4">
+                <p className="text-gray-700 mb-4 z-50">
                   <span className="font-semibold text-green-400">Amount:</span>{" "}
                   {scholarship.amount || "Not specified"}
                 </p>
@@ -86,7 +86,7 @@ const ScholarshipList = () => {
                     ? `/dashboard/scholarships/${scholarship.scholarship_id}`
                     : "#"
                 }
-                className="mt-auto inline-block bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:translate-y-2"
+                className="z-50 mt-auto inline-block bg-gradient-to-r from-green-500 to-green-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 ease-in-out transform hover:translate-y-2"
                 onClick={(e) => {
                   if (!scholarship.scholarship_id) {
                     e.preventDefault();
