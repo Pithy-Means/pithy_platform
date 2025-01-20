@@ -186,7 +186,7 @@ const Posts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4">
+    <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4 min-h-screen" style={{height: 'calc(100vh - 4rem)'}}>
       {/* Skeleton Loader */}
       {loading ? (
         // <div className="py-4 flex flex-col space-y-4 justify-center sm:space-y-2">
