@@ -1,5 +1,6 @@
 import { BaseUserInfo } from "@/types/schema";
 import InputContact from "./InputContact";
+import Phonenumber from "./Phonenumber";
 
 interface BasicInfoStepProps {
   formData: Partial<BaseUserInfo>;
@@ -12,36 +13,25 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
   onChange,
 }) => (
   <div className="w-full relative px-8">
-    {/* Background Decorative Elements */}
-
-
-    {/* Header */}
-    <h2 className="text-3xl font-extrabold text-green-700 mb-12 text-center tracking-wide">
-      Let&apos;s Build Your Profile Together
-    </h2>
-    <p className="text-center text-green-600 mb-10 text-lg font-medium">
-      Fill out your basic details below, and we’ll tailor your experience.
-    </p>
 
     {/* Form Fields with Enhanced Layout */}
-    <div className="grid grid-cols-12 gap-x-8 gap-y-10">
+    <div className="w-1/3 mx-auto flex flex-col space-y-5">
       {/* Left Column */}
-      <div className="col-span-12 lg:col-span-6 space-y-8">
         <InputContact
-          label="First Name"
+          label="First name"
           type="text"
           name="firstname"
           value={formData.firstname || ""}
           onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          className="py-6"
         />
         <InputContact
-          label="Last Name"
+          label="Last name"
           type="text"
           name="lastname"
           value={formData.lastname || ""}
           onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          className="py-6"
         />
         <InputContact
           label="Email"
@@ -49,19 +39,13 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           name="email"
           value={formData.email || ""}
           onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          className="py-6"
         />
-      </div>
-
-      {/* Right Column */}
-      <div className="col-span-12 lg:col-span-6 space-y-8">
-        <InputContact
-          label="Phone Number"
-          type="tel"
-          name="phone"
+        <Phonenumber
+          initialPhone={formData.phone || "+256"}
           value={formData.phone || ""}
-          onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          onPhoneChange={(phone: string) => onChange({ target: { name: 'phone', value: phone } } as React.ChangeEvent<HTMLInputElement>)}
+          className="!rounded-xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105 my-3"
         />
         <InputContact
           label="Address"
@@ -69,7 +53,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           name="address"
           value={formData.address || ""}
           onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          className="py-6"
         />
         <InputContact
           label="Password"
@@ -77,20 +61,8 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           name="password"
           value={formData.password || ""}
           onChange={onChange}
-          className="!rounded-2xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105"
+          className="py-6"
         />
-      </div>
-    </div>
-
-    {/* Bottom Note */}
-    <div className="mt-12 text-center">
-      <p className="text-sm text-gray-600">
-        We value your privacy. By continuing, you agree to our{" "}
-        <a href="#" className="text-green-600 font-medium underline">
-          Privacy Policy
-        </a>
-        .
-      </p>
     </div>
   </div>
 );
