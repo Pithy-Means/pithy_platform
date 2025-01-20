@@ -9,7 +9,7 @@ import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { MdOutlineAddCircle } from "react-icons/md";
 
-import { NavLink } from 'react-router-dom';
+import Link from 'next/link';
 
 const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
 
@@ -31,41 +31,31 @@ function Dashboard() {
       {/* Fixed bottom bar for smaller screens */}
       <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4 z-10">
         <div className="flex justify-around items-center text-white">
-          <NavLink
-            to='/'
-            aria-label="Home"
-            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
-          >
-            <GoHome size={28} />
-          </NavLink>
-          <NavLink
-            to='/Posts'
-            aria-label="Posts"
-            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
-          >
-            <HiMiniClipboardDocumentList size={28} />
-          </NavLink>
-          <NavLink
-            to='/CreatePosts'
-            aria-label="Create Post"
-            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
-          >
-            <MdOutlineAddCircle size={28} />
-          </NavLink>
-          <NavLink
-            to='/JobList'
-            aria-label="Jobs"
-            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
-          >
-            <BriefcaseBusiness size={28} />
-          </NavLink>
-          <NavLink
-            to='/CourseList'
-            aria-label="School"
-            className={({ isActive }) => (isActive ? 'text-white' : 'hover:text-gray-800')}
-          >
-            <School size={28} />
-          </NavLink>
+          <Link href='/' aria-label="Home">
+            <a className="hover:text-gray-800">
+              <GoHome size={28} />
+            </a>
+          </Link>
+          <Link href='/components/Posts' aria-label="Posts">
+            <a className="hover:text-gray-800">
+              <HiMiniClipboardDocumentList size={28} />
+            </a>
+          </Link>
+          <Link href='/components/CreatePosts' aria-label="Create Post">
+            <a className="hover:text-gray-800">
+              <MdOutlineAddCircle size={28} />
+            </a>
+          </Link>
+          <Link href='/dashbord/jobs' aria-label="Jobs">
+            <a className="hover:text-gray-800">
+              <BriefcaseBusiness size={28} />
+            </a>
+          </Link>
+          <Link href='/dashbord/courses' aria-label="School">
+            <a className="hover:text-gray-800">
+              <School size={28} />
+            </a>
+          </Link>
         </div>
       </div>
     </div>
