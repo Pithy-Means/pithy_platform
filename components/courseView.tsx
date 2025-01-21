@@ -16,7 +16,7 @@ const CourseView: React.FC = () => {
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [courses, setCourses] = useState<Courses[]>([]);
 
-  const { setLocked, isLocked } = useCourseStore();
+  const { isLocked } = useCourseStore();
 
   console.log("Locked", isLocked);
 
@@ -39,7 +39,6 @@ const CourseView: React.FC = () => {
           return course.categories?.toLowerCase() === userCategory;
         });
         console.log("Filtered Courses before", filteredData);
-        setLocked(filteredData.isLocked);
         setCourses(filteredData);
       } catch (error) {
         setError((error as Error).message || "Error fetching courses");
@@ -47,7 +46,7 @@ const CourseView: React.FC = () => {
         setLoading(false);
       }
     },
-    [setLocked] // Re-run the function when the dispatch function changes
+    [] // Re-run the function when the dispatch function changes
   );
 
   // Fetch courses once when the component mounts
