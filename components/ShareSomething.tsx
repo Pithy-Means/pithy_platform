@@ -39,9 +39,13 @@ const ShareSomething = () => {
 
             {/* Autocomplete suggestions */}
             <datalist id='autocomplete-options'> {/* Add the datalist element */}
-              {filteredPosts.slice(0, 5).map((post) => ( // Map through the filtered posts
-                <option key={post.post_id} value={post.content} />
-              ))}
+              {filteredPosts && filteredPosts.length > 0 ? (
+                filteredPosts.slice(0, 5).map((post) => (
+                  <option key={post.post_id} value={`${post.content} by ${post.user.firstname}`} />
+                ))
+              ) : (
+                <option value="No results found" disabled />
+              )}
             </datalist>
 
             {/* Button */}
@@ -51,6 +55,7 @@ const ShareSomething = () => {
             >
               Post
             </Button>
+            {/* console.log(`&apos;`filteredPosts`&apos;`, filteredPosts) */}
           </div>
         </div>
 
@@ -58,9 +63,11 @@ const ShareSomething = () => {
         <div className="flex-1  w-full no-scrollbar mt-4 max-w-3xl overflow-y-auto h-screen ">
           <Posts />
           {/* {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => <Posts key={post.post_id} post={post}/>)
+            filteredPosts.map((post) => (
+              <Posts key={post.post_id} post={post} />
+            ))
           ) : (
-            <p>No results found.</p>
+            <p className="text-gray-500 text-center">No results found. Try searching for a different query.</p>
           )} */}
         </div>
       </div>
