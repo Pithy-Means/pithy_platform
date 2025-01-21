@@ -89,9 +89,9 @@ const SignupForm = () => {
   }
 
   return (
-    <div className="w-full mx-auto p-6 bg-white flex justify-center items-center flex-col relative h-screen overflow-y-hidden">
+    <div className="w-full mx-auto p-6 bg-white flex justify-center items-center flex-col relative h-screen overflow-hidden">
       {/* Background Decorative Elements */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 -z-50">
         <div className="absolute w-[20rem] h-[20rem] bg-green-100 rounded-full blur-3xl top-[-6rem] left-[-8rem]" />
         <div className="absolute w-[16rem] h-[16rem] bg-green-200 rounded-full blur-2xl bottom-[-6rem] right-[-8rem]" />
         <div className="absolute w-[12rem] h-[12rem] bg-green-300 rounded-full blur-2xl top-[10rem] left-[5rem]" />
@@ -102,7 +102,7 @@ const SignupForm = () => {
         <div className="absolute w-[4rem] h-[4rem] bg-green-300 rounded-full blur-xl bottom-[5rem] right-[5rem]" />
       </div>
       {/* Progress Bar */}
-      <div className="mx-50 flex items-center justify-center w-full my-10">
+      <div className="flex items-center justify-center w-full my-10">
         <ProgressBar currentStep={currentStep} />
       </div>
       <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
@@ -112,7 +112,7 @@ const SignupForm = () => {
             <BasicInfoStep formData={formData} onChange={handleChange} />
           )}
           {currentStep === 1 && (
-            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+            <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto">
               <PersonInfo
                 question="What is your age group?"
                 options={["18-25", "26-35", "36-45", "46 and +"]}
@@ -127,7 +127,7 @@ const SignupForm = () => {
             </div>
           )}
           {currentStep === 2 && (
-            <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+            <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto">
               <PersonInfo
                 question="Select your gender"
                 options={["male", "female"]}
@@ -143,7 +143,7 @@ const SignupForm = () => {
           )}
           {currentStep === 3 && (
             <div className="flex w-full space-y-6">
-              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto">
+              <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto">
                 <PersonInfo
                   question="Select your category"
                   options={["student", "job seeker", "employer"]}
@@ -157,7 +157,7 @@ const SignupForm = () => {
                 />
                 {/* Render category-specific fields */}
               </div>
-              <div className="flex flex-col justify-center space-y-4 w-3/5 mx-auto z-50">
+              <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto z-50">
                 {formData.categories === "student" && (
                   <div className="space-y-4 z-50">
                     <div className="mb-4">
@@ -355,10 +355,10 @@ const SignupForm = () => {
         </div>
 
         {/* Bottom Note */}
-        <div className="mt-12 text-center">
+        <div className="mt-12 text-center z-50">
           <p className="text-sm text-gray-600">
             Already a member?{" "}
-            <a href="/signIn" className="text-green-600 font-medium underline">
+            <a href="/signIn" className="text-green-600 font-medium underline z-50">
               Sign in
             </a>
           </p>
