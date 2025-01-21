@@ -1,12 +1,23 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Posts from "./Posts";
 import { CircleUserRound } from "lucide-react";
 import { Button } from "./ui/button";
-import { PostsProvider } from '@/context/PostContext'
+import { PostsProvider, usePost } from '@/context/PostContext'
 
 const ShareSomething = () => {
+  const { searchPosts, filteredPosts } = usePost(); //Destructure the searchPosts function and the filterdPosts state
+  const [query, setQuery] = useState('');  //Create a new state to store the search query
+
+  const handleSearch = () => {
+    if (!query || query.trim() === "") {
+      console.error("Search query is empty.");
+      return;
+    }
+    searchPosts(query.trim());  //Trigger the searchPosts function with the query
+  }
+
   return (
     <PostsProvider>
       <div className="flex flex-col no-scrollbar items-center justify-center min-h-screen">
@@ -19,14 +30,25 @@ const ShareSomething = () => {
             {/* Input */}
             <input
               type="text"
-              placeholder="Share something"
-              className="border border-gray-300 rounded-lg flex-1 py-1 mx-2  focus:outline-none focus:ring-2 focus:ring-[#5AC35A]  "
-              value="" // Add the value property
-              onChange={() => { }} // Open modal when the input is clicked
+              placeholder="Search Posts"
+              className="border border-gray-300 rounded-lg flex-1 py-1 mx-2  px-2 focus:outline-none focus:ring-2 focus:ring-[#5AC35A]  "
+              value={query} // Add the value property
+              onChange={(e) => setQuery(e.target.value)} // Open modal when the input is clicked
+              list='autocomplete-options' // Add the list attribute
             />
 
+            {/* Autocomplete suggestions */}
+            <datalist id='autocomplete-options'> {/* Add the datalist element */}
+              {filteredPosts.slice(0, 5).map((post) => ( // Map through the filtered posts
+                <option key={post.post_id} value={post.content} />
+              ))}
+            </datalist>
+
             {/* Button */}
-            <Button className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0">
+            <Button
+              className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0"
+              onClick={handleSearch} // search posts when the button is clicked
+            >
               Post
             </Button>
           </div>
@@ -35,6 +57,11 @@ const ShareSomething = () => {
         {/* Scrollable Posts Section */}
         <div className="flex-1  w-full no-scrollbar mt-4 max-w-3xl overflow-y-auto h-screen ">
           <Posts />
+          {/* {filteredPosts.length > 0 ? (
+            filteredPosts.map((post) => <Posts key={post.post_id} post={post}/>)
+          ) : (
+            <p>No results found.</p>
+          )} */}
         </div>
       </div>
 
