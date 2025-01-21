@@ -21,16 +21,16 @@ interface PostsContextType {
 export const PostsContext = createContext<PostsContextType>({
   posts: [],
   loading: true,
-  fetchMorePosts: () => {},
-  searchPosts: () => {},
+  fetchMorePosts: () => { },
+  searchPosts: () => { },
   hasMore: true,
   page: 1,
-  setPosts: () => {},
-  setLoading: () => {},
-  setPage: () => {},
-  setHasMore: () => {},
+  setPosts: () => { },
+  setLoading: () => { },
+  setPage: () => { },
+  setHasMore: () => { },
   filteredPosts: [],
-  setFilteredPosts: () => {},
+  setFilteredPosts: () => { },
 });
 
 export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -53,27 +53,30 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     const cachedPosts = localStorage.getItem("posts");
     if (cachedPosts) {
-      try{
+      try {
         setPosts(JSON.parse(cachedPosts));
       } catch (error) {
         console.error("Error parsing posts from localStorage:", error);
+      }
     }
-  }
   }, []);
-   // Save posts to localstorage whenever it changes
-   useEffect(() => {
+  // Save posts to localstorage whenever it changes
+  useEffect(() => {
     localStorage.setItem("posts", JSON.stringify(posts));
   }, [posts]);
 
   // function to fetch posts from Appwrite server
   const fetchPosts = async () => {
-    setLoading(true);
+    // setLoading(true);
     try {
       const fetchedPosts = await getPosts(); // Fetch posts from Appwrite with pagination
+      if (!Array.isArray(fetchedPosts)) throw new Error("Invalid posts data");
       setPosts((prev) => [...prev, ...fetchedPosts]);
       setHasMore(fetchedPosts.length > 0);
     } catch (error) {
       console.error("Error fetching posts:", error);
+      // setPosts([]);
+      // setHasMore(false);
     } finally {
       setLoading(false);
     }
@@ -91,12 +94,32 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // search function
   const searchPosts = async (query: string) => {
-    setLoading(true);
+    // setLoading(true);
     const allPosts = posts.length > 0 ? posts : await getPosts();
-    const results = allPosts.filter((post: PostWithUser) =>
-      post.user?.toString().includes(query) || post.content?.toLowerCase().includes(query.toLowerCase())
-    );
+
+    if (!allPosts) {
+      console.error("No posts data available.");
+      setFilteredPosts([]);
+      return;
+    }
+    // filter posts based on the query
+    const results = allPosts.filter((post: PostWithUser) => {
+
+      if (!post.user) return false; // Skip posts without user data
+      const isMatch =
+        post.user.firstname?.toLowerCase().includes(query.toLowerCase()) ||
+        post.user.lastname?.toLowerCase().includes(query.toLowerCase()) ||
+        post.user.name?.toLowerCase().includes(query.toLowerCase()) ||
+        post.user?.toString().includes(query) ||
+        post.content?.toLowerCase().includes(query.toLowerCase());
+      // (post.comments && post.comments.some((comment) => 
+      //   comment.toLowerCase().includes(query.toLowerCase())
+      // )) || // Match comments
+
+      return isMatch;
+    });
     setFilteredPosts(results);
+    
   };
 
   return (
