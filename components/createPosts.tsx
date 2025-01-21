@@ -76,7 +76,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       {loading ? (
         <p>Creating post, please wait...</p>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4 text-black/70">
           <h2 className="text-xl font-semibold mb-2 text-black/30">Create a New Post</h2>
           <div className="flex flex-col">
             <Label htmlFor="content" className="font-medium text-black/30 mb-1">
