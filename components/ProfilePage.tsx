@@ -7,6 +7,8 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 export default function ProfilePage() {
   const { user } = useAuthStore((state) => state as UserInfo);
 
+  console.log("Use Category", user?.user);
+
   if (!user?.user) {
     return <p className="text-center mt-10 text-gray-500">Loading user info...</p>;
   }
@@ -68,15 +70,15 @@ export default function ProfilePage() {
               <div className="mt-4">
                 <p>
                   <span className="font-semibold">Institution:</span>{" "}
-                  {user?.user.studentInfo?.institution_name || "Not specified"}
+                  {user?.user.institution_name || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Major Subject:</span>{" "}
-                  {user?.user.studentInfo?.major_subject || "Not specified"}
+                  {user?.user.major_subject || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Graduation Year:</span>{" "}
-                  {user?.user.studentInfo?.expected_graduation_year || "Not specified"}
+                  {user?.user.expected_graduation_year || "Not specified"}
                 </p>
               </div>
             )}
@@ -84,16 +86,16 @@ export default function ProfilePage() {
               <div className="mt-4">
                 <p>
                   <span className="font-semibold">Desired Job:</span>{" "}
-                  {user?.user.jobSeekerInfo?.desired_job_title || "Not specified"}
+                  {user?.user.desired_job_title || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Skills:</span>{" "}
-                  {user?.user.jobSeekerInfo?.skills || "Not specified"}
+                  {user?.user.skills || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Work Experience:</span>{" "}
-                  {user?.user.jobSeekerInfo?.years_of_work_experience
-                    ? `${user?.user.jobSeekerInfo.years_of_work_experience} years`
+                  {user?.user.years_of_work_experience
+                    ? `${user?.user.years_of_work_experience} years`
                     : "Not specified"}
                 </p>
               </div>
@@ -102,15 +104,15 @@ export default function ProfilePage() {
               <div className="mt-4">
                 <p>
                   <span className="font-semibold">Company Name:</span>{" "}
-                  {user?.user.employerInfo?.company_name || "Not specified"}
+                  {user?.user.company_name || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Company Size:</span>{" "}
-                  {user?.user.employerInfo?.company_size || "Not specified"}
+                  {user?.user.company_size || "Not specified"}
                 </p>
                 <p>
                   <span className="font-semibold">Industry:</span>{" "}
-                  {user?.user.employerInfo?.industry_type || "Not specified"}
+                  {user?.user.industry_type || "Not specified"}
                 </p>
               </div>
             )}
