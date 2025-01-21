@@ -16,6 +16,7 @@ import {
   // ResetPass,
   UpdateUser,
   UserInfo,
+  VerifyUser,
 } from "@/types/schema";
 // import crypto from "crypto";
 import dayjs from "dayjs";
@@ -214,53 +215,63 @@ export const registerWithGoogle = async (data: UserInfo) => {
 };
 
 export const register = async (userdata: Partial<UserInfo>) => {
-  const { user_id, email, password, firstname, lastname, categories } =
-    userdata;
-  const userId = generateValidPostId(user_id);
-  let newUserAccount;
+  const { user_id, email, password, firstname, lastname, categories } = userdata;
+
+  const userId = generateValidPostId(user_id); // Custom user ID logic
   try {
     const { account, databases } = await createAdminClient();
 
     if (!email || !password) {
-      throw new Error("Email must be provided");
+      throw new Error("Email and password must be provided");
     }
 
-    newUserAccount = await account.create(
-      userId,
-      email,
-      password,
-      `${firstname} ${lastname}`
-    );
+    // Step 1: Create the account
+    const newUserAccount = await account.create(userId, email, password, `${firstname} ${lastname}`);
+    console.log("New user account:", newUserAccount.emailVerification);
 
     if (!newUserAccount) {
       throw new Error("Account not created");
     }
 
-    const userinfo = await databases.createDocument(
-      db,
-      userCollection,
-      userId,
-      {
-        ...userdata,
-        user_id: userId,
-        categories: categories || [],
-      }
-    );
+    // Step 2: Create user info in the database
+    const userinfo = await databases.createDocument(db, userCollection, userId, {
+      ...userdata,
+      user_id: userId,
+      categories: categories || [],
+    });
+    console.log("User information created:", userinfo);
+
+    // Step 3: Generate a session for the new user
     const session = await account.createEmailPasswordSession(email, password);
-    console.log(userinfo);
+    console.log("Session created:", session);
+
+      // // Step 4: Send a verification email
+      // await account.createVerification("http://localhost:3000/verify");
+      // console.log("Verification email sent");
+
+    // Set a secure cookie for the session
     cookies().set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
       secure: true,
     });
-
     return parseStringify(userinfo);
   } catch (error) {
-    console.error(error);
-    throw new Error("Failed to create user account");
+    console.error("Error in register function:", error);
+    throw new Error("Failed to register user");
   }
 };
+
+export const updateVerify = async (data: VerifyUser) => {
+  try {
+    const { account } = await createAdminClient();
+    const response = await account.updateVerification(data.user_id, data.secret);
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error verifying user:", error);
+  }
+}
 
 export const updateUserSession = async () => {
   try {
