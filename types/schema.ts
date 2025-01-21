@@ -18,6 +18,12 @@ export type BaseUserInfo = {
   [key: string]: any; // Allow for other fields
 };
 
+// Verify user type
+export type VerifyUser = {
+  user_id: string;
+  secret: string;
+};
+
 //User categories
 export type UserCategories = "student" | "job seeker" | "employer";
 
