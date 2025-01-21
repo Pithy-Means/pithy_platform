@@ -15,7 +15,7 @@ import SpecialMobile from "@/components/SpecialMobile";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
-  
+
 });
 
 const Contact = () => {
@@ -103,6 +103,7 @@ const Contact = () => {
             {!responseMessage ? (
               <Card className="bg-white py-20 px-6 h-fit w-full text-sm sm:text-base">
                 <form
+                  id="contact-form"
                   onSubmit={handleSubmit}
                   className="flex flex-col space-y-4 text-sm sm:text-base"
                 >
@@ -177,7 +178,7 @@ const Contact = () => {
               </p>
               <Card className="bg-white w-full flex items-center justify-center">
                 <div className=" ">
-                  <DynamicMap  />
+                  <DynamicMap />
                 </div>
               </Card>
             </div>
