@@ -11,6 +11,7 @@ import { MdOutlineAddCircle } from "react-icons/md";
 
 import Link from 'next/link';
 
+// Lazy load the sidebar component
 const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
 
 function Dashboard() {
@@ -31,33 +32,25 @@ function Dashboard() {
       {/* Fixed bottom bar for smaller screens */}
       <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4 z-10">
         <div className="flex justify-around items-center text-white">
-          <Link href='/' aria-label="Home">
-            <a className="hover:text-gray-800">
-              <GoHome size={28} />
-            </a>
+          <Link href='/' >
+            <GoHome size={28} className="hover:text-gray-800" />
           </Link>
-          <Link href='/components/Posts' aria-label="Posts">
-            <a className="hover:text-gray-800">
-              <HiMiniClipboardDocumentList size={28} />
-            </a>
+          <Link href='Posts' aria-label="Posts">
+            <HiMiniClipboardDocumentList size={28} className="hover:text-gray-800" />
           </Link>
-          <Link href='/components/CreatePosts' aria-label="Create Post">
-            <a className="hover:text-gray-800">
-              <MdOutlineAddCircle size={28} />
-            </a>
+          <Link href='CreatePosts' aria-label="Create Post">
+            <MdOutlineAddCircle size={28} className="hover:text-gray-800" />
           </Link>
-          <Link href='/dashbord/jobs' aria-label="Jobs">
-            <a className="hover:text-gray-800">
-              <BriefcaseBusiness size={28} />
-            </a>
+          <Link href='/dashboard/jobs' aria-label="Jobs">
+            <BriefcaseBusiness size={28} className="hover:text-gray-800" />
           </Link>
-          <Link href='/dashbord/courses' aria-label="School">
-            <a className="hover:text-gray-800">
-              <School size={28} />
-            </a>
+          <Link href='/dashboard/courses' aria-label="School">
+            <School size={28} className="hover:text-gray-800" />
           </Link>
         </div>
       </div>
+
+
     </div>
   );
 }
