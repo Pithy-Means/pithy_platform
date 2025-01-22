@@ -21,7 +21,7 @@ const CourseView: React.FC = () => {
   console.log("Locked", isLocked);
 
   const router = useRouter();
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   // Fetch courses from the API
   const fetchCourses = useCallback(
@@ -51,8 +51,8 @@ const CourseView: React.FC = () => {
 
   // Fetch courses once when the component mounts
   useEffect(() => {
-    if (user && user?.user.categories) {  
-        fetchCourses(user?.user.categories.toLowerCase());
+    if (user && user?.categories) {  
+        fetchCourses(user?.categories.toLowerCase());
     }
   }, [user, fetchCourses]);
 
@@ -86,9 +86,9 @@ const CourseView: React.FC = () => {
       {/* Admin and User Welcome Section */}
       <div className="flex justify-end items-center">
         <p className="text-gray-800 text-lg px-16">
-          Welcome: <span className="font-bold">{user?.user.firstname}</span>
+          Welcome: <span className="font-bold">{user?.firstname}</span>
         </p>
-        {user?.user.role === "admin" && (
+        {user?.role === "admin" && (
           <button
             className="bg-green-600 text-white px-4 py-2 rounded-md mr-16"
             onClick={() => router.push("/admin/addcourse")}
