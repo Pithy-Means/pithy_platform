@@ -24,12 +24,12 @@ function DashboardContent({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   return (
     <div className="flex">
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
-        <TopNav user={user?.user.firstname} />
+        <TopNav user={user?.firstname} />
         <main className="flex-1 px-4 bg-gray-50">{children}</main>
       </div>
     </div>
