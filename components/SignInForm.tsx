@@ -11,6 +11,7 @@ import useAuth from "@/lib/hooks/useAuth";
 import { Button } from "./ui/button";
 import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from "@/lib/store/useAuthStore";
+// import { UserInfo } from '@/types/schema';
 
 const MAX_ATTEMPTS = 5;
 
@@ -53,6 +54,8 @@ const SignInForm = () => {
     }
 
     try {
+      // const newUser = await signup(formdata as UserInfo);
+      // if (newUser.newUserAccount.) 
       const response = await signin(formdata as LoginInfo);
 
       if (response.success) {
