@@ -25,17 +25,17 @@ const JobForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   useEffect(() => {
     // When the user data is fetched, update the formData with the user_id
-    if (user?.user) {
+    if (user) {
       setFormData((prevState) => ({
         ...prevState,
-        user_id: user?.user.user_id, // Dynamically set user_id
+        user_id: user?.user_id, // Dynamically set user_id
       }));
     }
-  }, [user?.user]); // This runs when the user is fetched
+  }, [user]); // This runs when the user is fetched
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -93,7 +93,7 @@ const JobForm = () => {
       <div className="w-full p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-6">Create a Job</h2>
         <div className="mb-4">
-          <p className="text-sm text-gray-600">Welcome, {user?.user.firstname}! Fill in the form below to create a job.</p>
+          <p className="text-sm text-gray-600">Welcome, {user?.firstname}! Fill in the form below to create a job.</p>
         </div>
         {/* Job Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
