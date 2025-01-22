@@ -7,12 +7,12 @@ import React, { useState } from "react";
 
 const FundingForm = () => {
   // Access the user context to get user information
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   // Initialize the form with the user_id populated from the context
   const [formData, setFormData] = useState<Funding>({
     funding_id: "",
-    user_id: user ? user?.user.user_id : "", // Use the user_id from the context if available
+    user_id: user ? user?.user_id : "", // Use the user_id from the context if available
     title: "",
     donor: "",
     eligibre_countries: "",
@@ -47,7 +47,7 @@ const FundingForm = () => {
       if (result) {
         setFormData({
           funding_id: "",
-          user_id: user ? user?.user.user_id : "", // Use the user_id from the context if available
+          user_id: user ? user?.user_id : "", // Use the user_id from the context if available
           title: "",
           donor: "",
           eligibre_countries: "",
