@@ -17,6 +17,7 @@ import {
   UpdateUser,
   UserInfo,
   VerifyUser,
+  // VerifyUser,
 } from "@/types/schema";
 // import crypto from "crypto";
 import dayjs from "dayjs";
@@ -245,9 +246,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
     const session = await account.createEmailPasswordSession(email, password);
     console.log("Session created:", session);
 
-      // // Step 4: Send a verification email
-      // await account.createVerification("http://localhost:3000/verify");
-      // console.log("Verification email sent");
+    // await createVerify();
 
     // Set a secure cookie for the session
     cookies().set("my-session", session.secret, {
@@ -256,20 +255,45 @@ export const register = async (userdata: Partial<UserInfo>) => {
       sameSite: "strict",
       secure: true,
     });
-    return parseStringify(userinfo);
+    return {
+      newUserAccount: parseStringify(newUserAccount),
+      userinfo: parseStringify(userinfo)
+    };
   } catch (error) {
     console.error("Error in register function:", error);
     throw new Error("Failed to register user");
   }
 };
 
-export const updateVerify = async (data: VerifyUser) => {
+export const createVerify = async () => {
   try {
-    const { account } = await createAdminClient();
-    const response = await account.updateVerification(data.user_id, data.secret);
+    const { account } = await createSessionClient();
+    const response = await account.createVerification("http://localhost:3000/verify");
+    console.log("Verification created:", response);
+    // Check if the response includes the necessary fields
+    if (response && response.userId && response.secret) {
+      // If the secret is present, create the verification URL
+      const verificationURL = `http://localhost:3000/verify?userId=${response.userId}&secret=${response.secret}`;
+      return verificationURL;
+    }
+  } catch (error) {
+    console.error("Error creating verification:", error);
+  }
+};
+
+export const updateVerify = async (data: VerifyUser) => {
+  const { user_id, secret } = data;
+  try {
+    const { account } = await createSessionClient();
+
+    if (!user_id || !secret) {
+      throw new Error("User ID and secret must be provided");
+    }
+
+    const response = await account.updateVerification(user_id, secret);
     return parseStringify(response);
   } catch (error) {
-    console.error("Error verifying user:", error);
+    return;
   }
 }
 
