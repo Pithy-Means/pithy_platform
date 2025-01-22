@@ -6,7 +6,7 @@ import { Scholarship, UserInfo } from "@/types/schema";
 import { useEffect, useState } from "react";
 
 const AddScholarship = () => {
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const [formData, setFormData] = useState<Scholarship>({
     scholarship_id: "",
@@ -25,13 +25,13 @@ const AddScholarship = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user?.user) {
+    if (user) {
       setFormData((prevState) => ({
         ...prevState,
-        user_id: user?.user.user_id,
+        user_id: user?.user_id,
       }));
     }
-  }, [user?.user]);
+  }, [user]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -61,7 +61,7 @@ const AddScholarship = () => {
       if (result) {
         setFormData({
           scholarship_id: "",
-          user_id: user?.user.user_id,
+          user_id: user?.user_id,
           title: "",
           provider: "",
           study_level: "",
