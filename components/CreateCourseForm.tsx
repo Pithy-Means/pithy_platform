@@ -11,7 +11,7 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 
 
 const CreateCourseForm = () => {
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   const [course, setCourse] = useState<Courses>({
     course_id: "",
     user_id: "", // You should set this based on the logged-in user's ID
@@ -30,10 +30,10 @@ const CreateCourseForm = () => {
         // Update the user_id in the course object
         setCourse((prevCourse) => ({
           ...prevCourse,
-          user_id: user?.user.user_id || "",
+          user_id: user?.user_id || "",
         }));
     };
-  }, [course.user_id, user?.user.user_id]);
+  }, [course.user_id, user?.user_id]);
 
   // Handle file change (image file)
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
