@@ -11,20 +11,20 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
   const { isLocked, setLocked } = useCourseStore();
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   console.log("Is locked", isLocked);
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
-  const name = `${user?.user.lastname} ${user?.user.firstname}`;
+  const name = `${user?.lastname} ${user?.firstname}`;
 
   return (
     <div className="flex flex-col gap-6 px-8 py-4 max-w-full">
       {courses.map((course) => {
         const isStudent = course.students?.includes(name);
-        const isStudentEmail = course.student_email?.includes(user?.user.email);
+        const isStudentEmail = course.student_email?.includes(user?.email);
         const isEnrolled = isStudent && isStudentEmail;
 
         if (isLocked) setLocked(false);
