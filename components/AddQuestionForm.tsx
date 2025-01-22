@@ -11,7 +11,7 @@ const AddQuestionForm = () => {
   const [choices, setChoices] = useState<string[]>([""]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const handleAddChoice = () => setChoices((prev) => [...prev, ""]);
 
