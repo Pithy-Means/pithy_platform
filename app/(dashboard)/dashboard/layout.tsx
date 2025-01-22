@@ -19,6 +19,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated } = useAuthStore(
     (state) => state as { user: UserInfo; isAuthenticated: boolean }
   );
+  console.log("User", user);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,7 +35,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="relative">
-      <DashboardNavBar user={user?.user.firstname?.charAt(0)?.toUpperCase() ?? ""}>
+      <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
         <OverView>{children}</OverView>
       </DashboardNavBar>
     </div>
