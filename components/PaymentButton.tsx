@@ -12,11 +12,11 @@ type PaymentButtonProps = {
 };
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const [formData, setFormData] = useState<Partial<PaymentData>>({
-    user_id: user?.user.user_id,
-    email: user?.user.email,
+    user_id: user?.user_id,
+    email: user?.email,
     course_choice: course.course_id,
     amount: 0,
     tx_ref: "",
@@ -35,8 +35,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
           ...formData,
           tx_ref: Date.now().toString(),
           amount: 20000,
-          email: user?.user.email,
-          name: `${user?.user.lastname} ${user?.user.firstname}`,
+          email: user?.email,
+          name: `${user?.lastname} ${user?.firstname}`,
         }),
       });
 
