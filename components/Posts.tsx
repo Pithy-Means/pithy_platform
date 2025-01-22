@@ -37,7 +37,7 @@ const Posts = () => {
 
       const repostData = {
         post_id: post.post_id,
-        user_id: user?.user.user_id,
+        user_id: user?.user_id,
         content: post.content, // Original post content
         repost_of: post.post_id, // Indicate it's a repost
         user_comment: repostContent[post.post_id], // User's additional comment
@@ -76,7 +76,7 @@ const Posts = () => {
 
       const data = {
         post_id: postId,
-        user_id: user?.user.user_id || "",
+        user_id: user?.user_id || "",
         like_post_id: likePostId,
       };
 
@@ -104,7 +104,7 @@ const Posts = () => {
     }
   };
 
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   usePostInitialization(
     fetchedPosts,
@@ -146,7 +146,7 @@ const Posts = () => {
     const commentData: CommentPost = {
       comment_id: "",
       post_id: postId,
-      user_id: user?.user.user_id ?? "",
+      user_id: user?.user_id ?? "",
       comment,
     };
 
@@ -239,7 +239,7 @@ const Posts = () => {
             <PostItem
               key={post.post_id}
               post={post}
-              loggedInUserId={user?.user.user_id || null}
+              loggedInUserId={user?.user_id || null}
               likeStatus={
                 post.post_id
                   ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
