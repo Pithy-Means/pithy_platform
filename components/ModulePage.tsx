@@ -13,7 +13,7 @@ export default function ModulesPage() {
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
 
   const router = useRouter();
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const totalModules = modules.length;
   const progressPercentage =
