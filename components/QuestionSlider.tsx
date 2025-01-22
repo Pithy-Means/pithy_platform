@@ -13,7 +13,7 @@ const QuestionSlider: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
 
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   const { currentQuestionIndex, setCurrentQuestionIndex } = useQuestionStore();
 
   useEffect(() => {
