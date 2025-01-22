@@ -9,6 +9,7 @@ import ProgressBar from "./ProgressBar";
 import { BasicInfoStep } from "./BaseInfoStep";
 import InputContact from "./InputContact";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import { createVerify } from "@/lib/actions/user.actions";
 
 const SignupForm = () => {
   // Form state
@@ -66,14 +67,16 @@ const SignupForm = () => {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const newuser = await signup(formData as UserInfo);
-      if (newuser) {
-        router.push("/signIn");
+      const newUser = await signup(formData as UserInfo);
+      console.log("New user:", newUser);
+      if (newUser) {
+        await createVerify(); // Trigger email verification
+        // Redirect to the "Check Your Email" page
+        router.push("/check-email");
       }
     } catch (error) {
       console.error("Error registering user:", error);
@@ -81,6 +84,7 @@ const SignupForm = () => {
       setIsLoading(false);
     }
   };
+  
 
   if (isLoading) {
     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -105,7 +109,7 @@ const SignupForm = () => {
       <div className="flex items-center justify-center w-full my-10">
         <ProgressBar currentStep={currentStep} />
       </div>
-      <form onSubmit={handleSubmit} className="text-black w-full px-10 ">
+      <form onSubmit={handleSubmit} className="text-black w-full">
         {/* Basic fields */}
         <div className="flex items-center justify-center h-[400px] px-10 py-6">
           {currentStep === 0 && (
