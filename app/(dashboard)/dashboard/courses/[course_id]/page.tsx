@@ -13,7 +13,7 @@ const CourseDetail = () => {
   const [course, setCourse] = useState<Courses | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal visibility
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   useEffect(() => {
     if (course_id) {
@@ -50,7 +50,7 @@ const CourseDetail = () => {
         <>
           <>
             {/* Button to open the Create Module modal */}
-            {user?.user.role === "admin" && (
+            {user?.role === "admin" && (
               <Button
                 onClick={() => setIsModalOpen(true)}
                 className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
