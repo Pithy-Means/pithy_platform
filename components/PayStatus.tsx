@@ -15,7 +15,7 @@ const PaymentStatus = () => {
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
   const router = useRouter();
   // Get user info from the store
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   // Get the setLocked function from the store
   const { setLocked } = useCourseStore();
 
@@ -35,18 +35,18 @@ const PaymentStatus = () => {
             console.log("Payment update", data.payment);
             console.log("Course after payment", data.course);
 
-            const userName = `${user?.user.lastname} ${user?.user.firstname}`;
-            const isStudent = data.course.students.includes(userName) && data.course.student_email.includes(user?.user.email);
+            const userName = `${user?.lastname} ${user?.firstname}`;
+            const isStudent = data.course.students.includes(userName) && data.course.student_email.includes(user?.email);
 
             console.log("userName", userName);
 
             console.log("data.course.students", data.course.students);
             console.log("data.course.student_email", data.course.student_email);
 
-            console.log("user?.email", user?.user.email);
+            console.log("user?.email", user?.email);
 
             console.log("data.course.students.includes(userName)", data.course.students.includes(userName));
-            console.log("data.course.student_email.includes(user?.email)", data.course.student_email.includes(user?.user.email));
+            console.log("data.course.student_email.includes(user?.email)", data.course.student_email.includes(user?.email));
 
             console.log("isStudent", isStudent);
 
@@ -84,7 +84,7 @@ const PaymentStatus = () => {
 
       verifyPayment();
     }
-  }, [transaction_id, status, router, setLocked, user?.user.lastname, user?.user.firstname, user?.user.email]); // Ensure dependencies are up-to-date
+  }, [transaction_id, status, router, setLocked, user?.lastname, user?.firstname, user?.email]); // Ensure dependencies are up-to-date
 
   if (loading) {
     return (
