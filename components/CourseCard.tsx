@@ -13,20 +13,20 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
   const { isLocked, setLocked } = useCourseStore();
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
-  const name = `${user?.user.lastname} ${user?.user.firstname}`;
+  const name = `${user?.lastname} ${user?.firstname}`;
   console.log("User", user.user);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       {courses.map((course) => {
         const isStudent = course.students?.includes(name);
-        const isStudentEmail = course.student_email?.includes(user?.user.email);
+        const isStudentEmail = course.student_email?.includes(user?.email);
         const isEnrolled = isStudent && isStudentEmail;
 
         if (isLocked) setLocked(false);
