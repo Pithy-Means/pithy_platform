@@ -7,14 +7,23 @@ import { getUserInfo } from "../actions/user.actions";
 
 export const usePosts = () => {
   const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const [loadingPosts, setLoadingPosts] = useState(false);
 
   useEffect(() => {
     const loadPosts = async () => {
-      const initialPosts = (await fetchPosts()).map(post => ({
-        ...post,
-        user_id: post.user_id as string | undefined,
-      }));
-      setPosts(initialPosts);
+      setLoadingPosts(true);
+      try {
+        const initialPosts = (await fetchPosts()).map(post => ({
+          ...post,
+          user_id: post.user_id as string | undefined,
+        }));
+        const reserved = initialPosts.reverse();
+        setPosts(reserved);
+      } catch (error) {
+        console.error("Error loadingPosts posts:", error);
+      } finally {
+        setLoadingPosts(false);
+      };
     };
     loadPosts();
   }, []);
@@ -53,5 +62,5 @@ export const usePosts = () => {
   }, []);
 
 
-  return posts;
+  return {posts, loadingPosts};
 };
