@@ -74,7 +74,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   return (
     <>
       {loading ? (
-        <p>Creating post, please wait...</p>
+        <p className="text-black">Creating post, please wait...</p>
       ) : (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4 text-black/70">
           <h2 className="text-xl font-semibold mb-2 text-black/30">Create a New Post</h2>
@@ -111,7 +111,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
 
           <Button
             type="submit"
-            className="bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
+            className="bg-blue-500 text-black/70 rounded-md py-2 hover:bg-blue-600"
           >
             Create Post
           </Button>
