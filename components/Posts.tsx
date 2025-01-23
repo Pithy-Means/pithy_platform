@@ -16,8 +16,9 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 const Posts = () => {
   const [loading, setLoading] = useState(false);
   
-  const fetchedPosts = usePosts();
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const { posts, loadingPosts } = usePosts();
+  console.log("Posts", posts);
+  const [post, setPost] = useState<PostWithUser[]>([]);
   const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
     {}
   );
@@ -107,9 +108,9 @@ const Posts = () => {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   usePostInitialization(
-    fetchedPosts,
+    posts,
     user?.user,
-    setPosts,
+    setPost,
     setComments,
     setLikeStatus,
     setLoading
@@ -118,7 +119,7 @@ const Posts = () => {
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
-      setPosts((prevPosts) =>
+      setPost((prevPosts) =>
         prevPosts.filter((post) => post.post_id !== postId)
       );
     } catch (error) {
@@ -129,7 +130,7 @@ const Posts = () => {
   const handleUpdate = async (postId: string, content: string) => {
     try {
       const updatedPost = await updatePost(postId, { content });
-      setPosts((prevPosts) =>
+      setPost((prevPosts) =>
         prevPosts.map((post) => (post.post_id === postId ? updatedPost : post))
       );
     } catch (error) {
@@ -165,7 +166,7 @@ const Posts = () => {
 
   return (
     <div className="flex flex-col gap-4 text-black w-full">
-      {loading ? (
+      {loadingPosts ? (
         <div className="py-4 flex flex-col space-y-4">
           <div className="border border-gray-300 shadow rounded-md p-4 w-full">
             <div className="animate-pulse flex flex-col space-y-4">
