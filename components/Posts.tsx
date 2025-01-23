@@ -36,7 +36,7 @@ const Posts = () => {
 
   // creating a reference for the last post
   // const { posts, setPosts, fetchMorePosts, hasMore, loading, setLoading } = useContext(PostsContext);
-  const { posts, setPosts, fetchMorePosts, setLoading,  hasMore, loading } = usePost();
+  const { posts, setPosts, fetchMorePosts, setLoading, hasMore, loading } = usePost();
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastPostRef = (node: HTMLDivElement | null) => {
@@ -186,69 +186,52 @@ const Posts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4 min-h-screen" style={{height: 'calc(100vh - 4rem)'}}>
+    <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4 min-h-screen" style={{ height: 'calc(100vh - 4rem)' }}>
       {/* Skeleton Loader */}
       {loading ? (
-        // <div className="py-4 flex flex-col space-y-4 justify-center sm:space-y-2">
-        //   {[...Array(5)].map((_, index) => (
-        //     <div key={index} className="border border-gray-300 shadow rounded-md p-4  sm:p-2">
-        //       <div className="animate-pulse flex flex-col space-y-4 sm:space-y-2 ">
-        //         <div className="flex space-x-4 items-center">
-        //           <div className="rounded-full bg-slate-700 h-8 w-8 sm:h-6 sm:w-6"></div>
-        //           <div className="flex flex-col space-y-2 w-full">
-        //             <div className="h-2 bg-slate-700 rounded w-1/2"></div>
-        //             <div className="h-1.5 bg-slate-700 rounded w-1/3 sm:w-1/2"></div>
-        //           </div>
-        //         </div>
-        //         <div className="flex-1 space-y-6 py-1 sm:space-y-3">
-        //           <div className="space-y-3 sm:space-y-2">
-        //             <div className="grid grid-cols-3 gap-4 sm:gap-2">
-        //               <div className="h-2 bg-slate-700 rounded "></div>
-        //               <div className="h-2 bg-slate-700 rounded "></div>
-        //               <div className="h-2 bg-slate-700 rounded"></div>
-        //             </div>
-        //             <div className="h-16 bg-slate-800 rounded sm:h-12"></div>
-        //           </div>
-        //         </div>
-        //       </div>
-        //     </div>
-        //   ))}
-        // </div>
+
         <SkeletonLoader />
       ) : (
         <div className="space-y-4 sm:space-y-2">
-          {posts.map((post, index) => (
-            <div
-              key={post.post_id || index}
-              ref={posts.length === index + 1 ? lastPostRef : null} // Add the ref to the last post
-            >
-              <PostItem
-                key={post.post_id}
-                post={post}
-                loggedInUserId={user?.user_id || null}
-                likeStatus={
-                  post.post_id
-                    ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
-                    : { isLiked: false, likeCount: 0 }
-                }
-                comments={post.post_id ? comments[post.post_id] || [] : []}
-                onLike={handleLike}
-                onDelete={handleDelete}
-                onUpdate={handleUpdate}
-                onAddComment={handleAddComment}
-                onRepost={handleRepost}
-              />
-            </div>
-          ))}
-
-          {/* No More Posts */}
-          {!loading && !hasMore && (
-            <div className="text-center text-gray-500 py-4">No more posts</div>
+          {/* Posts */}
+          {posts.length === 0 ? (
+            <div className="text-center text-gray-500 py-4">No posts available</div>
+          ) : (
+            [...posts]
+            .reverse()  // Reverse the posts array to show newest posts first
+            .map((post, index) => (
+              <div
+                key={post.post_id || index}
+                ref={posts.length === index + 1 ? lastPostRef : null} // Add the ref to the last post
+              >
+                <PostItem
+                  post={post}
+                  loggedInUserId={user?.user_id || null}
+                  likeStatus={
+                    post.post_id
+                      ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
+                      : { isLiked: false, likeCount: 0 }
+                  }
+                  comments={post.post_id ? comments[post.post_id] || [] : []}
+                  onLike={handleLike}
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                  onAddComment={handleAddComment}
+                  onRepost={handleRepost}
+                />
+              </div>
+            ))
           )}
+          {/* <div className="text-center text-gray-500 py-4">No posts available</div> */}
+          
         </div>
-      )};
+      )}
+      {hasMore && <div className="text-center py-4">Loading more posts...</div>}
+      {/* No More Posts */}
+      {!loading && !hasMore && (
+        <div className="text-center text-gray-500 py-4">No more posts available</div>
+      )}
     </div>
-  );
+  )
 };
-
 export default Posts;
