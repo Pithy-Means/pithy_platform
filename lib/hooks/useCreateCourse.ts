@@ -4,7 +4,7 @@ import { useAuthStore } from "../store/useAuthStore";
 
 export const useCreateCourse = () => {
   const { data, error, loading, fetchData } = useFetch();
-  const { user } = useAuthStore((state) => state as UserInfo);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const handleSubmit = async (course: Courses) => {
     if (!user?.user_id) {
@@ -13,7 +13,7 @@ export const useCreateCourse = () => {
 
     const newCourse = {
       ...course,
-      user_id: user?.user.user_id,
+      user_id: user?.user_id,
     };
 
     const result = await fetchData('/api/create-course', 'POST', { 'Content-Type': 'application/json' } ,newCourse);
