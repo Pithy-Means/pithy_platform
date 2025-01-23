@@ -452,10 +452,15 @@ export const repost = async (data: Post) => {
   }
 };
 
-export const getPosts = async () => {
+export const getPosts = async (limit = 10, offset = 0) => {
   try {
     const { databases } = await createAdminClient();
-    const posts = await databases.listDocuments(db, postCollection);
+
+    // Fetch posts with pagination
+    const posts = await databases.listDocuments(db, postCollection, [
+      Query.limit(limit),
+      Query.offset(offset),
+    ]);
     if (!posts || !posts.documents) {
       console.error("No documents found in the posts collection");
       return [];
@@ -466,6 +471,7 @@ export const getPosts = async () => {
       return [];
     }
 
+    // Process image and video URLs
     const postWithFiles = await Promise.all(
       posts.documents.map(async (post) => {
         let imageUrl = null;
