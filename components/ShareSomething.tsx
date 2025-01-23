@@ -1,25 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
 import { CircleUserRound } from "lucide-react";
 import { Button } from "./ui/button";
-import { PostsProvider, usePost } from '@/context/PostContext'
+import {  usePost } from '@/context/PostContext'
 
 const ShareSomething = () => {
-  const { searchPosts, filteredPosts } = usePost(); //Destructure the searchPosts function and the filterdPosts state
-  const [query, setQuery] = useState('');  //Create a new state to store the search query
+  const { searchPosts, filteredPosts } = usePost();  // Get the searchPosts and filteredPosts from the context
+  const [query, setQuery] = useState("");  // Add a new state to store the search query
 
+  // Handle search
   const handleSearch = () => {
-    if (!query || query.trim() === "") {
-      console.error("Search query is empty.");
-      return;
-    }
-    searchPosts(query.trim());  //Trigger the searchPosts function with the query
-  }
+    searchPosts(query);  // Call the searchPosts function with the query
+  };
+
+  // Debounce logic for the search input
+  useEffect(() => {
+    const debounceSearch = setTimeout(() => {
+      if (query.trim() !== '') {
+        searchPosts(query);  //Perform search when the query is not empty
+      }
+    }, 300);
+    return () => clearTimeout(debounceSearch);
+
+  }, [query, searchPosts]);
 
   return (
-    <PostsProvider>
       <div className="flex flex-col no-scrollbar items-center justify-center min-h-screen">
         {/* Header Section */}
         <div className="flex flex-col bg-white text-black rounded-lg shadow-md p-2 w-full mt-2  ">
@@ -38,10 +45,10 @@ const ShareSomething = () => {
             />
 
             {/* Autocomplete suggestions */}
-            <datalist id='autocomplete-options'> {/* Add the datalist element */}
-              {filteredPosts && filteredPosts.length > 0 ? (
+            <datalist id='autocomplete-options'>  {/* Add the datalist element */}
+              {Array.isArray(filteredPosts) && filteredPosts.length > 0 ? (
                 filteredPosts.slice(0, 5).map((post) => (
-                  <option key={post.post_id} value={`${post.content} by ${post.user.firstname}`} />
+                  <option key={post.post_id} value={`${post.content}`} />
                 ))
               ) : (
                 <option value="No results found" disabled />
@@ -50,29 +57,25 @@ const ShareSomething = () => {
 
             {/* Button */}
             <Button
-              className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0"
-              onClick={handleSearch} // search posts when the button is clicked
+              className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0 hover:bg-gradient-to-tr from[#]"
+              onClick={handleSearch}// search posts when the button is clicked
             >
               Post
             </Button>
-            {/* console.log(`&apos;`filteredPosts`&apos;`, filteredPosts) */}
+    
           </div>
         </div>
 
         {/* Scrollable Posts Section */}
         <div className="flex-1  w-full no-scrollbar mt-4 max-w-3xl overflow-y-auto h-screen ">
+          {/* <Posts posts={filteredPosts} /> */}
           <Posts />
-          {/* {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => (
-              <Posts key={post.post_id} post={post} />
-            ))
-          ) : (
-            <p className="text-gray-500 text-center">No results found. Try searching for a different query.</p>
-          )} */}
         </div>
       </div>
 
-    </PostsProvider>
+
+
+
   );
 };
 
