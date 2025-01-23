@@ -2,6 +2,7 @@
 
 import DashboardNavBar from "@/components/dashboard_navBar";
 import OverView from "@/components/OverView";
+import { PostsProvider } from "@/context/PostContext";
 import { UserProvider, UserContext } from "@/context/UserContext";
 import { useContext } from "react";
 
@@ -12,7 +13,9 @@ export default function DashboardLayout({
 }) {
   return (
     <UserProvider>
-      <DashboardContent>{children}</DashboardContent>
+      <PostsProvider>
+        <DashboardContent>{children}</DashboardContent>
+      </PostsProvider>
     </UserProvider>
   );
 }
