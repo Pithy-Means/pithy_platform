@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // import { z} from 'zod';
-//Base user info type (common fields for all users)
+//Bimport { UserInfo } from '@/types/schema';
 export type BaseUserInfo = {
   user_id: string;
   firstname?: string;
@@ -294,7 +294,27 @@ export type JobComment = {
   user_id: string;
   comment_job_id: string;
   comment: string;
-} 
+}
+
+export type JobCommentWithUser = JobComment & UserInfo;
+
+export type FundingComment = {
+  funding_id: string;
+  user_id: string;
+  comment_funding_id: string;
+  comment: string;
+}
+
+export type FundingCommentWithUser = FundingComment & UserInfo;
+
+export type ScholarshipComment = {
+  scholarship_id: string;
+  user_id: string;
+  comment_scholarship_id: string;
+  comment: string;
+}
+
+export type ScholarshipCommentWithUser = ScholarshipComment & UserInfo;
 
 type ModuleStatus = 'open' | 'closed';
 
