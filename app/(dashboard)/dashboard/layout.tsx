@@ -19,7 +19,6 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated } = useAuthStore(
     (state) => state as { user: UserInfo; isAuthenticated: boolean }
   );
-  console.log("User", user);
   const router = useRouter();
 
   useEffect(() => {
