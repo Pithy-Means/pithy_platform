@@ -4,12 +4,18 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getFunding } from "@/lib/actions/user.actions";
 import { Funding } from "@/types/schema";
+import toast, { Toaster } from "react-hot-toast";
+import Modal from "@/components/Modal";
+import CreateFundingComment from "@/components/CreateFundingComment";
+import GetFundingComments from "@/components/GetFundingComments";
 
 const FundingDetail = () => {
   const { funding_id } = useParams();
   const [funding, setFunding] = useState<Funding | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modal, setModal] = useState(false);
+  const [modalComment, setModalComment] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +37,14 @@ const FundingDetail = () => {
       fetchFunding();
     }
   }, [funding_id]);
+
+  const handleModal = () => {
+    setModal(!modal);
+  };
+
+  const handleModalComment = () => {
+    setModalComment(!modalComment);
+  };
 
   if (loading) {
     return (
@@ -59,42 +73,56 @@ const FundingDetail = () => {
   }
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center w-full">
+      <Toaster />
       {/* Title and Header */}
       <div className="w-full  bg-gradient-to-r from-green-500 to-teal-500 p-8 rounded-lg shadow-xl text-center text-white">
-        <h1 className="text-3xl md:text-5xl font-extrabold mb-2">{funding.title || "Untitled Funding"}</h1>
-        <p className="text-lg md:text-xl font-medium">{funding.donor || "Donor: Not Available"}</p>
+        <h1 className="text-3xl md:text-5xl font-extrabold mb-2">
+          {funding.title || "Untitled Funding"}
+        </h1>
+        <p className="text-lg md:text-xl font-medium">
+          {funding.donor || "Donor: Not Available"}
+        </p>
       </div>
-  
+
       {/* Content Section */}
       <div className="mt-10 w-full bg-white rounded-lg shadow-xl p-8 space-y-6">
         {/* Overview */}
         <div className="text-lg text-gray-800">
-          <h2 className="text-2xl font-semibold text-green-600 mb-3">Funding Overview</h2>
+          <h2 className="text-2xl font-semibold text-green-600 mb-3">
+            Funding Overview
+          </h2>
           <p className="mb-4">
-            <span className="font-semibold">Donor:</span> {funding.donor || "N/A"}
+            <span className="font-semibold">Donor:</span>{" "}
+            {funding.donor || "N/A"}
           </p>
           <p className="mb-4">
-            <span className="font-semibold">Eligible Countries:</span> {funding.eligibre_countries || "All"}
+            <span className="font-semibold">Eligible Countries:</span>{" "}
+            {funding.eligibre_countries || "All"}
           </p>
           <p className="mb-4">
-            <span className="font-semibold">Grant Size:</span> {funding.grant_size || "Not specified"}
+            <span className="font-semibold">Grant Size:</span>{" "}
+            {funding.grant_size || "Not specified"}
           </p>
           <p className="mb-4">
-            <span className="font-semibold">Focus Area:</span> {funding.focus_earlier || "Not specified"}
+            <span className="font-semibold">Focus Area:</span>{" "}
+            {funding.focus_earlier || "Not specified"}
           </p>
           <p className="mb-4">
-            <span className="font-semibold">Application Deadline:</span> {funding.closing_date || "Not specified"}
+            <span className="font-semibold">Application Deadline:</span>{" "}
+            {funding.closing_date || "Not specified"}
           </p>
         </div>
-  
+
         {/* Description Section */}
         <div className="space-y-4">
-          <h3 className="text-2xl font-semibold text-gray-800">About this Funding</h3>
+          <h3 className="text-2xl font-semibold text-gray-800">
+            About this Funding
+          </h3>
           <p className="text-gray-700">
             {funding.funding_type || "No additional details provided."}
           </p>
         </div>
-  
+
         {/* CTA Section */}
         <div className="flex flex-col sm:flex-row sm:space-x-4 mt-8">
           <a
@@ -105,21 +133,42 @@ const FundingDetail = () => {
           >
             Apply Now
           </a>
-  
+
           <button
             onClick={() => router.back()}
             className="w-full sm:w-auto bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
           >
             Back to Listings
           </button>
+          <button
+            onClick={() => {
+              toast.success("Comment added successfully");
+              handleModal();
+            }}
+            className="w-full sm:w-auto bg-gradient-to-r from-green-500 via-green-200 to-white/30 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
+          >
+            Leave a Comment
+          </button>
+          <button
+            onClick={() => {
+              handleModalComment();
+            }}
+            className="w-full sm:w-auto bg-gradient-to-t from-green-500 via-green-200 to-white/30 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
+          >
+            Comments
+          </button>
         </div>
       </div>
-  
+
       {/* Footer */}
       <div className="w-full bg-gray-100 p-8 rounded-lg shadow-md mt-10">
-        <h3 className="text-lg font-semibold text-green-600">Want More Opportunities?</h3>
+        <h3 className="text-lg font-semibold text-green-600">
+          Want More Opportunities?
+        </h3>
         <p className="text-gray-600 mt-2">
-          Stay updated with the latest funding opportunities, scholarships, and grants by subscribing to our newsletter or following us on social media.
+          Stay updated with the latest funding opportunities, scholarships, and
+          grants by subscribing to our newsletter or following us on social
+          media.
         </p>
         <div className="mt-4">
           <a
@@ -130,8 +179,20 @@ const FundingDetail = () => {
           </a>
         </div>
       </div>
+      {/* Modal */}
+      {modal && (
+        <Modal isOpen={modal} onClose={handleModal}>
+          <CreateFundingComment fundingId={funding.funding_id} />
+        </Modal>
+      )}
+
+      {modalComment && (
+        <Modal isOpen={modalComment} onClose={handleModalComment}>
+          <GetFundingComments />
+        </Modal>
+      )}
     </div>
-  );  
+  );
 };
 
 export default FundingDetail;
