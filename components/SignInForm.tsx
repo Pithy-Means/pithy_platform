@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useAuth from "@/lib/hooks/useAuth";
 import { Button } from "./ui/button";
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 // import { UserInfo } from '@/types/schema';
 
@@ -55,7 +55,7 @@ const SignInForm = () => {
 
     try {
       // const newUser = await signup(formdata as UserInfo);
-      // if (newUser.newUserAccount.) 
+      // if (newUser.newUserAccount.)
       const response = await signin(formdata as LoginInfo);
 
       if (response.success) {
@@ -63,9 +63,12 @@ const SignInForm = () => {
         router.push("/dashboard");
       } else {
         setErrorMessage(response.message ?? "An unknown error occurred.");
-        setAttempts((prev) => prev + 1);
+        // Calculate next attempts count
+        const nextAttempts = attempts + 1;
+        setAttempts(nextAttempts);
 
-        if (attempts === 4) {
+        // Check if attempts have reached the limit
+        if (nextAttempts >= MAX_ATTEMPTS) {
           router.push("/forgot-password");
         }
       }
@@ -112,16 +115,17 @@ const SignInForm = () => {
                 </button>
               </div>
 
-              {errorMessage && (
-                <p className="text-red-500 text-center">{errorMessage}</p>
-              )}
-
-              {attempts > 0 && attempts < 5 && (
-                <p className="text-red-500 text-center">
-                  You have {5 - attempts} attempt{5 - attempts === 1 ? "" : "s"}{" "}
-                  remaining.
-                </p>
-              )}
+              <div className="bg-white p-4 rounded-md">
+                {errorMessage && (
+                  <p className="text-red-500 text-center">{errorMessage}</p>
+                )}
+                {attempts > 0 && attempts < 5 && (
+                  <p className="text-red-500 text-center">
+                    You have {5 - attempts} attempt
+                    {5 - attempts === 1 ? "" : "s"} remaining.
+                  </p>
+                )}
+              </div>
 
               <Button
                 type="submit"
