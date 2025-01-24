@@ -29,26 +29,10 @@ const PaymentStatus = () => {
           );
           const data = await response.json();
 
-          console.log("Payment verification data", data);
-
           if (data.success) {
-            console.log("Payment update", data.payment);
-            console.log("Course after payment", data.course);
 
             const userName = `${user?.lastname} ${user?.firstname}`;
             const isStudent = data.course.students.includes(userName) && data.course.student_email.includes(user?.email);
-
-            console.log("userName", userName);
-
-            console.log("data.course.students", data.course.students);
-            console.log("data.course.student_email", data.course.student_email);
-
-            console.log("user?.email", user?.email);
-
-            console.log("data.course.students.includes(userName)", data.course.students.includes(userName));
-            console.log("data.course.student_email.includes(user?.email)", data.course.student_email.includes(user?.email));
-
-            console.log("isStudent", isStudent);
 
             if (isStudent) {
 
