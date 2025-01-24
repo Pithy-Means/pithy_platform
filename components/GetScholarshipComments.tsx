@@ -40,7 +40,7 @@ const GetScholarshipComments = () => {
 
   if (loading)
     return (
-      <div className="flex items-center justify-center w-fit rounded-lg p-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="flex items-center justify-center w-full rounded-lg p-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <p className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-500 via-white to-green-400 animate-pulse">
           Fetching Comments...
         </p>
@@ -49,7 +49,7 @@ const GetScholarshipComments = () => {
 
   if (error)
     return (
-      <div className="flex items-center justify-center w-fit rounded-lg p-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
+      <div className="flex items-center justify-center w-full rounded-lg p-10 bg-gradient-to-br from-gray-900 via-gray-800 to-black">
         <p className="text-2xl font-semibold text-red-400 shadow-lg">
           Error: {error}
         </p>
