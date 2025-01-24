@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { FaBlackTie } from "react-icons/fa6";
 import { FaMarker } from "react-icons/fa";
 import { CalendarCheck, Globe2Icon } from "lucide-react";
+import { toast } from "react-hot-toast";
 
 const JobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -23,8 +24,10 @@ const JobList = () => {
       try {
         const data = await getJobs();
         console.log("Jobs", data);
+        toast.success("Jobs fetched successfully");
         setJobs(data.documents || []);
       } catch (err) {
+        toast.error("Failed to fetch jobs. Please try again.");
         setError("Failed to fetch jobs. Please try again.");
         console.error(err);
       } finally {
@@ -66,7 +69,10 @@ const JobList = () => {
             {jobs.map((job) => (
               <Card
                 key={job.job_id}
-                onClick={() => router.push(`/dashboard/jobs/${job.job_id}`)}
+                onClick={() => {
+                  toast.success(`Navigating to ${job.job_title}`);
+                  router.push(`/dashboard/jobs/${job.job_id}`);
+                }}
                 className="relative p-8 bg-gradient-to-br from-white to-gray-50/50 backdrop-blur-lg border border-green-200 rounded-[20px] shadow-2xl hover:shadow-[0_8px_30px_rgba(72,191,145,0.5)] transition-transform duration-300 transform hover:-translate-y-2 hover:scale-105 cursor-pointer"
               >
                 {/* Background Image with Overlay */}
