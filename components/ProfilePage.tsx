@@ -7,7 +7,7 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 export default function ProfilePage() {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
-  console.log("Use Category", user?.user);
+  console.log("Use Category", user);
 
   if (!user?.user) {
     return <p className="text-center mt-10 text-gray-500">Loading user info...</p>;
