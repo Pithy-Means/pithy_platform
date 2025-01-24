@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { getFunding } from "@/lib/actions/user.actions";
 import { Funding } from "@/types/schema";
+import toast, { Toaster } from "react-hot-toast";
+import Modal from "./Modal";
+import CreateFundingComment from "./CreateFundingComment";
 
 const FundingDetail = () => {
   const { funding_id } = useParams();
   const [funding, setFunding] = useState<Funding | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [modal, setModal] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -31,6 +35,10 @@ const FundingDetail = () => {
       fetchFunding();
     }
   }, [funding_id]);
+
+  const handleModal = () => {
+    setModal(!modal);
+  };
 
   if (loading) {
     return (
@@ -59,6 +67,7 @@ const FundingDetail = () => {
   }
   return (
     <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex flex-col items-center w-full">
+      <Toaster />
       {/* Title and Header */}
       <div className="w-full  bg-gradient-to-r from-green-500 to-teal-500 p-8 rounded-lg shadow-xl text-center text-white">
         <h1 className="text-3xl md:text-5xl font-extrabold mb-2">{funding.title || "Untitled Funding"}</h1>
@@ -112,6 +121,15 @@ const FundingDetail = () => {
           >
             Back to Listings
           </button>
+          <button
+            onClick={() => {
+              toast.success("Comment added successfully");
+              handleModal();
+            }}
+            className="w-full sm:w-auto bg-gradient-to-r from-green-500 via-green-200 to-white/30 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
+          >
+            Leave a Comment
+          </button>
         </div>
       </div>
   
@@ -130,6 +148,12 @@ const FundingDetail = () => {
           </a>
         </div>
       </div>
+      <Modal
+        isOpen={modal}
+        onClose={handleModal}
+      >
+        <CreateFundingComment fundingId={funding.funding_id} />
+      </Modal>
     </div>
   );  
 };
