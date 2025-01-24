@@ -3,6 +3,7 @@
 import {
   CommentPost,
   Funding,
+  FundingComment,
   // Course,
   GetUserInfo,
   Job,
@@ -13,6 +14,7 @@ import {
   PostCourseQuestion,
   PostCourseQuestionAnswer,
   Scholarship,
+  ScholarshipComment,
   // ResetPass,
   UpdateUser,
   UserInfo,
@@ -26,10 +28,12 @@ import { cookies } from "next/headers";
 import { ID, OAuthProvider, Query } from "node-appwrite";
 import { generateValidPostId, parseStringify, generateValidId } from "../utils";
 import {
+  commentJobsCollection,
   courseCollection,
   // courseCollection,
   db,
   fundingCollection,
+  commentFundingCollection,
   jobCollection,
   likePostCollection,
   postAttachementBucket,
@@ -40,6 +44,7 @@ import {
   postCourseQuestionCollection,
   scholarshipCollection,
   userCollection,
+  commentScholarshipCollection,
 } from "@/models/name";
 import env from "@/env";
 
@@ -1028,7 +1033,7 @@ export const createJobComment = async (data: JobComment) => {
     const jobExists = await getJob(data.job_id);
     const comment = await databases.createDocument(
       db,
-      postCommentCollection,
+      commentJobsCollection,
       validComment,
       {
         ...data,
@@ -1043,6 +1048,16 @@ export const createJobComment = async (data: JobComment) => {
   }
 };
 
+export const getJobComments = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const comments = await databases.listDocuments(db, commentJobsCollection);
+    return parseStringify(comments);
+  } catch (error) {
+    console.error("Error fetching job comments:", error);
+  }
+};
+
 export const getJobCommentsByJobId = async (jobId: string) => {
   try {
     const { databases } = await createAdminClient();
@@ -1054,4 +1069,72 @@ export const getJobCommentsByJobId = async (jobId: string) => {
     console.error("Error fetching comments:", error);
     return [];
   }
+};
+
+export const createFundingComment = async (data: FundingComment) => {
+  const { comment_funding_id } = data;
+  const validComment = generateValidPostId(comment_funding_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const fundExists = await getFunding(data.funding_id);
+    const comment = await databases.createDocument(
+      db,
+      commentFundingCollection,
+      validComment,
+      {
+        ...data,
+        funding_id: fundExists.funding_id,
+        comment_funding_id: validComment,
+      }
+    );
+    console.log("Comment created", comment);
+    return parseStringify(comment);
+  } catch (error) {
+    console.error(error);
+  };
+};
+
+export const getFundingComments = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const comments = await databases.listDocuments(db, commentFundingCollection);
+    return parseStringify(comments);
+  } catch (error) {
+    console.error("Error fetching funding comments:", error);
+  };
+};
+
+export const createScholarshipComment = async (data: ScholarshipComment) => {
+  const { comment_scholarship_id } = data;
+  const validComment = generateValidPostId(comment_scholarship_id);
+
+  try {
+    const { databases } = await createAdminClient();
+    const scholarshipExists = await getScholarship(data.scholarship_id);
+    const comment = await databases.createDocument(
+      db,
+      commentScholarshipCollection,
+      validComment,
+      {
+        ...data,
+        scholarship_id: scholarshipExists.scholarship_id,
+        comment_scholarship_id: validComment,
+      }
+    );
+    console.log("Comment created", comment);
+    return parseStringify(comment);
+  } catch (error) {
+    console.error(error);
+  };
+};
+
+export const getScholarshipComments = async () => {
+  try {
+    const { databases } = await createAdminClient();
+    const comments = await databases.listDocuments(db, commentScholarshipCollection);
+    return parseStringify(comments);
+  } catch (error) {
+    console.error("Error fetching scholarship comments:", error);
+  };
 };
