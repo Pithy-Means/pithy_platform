@@ -94,17 +94,6 @@ const SignupForm = () => {
 
   return (
     <div className="w-full mx-auto p-6 bg-white flex justify-center items-center flex-col relative h-screen overflow-hidden">
-      {/* Background Decorative Elements */}
-      <div className="absolute inset-0 -z-50">
-        <div className="absolute w-[20rem] h-[20rem] bg-green-100 rounded-full blur-3xl top-[-6rem] left-[-8rem]" />
-        <div className="absolute w-[16rem] h-[16rem] bg-green-200 rounded-full blur-2xl bottom-[-6rem] right-[-8rem]" />
-        <div className="absolute w-[12rem] h-[12rem] bg-green-300 rounded-full blur-2xl top-[10rem] left-[5rem]" />
-        <div className="absolute w-[14rem] h-[14rem] bg-green-400 rounded-full blur-xl bottom-[10rem] right-[5rem]" />
-        <div className="absolute w-[10rem] h-[10rem] bg-green-500 rounded-full blur-xl top-[20rem] right-[20rem]" />
-        <div className="absolute w-[8rem] h-[8rem] bg-green-100 rounded-full blur-xl bottom-[20rem] left-[20rem]" />
-        <div className="absolute w-[6rem] h-[6rem] bg-green-200 rounded-full blur-xl top-[30rem] left-[30rem]" />
-        <div className="absolute w-[4rem] h-[4rem] bg-green-300 rounded-full blur-xl bottom-[5rem] right-[5rem]" />
-      </div>
       {/* Progress Bar */}
       <div className="flex items-center justify-center w-full my-10">
         <ProgressBar currentStep={currentStep} />
