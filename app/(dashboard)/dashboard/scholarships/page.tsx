@@ -103,12 +103,6 @@ const ScholarshipList = () => {
           ))}
         </div>
       )}
-
-      {/* Smooth Scroll Effect with Green Accents */}
-      <div className="absolute inset-0 w-full h-full pointer-events-none z-0">
-        <div className="absolute top-10 right-5 w-32 h-32 bg-gradient-to-r from-green-500 to-green-700 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-10 left-5 w-32 h-32 bg-gradient-to-r from-green-500 to-green-700 rounded-full blur-xl animate-pulse"></div>
-      </div>
     </div>
   );
 };
