@@ -1,10 +1,11 @@
 import { createPost } from "@/lib/actions/user.actions";
 import { Post, PostWithUser } from "@/types/schema";
 import React, { useState } from "react";
-import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import toast, { Toaster } from "react-hot-toast";
+import { Textarea } from "./ui/textarea";
 
 interface CreatePostProps {
   userId: string; // Pass the logged-in user ID as a prop
@@ -12,14 +13,13 @@ interface CreatePostProps {
   onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
 }
 
-
 const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>({
     user_id: userId,
     image: "", // Add the Image property
     video: "", // Add the Video property
-
+    content: "", // Add the Content property with a default value
   });
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -47,7 +47,9 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setPost((prev) => ({
@@ -63,6 +65,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       // Call the createPost function from user.actions.ts
       const newPost = await createPost(post);
       onPostCreated(newPost);
+      toast.success("Post created successfully");
       // Redirect to the dashboard after successful post creation
     } catch (error) {
       console.error(error);
@@ -72,52 +75,74 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   };
 
   return (
-    <>
+    <div className="relative">
+      <Toaster />
       {loading ? (
-        <p>Creating post, please wait...</p>
+        <div className="fixed inset-0 flex justify-center items-center bg-opacity-75 z-50">
+          <p className="text-green-500 text-xl font-medium animate-pulse">
+            Posting ...
+          </p>
+        </div>
       ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-          <h2 className="text-xl font-semibold mb-2 text-black/30">Create a New Post</h2>
-          <div className="flex flex-col">
-            <Label htmlFor="content" className="font-medium text-black/30 mb-1">
-              Content
-            </Label>
-            <Textarea
-              id="content"
-              name="content"
-              value={post.content}
-              onChange={handleChange}
-              required
-              className="border border-gray-300 rounded-md p-2"
-            />
+        <form
+          onSubmit={handleSubmit}
+          className="w-full bg-gradient-to-br from-gray-50 via-white to-gray-100 rounded-3xl shadow-xl p-10 space-y-8 border border-gray-200"
+        >
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <h2 className="text-4xl font-extrabold text-gray-800">
+              Create a New Post
+            </h2>
+            <p className="text-gray-500 text-lg">
+              Share your ideas with the world by creating a compelling post. Add
+              content, upload images or videos, and publish effortlessly.
+            </p>
           </div>
 
-          {/* Course image */}
-          <div className="mb-4">
+          {/* Post Content */}
+          <div>
+            <Textarea
+              value={post.content || ""}
+              onChange={handleChange}
+              placeholder="Write your thoughts here..."
+              className="w-full border border-gray-300 rounded-lg shadow-sm focus:ring-4 focus:ring-green-400 focus:border-green-500 p-4 text-gray-800 text-base transition duration-300 ease-in-out"
+              rows={6}
+            />
+            <p className="text-sm text-gray-400 mt-2">
+              Use clear and concise language to express your ideas.
+            </p>
+          </div>
+
+          {/* Upload Section */}
+          <div>
             <Label
               htmlFor="image"
-              className="block text-sm font-medium text-black/30 mb-1"
+              className="block text-lg font-medium text-gray-700 mb-3"
             >
-              Post Image
+              Upload Image or Video
             </Label>
             <Input
               type="file"
               name="image"
               onChange={handleFileChange}
               accept="image/*, video/*"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              className="block w-full text-gray-600 text-sm border border-gray-300 rounded-lg shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-500/10 file:text-green-600 hover:file:bg-green-100 focus:ring-4 focus:ring-green-400 focus:outline-none"
             />
+            <p className="mt-2 text-sm text-gray-400">
+              Supported formats: JPG, PNG, MP4. Max size: 1MB.
+            </p>
           </div>
 
+          {/* Action Button */}
           <Button
             type="submit"
-            className="bg-blue-500 text-white rounded-md py-2 hover:bg-blue-600"
+            className="w-full bg-gradient-to-r from-green-500 to-indigo-600 text-white font-semibold py-4 rounded-full shadow-md hover:shadow-lg transform hover:scale-105 transition duration-300 ease-in-out focus:ring-4 focus:ring-green-400"
           >
-            Create Post
+            Publish Post
           </Button>
         </form>
       )}
-    </>
+    </div>
   );
 };
 
