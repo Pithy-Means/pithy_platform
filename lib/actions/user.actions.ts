@@ -221,7 +221,8 @@ export const registerWithGoogle = async (data: UserInfo) => {
 };
 
 export const register = async (userdata: Partial<UserInfo>) => {
-  const { user_id, email, password, firstname, lastname, categories } = userdata;
+  const { user_id, email, password, firstname, lastname, categories } =
+    userdata;
 
   const userId = generateValidPostId(user_id); // Custom user ID logic
   try {
@@ -232,7 +233,12 @@ export const register = async (userdata: Partial<UserInfo>) => {
     }
 
     // Step 1: Create the account
-    const newUserAccount = await account.create(userId, email, password, `${firstname} ${lastname}`);
+    const newUserAccount = await account.create(
+      userId,
+      email,
+      password,
+      `${firstname} ${lastname}`
+    );
     console.log("New user account:", newUserAccount.emailVerification);
 
     if (!newUserAccount) {
@@ -240,11 +246,16 @@ export const register = async (userdata: Partial<UserInfo>) => {
     }
 
     // Step 2: Create user info in the database
-    const userinfo = await databases.createDocument(db, userCollection, userId, {
-      ...userdata,
-      user_id: userId,
-      categories: categories || [],
-    });
+    const userinfo = await databases.createDocument(
+      db,
+      userCollection,
+      userId,
+      {
+        ...userdata,
+        user_id: userId,
+        categories: categories || [],
+      }
+    );
     console.log("User information created:", userinfo);
 
     // Step 3: Generate a session for the new user
@@ -262,7 +273,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
     });
     return {
       newUserAccount: parseStringify(newUserAccount),
-      userinfo: parseStringify(userinfo)
+      userinfo: parseStringify(userinfo),
     };
   } catch (error) {
     console.error("Error in register function:", error);
@@ -273,7 +284,9 @@ export const register = async (userdata: Partial<UserInfo>) => {
 export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
-    const response = await account.createVerification("http://localhost:3000/verify");
+    const response = await account.createVerification(
+      "http://localhost:3000/verify"
+    );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
     if (response && response.userId && response.secret) {
@@ -300,7 +313,7 @@ export const updateVerify = async (data: VerifyUser) => {
   } catch (error) {
     return;
   }
-}
+};
 
 export const updateUserSession = async () => {
   try {
@@ -327,75 +340,74 @@ export const createPost = async (data: Post) => {
   const validPost = generateValidPostId(post_id);
   const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
   let base64Match;
+  let file;
+  let fileType = "";
+  let imageId = "";
+  let videoId = "";
 
+  // Validate image or video only if present
   if (image && image.startsWith("data:image")) {
     base64Match = image.match(/^data:(image)\/(\w+);base64,/);
   } else if (video && video.startsWith("data:video")) {
     base64Match = video.match(/^data:(video)\/(\w+);base64,/);
   }
 
-  console.log("Incoming data:", data);
-  console.log("Base64 match", base64Match);
-  if (!base64Match) {
-    console.error("Invalid Base64 format");
-    throw new Error("Invalid image format");
+  if (base64Match) {
+    console.log("Base64 match", base64Match);
+
+    fileType = base64Match[2]; // Extract the file extension
+    console.log("Extracted file type:", fileType);
+
+    // Validate against allowed extensions
+    if (!allowedExtensions.includes(fileType)) {
+      console.error("Unsupported file type:", fileType);
+      throw new Error("Unsupported file type");
+    }
+
+    const base64Prefix = base64Match[0];
+    const base64Data = image
+      ? image.replace(base64Prefix, "")
+      : video
+        ? video.replace(base64Prefix, "")
+        : "";
+
+    const binaryData = Buffer.from(base64Data, "base64");
+    const fileName = `uploaded-file.${fileType}`;
+    const mimeType = `${base64Match[1]}/${fileType}`;
+    file = new File([binaryData], fileName, { type: mimeType });
   }
-
-  const fileType = base64Match[2]; // Extract the file extension
-  console.log("Extracted file type:", fileType);
-
-  // Validate against allowed extensions
-  if (!allowedExtensions.includes(fileType)) {
-    console.error("Unsupported file type:", fileType);
-    throw new Error("Unsupported file type");
-  }
-
-  const base64Prefix = base64Match[0];
-  const base64Data = image
-    ? image.replace(base64Prefix, "")
-    : video
-      ? video.replace(base64Prefix, "")
-      : "";
-  const binaryData = Buffer.from(base64Data, "base64");
-
-  // Create a File object from binary data
-  const fileName = `uploaded-file.${fileType}`;
-  const mimeType = `${base64Match[1]}/${fileType}`;
-  const file = new File([binaryData], fileName, { type: mimeType });
 
   try {
     const { databases, storage } = await createAdminClient();
 
-    console.log("Uploading file to Appwrite...");
-    const fileUpload = await storage.createFile(
-      postAttachementBucket,
-      ID.unique(),
-      file,
-    );
+    if (file) {
+      console.log("Uploading file to Appwrite...");
+      const fileUpload = await storage.createFile(
+        postAttachementBucket,
+        ID.unique(),
+        file
+      );
+      console.log("Uploaded file:", fileUpload);
 
-    console.log("Uploaded file:");
-
-    console.log("Uploaded file:", fileUpload);
-
-    let imageId = "";
-    let videoId = "";
-
-    // Check if the mediaInfo is an image or a video
-    if (image && image.startsWith("data:image")) {
-      imageId = fileUpload.$id;
-    } else if (video && video.startsWith("data:video")) {
-      videoId = fileUpload.$id;
+      if (image) {
+        imageId = fileUpload.$id;
+      } else if (video) {
+        videoId = fileUpload.$id;
+      }
     }
+
+    // Create post document with or without image/video
     const post = await databases.createDocument(db, postCollection, validPost, {
       ...data,
       post_id: validPost,
       image: imageId,
       video: videoId,
     });
-    console.log("Post", post);
+    console.log("Post created:", post);
     return parseStringify(post);
   } catch (error) {
     console.error(error);
+    throw error;
   }
 };
 
@@ -935,17 +947,29 @@ export const getFundings = async () => {
 export const getFunding = async (fundingId: string) => {
   try {
     const { databases } = await createAdminClient();
-    const funding = await databases.getDocument(db, fundingCollection, fundingId);
+    const funding = await databases.getDocument(
+      db,
+      fundingCollection,
+      fundingId
+    );
     return parseStringify(funding);
   } catch (error) {
     console.error("Error fetching funding:", error);
   }
 };
 
-export const updateFunding = async (fundingId: string, data: Partial<Funding>) => {
+export const updateFunding = async (
+  fundingId: string,
+  data: Partial<Funding>
+) => {
   try {
     const { databases } = await createAdminClient();
-    const response = await databases.updateDocument(db, fundingCollection, fundingId, data);
+    const response = await databases.updateDocument(
+      db,
+      fundingCollection,
+      fundingId,
+      data
+    );
     return parseStringify(response);
   } catch (error) {
     console.error("Error updating funding:", error);
@@ -955,7 +979,11 @@ export const updateFunding = async (fundingId: string, data: Partial<Funding>) =
 export const deleteFunding = async (fundingId: string) => {
   try {
     const { databases } = await createAdminClient();
-    const response = await databases.deleteDocument(db, fundingCollection, fundingId);
+    const response = await databases.deleteDocument(
+      db,
+      fundingCollection,
+      fundingId
+    );
     return parseStringify(response);
   } catch (error) {
     console.error("Error deleting funding:", error);
@@ -987,7 +1015,10 @@ export const createScholarship = async (data: Scholarship) => {
 export const getScholarships = async () => {
   try {
     const { databases } = await createAdminClient();
-    const scholarships = await databases.listDocuments(db, scholarshipCollection);
+    const scholarships = await databases.listDocuments(
+      db,
+      scholarshipCollection
+    );
     return parseStringify(scholarships);
   } catch (error) {
     console.error("Error fetching scholarships:", error);
@@ -997,17 +1028,29 @@ export const getScholarships = async () => {
 export const getScholarship = async (scholarshipId: string) => {
   try {
     const { databases } = await createAdminClient();
-    const scholarship = await databases.getDocument(db, scholarshipCollection, scholarshipId);
+    const scholarship = await databases.getDocument(
+      db,
+      scholarshipCollection,
+      scholarshipId
+    );
     return parseStringify(scholarship);
   } catch (error) {
     console.error("Error fetching scholarship:", error);
   }
 };
 
-export const updateScholarship = async (scholarshipId: string, data: Partial<Scholarship>) => {
+export const updateScholarship = async (
+  scholarshipId: string,
+  data: Partial<Scholarship>
+) => {
   try {
     const { databases } = await createAdminClient();
-    const response = await databases.updateDocument(db, scholarshipCollection, scholarshipId, data);
+    const response = await databases.updateDocument(
+      db,
+      scholarshipCollection,
+      scholarshipId,
+      data
+    );
     return parseStringify(response);
   } catch (error) {
     console.error("Error updating scholarship:", error);
@@ -1017,7 +1060,11 @@ export const updateScholarship = async (scholarshipId: string, data: Partial<Sch
 export const deleteScholarship = async (scholarshipId: string) => {
   try {
     const { databases } = await createAdminClient();
-    const response = await databases.deleteDocument(db, scholarshipCollection, scholarshipId);
+    const response = await databases.deleteDocument(
+      db,
+      scholarshipCollection,
+      scholarshipId
+    );
     return parseStringify(response);
   } catch (error) {
     console.error("Error deleting scholarship:", error);
@@ -1092,17 +1139,20 @@ export const createFundingComment = async (data: FundingComment) => {
     return parseStringify(comment);
   } catch (error) {
     console.error(error);
-  };
+  }
 };
 
 export const getFundingComments = async () => {
   try {
     const { databases } = await createAdminClient();
-    const comments = await databases.listDocuments(db, commentFundingCollection);
+    const comments = await databases.listDocuments(
+      db,
+      commentFundingCollection
+    );
     return parseStringify(comments);
   } catch (error) {
     console.error("Error fetching funding comments:", error);
-  };
+  }
 };
 
 export const createScholarshipComment = async (data: ScholarshipComment) => {
@@ -1126,15 +1176,18 @@ export const createScholarshipComment = async (data: ScholarshipComment) => {
     return parseStringify(comment);
   } catch (error) {
     console.error(error);
-  };
+  }
 };
 
 export const getScholarshipComments = async () => {
   try {
     const { databases } = await createAdminClient();
-    const comments = await databases.listDocuments(db, commentScholarshipCollection);
+    const comments = await databases.listDocuments(
+      db,
+      commentScholarshipCollection
+    );
     return parseStringify(comments);
   } catch (error) {
     console.error("Error fetching scholarship comments:", error);
-  };
+  }
 };
