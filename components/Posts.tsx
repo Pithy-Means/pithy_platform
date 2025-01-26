@@ -8,7 +8,7 @@ import {
   toggleLike,
   repost,
 } from "@/lib/actions/user.actions";
-import { CommentPost, PostWithUser, UserInfo } from "@/types/schema";
+import { CommentPostWithUser, PostWithUser, UserInfo } from "@/types/schema";
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
 import { useAuthStore } from "@/lib/store/useAuthStore";
@@ -19,7 +19,7 @@ const Posts = () => {
   const { posts, loadingPosts } = usePosts();
   console.log("Posts", posts);
   const [post, setPost] = useState<PostWithUser[]>([]);
-  const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
+  const [comments, setComments] = useState<{ [key: string]: CommentPostWithUser[] }>(
     {}
   );
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
@@ -144,14 +144,16 @@ const Posts = () => {
     // Set loading state to block input for the current post
     // setLoading((prev) => ({ ...prev, [postId]: true }));
 
-    const commentData: CommentPost = {
+    const commentData: CommentPostWithUser = {
       comment_id: "",
       post_id: postId,
       user_id: user?.user_id ?? "",
       comment,
+      user: user ? { user_id: user.user_id, username: user.username } : {},
     };
 
     const createdComment = await createComment(commentData);
+    console.log("Created Comment", createdComment);
     if (createdComment) {
       setComments((prev) => ({
         ...prev,
