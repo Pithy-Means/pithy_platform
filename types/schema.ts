@@ -144,8 +144,11 @@ export interface CommentPost {
   post_id: string; // ID of the post the comment is associated with
   comment_id: string; // Unique ID of the comment
   comment: string; // Content of the comment, max length 1000 characters
-  user?: Partial<UserInfo>; // User information associated with the comment
 }
+
+export type CommentPostWithUser = CommentPost & {
+  user: Partial<UserInfo>;
+};
 
 // Funding Type
 export type Funding = {
