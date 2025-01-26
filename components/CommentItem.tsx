@@ -14,7 +14,7 @@ const CommentItem = ({ comment }: { comment: CommentPostWithUser }) => {
       <CardContent className="flex gap-4 items-start">
         {/* Avatar Section */}
         <div
-          className={`w-14 h-14 ${avatarColor} rounded-full flex items-center justify-center text-white font-bold text-xl uppercase`}
+          className={`w-14 h-14 ${avatarColor} rounded-full flex items-center justify-center text-gray-600 font-bold text-xl uppercase`}
         >
           {userName.charAt(0)}
         </div>
