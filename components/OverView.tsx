@@ -22,6 +22,7 @@ import { AuthState, PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import Modal from "./Modal";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -194,20 +195,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
-            <CreatePost
-              userId={user?.user_id || ""}
-              onPostCreated={addNewPost}
-            />
-            <button
-              onClick={closeModal}
-              className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <CreatePost
+            userId={user?.user_id || ""}
+            onPostCreated={addNewPost}
+          />
+        </Modal>
       )}
 
       {/* Profile Modal */}
