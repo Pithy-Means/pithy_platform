@@ -53,5 +53,5 @@ export const usePosts = () => {
   }, []);
 
 
-  return posts;
+return {posts};
 };
