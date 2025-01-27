@@ -27,7 +27,7 @@ const Card: React.FC<CardProps> = ({
   const imagePath = imageSrc ? `${imageSrc}` : null;
 
   return (
-    <div className=" w-full h-56 shadow-lg rounded-lg p-6 bg-slate-100">
+    <div className=" w-full h-[15rem] sm:h-[20rem] shadow-lg rounded-lg p-6 bg-slate-100">
       <h2 className="text-xl font-bold ">{title}</h2>
       <p className="text-lg mt-2 ">{description}</p>
       <div className="mt-2 flex flex-row items-center">
