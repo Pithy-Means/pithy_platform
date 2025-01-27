@@ -5,7 +5,7 @@ import { getLikesByPostId, getCommentsByPostId } from '../actions/user.actions';
 
 // Memoized initialization function
 const usePostInitialization = (
-  fetchedPosts: PostWithUser[], 
+  posts: PostWithUser[], 
   loggedIn: { user_id: string } | null,
   setPosts: React.Dispatch<React.SetStateAction<PostWithUser[]>>,
   setComments: React.Dispatch<React.SetStateAction<{ [key: string]: CommentPost[] }>>,
@@ -14,7 +14,7 @@ const usePostInitialization = (
 ) => {
   const initializePosts = useCallback(async () => {
     // Early return if no posts
-    if (!fetchedPosts.length) return;
+    if (!posts.length) return;
 
     try {
       setLoading(true);
@@ -22,7 +22,7 @@ const usePostInitialization = (
       // Deduplicate and merge posts
       setPosts((prevPosts) => {
         const existingIds = new Set(prevPosts.map((post) => post.post_id));
-        const newPosts = fetchedPosts.filter(
+        const newPosts = posts.filter(
           (post) => !existingIds.has(post.post_id)
         );
         return [...prevPosts, ...newPosts.reverse()];
@@ -30,7 +30,7 @@ const usePostInitialization = (
 
       // Batch fetch likes and comments
       const postDetails = await Promise.all(
-        fetchedPosts.map(async (post) => {
+        posts.map(async (post) => {
           const [likes, comments] = await Promise.all([
             getLikesByPostId(post.post_id || ''),
             getCommentsByPostId(post.post_id || '')
@@ -72,7 +72,7 @@ const usePostInitialization = (
     } finally {
       setLoading(false);
     }
-  }, [fetchedPosts, loggedIn]);
+  }, [posts, loggedIn]);
 
   // Trigger initialization when dependencies change
   useEffect(() => {
