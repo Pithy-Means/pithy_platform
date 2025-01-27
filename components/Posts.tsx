@@ -19,8 +19,8 @@ import SkeletonLoader from "./SkeletonLoader";
 
 const Posts = () => {
   // const [loading, setLoading] = useState(false);
-  const fetchedPosts = usePosts();
-  // const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const { posts } = usePosts();
+  const [items, setItems] = useState<PostWithUser[]>([]);
   const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
     {}
   );
@@ -36,7 +36,7 @@ const Posts = () => {
 
   // creating a reference for the last post
   // const { posts, setPosts, fetchMorePosts, hasMore, loading, setLoading } = useContext(PostsContext);
-  const { posts, setPosts, fetchMorePosts, setLoading, hasMore, loading } = usePost();
+  const { post, setPost, fetchMorePosts, setLoading, hasMore, loading } = usePost();
   const observer = useRef<IntersectionObserver | null>(null);
 
   const lastPostRef = (node: HTMLDivElement | null) => {
@@ -127,24 +127,26 @@ const Posts = () => {
   console.log("User,:", user);
 
   usePostInitialization(
-    fetchedPosts,
+    posts,
     user,
-    setPosts,
+    setItems,
     setComments,
     setLikeStatus,
     setLoading
   );
 
   useEffect(() => {
-    if (fetchedPosts.length > 0) {
-      setPosts((prev) => [...prev, ...fetchedPosts]);
+    if (posts.length > 0) {
+      setItems((prev) => [...prev, ...posts]);
     };
-  }, [fetchedPosts, setPosts]);
+  }, [posts, setItems]);
+
+
 
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
-      setPosts((prevPosts) =>
+      setItems((prevPosts) =>
         prevPosts.filter((post) => post.post_id !== postId)
       );
     } catch (error) {
@@ -155,7 +157,7 @@ const Posts = () => {
   const handleUpdate = async (postId: string, content: string) => {
     try {
       const updatedPost = await updatePost(postId, { content });
-      setPosts((prevPosts) =>
+      setItems((prevPosts) =>
         prevPosts.map((post) => (post.post_id === postId ? updatedPost : post))
       );
     } catch (error) {
@@ -186,6 +188,55 @@ const Posts = () => {
   };
 
   return (
+    // <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4 min-h-screen" style={{ height: 'calc(100vh - 4rem)' }}>
+    //   {/* Skeleton Loader */}
+    //   {loading  ? (
+    //     <SkeletonLoader />
+    //   ) : (
+    //     <div className="space-y-4 sm:space-y-2">
+    //       {/* Posts */}
+    //       {posts.length === 0 ? (
+
+    //         [...posts]
+    //           .reverse()  // Reverse the posts array to show newest posts first
+    //           .map((post, index) => (
+    //             <div
+    //               key={post.post_id || index}
+    //               ref={posts.length === index + 1 ? lastPostRef : null} // Add the ref to the last post
+    //             >
+    //               <PostItem
+    //                 post={post}
+    //                 loggedInUserId={user?.user_id || null}
+    //                 likeStatus={
+    //                   post.post_id
+    //                     ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
+    //                     : { isLiked: false, likeCount: 0 }
+    //                 }
+    //                 comments={post.post_id ? comments[post.post_id] || [] : []}
+    //                 onLike={handleLike}
+    //                 onDelete={handleDelete}
+    //                 onUpdate={handleUpdate}
+    //                 onAddComment={handleAddComment}
+    //                 onRepost={handleRepost}
+    //               />
+    //             </div>
+    //           ))
+    //       )}
+
+    //     </div>
+    //   )} 
+
+    //    {/* Loading More Posts */}
+    // {/* {loading && posts.length > 0 && hasMore && (
+    //   <div className="text-center text-gray-500 py-4">Loading more...</div>
+    // )} */}
+
+    // {/* No More Posts */}
+    // {!loading && !hasMore && posts.length > 0 && (
+    //   <div className="text-center text-gray-500 py-4">No more posts available</div>
+    // )}
+    // </div>
+
     <div className="flex flex-col gap-4 text-black md:mt-6 sm:pr-2 overflow-y-auto  space-y-4 min-h-screen" style={{ height: 'calc(100vh - 4rem)' }}>
       {/* Skeleton Loader */}
       {loading ? (
@@ -195,41 +246,47 @@ const Posts = () => {
         <div className="space-y-4 sm:space-y-2">
           {/* Posts */}
           {posts.length === 0 ? (
-            <div className="text-center text-gray-500 py-4">No posts available</div>
+            ''
           ) : (
             [...posts]
-            .reverse()  // Reverse the posts array to show newest posts first
-            .map((post, index) => (
-              <div
-                key={post.post_id || index}
-                ref={posts.length === index + 1 ? lastPostRef : null} // Add the ref to the last post
-              >
-                <PostItem
-                  post={post}
-                  loggedInUserId={user?.user_id || null}
-                  likeStatus={
-                    post.post_id
-                      ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
-                      : { isLiked: false, likeCount: 0 }
-                  }
-                  comments={post.post_id ? comments[post.post_id] || [] : []}
-                  onLike={handleLike}
-                  onDelete={handleDelete}
-                  onUpdate={handleUpdate}
-                  onAddComment={handleAddComment}
-                  onRepost={handleRepost}
-                />
-              </div>
-            ))
+              .reverse()  // Reverse the posts array to show newest posts first
+              .map((post, index) => (
+                <div
+                  key={post.post_id || index}
+                  ref={posts.length === index + 1 ? lastPostRef : null} // Add the ref to the last post
+                >
+                  <PostItem
+                    post={post}
+                    loggedInUserId={user?.user_id || null}
+                    likeStatus={
+                      post.post_id
+                        ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
+                        : { isLiked: false, likeCount: 0 }
+                    }
+                    comments={post.post_id ? comments[post.post_id] || [] : []}
+                    onLike={handleLike}
+                    onDelete={handleDelete}
+                    onUpdate={handleUpdate}
+                    onAddComment={handleAddComment}
+                    onRepost={handleRepost}
+                  />
+                </div>
+              ))
           )}
-          {/* <div className="text-center text-gray-500 py-4">No posts available</div> */}
-          
+
         </div>
       )}
-      {hasMore && <div className="text-center py-4">Loading more posts...</div>}
+
+      {/* Loading More Posts */}
+      {!loading && posts.length > 0 && hasMore && (
+        <div className="text-center text-gray-500 py-4">Loading more...</div>
+      )}
+
       {/* No More Posts */}
-      {!loading && !hasMore && (
-        <div className="text-center text-gray-500 py-4">No more posts available</div>
+      {!loading && !hasMore && posts.length > 0 && (
+        <div className="text-center text-gray-500 py-4">
+          No more posts available
+        </div>
       )}
     </div>
   )
