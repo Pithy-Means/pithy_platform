@@ -56,7 +56,7 @@ const OurImpact = () => {
             height={50}
             width={50}
             alt="Header"
-            className="absolute left-0 object-contain"
+            className="absolute left-0 object-contain "
           />
         </div>
         <CardCarousel cards={cards} />
