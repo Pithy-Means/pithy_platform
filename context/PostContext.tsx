@@ -1,17 +1,21 @@
+"use client";
+
 import React, { createContext, useState, useEffect, useContext, useCallback } from "react";
 import { getPosts } from "@/lib/actions/user.actions"; // Replace with your Appwrite fetch logic
 import { PostWithUser } from "@/types/schema";
+import {usePosts} from "@/lib/hooks/usePosts";
 
 interface PostsContextType {
   posts: PostWithUser[];
-  // setPosts: React.Dispatch<React.SetStateAction<PostWithUser[]>>;
+  post: PostWithUser[];
+  // setPost: React.Dispatch<React.SetStateAction<PostWithUser[]>>;
   loading: boolean;
   fetchMorePosts: () => void;
   searchPosts: (query: string) => void;
   hasMore: boolean;
   page: number;
   postsPerPage: number;
-  setPosts: React.Dispatch<React.SetStateAction<PostWithUser[]>>;
+  setPost: React.Dispatch<React.SetStateAction<PostWithUser[]>>;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setPage: React.Dispatch<React.SetStateAction<number>>;
   setHasMore: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,13 +27,14 @@ interface PostsContextType {
 
 export const PostsContext = createContext<PostsContextType>({
   posts: [],
+  post: [],
   loading: true,
   fetchMorePosts: () => { },
   searchPosts: () => { },
   hasMore: true,
   page: 0,
   postsPerPage: 10,
-  setPosts: () => { },
+  setPost: () => { },
   setLoading: () => { },
   setPage: () => { },
   setHasMore: () => { },
@@ -42,7 +47,8 @@ export const PostsContext = createContext<PostsContextType>({
 export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
   children
 }) => {
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const { posts } = usePosts();
+  const [post, setPost] = useState<PostWithUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const postsPerPage = 10; // Number of posts per page
@@ -52,16 +58,6 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
   const [filteredPosts, setFilteredPosts] = useState<PostWithUser[]>([]);  // Add a new state to store filtered posts
 
   //Load cached posts from localstorage on mount
-  // useEffect(() => {
-  //   const cachedPosts = localStorage.getItem("posts");
-  //   if (cachedPosts) {
-  //     try {
-  //       setPosts(JSON.parse(cachedPosts));
-  //     } catch (error) {
-  //       console.error("Error parsing posts from localStorage:", error);
-  //     }
-  //   }
-  // }, []);
   useEffect(() => {
     const cachedPosts = localStorage.getItem("posts");  // Load cached posts from localstorage
     if (cachedPosts) {
@@ -70,78 +66,43 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
         const parsedPosts = JSON.parse(cachedPosts);
         // console.log("Parsed posts:", parsedPosts);
         if (Array.isArray(parsedPosts)) {  // Check if the parsed posts is an array
-          setPosts(parsedPosts);
+          setPost(parsedPosts);
           setFilteredPosts(parsedPosts);  // Set the filteredPosts state with the parsed posts
           setLoading(false);
         } else {  // Log an error if the parsed posts is not an array
           console.error("Invalid posts data");
-          setPosts([]);
+          setPost([]);
         }
       } catch (error) {  // Log an error if the posts cannot be parsed
         console.error("Error parsing posts from localStorage:", error);
-        setPosts([]);
+        setPost([]);
       }
     }
 
   }, []);  // Run this effect only once on mount
-  console.log("Load cahed posts on mount:", posts);
-
-  // Save posts to localstorage whenever it changes
-  // useEffect(() => {
-  //   localStorage.setItem("posts", JSON.stringify(posts));
-  // }, [posts]);
-
-  // Fetch posts whenever the page changes
-  // useEffect(() => {
-  //   // function to fetch posts from Appwrite server
-  //   const fetchPosts = async () => {
-  //     if (fetchedPages.has(page)) return;  // Check if the page has already been fetched
-  //     // setLoading(true);
-  //     try {
-  //       const fetchedPosts = await getPosts(); // Fetch posts from Appwrite with pagination
-  //      setPosts((prev) => {
-  //       const newPosts = fetchedPosts.filter(
-  //         (newPost: PostWithUser) => !prev.some((oldPost: PostWithUser) => oldPost.post_id === newPost.post_id)
-  //       );
-  //       return [...prev, ...newPosts];
-  //      })
-
-  //       // setFilteredPosts((prev) => [...prev, ...fetchedPosts]);  // Add the fetched posts to the filteredPosts state
-  //       setHasMore(fetchedPosts.length > 0);
-  //       setFetchedPages((prev) => new Set(prev).add(page));  // Add the fetched page to the fetchedPages state
-  //     } catch (error) {
-  //       console.error("Error fetching posts:", error);
-  //       setPosts([]);
-  //       setFilteredPosts([]);  // Reset the filteredPosts state
-  //       setHasMore(false);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   if (hasMore) fetchPosts();
-  // }, [page, fetchedPages, hasMore]);  // Run this effect whenever the page changes
-
+  console.log("Load cahed posts on mount:", post);
+  
   // Fetch posts from the server only if no cached posts exist
-  useEffect(() => {
-    if (posts.length === 0) {
-      const fetchPosts = async () => {
-        setLoading(true);
-        try {
-          const fetchedPosts = await getPosts();
-          setPosts(fetchedPosts);
-          setFilteredPosts(fetchedPosts);
-          localStorage.setItem("posts", JSON.stringify(fetchedPosts)); // Cache posts in localStorage
-          setHasMore(fetchedPosts.length > 0);
-        } catch (error) {
-          console.error("Error fetching posts:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
+  // useEffect(() => {
+  //   if (post.length === 0) {
+  //     const fetchPosts = async () => {
+  //       setLoading(true);
+  //       try {
+  //         const fetchedPosts = await getPosts();
+  //         setPost(fetchedPosts);
+  //         setFilteredPosts(fetchedPosts);
+  //         localStorage.setItem("posts", JSON.stringify(fetchedPosts)); // Cache posts in localStorage
+  //         setHasMore(fetchedPosts.length > 0);
+  //       } catch (error) {
+  //         console.error("Error fetching posts:", error);
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
 
-      fetchPosts();
-    }
-  }, [posts]);
+  //     fetchPosts();
+  //   }
+  // }, [post]);
 
   // Function to fetch more posts (trigger pagination)
   // const fetchMorePosts = () => {
@@ -206,10 +167,10 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
       if (newPosts.length === 0) { // If no new posts are fetched, set hasMore to false
         setHasMore(false);
       } else {
-        // setPosts((prev) => [...prev, ...newPosts]); // Add the new posts to the existing posts
+        // setPost((prev) => [...prev, ...newPosts]); // Add the new posts to the existing posts
         // setFilteredPosts((prev) => [...prev, ...newPosts]); // Add the new posts to the filtered posts
         // setPage((prev) => prev + 1); // Increment the page number
-        setPosts((prev) => {
+        setPost((prev) => {
           const updatedPosts = [...prev]; // Combine the existing posts with the new posts
           newPosts.forEach((newPost: PostWithUser) => {
             if (!updatedPosts.find((post) => post.post_id === newPost.post_id)) {
@@ -227,17 +188,18 @@ export const PostsProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(false); // Reset the loading state
     }
   };
-  console.log("More Posts:", posts);
+  console.log("More Posts:", post);
 
   return (
     <PostsContext.Provider
       value={{
         posts,
+        post,
         loading,
         fetchMorePosts,
         hasMore,
         page,
-        setPosts,
+        setPost,
         setLoading,
         setPage,
         setHasMore,
