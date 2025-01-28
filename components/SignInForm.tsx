@@ -115,17 +115,19 @@ const SignInForm = () => {
                 </button>
               </div>
 
-              <div className="bg-white p-4 rounded-md">
-                {errorMessage && (
+              {errorMessage && (
+                <div className="bg-white p-4 rounded-md">
                   <p className="text-red-500 text-center">{errorMessage}</p>
-                )}
-                {attempts > 0 && attempts < 5 && (
+                </div>
+              )}
+              {attempts > 0 && attempts < 5 && (
+                <div className="bg-white p-4 rounded-md">
                   <p className="text-red-500 text-center">
                     You have {5 - attempts} attempt
                     {5 - attempts === 1 ? "" : "s"} remaining.
                   </p>
-                )}
-              </div>
+                </div>
+              )}
 
               <Button
                 type="submit"
