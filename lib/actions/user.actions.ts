@@ -511,6 +511,7 @@ export const getPosts = async () => {
   try {
     const { databases } = await createAdminClient();
     const posts = await databases.listDocuments(db, postCollection);
+    // console.log("Posts", posts);
     if (!posts || !posts.documents) {
       console.error("No documents found in the posts collection");
       return [];
