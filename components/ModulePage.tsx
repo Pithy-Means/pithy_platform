@@ -1,9 +1,11 @@
+"use client";
+
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
 import { Modules, UserInfo } from "@/types/schema";
 import { Video } from "./Video";
 import { useRouter } from "next/navigation";
-import { Lock, CheckCircle } from "lucide-react";
+import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
 export default function ModulesPage() {
@@ -11,20 +13,24 @@ export default function ModulesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
+  const [activeTab, setActiveTab] = useState<"summary" | "resources">("summary");
+  const [videoSize, setVideoSize] = useState({ width: 800, height: 600 }); // Default video size
 
   const router = useRouter();
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const totalModules = modules.length;
   const progressPercentage =
-    totalModules > 0
-      ? ((activeModuleIndex + 1) / totalModules) * 100
-      : 0;
+    totalModules > 0 ? ((activeModuleIndex + 1) / totalModules) * 100 : 0;
 
   useEffect(() => {
     const fetchModules = async () => {
       try {
-        const response = await fetch("/api/get-modules", { method: "GET" });
+        const response = await fetch(
+          `/api/get-modules?timestamp=${Date.now()}`,
+          { method: "GET" }
+        );
+        console.log("Response", response);
         if (!response.ok) {
           throw new Error("Failed to fetch modules");
         }
@@ -43,6 +49,11 @@ export default function ModulesPage() {
   const handleModuleChange = (index: number) => {
     if (index <= activeModuleIndex) {
       setActiveModuleIndex(index);
+          // Adjust the video size when the user clicks next or previous
+    setVideoSize((prevSize) => ({
+      width: prevSize.width === 800 ? 1024 : 800, // Toggle between two widths
+      height: prevSize.height === 600 ? 720 : 600, // Toggle between two heights
+    }));
     } else {
       alert("Complete the current module to unlock this one.");
     }
@@ -65,85 +76,121 @@ export default function ModulesPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 p-6 lg:p-12 w-full">
+    <div className="flex flex-col xl:flex-row gap-12 p-8 lg:p-16">
       {/* Main Content - Active Module */}
       {modules[activeModuleIndex] && (
-        <div className="flex-1">
-          <h1 className="text-2xl font-semibold mb-2 text-gray-700">
+        <div className="flex-1 rounded-xl shadow-lg p-8">
+          <h1 className="text-3xl font-bold mb-4 text-gray-800">
             {modules[activeModuleIndex].module_title}
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-gray-500 mb-6">
             Module {activeModuleIndex + 1} - Course Overview
           </p>
 
           {modules[activeModuleIndex].video ? (
-            <div className="relative mt-6 w-full aspect-video rounded-lg overflow-hidden shadow-lg">
+            <div className="relative mt-6 w-full aspect-video rounded-lg overflow-hidden shadow-md">
               <Video
-                height="600"
-                width="800"
+                height={videoSize.height.toString()}
+                width={videoSize.width.toString()}
                 src={modules[activeModuleIndex].video}
                 className="object-cover w-full h-full"
                 controls={true}
               />
+              <div className="absolute inset-y-0 left-0 flex items-center pl-4">
+                <button
+                  className="p-2 bg-gray-200 bg-opacity-35 text-gray-700 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
+                  onClick={() => setActiveModuleIndex((prev) => prev - 1)}
+                  disabled={activeModuleIndex === 0}
+                >
+                  <ChevronsLeft />
+                </button>
+              </div>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4">
+                <button
+                  className="p-2 bg-green-600 bg-opacity-35 text-white rounded-full hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
+                  onClick={() => setActiveModuleIndex((prev) => prev + 1)}
+                  disabled={activeModuleIndex === modules.length - 1}
+                >
+                  <ChevronsRight />
+                </button>
+              </div>
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">No video available</p>
+            <p className="text-gray-500 text-sm italic">
+              No video available for this module.
+            </p>
           )}
-
-          <div className="mt-4 flex justify-between">
-            <button
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 disabled:bg-gray-200 disabled:cursor-not-allowed"
-              onClick={() => setActiveModuleIndex((prev) => prev - 1)}
-              disabled={activeModuleIndex === 0}
-            >
-              Previous
-            </button>
-            <button
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-200 disabled:cursor-not-allowed"
-              onClick={() => setActiveModuleIndex((prev) => prev + 1)}
-              disabled={activeModuleIndex === modules.length - 1}
-            >
-              Next
-            </button>
-          </div>
 
           {/* Tabs Section */}
           <div className="mt-8">
-            <div className="flex border-b">
-              <button className="px-4 py-2 text-sm font-medium border-b-2 border-black">
+            <div className="flex border-b-2 border-gray-200">
+              <button
+                className={`px-6 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
+                  activeTab === "summary"
+                    ? "border-b-4 border-green-600 text-green-600"
+                    : "text-gray-600 hover:text-green-600"
+                }`}
+                onClick={() => setActiveTab("summary")}
+              >
                 Summary
               </button>
-              <button className="px-4 py-2 text-sm font-medium text-gray-500 hover:text-black">
+              <button
+                className={`px-6 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
+                  activeTab === "resources"
+                    ? "border-b-4 border-green-600 text-green-600"
+                    : "text-gray-600 hover:text-green-600"
+                }`}
+                onClick={() => setActiveTab("resources")}
+              >
                 Resources
               </button>
             </div>
-            <div className="mt-4 text-sm text-gray-700 space-y-4">
-              {modules[activeModuleIndex].module_description
-                ?.split("\n")
-                .map((text, index) => <p key={index}>{text}</p>)}
+
+            {/* Conditionally render content based on active tab */}
+            <div className="mt-6 text-sm text-gray-700 space-y-4">
+              {activeTab === "summary" ? (
+                <div className="space-y-4">
+                  {/* Summary Content */}
+                  <p className="leading-relaxed">
+                    {modules[activeModuleIndex].module_description}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Resources Content */}
+                  <p className="leading-relaxed">
+                    Resources section content goes here.
+                  </p>
+                  {/* You can add links, documents, or other resources here */}
+                </div>
+              )}
             </div>
           </div>
         </div>
       )}
 
       {/* Sidebar */}
-      <div className="w-full lg:w-96 flex flex-col gap-8">
+      <div className="w-full lg:w-96 flex flex-col gap-6">
         {/* Course Progress Section */}
-        <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-lg font-semibold">
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          <h2 className="text-lg font-semibold text-gray-800">
             Entrepreneurship in East Africa - Case Study UG
           </h2>
-          <p className="text-sm text-green-600 mt-1">
-            {progressPercentage.toFixed(2)}%
+          <p className="text-sm text-green-600 mt-2">
+            Progress: {progressPercentage.toFixed(2)}%
           </p>
-          <ul className="mt-4 space-y-2">
+          <ul className="mt-6 space-y-4">
             {modules.map((module, index) => (
               <li
                 key={module.module_id}
-                className={`flex items-center gap-2 cursor-pointer ${
-                  index > activeModuleIndex && "cursor-not-allowed"
+                className={`flex items-center gap-3 ${
+                  index <= activeModuleIndex
+                    ? "cursor-pointer"
+                    : "cursor-not-allowed"
                 }`}
-                onClick={() => handleModuleChange(index)}
+                onClick={() =>
+                  index <= activeModuleIndex && handleModuleChange(index)
+                }
               >
                 {index <= activeModuleIndex ? (
                   <CheckCircle className="w-5 h-5 text-green-600" />
@@ -152,7 +199,9 @@ export default function ModulesPage() {
                 )}
                 <span
                   className={`text-sm ${
-                    index <= activeModuleIndex ? "text-black" : "text-gray-400"
+                    index <= activeModuleIndex
+                      ? "text-gray-800"
+                      : "text-gray-400"
                   }`}
                 >
                   {module.module_title}
