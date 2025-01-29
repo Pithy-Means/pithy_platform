@@ -1,46 +1,33 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { Courses } from "@/types/schema";
+import { Courses, UserInfo } from "@/types/schema";
 import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/UserContext";
 import PaymentButton from "./PaymentButton";
+import { useCourseStore } from "@/lib/store/courseStore";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
-interface CourseListProps {
-  courses: Courses[];
-}
-
-const CourseList: React.FC<CourseListProps> = ({ courses }) => {
+const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const [modalMessage, setModalMessage] = useState<string | null>(null);
-  const { user } = useContext(UserContext);
+  const { isLocked, setLocked } = useCourseStore();
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
+  console.log("Is locked", isLocked);
 
   const handleViewMore = (course: Courses) => {
-    // Check if the user is in the list of students by either name or email
-    const isStudentName = user?.name ? course.students?.includes(user.name) : false;
-    const isStudentEmail = user?.email ? course.students?.includes(user.email) : false;
-
-    // If the user is neither listed by name nor email, lock the course
-    if (!isStudentName || !isStudentEmail) {
-      setModalMessage("Please complete the payment to access this course.");
-    } else {
-      router.push(`/dashboard/courses/${course.course_id}`);
-    }
+    router.push(`/dashboard/courses/${course.course_id}`);
   };
+
+  const name = `${user?.lastname} ${user?.firstname}`;
 
   return (
     <div className="flex flex-col gap-6 px-8 py-4 max-w-full">
       {courses.map((course) => {
-        const student = course.students?.find(
-          (student) => student === user?.name
-        );
+        const isStudent = course.students?.includes(name);
+        const isStudentEmail = course.student_email?.includes(user?.email);
+        const isEnrolled = isStudent && isStudentEmail;
 
-        const studentEmail = course.student_email?.find(
-          (student) => student === user?.email
-        );
-        const isLocked = !student && !studentEmail;
-
+        if (isLocked) setLocked(false);
         return (
           <div
             key={course.course_id}
@@ -61,7 +48,7 @@ const CourseList: React.FC<CourseListProps> = ({ courses }) => {
               </div>
               {/* Title and Description */}
               <div className="flex flex-col">
-                {isLocked ? (
+                {isLocked || !isEnrolled ? (
                   <div className="flex flex-col items-center justify-center text-center h-full">
                     <p className="text-red-600 font-bold text-lg mb-2">
                       This course is locked.
@@ -69,7 +56,13 @@ const CourseList: React.FC<CourseListProps> = ({ courses }) => {
                     <p className="text-gray-600 mb-4">
                       Please complete the payment to access course details.
                     </p>
-                    <PaymentButton />
+                    <PaymentButton
+                      course={{
+                        course_id: course.course_id,
+                        title: course.title,
+                        price: course.price,
+                      }}
+                    />
                   </div>
                 ) : (
                   <>
@@ -97,22 +90,6 @@ const CourseList: React.FC<CourseListProps> = ({ courses }) => {
           </div>
         );
       })}
-      {/* Modal */}
-      {modalMessage && (
-        <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-lg font-medium text-gray-800">{modalMessage}</p>
-            <div className="mt-4 flex justify-end">
-              <button
-                onClick={() => setModalMessage(null)}
-                className="bg-red-600 text-white px-4 py-2 rounded-md"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

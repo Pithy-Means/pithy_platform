@@ -6,7 +6,7 @@ import { Post } from "@/types/schema";
 interface SubscriptionEvent<Tpayload = string> {
   events: string[];
   payload: Tpayload;
-};
+}
 
 export const fetchPosts = async () => {
   try {

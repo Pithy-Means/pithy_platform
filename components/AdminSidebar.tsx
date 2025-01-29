@@ -9,6 +9,8 @@ const links = [
   { name: "Add Course", path: "/admin/addcourse" },
   { name: "Add Questions", path: "/admin/add_question" },
   { name: "Add Job", path: "/admin/add_job" },
+  { name: "Add Funding", path: "/admin/add_funding" },
+  { name: "Add Scholarship", path: "/admin/add_scholarship" },
 ];
 
 const AdminSidebar: React.FC = () => {

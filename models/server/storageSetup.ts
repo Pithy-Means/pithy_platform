@@ -1,3 +1,4 @@
+import { Permission, Role } from "node-appwrite";
 import { postAttachementBucket } from "../name";
 import { storage } from "./config";
 
@@ -13,8 +14,13 @@ export default async function setupStorage() {
       await storage.createBucket(
         postAttachementBucket,
         postAttachementBucket,
-        [],
-        false,
+        [
+          Permission.create(Role.any()),
+          Permission.read(Role.any()),
+          Permission.update(Role.any()),
+          Permission.delete(Role.any()),
+        ],
+        true,
         true,
         50000000,
         [

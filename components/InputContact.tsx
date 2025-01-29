@@ -60,7 +60,7 @@ const InputContact: React.FC<InputContactProps> = ({
             required
             className={`px-6 h-24 py-4 ${className} text-lg ${
               isValid ? "bg-green-100" : "bg-white"
-            } border rounded border-black border-opacity-50 outline-none focus:border-blue-500 focus:text-black transition duration-200`}
+            } border rounded border-black border-opacity-50 outline-none focus:border-green-500 focus:text-black transition duration-200`}
           />
         ) : (
           <Input

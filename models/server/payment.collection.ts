@@ -19,28 +19,28 @@ export default async function createPaymentCollection() {
       paymentCollection,
       "payment_id",
       100,
-      true,
+      false,
     ), // Payment ID
     databases.createStringAttribute(
       db,
       paymentCollection,
       "user_id",
       100,
-      true,
+      false,
     ), // User ID
     databases.createStringAttribute(
       db,
       paymentCollection,
       "status",
       100,
-      true,
+      false,
     ),
     databases.createStringAttribute(
       db,
       paymentCollection,
       "network",
       100,
-      true,
+      false,
     ),
     databases.createIntegerAttribute(
       db,
@@ -51,21 +51,21 @@ export default async function createPaymentCollection() {
       paymentCollection,
       "currency",
       100,
-      true,
+      false,
     ),
     databases.createStringAttribute(
       db,
       paymentCollection,
       "tx_ref",
       100,
-      true,
+      false,
     ),
     databases.createStringAttribute(
       db,
       paymentCollection,
       "phone_number",
       100,
-      true,
+      false,
     ),
   ]);
 }

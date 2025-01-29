@@ -1,5 +1,6 @@
 import { BaseUserInfo } from "@/types/schema";
 import InputContact from "./InputContact";
+import Phonenumber from "./Phonenumber";
 
 interface BasicInfoStepProps {
   formData: Partial<BaseUserInfo>;
@@ -7,49 +8,61 @@ interface BasicInfoStepProps {
 }
 
 // Component for basic information form step
-export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({ formData, onChange }) => (
-  <div className="w-full max-w-md space-y-4">
-    <InputContact
-      label="First Name"
-      type="text"
-      name="firstname"
-      value={formData.firstname || ""}
-      onChange={onChange}
-    />
-    <InputContact
-      label="Last Name"
-      type="text"
-      name="lastname"
-      value={formData.lastname || ""}
-      onChange={onChange}
-    />
-    <InputContact
-      label="Email"
-      type="email"
-      name="email"
-      value={formData.email || ""}
-      onChange={onChange}
-    />
-    <InputContact
-      label="Phone"
-      type="tel"
-      name="phone"
-      value={formData.phone || ""}
-      onChange={onChange}
-    />
-    <InputContact
-      label="Address"
-      type="text"
-      name="address"
-      value={formData.address || ""}
-      onChange={onChange}
-    />
-    <InputContact
-      label="Password"
-      type="password"
-      name="password"
-      value={formData.password || ""}
-      onChange={onChange}
-    />
+export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
+  formData,
+  onChange,
+}) => (
+  <div className="w-full relative px-8">
+
+    {/* Form Fields with Enhanced Layout */}
+    <div className="w-1/3 mx-auto flex flex-col space-y-5">
+      {/* Left Column */}
+        <InputContact
+          label="First name"
+          type="text"
+          name="firstname"
+          value={formData.firstname || ""}
+          onChange={onChange}
+          className="py-6"
+        />
+        <InputContact
+          label="Last name"
+          type="text"
+          name="lastname"
+          value={formData.lastname || ""}
+          onChange={onChange}
+          className="py-6"
+        />
+        <InputContact
+          label="Email"
+          type="email"
+          name="email"
+          value={formData.email || ""}
+          onChange={onChange}
+          className="py-6"
+        />
+        <Phonenumber
+          initialPhone={formData.phone || "+256"}
+          value={formData.phone || ""}
+          onPhoneChange={(phone: string) => onChange({ target: { name: 'phone', value: phone } } as React.ChangeEvent<HTMLInputElement>)}
+          className="!rounded-xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105 my-3"
+        />
+        <InputContact
+          label="Address"
+          type="text"
+          name="address"
+          value={formData.address || ""}
+          onChange={onChange}
+          className="py-6"
+        />
+        <InputContact
+          label="Password"
+          type="password"
+          name="password"
+          value={formData.password || ""}
+          onChange={onChange}
+          className="py-6"
+        />
+    </div>
   </div>
 );

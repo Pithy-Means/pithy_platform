@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import { Button } from "./ui/button";
-import { useState, useEffect, useRef, useContext } from "react";
-import { UserContext } from "@/context/UserContext";
-import { logoutUser } from "@/lib/actions/user.actions";
+import { useState, useEffect, useRef } from "react";
+import { useAuthStore } from "@/lib/store/useAuthStore";
+import { AuthState } from "@/types/schema";
 
 
 const Navbar = () => {
@@ -14,7 +14,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user, signout } = useAuthStore((state) => state as AuthState);
 
   const handleToggle = () => setIsOpen((prev) => !prev);
   const handleCloseMenu = () => setIsOpen(false);
@@ -43,7 +43,7 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await logoutUser();
+      await signout();
       router.push("/");
     } catch (error) {
       console.error("Logout failed", error);

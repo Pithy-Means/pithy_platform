@@ -12,9 +12,10 @@ import {
 import Image from "next/image";
 import { Video } from "./Video";
 import { Button } from "./ui/button";
-import { PostWithUser, CommentPost } from "@/types/schema";
+import { PostWithUser, CommentPostWithUser } from "@/types/schema";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import CommentsList from "./CommentList";
 
 dayjs.extend(relativeTime);
 
@@ -22,7 +23,7 @@ interface PostItemProps {
   post: PostWithUser;
   loggedInUserId: string | null;
   likeStatus: { isLiked: boolean; likeCount: number };
-  comments: CommentPost[];
+  comments: CommentPostWithUser[];
   onLike: (postId: string) => void;
   onDelete: (postId: string) => void;
   onUpdate: (postId: string, content: string) => void;
@@ -48,6 +49,12 @@ const PostItem: React.FC<PostItemProps> = ({
   const [showComments, setShowComments] = useState<boolean>(false);
   const [repostContent, setRepostContent] = useState<string>("");
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+
+  console.log("COmments", comments);
+
+  const truncatedContent =
+  (post?.content?.length ?? 0) > 100 ? post?.content?.slice(0, 100) + "..." : (post?.content ?? "");
 
   const handleUpdate = () => {
     if (editingPostId) {
@@ -111,7 +118,15 @@ const PostItem: React.FC<PostItemProps> = ({
           )}
         </div>
         <div className="flex flex-col space-y-4">
-          <p>{post.content}</p>
+        <p>{isExpanded ? post.content : truncatedContent}</p>
+          {(post?.content?.length ?? 0) > 100 && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-500 underline"
+            >
+              {isExpanded ? "Collapse" : "View"}
+            </button>
+          )}
           {post.image && (
             <Image
               src={post.image}
@@ -176,9 +191,6 @@ const PostItem: React.FC<PostItemProps> = ({
         </div>
         <div className="w-full bg-gray-300 h-0.5 rounded" />
         <div className="flex space-x-8 items-center">
-          <div className="rounded-full bg-gray-300 text-white px-2 py-1 text-xl font-extrabold">
-            {loggedInUserId ? loggedInUserId.charAt(0).toUpperCase() : ""}
-          </div>
           <button
             onClick={() => onLike(post.post_id || "")}
             className={`flex flex-col space-y-1 items-center`}
@@ -231,19 +243,7 @@ const PostItem: React.FC<PostItemProps> = ({
         )}
         {showComments && (
           <div className="mt-4 flex flex-col space-y-4">
-            {comments.map((comment) => (
-              <div
-                key={comment.comment_id}
-                className="flex items-center gap-2 mb-2"
-              >
-                <div>
-                  <p className="text-sm font-semibold">
-                    {comment.user?.firstname || "User"}
-                  </p>
-                  <p className="text-sm text-gray-700">{comment.comment}</p>
-                </div>
-              </div>
-            ))}
+            <CommentsList comments={comments} />
             <div className="flex items-center my-2 w-full">
               <input
                 type="text"

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useContext } from "react";
+import React from "react";
 import RecommendationTopics from "./RecommendationTopics";
 import CareerValues from "./CareerValues";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
+import { UserInfo } from "@/types/schema";
 
 const majorsList = ["Computer Science", "Engineering", "Data Analysis"];
 const sampleTraits = [
@@ -18,7 +19,7 @@ const interests = ["Technology", "Science", "Art"];
 
 const PersonSidebar = () => {
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as { user: UserInfo });
 
   return (
     <div className="flex flex-col bg-white w-full text-black justify-start overflow-y-auto rounded-lg overflow-hidden">

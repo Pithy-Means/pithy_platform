@@ -1,25 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { usePosts } from "@/lib/hooks/usePosts";
 import {
   deletePost,
   updatePost,
   createComment,
-  // getCommentsByPostId,
-  // likePost,
   toggleLike,
   repost,
 } from "@/lib/actions/user.actions";
-import { CommentPost, PostWithUser } from "@/types/schema";
+import { CommentPostWithUser, PostWithUser, UserInfo } from "@/types/schema";
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
-  const fetchedPosts = usePosts();
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
-  const [comments, setComments] = useState<{ [key: string]: CommentPost[] }>(
+  
+  const { posts, loadingPosts } = usePosts();
+  console.log("Posts", posts);
+  const [post, setPost] = useState<PostWithUser[]>([]);
+  const [comments, setComments] = useState<{ [key: string]: CommentPostWithUser[] }>(
     {}
   );
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
@@ -105,12 +105,12 @@ const Posts = () => {
     }
   };
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   usePostInitialization(
-    fetchedPosts,
-    user,
-    setPosts,
+    posts,
+    user?.user,
+    setPost,
     setComments,
     setLikeStatus,
     setLoading
@@ -119,7 +119,7 @@ const Posts = () => {
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
-      setPosts((prevPosts) =>
+      setPost((prevPosts) =>
         prevPosts.filter((post) => post.post_id !== postId)
       );
     } catch (error) {
@@ -130,7 +130,7 @@ const Posts = () => {
   const handleUpdate = async (postId: string, content: string) => {
     try {
       const updatedPost = await updatePost(postId, { content });
-      setPosts((prevPosts) =>
+      setPost((prevPosts) =>
         prevPosts.map((post) => (post.post_id === postId ? updatedPost : post))
       );
     } catch (error) {
@@ -141,14 +141,19 @@ const Posts = () => {
   const handleAddComment = async (postId: string, comment: string) => {
     if (!comment) return;
 
-    const commentData: CommentPost = {
+    // Set loading state to block input for the current post
+    // setLoading((prev) => ({ ...prev, [postId]: true }));
+
+    const commentData: CommentPostWithUser = {
       comment_id: "",
       post_id: postId,
-      userid: user?.user_id ?? "",
+      user_id: user?.user_id ?? "",
       comment,
+      user: user ? { user_id: user.user_id, username: user.username } : {},
     };
 
     const createdComment = await createComment(commentData);
+    console.log("Created Comment", createdComment);
     if (createdComment) {
       setComments((prev) => ({
         ...prev,
@@ -158,11 +163,12 @@ const Posts = () => {
     }
     // Empthy the comment input
     setNewComment((prev) => ({ ...prev, [postId]: "" }));
+    // setLoading((prev) => ({ ...prev, [postId]: false }));
   };
 
   return (
     <div className="flex flex-col gap-4 text-black w-full">
-      {loading ? (
+      {loadingPosts ? (
         <div className="py-4 flex flex-col space-y-4">
           <div className="border border-gray-300 shadow rounded-md p-4 w-full">
             <div className="animate-pulse flex flex-col space-y-4">
@@ -229,9 +235,7 @@ const Posts = () => {
               </div>
             </div>
           </div>
-
         </div>
-
       ) : (
         <>
           {posts.map((post) => (

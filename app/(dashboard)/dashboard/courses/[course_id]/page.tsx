@@ -1,19 +1,19 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { Courses } from "@/types/schema";
+import { useEffect, useState } from "react";
+import { Courses, UserInfo } from "@/types/schema";
 import ModuleForm from "@/components/ModuleForm"; // Import ModuleForm
 import ModulesPage from "@/components/ModulePage";
 import { Button } from "@/components/ui/button";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseDetail = () => {
   const { course_id } = useParams(); // Get the course_id from the URL
   const [course, setCourse] = useState<Courses | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false); // State to control modal visibility
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   useEffect(() => {
     if (course_id) {

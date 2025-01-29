@@ -1,11 +1,10 @@
-import { Courses } from "@/types/schema";
+import { Courses, UserInfo } from "@/types/schema";
 import { useFetch } from "./useFetch";
-import { useContext } from "react";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "../store/useAuthStore";
 
 export const useCreateCourse = () => {
   const { data, error, loading, fetchData } = useFetch();
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const handleSubmit = async (course: Courses) => {
     if (!user?.user_id) {

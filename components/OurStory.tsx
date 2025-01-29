@@ -22,7 +22,7 @@ const OurStory = () => {
           </h2>
           <p className="mt-4 w-full lg:w-2/3 text-lg text-center lg:text-left">
             Our mission is to provide personalized career and business
-            assessments, empowering individuals to make informed decisions. Our
+            guidances, empowering individuals to make informed decisions. Our
             vision is a world where everyone thrives in their chosen paths.
           </p>
         </div>

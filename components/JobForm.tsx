@@ -1,9 +1,10 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
-import { Job } from "@/types/schema"; // Assuming Job interface exists
+import { useEffect, useState } from "react";
+import { Job, UserInfo } from "@/types/schema"; // Assuming Job interface exists
 import { createJob } from "@/lib/actions/user.actions"; // Assuming createJob function is exported
-import { UserContext } from "@/context/UserContext";
+import { Button } from "./ui/button";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const JobForm = () => {
 
@@ -24,14 +25,14 @@ const JobForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   useEffect(() => {
     // When the user data is fetched, update the formData with the user_id
     if (user) {
       setFormData((prevState) => ({
         ...prevState,
-        user_id: user.user_id, // Dynamically set user_id
+        user_id: user?.user_id, // Dynamically set user_id
       }));
     }
   }, [user]); // This runs when the user is fetched
@@ -199,13 +200,40 @@ const JobForm = () => {
             />
           </div>
 
-          <button
+          <Button
             type="submit"
             className="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             disabled={loading}
           >
-            {loading ? "Creating..." : "Create Job"}
-          </button>
+            {loading ? (
+              <div className="flex items-center">
+                <span>Creating Job...</span>
+                <svg
+                  className="animate-spin h-5 w-5 ml-2 text-white"
+                  xmlns="http://www.w3.org/
+                  2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0c4.418 0 8 3.582 8 8s-3.582 8-8 8v-4a4 4 0 00-4-4H4z"
+                  ></path>
+                </svg>
+              </div>
+            ): (
+              "Create Job"
+            )}
+          </Button>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
           {success && <p className="text-green-500 text-sm">{success}</p>}

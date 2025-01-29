@@ -1,17 +1,17 @@
 "use client";
 
 import {useCreateCourse} from "@/lib/hooks/useCreateCourse"
-import { Courses } from "@/types/schema";
-import React, { useContext, useEffect, useState } from "react";
+import { Courses, UserInfo } from "@/types/schema";
+import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 
 const CreateCourseForm = () => {
-  const { user } = useContext(UserContext); // Use the hook
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   const [course, setCourse] = useState<Courses>({
     course_id: "",
     user_id: "", // You should set this based on the logged-in user's ID
@@ -220,7 +220,7 @@ const CreateCourseForm = () => {
           htmlFor="Category"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          Requirements (Optional)
+          Category of the Course
         </Label>
         <select
           id="categories"
@@ -228,10 +228,12 @@ const CreateCourseForm = () => {
           value={course.categories}
           onChange={handleInputChange}
           className="w-full p-2 border border-gray-300 rounded-md text-gray-900 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          required
         >
-          <option value="student">Student</option>
-          <option value="professional">Job Seeker</option>
-          <option value="business">Owner</option>
+          <option value="">Select Category of the Course</option>
+          <option value="Student">Student</option>
+          <option value="Job Seeker">Job Seeker</option>
+          <option value="Employer">Owner</option>
           <option value="other">Other</option>
         </select>
       </div>

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useContext } from "react"
 import AdminSidebar from "@/components/AdminSidebar";
 import TopNav from "@/components/TopNav";
-import { UserContext, UserProvider } from "@/context/UserContext";
+import { UserProvider } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
+import { UserInfo } from "@/types/schema";
 
 export default function DashboardLayout({
   children,
@@ -23,7 +24,7 @@ function DashboardContent({
 }: {
   children: React.ReactNode;
 }) {
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
   return (
     <div className="flex">
       <AdminSidebar />

@@ -1,17 +1,17 @@
 "use client";
 
 import { generateValidPostId } from "@/lib/utils";
-import { PostCourseQuestion } from "@/types/schema";
-import { useContext, useState } from "react";
+import { PostCourseQuestion, UserInfo } from "@/types/schema";
+import { useState } from "react";
 import { createPostCourseQuestions } from "../lib/actions/user.actions";
-import { UserContext } from "@/context/UserContext";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const AddQuestionForm = () => {
   const [questionText, setQuestionText] = useState<string>("");
   const [choices, setChoices] = useState<string[]>([""]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { user } = useContext(UserContext);
+  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const handleAddChoice = () => setChoices((prev) => [...prev, ""]);
 
