@@ -56,17 +56,15 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
   };
 
   return (
-    <form onSubmit={initiatePayment} className="flex flex-col space-y-6 p-10 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-3xl shadow-2xl hover:shadow-3xl transform transition-all duration-500 ease-in-out hover:scale-105 max-w-lg mx-auto backdrop-blur-lg">
+    <form onSubmit={initiatePayment} className="flex flex-col space-y-6 p-10 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-3xl shadow-2xl hover:shadow-3xl transform transition-all duration-500 ease-in-out hover:scale-105 w-full backdrop-blur-lg">
       {/* Course Details */}
       {course.title ? (
         <div className="flex flex-col space-y-6 text-white p-6 bg-gradient-to-t from-green-700 via-green-800 to-green-900 rounded-xl shadow-lg transform transition-all hover:scale-105 duration-300 ease-in-out">
           <div className="flex items-center space-x-4">
-            <span className="text-4xl font-extrabold">Course Title:</span>
-            <span className="text-2xl font-semibold">{course.title}</span>
+            <span className="text-lg font-semibold">{course.title}</span>
           </div>
           <div className="flex items-center space-x-4">
-            <span className="text-4xl font-extrabold">Price:</span>
-            <span className="text-2xl font-semibold text-yellow-300">UGX {course.price}</span>
+            <span className="text-lg font-semibold text-yellow-300">UGX {course.price}</span>
           </div>
         </div>
       ) : (
