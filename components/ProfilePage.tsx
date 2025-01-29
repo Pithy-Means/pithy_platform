@@ -18,7 +18,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-white">
+    <main className="flex items-center justify-center bg-gradient-to-r from-blue-50 to-white">
       <div className="max-w-3xl w-full bg-white shadow-lg rounded-3xl p-8">
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
