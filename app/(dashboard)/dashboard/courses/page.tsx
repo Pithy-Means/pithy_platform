@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
 import CourseView from "@/components/courseView";
 
-const page = () => {
+const CoursePage = () => {
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       <div className="w-full">
         <Suspense fallback={<div>Loading...</div>}>
           <CourseView />
@@ -13,4 +13,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CoursePage;

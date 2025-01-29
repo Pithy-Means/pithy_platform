@@ -33,7 +33,6 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true });
     try {
       const response = await register(data); // API call
-      console.log("response", response);
       if (!response) {
         throw new Error("Invalid response from server");
       }
@@ -56,13 +55,10 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true });
     try {
       const response = await login(data); // API call
-      console.log("response", response);
-      // set({ user, isAuthenticated: true, loading: false });
       if (!response.success || !response.data) {
         throw new Error(response.message || "Login failed");
       }
       const { user, token } = response.data;
-      console.log("token", token);
       set({ user, token, isAuthenticated: true, loading: false });
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("isAuthenticated", "true");

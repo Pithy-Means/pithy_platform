@@ -79,7 +79,7 @@ export const login = async ({ email, password }: LoginInfo) => {
     // Set a cookie valid for one month (30 days in seconds)
     const oneMonthInSeconds = 30 * 24 * 60 * 60;
 
-    cookies().set("my-session", session.secret, {
+    (await cookies()).set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -131,7 +131,9 @@ export const logoutUser = async () => {
     const { account } = await createSessionClient();
 
     // Delete all Appwrite sessions
-    cookies().delete("my-session"); // Clear the session token cookie
+    (await
+      // Delete all Appwrite sessions
+      cookies()).delete("my-session"); // Clear the session token cookie
     await account.deleteSessions();
     console.log("User logged out successfully");
   } catch (error) {
@@ -265,7 +267,10 @@ export const register = async (userdata: Partial<UserInfo>) => {
     // await createVerify();
 
     // Set a secure cookie for the session
-    cookies().set("my-session", session.secret, {
+    (await
+      // await createVerify();
+      // Set a secure cookie for the session
+      cookies()).set("my-session", session.secret, {
       path: "/",
       httpOnly: true,
       sameSite: "strict",
@@ -506,6 +511,7 @@ export const getPosts = async () => {
   try {
     const { databases } = await createAdminClient();
     const posts = await databases.listDocuments(db, postCollection);
+    // console.log("Posts", posts);
     if (!posts || !posts.documents) {
       console.error("No documents found in the posts collection");
       return [];

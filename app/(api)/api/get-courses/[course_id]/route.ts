@@ -4,7 +4,7 @@
 
 import { NextResponse } from 'next/server';
 import { Query } from 'node-appwrite';
-import { courseCollection, courseAttachementBucket, db } from '@/models/name';
+import { courseCollection, db, postAttachementBucket } from '@/models/name';
 import { createAdminClient } from '@/utils/appwrite';
 import env from '@/env';
 
@@ -33,7 +33,7 @@ export async function GET(req: Request, { params }: { params: { course_id: strin
     if (courseData.image) {
       try {
         // Fetch the image preview URL directly from Appwrite
-        imageUrl = `${env.appwrite.endpoint}/storage/buckets/${courseAttachementBucket}/files/${courseData.image}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}&mode=admin`;
+        imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${courseData.image}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
       } catch (error) {
         console.error(`Failed to fetch image for course ${courseData.$id}:`, error);
       }

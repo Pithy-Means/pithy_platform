@@ -1,7 +1,7 @@
 'use server';
 
 import { generateValidPostId } from '@/lib/utils';
-import { courseAttachementBucket, courseCollection, db } from '@/models/name';
+import { courseCollection, db, postAttachementBucket } from '@/models/name';
 import { Courses } from '@/types/schema';
 import { createAdminClient } from '@/utils/appwrite';
 import { Buffer } from 'buffer';
@@ -51,13 +51,13 @@ export async function POST(req: Request) {
 
     console.log('Uploading image to Appwrite...');
     const imageUpload = await storage.createFile(
-      courseAttachementBucket,
+      postAttachementBucket,
       ID.unique(),
       imageFile
     );
 
     console.log('Uploaded image:', imageUpload);
-    const imagePreview = await storage.getFilePreview(courseAttachementBucket, imageUpload.$id);
+    const imagePreview = await storage.getFilePreview(postAttachementBucket, imageUpload.$id);
     console.log('Image preview:', imagePreview);
 
     console.log('Creating course document...');

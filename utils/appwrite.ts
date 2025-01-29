@@ -8,7 +8,7 @@ export async function createSessionClient() {
   const client = new Client()
     .setEndpoint(env.appwrite.endpoint)
     .setProject(env.appwrite.projectId);
-  const session = cookies().get("my-session");
+  const session = (await cookies()).get("my-session");
   if (!session || !session.value) {
     throw new Error("No session");
   }
@@ -20,7 +20,7 @@ export async function createSessionClient() {
   };
 }
 
-export const createAdminClient = () => {
+export const createAdminClient = async () => {
   const client = new Client();
   client
     .setEndpoint(env.appwrite.endpoint)

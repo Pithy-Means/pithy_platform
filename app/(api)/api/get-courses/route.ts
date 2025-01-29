@@ -1,6 +1,6 @@
 'use server';
 
-import { courseCollection, courseAttachementBucket, db } from '@/models/name';
+import { courseCollection, db, postAttachementBucket } from '@/models/name';
 import { createAdminClient } from '@/utils/appwrite';
 import { NextResponse } from 'next/server';
 import env from '@/env';
@@ -17,7 +17,7 @@ export async function GET() {
         if (course.image) {
           try {
             // Fetch the image preview URL directly from Appwrite
-            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${courseAttachementBucket}/files/${course.image}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}&mode=admin`;
+            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${course.image}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
             // imageUrl = filePreview.href;
           } catch (error) {
             console.error(`Failed to fetch image for course ${course.$id}:`, error);

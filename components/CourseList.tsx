@@ -2,32 +2,23 @@
 
 import React from "react";
 import Image from "next/image";
-import { Courses, UserInfo } from "@/types/schema";
+import { Courses } from "@/types/schema";
 import { useRouter } from "next/navigation";
 import PaymentButton from "./PaymentButton";
 import { useCourseStore } from "@/lib/store/courseStore";
-import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isLocked, setLocked } = useCourseStore();
-  const { user } = useAuthStore((state) => state as unknown as UserInfo);
-  console.log("Is locked", isLocked);
+  const { isLocked } = useCourseStore();
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
-  const name = `${user?.lastname} ${user?.firstname}`;
 
   return (
     <div className="flex flex-col gap-6 px-8 py-4 max-w-full">
       {courses.map((course) => {
-        const isStudent = course.students?.includes(name);
-        const isStudentEmail = course.student_email?.includes(user?.email);
-        const isEnrolled = isStudent && isStudentEmail;
-
-        if (isLocked) setLocked(false);
         return (
           <div
             key={course.course_id}
@@ -48,7 +39,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
               </div>
               {/* Title and Description */}
               <div className="flex flex-col">
-                {isLocked || !isEnrolled ? (
+                {isLocked === true ? (
                   <div className="flex flex-col items-center justify-center text-center h-full">
                     <p className="text-red-600 font-bold text-lg mb-2">
                       This course is locked.

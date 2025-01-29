@@ -13,7 +13,7 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 const nextConfig = {
   reactStrictMode: false,
-  swcMinify: true,  // No longer configurable
+  // swcMinify: true,  // No longer configurable
 
   webpack: (config) => {
     // console.log('webpack config', config);

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 /* slick-carousel css */
-@import "~slick-carousel/slick/slick.css";
-@import "~slick-carousel/slick/slick-theme.css";
+/* @import "~slick-carousel/slick/slick.css"; */
+/* @import "~slick-carousel/slick/slick-theme.css"; */
 
 :root {
   --background: #ffffff;
@@ -98,13 +98,13 @@ body {
 /* When input is focused or has content */
 input:focus ~ .input-text,
 input:valid ~ .input-text {
-  @apply text-black/40 bg-white transform -translate-y-6 -translate-x-4 scale-75 text-lg;
+  @apply text-black/40 bg-white transform -translate-y-6 -translate-x-4 scale-75 text-lg rounded-md;
 }
 
 /* When textarea is focused or has content */
 textarea:focus ~ .input-text,
 textarea:valid ~ .input-text {
-  @apply text-black/40 bg-white transform -translate-y-6 -translate-x-4 scale-75 text-lg;
+  @apply text-black/40 bg-white transform -translate-y-6 -translate-x-4 scale-75 text-lg rounded-md;
 }
 
 /* custom.css */
