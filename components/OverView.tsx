@@ -16,7 +16,6 @@ import {
   LogOut,
   School,
 } from "lucide-react";
-import { logoutUser } from "@/lib/actions/user.actions";
 import ModalComp from "./ModalComp";
 import { AuthState, PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
