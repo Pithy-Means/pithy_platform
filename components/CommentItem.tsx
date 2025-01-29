@@ -10,11 +10,11 @@ const CommentItem = ({ comment }: { comment: CommentPostWithUser }) => {
   const avatarColor = `bg-gradient-to-tr from-green-500 via-white/70 to-green-800`;
 
   return (
-    <Card className="shadow-lg border-0 hover:shadow-xl transition-all duration-300">
+    <Card className="shadow-lg border-0 hover:shadow-xl transition-all duration-300 p-2">
       <CardContent className="flex gap-4 items-start">
         {/* Avatar Section */}
         <div
-          className={`w-14 h-14 ${avatarColor} rounded-full flex items-center justify-center text-gray-600 font-bold text-xl uppercase`}
+          className={`w-10 h-10 ${avatarColor} rounded-full flex items-center justify-center text-gray-600 font-bold text-xl uppercase`}
         >
           {userName.charAt(0)}
         </div>
@@ -24,22 +24,14 @@ const CommentItem = ({ comment }: { comment: CommentPostWithUser }) => {
           {/* Username and Timestamp */}
           <div className="flex justify-between items-center">
             <CardTitle className="text-lg font-bold text-gray-900">{userName}</CardTitle>
-            {/* <p className="text-xs text-gray-500">
-              {new Date(comment.createdAt).toLocaleString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-            </p> */}
+            {/* Add created time */}
           </div>
 
           {/* Comment Text */}
           <p className="mt-2 text-sm text-gray-700 leading-relaxed">{comment.comment}</p>
 
           {/* Action Buttons */}
-          <div className="mt-4 flex items-center gap-6 justify-end">
+          <div className="mt-1 flex items-center gap-6 justify-end">
             {/* Edit Button */}
             <button
               className="flex items-center gap-2 text-sm text-blue-500 hover:text-blue-600 hover:bg-blue-50 px-3 py-1 rounded-md transition-all duration-200"
