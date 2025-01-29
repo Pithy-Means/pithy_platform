@@ -134,7 +134,7 @@ const PostItem: React.FC<PostItemProps> = ({
               height={100}
               alt="Post Image"
               unoptimized
-              className="h-56 w-full object-cover rounded-md"
+              className="h-72 w-full object-cover rounded-md"
             />
           )}
           {post.video && (
@@ -143,7 +143,7 @@ const PostItem: React.FC<PostItemProps> = ({
               controls
               width="800"
               height="100"
-              className="h-56 w-full object-cover rounded-md"
+              className="h-72 w-full object-cover rounded-md"
             />
           )}
         </div>

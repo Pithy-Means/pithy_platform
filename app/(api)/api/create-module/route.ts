@@ -2,7 +2,7 @@
 
 import { getCourse } from '@/lib/actions/user.actions';
 import { generateValidPostId } from '@/lib/utils';
-import { courseAttachementBucket, moduleCollection, db } from '@/models/name';
+import { moduleCollection, db, postAttachementBucket } from '@/models/name';
 import { Modules } from '@/types/schema';
 import { createAdminClient } from '@/utils/appwrite';
 import { Buffer } from 'buffer';
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 
     console.log('Uploading image to Appwrite...');
     const imageUpload = await storage.createFile(
-      courseAttachementBucket,
+      postAttachementBucket,
       ID.unique(),
       videoFile
     );

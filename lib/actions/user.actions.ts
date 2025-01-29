@@ -344,37 +344,42 @@ export const createPost = async (data: Post) => {
   const { post_id, image, video } = data;
   const validPost = generateValidPostId(post_id);
   const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
-  let base64Match;
-  let file;
+  let file: File | null = null;
   let fileType = "";
   let imageId = "";
   let videoId = "";
 
-  // Validate image or video only if present
-  if (image && image.startsWith("data:image")) {
-    base64Match = image.match(/^data:(image)\/(\w+);base64,/);
-  } else if (video && video.startsWith("data:video")) {
-    base64Match = video.match(/^data:(video)\/(\w+);base64,/);
+  // Ensure only one media type is set
+  const hasImage = image && image.startsWith("data:image");
+  const hasVideo = video && video.startsWith("data:video");
+
+  if (hasImage) {
+    videoId = ""; // Ensure video is empty if an image is present
+  } else if (hasVideo) {
+    imageId = ""; // Ensure image is empty if a video is present
   }
+
+  // Process Base64 validation
+  const base64Match = hasImage
+    ? image.match(/^data:(image)\/(\w+);base64,/)
+    : hasVideo
+    ? video.match(/^data:(video)\/(\w+);base64,/)
+    : null;
 
   if (base64Match) {
     console.log("Base64 match", base64Match);
 
-    fileType = base64Match[2]; // Extract the file extension
+    fileType = base64Match[2]; // Extract file extension
     console.log("Extracted file type:", fileType);
 
-    // Validate against allowed extensions
     if (!allowedExtensions.includes(fileType)) {
       console.error("Unsupported file type:", fileType);
       throw new Error("Unsupported file type");
     }
 
-    const base64Prefix = base64Match[0];
-    const base64Data = image
-      ? image.replace(base64Prefix, "")
-      : video
-        ? video.replace(base64Prefix, "")
-        : "";
+    const base64Data = hasImage
+      ? image.replace(base64Match[0], "")
+      : video!.replace(base64Match[0], "");
 
     const binaryData = Buffer.from(base64Data, "base64");
     const fileName = `uploaded-file.${fileType}`;
@@ -394,20 +399,21 @@ export const createPost = async (data: Post) => {
       );
       console.log("Uploaded file:", fileUpload);
 
-      if (image) {
+      if (hasImage) {
         imageId = fileUpload.$id;
-      } else if (video) {
+      } else if (hasVideo) {
         videoId = fileUpload.$id;
       }
     }
 
-    // Create post document with or without image/video
+    // Create post document with corrected image/video fields
     const post = await databases.createDocument(db, postCollection, validPost, {
       ...data,
       post_id: validPost,
-      image: imageId,
-      video: videoId,
+      image: imageId, // Ensures image is empty if video exists
+      video: videoId, // Ensures video is empty if image exists
     });
+
     console.log("Post created:", post);
     return parseStringify(post);
   } catch (error) {
@@ -415,6 +421,7 @@ export const createPost = async (data: Post) => {
     throw error;
   }
 };
+
 
 export const updatePost = async (
   postId: string,
@@ -454,7 +461,6 @@ export const deletePost = async (postId: string) => {
 
     // Step 3: Delete the post
     const post = await databases.deleteDocument(db, postCollection, postId);
-
     return parseStringify(post);
   } catch (error) {
     console.error("Error deleting post with comments and likes:", error);

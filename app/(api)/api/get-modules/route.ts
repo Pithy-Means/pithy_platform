@@ -1,7 +1,7 @@
 "use server";
 
 import env from "@/env";
-import { courseAttachementBucket, db, moduleCollection } from "@/models/name";
+import { db, moduleCollection, postAttachementBucket } from "@/models/name";
 import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 
@@ -18,7 +18,7 @@ export async function GET() {
         if (module.video) {
           try {
             // Fetch the video preview URL directly from Appwrite
-            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${courseAttachementBucket}/files/${module.video}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
+            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${module.video}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
             // imageUrl = filePreview.href;
           } catch (error) {
             console.error(`Failed to fetch video for module ${module.$id}:`, error);
