@@ -7,7 +7,7 @@ import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { MdOutlineAddCircle } from "react-icons/md";
 
-const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
+const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: true });
 
 function Dashboard() {
   return (
