@@ -7,7 +7,6 @@ import CourseList from "./CourseList";
 import { Courses, UserInfo } from "@/types/schema";
 import { LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCourseStore } from "@/lib/store/courseStore";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseView: React.FC = () => {
@@ -15,10 +14,6 @@ const CourseView: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [layout, setLayout] = useState<"grid" | "list">("grid");
   const [courses, setCourses] = useState<Courses[]>([]);
-
-  const { isLocked } = useCourseStore();
-
-  console.log("Locked", isLocked);
 
   const router = useRouter();
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
@@ -28,7 +23,7 @@ const CourseView: React.FC = () => {
     async (userCategory: string) => {
       setLoading(true);
       try {
-        const response = await fetch("/api/get-courses", { method: "GET" });
+        const response = await fetch(`/api/get-courses?timestamp=${Date.now()}`, { method: "GET", cache: "no-store" });
         const data = await response.json();
         if (!response.ok || !data?.data) {
           throw new Error(data?.message || "Failed to fetch courses."); // Throw an error if the response is not okay
@@ -59,7 +54,7 @@ const CourseView: React.FC = () => {
   return (
     <div className="w-full h-full">
       {/* Header Section */}
-      <div className="w-[calc(100vw-210px)] p-16 ">
+      <div className="w-full p-16 ">
         <div className="flex justify-between items-center">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
@@ -99,7 +94,7 @@ const CourseView: React.FC = () => {
       </div>
 
       {/* Content Section */}
-      <div className="container mx-auto px-6 py-4">
+      <div className="w-full px-6 py-4">
         {loading ? (
           <div className="flex items-center justify-center h-screen">
             <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
