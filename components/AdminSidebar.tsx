@@ -23,14 +23,12 @@ const AdminSidebar: React.FC = () => {
       </div>
       <nav className="flex-1">
         {links.map((link) => (
-          <Link key={link.path} href={link.path}>
-            <a
+          <Link key={link.path} href={link.path}
               className={`block px-4 py-2 hover:bg-gray-700 ${
                 pathname === link.path ? "bg-gray-700" : ""
               }`}
             >
               {link.name}
-            </a>
           </Link>
         ))}
       </nav>
