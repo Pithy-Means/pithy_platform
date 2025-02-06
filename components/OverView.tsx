@@ -78,7 +78,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   return (
     <div className="flex space-x-4 relative">
-      <div className="hidden overflow-y-auto md:flex h-[85vh] flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 lg:w-[250px] md:w-[75px]">
+      <div className="hidden overflow-y-auto md:flex h-[90vh] flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 lg:w-[250px] md:w-[75px]">
         <div className="flex flex-col space-y-12">
           <div className="flex flex-col space-y-2 mb-10">
             <p className="text-lg text-black/50 lg:block hidden">Overview</p>
