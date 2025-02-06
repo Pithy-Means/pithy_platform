@@ -45,7 +45,7 @@ const SpecialMobile = () => {
           </div>
           <div className="flex flex-col items-center space-y-6">
             <Button className="bg-black text-white capitalize flex-grow md:text-xl">
-              Take the assessment
+              Take the guidance
             </Button>
             <Button className="flex items-center space-x-2 bg-transparent text-black border-none outline-none hover:text-white">
               <span className="text-[14px] md:text-xl">Contact Us</span>
