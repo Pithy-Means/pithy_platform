@@ -1,8 +1,12 @@
+"use client";
+
 import { Button } from "./ui/button";
 import TitleDot from "./TitleDot";
 import CardMadam from "./CardMadam";
+import { useRouter } from "next/navigation";
 
 const Whoweare = () => {
+  const router = useRouter();
   return (
     <div className="pt-20 px-10 bg-white">
       <div className="flex justify-between space-x-60 w-full">
@@ -19,7 +23,7 @@ const Whoweare = () => {
           </p>
           <div className="flex justify-between">
             <div className="flex flex-col space-y-4">
-              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md">
+              <div className="w-fit text-black font-extrabold px-2 rounded-md">
                 Our Story
               </div>
               <p className="capitalize text-black text-lg font-semibold">
@@ -47,13 +51,15 @@ const Whoweare = () => {
               </div>
             </div>
             <div className="flex flex-col space-y-4">
-              <div className="bg-[#5AC35A] w-fit text-black font-extrabold px-2 rounded-md">
+              <div className="w-fit text-black font-extrabold px-2 rounded-md">
                 Our vision
               </div>
               <p className="capitalize text-black text-lg font-semibold">
                 A world where everyone thrives in their chosen path.
               </p>
-              <Button className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
+              <Button 
+                onClick={() => router.push("/about")}
+                className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
                 Learn More
               </Button>
             </div>
