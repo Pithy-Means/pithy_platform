@@ -230,7 +230,7 @@ const DiscoverFit = () => {
                       </ul>
                     </div>
                     <Image
-                      src="/assets/Frame 89.png"
+                      src="/assets/report.png"
                       width={150}
                       height={150}
                       priority
