@@ -64,7 +64,7 @@ const PostItem: React.FC<PostItemProps> = ({
   };
 
   return (
-    <div className="border border-gray-300 rounded-md p-4 bg-white/10">
+    <div className="border border-gray-300 rounded-md p-4 bg-white/10 overflow-y-auto w-full">
       <div className="flex flex-col space-y-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
