@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 import useAuth from "@/lib/hooks/useAuth";
 import { Button } from "./ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, MoveLeft } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 // import { UserInfo } from '@/types/schema';
 
@@ -82,7 +82,13 @@ const SignInForm = () => {
 
   return (
     <div className="flex items-center justify-center w-full">
-      <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full h-screen">
+      <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full h-screen relative">
+        <Button
+          onClick={() => router.push("/")}
+          className="fixed md:top-8 left-8 bottom-4 bg-transparent text-black hover:text-green-500 hover:bg-white">
+          <MoveLeft size={24} className="mx-3" />
+          Go Back
+        </Button>
         <div className="flex justify-center items-center my-auto space-x-4 w-full md:flex-row flex-col">
           <div className="flex flex-col w-full lg:w-2/4 px-0 mx-0 lg:px-10 lg:mx-auto">
             <h2 className="text-xl lg:text-xl 2xl:text-2xl font-bold text-[#111111] mb-6 capitalize">
@@ -109,7 +115,7 @@ const SignInForm = () => {
                 <button
                   type="button"
                   onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 lg:right-[150px] 2xl:right-[230px] flex items-center px-2 text-gray-500 hover:text-gray-700"
+                  className="absolute inset-y-0 right-0 lg:right-[150px] xl:right-[220px] 5xl:right-[310px] flex items-center px-2 text-gray-500 hover:text-gray-700"
                 >
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>
