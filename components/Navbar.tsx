@@ -16,7 +16,7 @@ const Navbar = () => {
   const router = useRouter();
   const { user, signout } = useAuthStore((state) => state as AuthState);
 
-  const handleToggle = () => setIsOpen((prev) => !prev);
+  const handleToggle = () => setIsOpen(!isOpen);
   const handleCloseMenu = () => setIsOpen(false);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ const Navbar = () => {
               key={link.href}
               href={link.href}
               prefetch={true}
-              className={`text-white hover:text-[#5AC35A] transition duration-300 ${
+              className={`text-white text-lg font-bold hover:text-[#5AC35A] transition duration-300 ${
                 pathname === link.href ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""
               }`}
             >
@@ -107,13 +107,13 @@ const Navbar = () => {
               <>
                 <Link
                   href="/dashboard"
-                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                  className="text-white hover:text-[#5AC35A] text-lg font-bold transition duration-300"
                 >
                   Dashboard
                 </Link>
                 <Button
                   onClick={handleLogout}
-                  className="text-white hover:text-[#5AC35A] transition duration-300 bg-transparent border border-white"
+                  className="text-white hover:text-[#5AC35A] text-lg font-bold transition duration-300 bg-transparent border border-white"
                   aria-label="Logout"
                 >
                   Logout
@@ -123,13 +123,13 @@ const Navbar = () => {
               <>
                 <Link
                   href="/signIn"
-                  className="text-[#5AC35A] hover:text-white transition duration-300"
+                  className="text-[#5AC35A] hover:text-white text-lg font-bold transition duration-300"
                 >
                   Login
                 </Link>
                 <Link
                   href="/signUp"
-                  className="text-white hover:text-[#5AC35A] transition duration-300"
+                  className="text-white hover:text-[#5AC35A] text-lg font-bold transition duration-300"
                 >
                   Sign Up
                 </Link>
