@@ -5,17 +5,12 @@ import { useParams, useRouter } from "next/navigation";
 import { getFunding } from "@/lib/actions/user.actions";
 import { Funding } from "@/types/schema";
 import toast, { Toaster } from "react-hot-toast";
-import Modal from "@/components/Modal";
-import CreateFundingComment from "@/components/CreateFundingComment";
-import GetFundingComments from "@/components/GetFundingComments";
 
 const FundingDetail = () => {
   const { funding_id } = useParams();
   const [funding, setFunding] = useState<Funding | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [modal, setModal] = useState(false);
-  const [modalComment, setModalComment] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -26,6 +21,7 @@ const FundingDetail = () => {
             ? funding_id[0]
             : funding_id;
           const fetchedFundings = await getFunding(validFundingId);
+          toast.success("Funding details fetched successfully");
           setFunding(fetchedFundings);
           setLoading(false);
         } catch (err) {
@@ -37,14 +33,6 @@ const FundingDetail = () => {
       fetchFunding();
     }
   }, [funding_id]);
-
-  const handleModal = () => {
-    setModal(!modal);
-  };
-
-  const handleModalComment = () => {
-    setModalComment(!modalComment);
-  };
 
   if (loading) {
     return (
@@ -140,23 +128,6 @@ const FundingDetail = () => {
           >
             Back to Listings
           </button>
-          <button
-            onClick={() => {
-              toast.success("Comment added successfully");
-              handleModal();
-            }}
-            className="w-full sm:w-auto bg-gradient-to-r from-green-500 via-green-200 to-white/30 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
-          >
-            Leave a Comment
-          </button>
-          <button
-            onClick={() => {
-              handleModalComment();
-            }}
-            className="w-full sm:w-auto bg-gradient-to-t from-green-500 via-green-200 to-white/30 text-gray-800 font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 mt-4 sm:mt-0"
-          >
-            Comments
-          </button>
         </div>
       </div>
 
@@ -179,18 +150,6 @@ const FundingDetail = () => {
           </a>
         </div>
       </div>
-      {/* Modal */}
-      {modal && (
-        <Modal isOpen={modal} onClose={handleModal}>
-          <CreateFundingComment fundingId={funding.funding_id} />
-        </Modal>
-      )}
-
-      {modalComment && (
-        <Modal isOpen={modalComment} onClose={handleModalComment}>
-          <GetFundingComments />
-        </Modal>
-      )}
     </div>
   );
 };
