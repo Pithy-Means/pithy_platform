@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Courses, PaymentData, UserInfo } from "@/types/schema";
 import { FaArrowRight } from "react-icons/fa";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import countries from "@/types/countries"; // Assuming you have a list of countries and their currencies
 
 type PaymentButtonProps = {
   course: Partial<Courses>;
@@ -13,19 +14,40 @@ type PaymentButtonProps = {
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
-
   const [formData, setFormData] = useState<Partial<PaymentData>>({
     user_id: user?.user_id,
     email: user?.email,
     course_choice: course.course_id,
-    amount: 0,
+    amount: 6, // Starting amount in USD
     tx_ref: "",
+    currency: "USD", // Default currency
   });
   const [loading, setLoading] = useState(false);
+  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
+  const [exchangeRate, setExchangeRate] = useState(1); // Exchange rate for selected country currency
+
+  useEffect(() => {
+    const fetchExchangeRate = async () => {
+      try {
+        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+        if (!response.ok) throw new Error("Failed to fetch exchange rate");
+
+        const data = await response.json();
+        setExchangeRate(data.rates[selectedCountry.currency] || 1);
+      } catch (error) {
+        console.error("Error fetching exchange rate:", error);
+      }
+    };
+
+    fetchExchangeRate();
+  }, [selectedCountry]);
 
   const initiatePayment = async () => {
     setLoading(true);
     try {
+      const amountInSelectedCurrency = Math.floor((formData.amount || 6) * exchangeRate); // Convert USD to selected currency and round down to nearest integer
+      console.log("Amount in selected currency:", amountInSelectedCurrency);
+
       const response = await fetch("/api/proxy-flutterwave/initiate", {
         method: "POST",
         headers: {
@@ -34,7 +56,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
         body: JSON.stringify({
           ...formData,
           tx_ref: Date.now().toString(),
-          amount: 20000,
+          amount: amountInSelectedCurrency,
+          currency: selectedCountry.currency,
           email: user?.email,
           name: `${user?.lastname} ${user?.firstname}`,
         }),
@@ -42,7 +65,6 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
 
       const data = await response.json();
 
-      console.log("payemnt Link", data);
       if (response.ok) {
         window.location.href = data.link; // Redirect to Flutterwave payment link
       } else {
@@ -56,20 +78,48 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
   };
 
   return (
-    <form onSubmit={initiatePayment} className="flex flex-col space-y-6 p-10 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-3xl shadow-2xl hover:shadow-3xl transform transition-all duration-500 ease-in-out hover:scale-105 w-full backdrop-blur-lg">
+    <form
+      onSubmit={initiatePayment}
+      className="flex flex-col space-y-6 p-10 bg-gradient-to-r from-green-400 via-green-500 to-green-600 rounded-3xl shadow-2xl hover:shadow-3xl transform transition-all duration-500 ease-in-out hover:scale-105 w-full backdrop-blur-lg"
+    >
       {/* Course Details */}
       {course.title ? (
         <div className="flex flex-col space-y-6 text-white p-6 bg-gradient-to-t from-green-700 via-green-800 to-green-900 rounded-xl shadow-lg transform transition-all hover:scale-105 duration-300 ease-in-out">
           <div className="flex items-center space-x-4">
             <span className="text-lg font-semibold">{course.title}</span>
           </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-lg font-semibold text-yellow-300">UGX {course.price}</span>
-          </div>
         </div>
       ) : (
         <p className="text-white">Course details are currently unavailable.</p>
       )}
+
+      {/* Currency Selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700">Select Currency:</label>
+        <select
+          value={selectedCountry.code}
+          onChange={(e) => {
+            const country = countries.find((c) => c.code === e.target.value);
+            if (country) {
+              setSelectedCountry(country);
+            }
+          }}
+          className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"
+        >
+          {countries.map((country) => (
+            <option key={country.code} value={country.code}>
+              {country.flag} {country.name} ({country.currency})
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Display Converted Amount */}
+      <div className="flex items-center space-x-4">
+        <span className="text-lg font-semibold text-yellow-300">
+          {selectedCountry.currency} {((formData.amount || 6) * exchangeRate).toFixed(2)}
+        </span>
+      </div>
 
       {/* Payment Button */}
       <Button
@@ -84,7 +134,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
       {/* Terms and Conditions */}
       <div className="text-sm text-white/80 text-center">
         <p>
-          By proceeding, you agree to our <a href="#" className="text-indigo-200 hover:underline">terms and conditions</a>.
+          By proceeding, you agree to our{" "}
+          <a href="#" className="text-indigo-200 hover:underline">
+            terms and conditions
+          </a>.
         </p>
       </div>
 
