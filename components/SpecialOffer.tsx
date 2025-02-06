@@ -33,7 +33,7 @@ const SpecialOffer = () => {
                 </div>
                 <div className="flex items-center space-x-6">
                   <Button className="bg-black text-white capitalize flex-grow">
-                    Take the assessment
+                    Take the guidance
                   </Button>
                   <Button className="flex items-center space-x-2 bg-transparent text-black border-none outline-none hover:text-white">
                     <span className="text-base md:text-xl">Contact Us</span>
