@@ -18,8 +18,8 @@ export default function ProfilePage() {
   }
 
   return (
-    <main className="flex items-center justify-center bg-gradient-to-r from-blue-50 to-white">
-      <div className="max-w-3xl w-full bg-white shadow-lg rounded-3xl p-8">
+    <main className="flex items-center justify-center">
+      <div className="w-full bg-white shadow-lg rounded-3xl p-8">
         {/* Avatar Section */}
         <div className="flex flex-col items-center">
           {user?.avatar ? (
@@ -52,17 +52,6 @@ export default function ProfilePage() {
 
         {/* Role and Category Section */}
         <div className="mt-8">
-          {user?.role === "admin" && (
-            <div className="text-center text-sm font-semibold text-white bg-blue-500 rounded-full py-2">
-              Role: Admin
-            </div>
-          )}
-          {user?.role === "user" && (
-            <div className="text-center text-sm font-semibold text-white bg-green-500 rounded-full py-2">
-              Role: User ({user?.categories})
-            </div>
-          )}
-
           {user?.categories === "student" && (
             <CategoryInfo
               title="Student Details"
