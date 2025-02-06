@@ -6,6 +6,7 @@ import { createPostCourseAnswer, fetchAllPostCourseQuestions } from "@/lib/actio
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
 import { PostCourseQuestionAnswer, UserInfo } from "@/types/schema";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import { useRouter } from "next/navigation";
 
 const QuestionSlider: React.FC = () => {
   const [questions, setQuestions] = useState<{ id: string; question: string; choices: string[] }[]>([]);
@@ -14,15 +15,15 @@ const QuestionSlider: React.FC = () => {
   const [testCompleted, setTestCompleted] = useState(false);
 
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
-  const { currentQuestionIndex, setCurrentQuestionIndex } = useQuestionStore();
+  const { currentQuestionIndex, setCurrentQuestionIndex, testStarted, setTestStarted } = useQuestionStore();
+
+  const router = useRouter();
 
   useEffect(() => {
-    // Check if the test was already completed
     const isTestCompleted = localStorage.getItem("testCompleted");
     if (isTestCompleted === "true") {
       setTestCompleted(true);
     } else {
-      // Fetch questions if the test is not completed
       const getQuestions = async () => {
         setLoading(true);
         try {
@@ -35,10 +36,9 @@ const QuestionSlider: React.FC = () => {
           setLoading(false);
         }
       };
-  
+
       getQuestions();
     }
-
   }, []);
 
   useEffect(() => {
@@ -46,6 +46,10 @@ const QuestionSlider: React.FC = () => {
   }, [currentQuestionIndex]);
 
   const handleChoiceSelection = (choice: string) => {
+    if (!testStarted) {
+      setTestStarted(true);
+      router.push("/dashboard/courses")
+    }
     setSelectedChoice(choice);
   };
 
@@ -63,19 +67,23 @@ const QuestionSlider: React.FC = () => {
       post_course_question_id: currentQuestion.id,
     };
 
+    setLoading(true);
+
     try {
       await createPostCourseAnswer(answerData);
 
       if (currentQuestionIndex === questions.length - 1) {
-        // Mark the test as completed in localStorage
         localStorage.setItem("testCompleted", "true");
         setTestCompleted(true);
+        router.push("/dashboard/courses")
       } else {
         setCurrentQuestionIndex(currentQuestionIndex + 1);
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
       alert("Failed to submit the answer. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -85,23 +93,22 @@ const QuestionSlider: React.FC = () => {
 
   if (questions.length === 0 && testCompleted) {
     return (
-      <div className="w-full max-w-md mx-auto space-y-4 text-center">
-        <h2 className="text-xl font-bold">Thank you for completing the test!</h2>
-        <p className="text-gray-600">To proceed, please complete your payment.</p>
-        {/* <PaymentButton /> */}
+      <div className="w-full max-w-md mx-auto space-y-4">
+        <h2 className="text-black text-xl font-bold">Test Completed</h2>
+        <p>Thank you for taking the test.</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4">
-      <h2 className="text-black/5 text-xl font-bold">{questions[currentQuestionIndex]?.question}</h2>
+      <h2 className="text-black text-xl font-bold">{questions[currentQuestionIndex]?.question}</h2>
       <div className="space-y-2">
         {questions[currentQuestionIndex]?.choices.map((choice, index) => (
           <Button
             key={index}
             onClick={() => handleChoiceSelection(choice)}
-            className={`w-full text-black/15 ${
+            className={`w-full text-lg text-black ${
               selectedChoice === choice ? "bg-[#5AC35A]" : "bg-[#f0f0f0]"
             } p-3 text-left rounded-md`}
           >
@@ -121,6 +128,7 @@ const QuestionSlider: React.FC = () => {
         <Button
           onClick={handleSubmitAnswer}
           className="bg-[#5AC35A] justify-self-end"
+          disabled={loading}
         >
           {currentQuestionIndex === questions.length - 1 ? "Submit Test" : "Next"}
         </Button>
