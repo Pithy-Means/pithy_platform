@@ -40,6 +40,7 @@ const Contact = () => {
 
       const data = await res.json();
       if (data.success) {
+        
         setResponseMessage("Email sent successfully!");
       } else {
         setResponseMessage("Failed to send email.");
