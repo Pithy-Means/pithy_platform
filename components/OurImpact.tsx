@@ -2,37 +2,10 @@ import Image from "next/legacy/image";
 import TitleDot from "./TitleDot";
 import StarRating from "./Stars";
 import { PiQuotesFill } from "react-icons/pi";
-import CardCarousel from "./cardSlide";
-import SpecialOffer from "./SpecialOffer";
+// import CardCarousel from "./cardSlide";
 import Footer from "./Footer";
-import SpecialMobile from "./SpecialMobile";
+import SlidingCards from "./cardSlide";
 // import { IoIosArrowRoundForward } from "react-icons/io";
-
-const cards = [
-  {
-    title: "Transformed",
-    description:
-      "i can reflect on the time i came across Pithy Means, i’m always amazed. what journey it’s been. thanks to their team’s guidance",
-    imageSrc: "/assets/person_feedback.png",
-    name: "Arnaud B.",
-    role: "CEO, Company",
-  },
-  {
-    title: "Transformed",
-    description:
-      "i can reflect on the time i came across Pithy Means, i’m always amazed. what journey it’s been. thanks to their team’s guidance",
-    imageSrc: "/assets/C2_15.png",
-    name: "Jane Smith",
-    role: "Founder, Another Company",
-  },
-  {
-    title: "Exceptional Experience",
-    description: "Thanks to Pithy Means, I have grown both personally...",
-    imageSrc: "/assets/C05_6.png",
-    name: "Alice Brown",
-    role: "COO, Yet Another Company",
-  },
-];
 
 const OurImpact = () => {
   return (
@@ -57,13 +30,7 @@ const OurImpact = () => {
             className="absolute left-0 object-contain"
           />
         </div>
-        <CardCarousel cards={cards} />
-      </div>
-      <div className="lg:block hidden">
-        <SpecialOffer />
-      </div>
-      <div className="lg:hidden block">
-        <SpecialMobile />
+        <SlidingCards />
       </div>
       <Footer />
     </div>
