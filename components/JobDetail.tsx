@@ -13,15 +13,10 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
-import Modal from "./Modal";
-import CreateJobComment from "./CreateJobComment";
-import GetJobComments from "./GetJobComments";
 
 const JobDetail: FC = () => {
   const { job_id } = useParams();
   const [job, setJob] = useState<Job | null>(null);
-  const [modal, setModal] = useState(false);
-  const [modalComment, setModalComment] = useState<boolean>(false);
 
   useEffect(() => {
     if (job_id) {
@@ -29,17 +24,12 @@ const JobDetail: FC = () => {
         const validJobId = Array.isArray(job_id) ? job_id[0] : job_id;
         const data = await getJob(validJobId);
         console.log("Job data", data);
+        toast.success("Job details fetched successfully");
         setJob(data);
       };
       fetchData();
     }
   }, [job_id]);
-
-  const handleModal = () => {
-    setModal(!modal);
-  };
-
-  const handleModalComment = () => setModalComment(!modalComment);
 
   if (!job) {
     return (
@@ -184,36 +174,7 @@ const JobDetail: FC = () => {
         >
           Back to Job Listings
         </a>
-        <button
-          onClick={() => {
-            toast.success("Opening comment form...");
-            handleModal()
-          }}
-          className="bg-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 z-50"
-        >
-          Leave a Comment
-        </button>
-        <button
-          onClick={() => {
-            handleModalComment();
-          }}
-          className="bg-green-500 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:shadow-lg text-center transition duration-300 z-50"
-        >
-          Comments
-        </button>
       </section>
-      {modal && (<Modal
-        isOpen={modal}
-        onClose={handleModal}
-        >
-          <CreateJobComment jobId={job.job_id} />
-        </Modal>)}
-
-      {modalComment && (
-        <Modal isOpen={modalComment} onClose={handleModalComment}>
-          <GetJobComments />
-        </Modal>
-      )}
     </main>
   );
 };
