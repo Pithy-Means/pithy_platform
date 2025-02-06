@@ -8,32 +8,32 @@ import { useRouter } from "next/navigation";
 import { Courses } from "@/types/schema";
 import PaymentButton from "./PaymentButton";
 import { useCourseStore } from "@/lib/store/courseStore";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isLocked } = useCourseStore();
+  const { isLocked, setLocked } = useCourseStore();
+  const { user } = useAuthStore((state) => state);
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
+  const studentName = user?.lastname + " " + user?.firstname;
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {courses.map((course) => {
+        const isEnrolled =
+          course.students?.find((name) => name === studentName) &&
+          course.student_email === user?.email;
+          if (isEnrolled) setLocked(false);
         return (
           <div
             key={course.course_id}
             className="bg-white shadow-lg rounded-lg overflow-hidden w-full flex flex-col"
             style={{ minHeight: "350px" }}
           >
-            <Image
-              src={course.image}
-              alt={course.title}
-              width={800}
-              height={400}
-              unoptimized
-              className="object-cover w-full h-48"
-            />
             <div className="py-4 px-6 flex flex-col justify-between flex-grow">
               {/* Check if the course is locked */}
               {isLocked === true ? (
@@ -49,10 +49,18 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     }}
                   />
                 </div>
-              ) : (
+              ) : isEnrolled ? (
                 <>
                   {/* Display course details if enrolled */}
                   <div className="flex flex-col space-y-1 border-b-slate-300 border-b-4">
+                    <Image
+                      src={course.image}
+                      alt={course.title}
+                      width={800}
+                      height={400}
+                      unoptimized
+                      className="object-cover w-full h-48"
+                    />
                     <p className="text-black font-bold text-lg mb-2">
                       {course.title}
                     </p>
@@ -83,6 +91,8 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     </button>
                   </div>
                 </>
+              ) : (
+                ""
               )}
             </div>
           </div>
