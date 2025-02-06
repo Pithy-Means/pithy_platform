@@ -1,6 +1,7 @@
 "use client";
 
 import DashboardNavBar from "@/components/dashboard_navBar";
+import FooterSmallScreen from "@/components/FooterSmallScreen";
 import OverView from "@/components/OverView";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { UserInfo } from "@/types/schema";
@@ -35,7 +36,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative">
       <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
-        <OverView>{children}</OverView>
+        <OverView>
+          {children}
+        </OverView>
+          <FooterSmallScreen />
       </DashboardNavBar>
     </div>
   );
