@@ -30,14 +30,19 @@ const Pricing = () => {
             <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
               <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
               <p className="capitalize text-black md:text-lg">
-                For <b>$6</b> or UGX20,000, get 3 months access to the online
-                orientation.
+                Get access to all the courses and resources in period of 3 Months.
               </p>
             </div>
             <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
               <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
               <p className="capitalize text-black md:text-lg">
-                Become an affiliate and earn 10% referral fees.
+                Get access to all the courses, Job opportunities, Scholarship and Funding.
+              </p>
+            </div>
+            <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
+              <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
+              <p className="capitalize text-black md:text-lg">
+                refering to a friend and get 10% discount on our course if the refered buy our course.
               </p>
             </div>
             <Button className="text-white md:text-xl bg-gradient-to-r from-[#5AC35A] to-[#00AE76] lg:mx-0 mx-auto w-fit">
