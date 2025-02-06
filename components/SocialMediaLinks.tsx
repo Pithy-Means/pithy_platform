@@ -12,7 +12,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({ className }) => {
       </h3>
       <div className="flex space-x-4 items-center">
         <a
-          href="https://www.youtube.com/yourchannel"
+          href="https://www.youtube.com/@PithyMeans"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -20,7 +20,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({ className }) => {
         </a>
         <div className="bg-[#5AC35A] h-3 w-px" />
         <a
-          href="https://www.instagram.com/yourprofile"
+          href="https://www.instagram.com/pithymeans"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -28,7 +28,7 @@ const SocialMediaLinks: React.FC<SocialMediaLinksProps> = ({ className }) => {
         </a>
         <div className="bg-[#5AC35A] h-3 w-px" />
         <a
-          href="https://twitter.com/yourprofile"
+          href="https://x.com/@Pithymeans"
           target="_blank"
           rel="noopener noreferrer"
         >
