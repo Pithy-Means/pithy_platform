@@ -79,7 +79,7 @@ const DiscoverFit = () => {
                       />
                     </div>
                   </div>
-                  <h2 className="font-bold text-2xl">Take Our Assessment</h2>
+                  <h2 className="font-bold text-2xl">Take Our Guidance</h2>
                   <p className="lg:text-xl sm:text-sm md:text-base">
                     Answer our comprehensive questionnaire, designed to identify
                     your
@@ -92,7 +92,7 @@ const DiscoverFit = () => {
                     <ul className="flex flex-col space-y-3">
                       <li className="flex flex-col md:flex-row lg:flex-row space-y-2 space-x-3 items-center">
                         <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
-                        <p className="lg:text-xl">15 -minute assessment</p>
+                        <p className="lg:text-xl">15 -minute guidance</p>
                       </li>
                       <li className="flex flex-col md:flex-row lg:flex-rowspace-x-3 space-y-2 items-center">
                         <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
@@ -224,7 +224,7 @@ const DiscoverFit = () => {
                         <li className="flex flex-col md:flex-row lg:flex-row  space-y-2 space-x-3 items-center">
                           <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 lg:w-2 lg:h-2 lg:p-1"></div>
                           <p className="lg:text-xl">
-                            Ongoing assessment and refinement
+                            Ongoing guidance and refinement
                           </p>
                         </li>
                       </ul>
