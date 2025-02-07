@@ -8,20 +8,25 @@ import {
   toggleLike,
   repost,
 } from "@/lib/actions/user.actions";
-import { CommentPostWithUser, PostWithUser, UserInfo } from "@/types/schema";
+import {
+  CommentPost,
+  CommentPostWithUser,
+  PostWithUser,
+  UserInfo,
+} from "@/types/schema";
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
-  
+
   const { posts, loadingPosts } = usePosts();
   console.log("Posts", posts);
   const [post, setPost] = useState<PostWithUser[]>([]);
-  const [comments, setComments] = useState<{ [key: string]: CommentPostWithUser[] }>(
-    {}
-  );
+  const [comments, setComments] = useState<{
+    [key: string]: CommentPostWithUser[];
+  }>({});
   const [newComment, setNewComment] = useState<{ [key: string]: string }>({});
   const [likePostId, setLikePostId] = useState<string>("");
   const [likeStatus, setLikeStatus] = useState<{
@@ -109,7 +114,7 @@ const Posts = () => {
 
   usePostInitialization(
     posts,
-    user?.user,
+    user,
     setPost,
     setComments,
     setLikeStatus,
@@ -144,12 +149,12 @@ const Posts = () => {
     // Set loading state to block input for the current post
     // setLoading((prev) => ({ ...prev, [postId]: true }));
 
-    const commentData: CommentPostWithUser = {
+    const commentData: CommentPost = {
       comment_id: "",
       post_id: postId,
       user_id: user?.user_id ?? "",
       comment,
-      user: user ? { user_id: user.user_id, username: user.username } : {},
+      // user: user ? { user_id: user.user_id, username: user.username } : {},
     };
 
     const createdComment = await createComment(commentData);
@@ -167,74 +172,38 @@ const Posts = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 text-black w-full">
+    <div className="flex flex-col gap-4 text-black">
       {loadingPosts ? (
-        <div className="py-4 flex flex-col space-y-4">
-          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
-            <div className="animate-pulse flex flex-col space-y-4">
-              <div className="flex space-x-4">
-                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
-                <div className="flex flex-col space-y-2 w-full">
-                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
-                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
-                </div>
-              </div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
-                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
-                    <div className="h-2 bg-slate-700 rounded"></div>
-                  </div>
-                  <div className="h-16 bg-slate-800 rounded"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="space-y-4 flex flex-col">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className="flex animate-pulse bg-white shadow rounded-lg p-4 sm:space-x-4 space-y-4 flex-col sm:flex-row items-start sm:items-center w-full"
+            >
+              {/* Profile Picture Placeholder */}
+              <div className="rounded-full bg-gray-300 h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16"></div>
 
-          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
-            <div className="animate-pulse flex flex-col space-y-4">
-              <div className="flex space-x-4">
-                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
-                <div className="flex flex-col space-y-2 w-full">
-                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
-                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
-                </div>
-              </div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
-                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
-                    <div className="h-2 bg-slate-700 rounded"></div>
-                  </div>
-                  <div className="h-16 bg-slate-800 rounded"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+              {/* Content Placeholder */}
+              <div className="flex-1 space-y-4 w-full">
+                {/* Name Placeholder */}
+                <div className="h-4 bg-gray-300 rounded w-1/3 sm:w-1/4 md:w-1/6"></div>
 
-          <div className="border border-gray-300 shadow rounded-md p-4 w-full">
-            <div className="animate-pulse flex flex-col space-y-4">
-              <div className="flex space-x-4">
-                <div className="rounded-full bg-slate-700 h-8 w-8"></div>
-                <div className="flex flex-col space-y-2 w-full">
-                  <div className="h-2 bg-slate-700 rounded w-1/2"></div>
-                  <div className="h-1.5 bg-slate-700 rounded w-1/3"></div>
+                {/* Post Text Placeholder */}
+                <div className="space-y-2">
+                  <div className="h-4 bg-gray-300 rounded w-full"></div>
+                  <div className="h-4 bg-gray-300 rounded w-5/6"></div>
+                  <div className="h-4 bg-gray-300 rounded w-4/6"></div>
                 </div>
-              </div>
-              <div className="flex-1 space-y-6 py-1">
-                <div className="space-y-3">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="h-2 bg-slate-700 rounded col-span-2"></div>
-                    <div className="h-2 bg-slate-700 rounded col-span-1"></div>
-                    <div className="h-2 bg-slate-700 rounded"></div>
-                  </div>
-                  <div className="h-16 bg-slate-800 rounded"></div>
+
+                {/* Action Buttons Placeholder */}
+                <div className="flex space-x-4 pt-2 justify-center sm:justify-start">
+                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
+                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
+                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
                 </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       ) : (
         <>

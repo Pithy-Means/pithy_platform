@@ -11,7 +11,9 @@ export type BaseUserInfo = {
   role?: "admin" | "user";
   avatar?: string;
   phone?: string;
-  address?: string;
+  country?: string;
+  city?: string;
+  earlier?: string;
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
   secret?: string;
@@ -211,6 +213,7 @@ export interface PaymentData {
   amount: number;
   currency?: string;
   tx_ref: string;
+  name?: string;
   email?: string;
   phone_number?: string;
   network?: string;

@@ -1,37 +1,33 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+'use client';
+
+import React, { useContext, useState } from "react";
 import dynamic from "next/dynamic";
-import Community from "@/components/communty";
 import ShareSomething from "@/components/ShareSomething";
 import { BriefcaseBusiness, School } from "lucide-react";
 import { GoHome } from "react-icons/go";
 import { HiMiniClipboardDocumentList } from "react-icons/hi2";
 import { MdOutlineAddCircle } from "react-icons/md";
 
-const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: true });
+import Link from 'next/link';
+import Modal from "@/components/Modal";
+import CreatePosts from "@/components/createPosts";
+import { PostWithUser } from "@/types/schema";
+import { UserContext } from "@/context/UserContext";
+
+// Lazy load the sidebar component
+const PersonSidebar = dynamic(() => import("@/components/PersonSidebar"), { ssr: false });
 
 function Dashboard() {
   return (
-    <div className="flex space-x-4 ">
+    <div className="flex  flex-col lg:flex-row  lg:space-x-4 w-full relative">
       {/* Main content area */}
-      <div className="w-full md:w-[calc(100vw-5rem)] lg:w-[calc(100vw-600px)]">
+      <div className="px-4 sm:px-6 lg:px-8 w-full lg:w-[65%]">
         <ShareSomething />
       </div>
-
       {/* Sidebar for larger screens */}
-      <div className="hidden lg:flex flex-col space-y-4 overflow-y-auto overflow-x-hidden w-1/4 my-6">
+      <div className="hidden lg:flex flex-col space-y-4 h-screen w-1/4  lg:py-6 lg:px-4  z-10">
         <PersonSidebar />
-        <Community />
-      </div>
-
-      {/* Fixed bottom bar for smaller screens */}
-      <div className="fixed left-0 bottom-0 h-20 w-full md:block lg:hidden bg-[#5AC35A] py-4 z-50 overflow-hidden ">
-        <div className="flex justify-around items-center text-white">
-          <GoHome size={36} />
-          <HiMiniClipboardDocumentList size={36} />
-          <MdOutlineAddCircle size={36} />
-          <BriefcaseBusiness size={36} />
-          <School size={36} />
-        </div>
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     const { tx_ref, amount, currency, auth_model } = data.data;
 
     // Ensure the payment amount matches the expected amount (10000 in your case)
-    if (amount !== 20000) {
+    if (amount !== data.data.amount) {
       return NextResponse.json(
         { error: "Invalid payment amount.", details: { amount } },
         { status: 400 }

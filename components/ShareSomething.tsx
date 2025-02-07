@@ -9,31 +9,31 @@ import { Button } from "./ui/button";
 
 const ShareSomething = () => {
   return (
-    <div className="flex flex-col w-full no-scrollbar max-h-screen">
+    <div className="flex flex-col no-scrollbar items-center justify-center max-h-screen mt-4">
       {/* Header Section */}
-      <div className="flex flex-col bg-white text-black px-6 justify-center rounded h-16 p-4 m-6">
-        <div className="flex items-center w-full space-x-4">
+      <div className="flex flex-col bg-white text-black rounded-lg shadow-md p-2 w-full mt-2">
+        <div className="flex items-center justify-center">
           {/* Icon */}
-          <CircleUserRound size={32} className="flex-shrink-0" />
+          <CircleUserRound size={32} className="flex-shrink-0 text-gray-600 hidden md:block" />
 
           {/* Input */}
           <input
             type="text"
             placeholder="Share something"
-            className="border-2 border-gray-300 rounded flex-1 py-1.5 px-4" 
+            className="border border-gray-300 rounded-lg flex-1 py-1 mx-2  px-2 focus:outline-none focus:ring-2 focus:ring-[#5AC35A]" 
             value="" // Add the value property
             onChange={() => {}} // Open modal when the input is clicked
           />
 
           {/* Button */}
-          <Button className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-2 px-6 flex-shrink-0">
+          <Button className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0 hover:bg-gradient-to-tr from[#]">
             Post
           </Button>
         </div>
       </div>
 
       {/* Scrollable Posts Section */}
-      <div className="flex-1 overflow-y-auto no-scrollbar px-6 h-full">
+      <div className="overflow-y-auto no-scrollbar h-full mt-8 w-full">
         <Posts />
       </div>
     </div>

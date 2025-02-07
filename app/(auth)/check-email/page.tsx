@@ -21,7 +21,7 @@ const CheckEmailPage = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-4">
+    <div className="h-screen flex justify-center items-center flex-col p-4 bg-white/50  ">
       <h2 className="text-xl font-semibold mb-4">Check Your Email</h2>
       <p>
         We have sent a verification link to your email. Please check your inbox
@@ -34,7 +34,7 @@ const CheckEmailPage = () => {
       <button
         onClick={handleResendVerification}
         disabled={isResending}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg"
+        className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg"
       >
         {isResending ? "Resending..." : "Resend Verification Email"}
       </button>

@@ -52,9 +52,9 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     >
   ) => {
     const { name, value } = e.target;
-    setPost((prev) => ({
-      ...prev,
-      [name]: value,
+    setPost((prevPost) => ({
+      ...prevPost,
+      [name]: value, // Update the corresponding state
     }));
   };
 
@@ -102,6 +102,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
           {/* Post Content */}
           <div>
             <Textarea
+              name="content"
               value={post.content || ""}
               onChange={handleChange}
               placeholder="Write your thoughts here..."

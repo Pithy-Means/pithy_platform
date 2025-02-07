@@ -91,7 +91,7 @@ const AddQuestionForm = () => {
           type="text"
           value={questionText}
           onChange={(e) => setQuestionText(e.target.value)}
-          className="w-full mt-1 p-2 border rounded focus:ring focus:ring-blue-500"
+          className="w-full mt-1 p-2 border rounded focus:ring focus:ring-green-500 text-black"
           placeholder="Enter your question"
           required
         />
@@ -108,7 +108,7 @@ const AddQuestionForm = () => {
                 type="text"
                 value={choice}
                 onChange={(e) => handleChoiceChange(index, e.target.value)}
-                className="flex-1 p-2 border rounded focus:ring focus:ring-blue-500"
+                className="flex-1 p-2 border rounded focus:ring focus:ring-green-500 text-black"
                 placeholder={`Choice ${index + 1}`}
                 required
               />
@@ -128,7 +128,7 @@ const AddQuestionForm = () => {
         <button
           type="button"
           onClick={handleAddChoice}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="mt-2 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
         >
           Add Choice
         </button>

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
 import { IoPersonOutline } from "react-icons/io5";
-import { IoIosPeople, IoMdHelpCircleOutline } from "react-icons/io";
+import { IoMdHelpCircleOutline } from "react-icons/io";
 import {
   Bell,
   BriefcaseBusiness,
@@ -22,6 +22,8 @@ import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import Modal from "./Modal";
+import { useCourseStore } from "@/lib/store/courseStore";
+import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -33,6 +35,22 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const { isLocked } = useCourseStore(); // Get the lock state from the store
+  const { testStarted } = useQuestionStore();
+  const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false);
+  const [restrictedLink, setRestrictedLink] = useState("");
+
+  const handleLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    linkName: string,
+    isLocked: boolean
+  ) => {
+    if (isLocked) {
+      e.preventDefault(); // Prevent navigation only if locked
+      setRestrictedLink(linkName);
+      setIsRestrictedModalOpen(true);
+    }
+  };
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
@@ -41,20 +59,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-
-  const isCoursesPage = /^\/dashboard\/courses\/[^/]+$/.test(pathname);
-
-  const notAuthorizedLinks = ["Community", "Scholarship"];
-
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    linkName: string
-  ) => {
-    if (notAuthorizedLinks.includes(linkName)) {
-      e.preventDefault();
-      alert(`You are not authorized to access "${linkName}"`);
-    }
-  };
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -73,13 +77,11 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     `${pathname === href ? "text-green-500 font-bold" : ""} text-lg cursor-pointer`;
 
   return (
-    <div className="flex space-x-3 pr-8">
-      <div className="hidden md:flex h-screen flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 w-[250px]">
+    <div className="flex space-x-4 relative">
+      <div className="hidden overflow-y-auto md:flex h-[90vh] flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 lg:w-[250px] md:w-[75px]">
         <div className="flex flex-col space-y-12">
           <div className="flex flex-col space-y-2 mb-10">
-            {!isCoursesPage && (
-              <p className="text-lg text-black/50 lg:block hidden">Overview</p>
-            )}
+            <p className="text-lg text-black/50 lg:block hidden">Overview</p>
             <div className="flex flex-col space-y-2">
               {[
                 { href: "/dashboard", icon: GoHome, label: "Home" },
@@ -87,41 +89,39 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                   href: "/dashboard/courses",
                   icon: GraduationCap,
                   label: "Courses",
-                },
-                {
-                  href: "/dashboard/community",
-                  icon: IoIosPeople,
-                  label: "Community",
-                  restricted: true,
+                  restricted: testStarted,
                 },
                 {
                   href: "/dashboard/jobs",
                   icon: BriefcaseBusiness,
-                  label: "Job",
+                  label: "Jobs",
+                  restricted: isLocked,
                 },
                 {
                   href: "/dashboard/scholarships",
                   icon: School,
-                  label: "Scholarship",
+                  label: "Scholarships",
+                  restricted: isLocked,
                 },
                 {
                   href: "/dashboard/fundings",
                   icon: HandCoins,
-                  label: "Funding",
+                  label: "Fundings",
+                  restricted: isLocked,
                 },
               ].map(({ href, icon: Icon, label, restricted }) => (
                 <Link
                   key={label}
                   href={href}
-                  onClick={(e) => restricted && handleLinkClick(e, label)}
+                  onClick={(e) =>
+                    restricted && handleLinkClick(e, label, isLocked)
+                  }
                   className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
                 >
                   <Icon className={getLinkClassName(href)} size={24} />
-                  {!isCoursesPage && (
-                    <p className={`${getLinkClassName(href)} lg:block hidden`}>
-                      {label}
-                    </p>
-                  )}
+                  <p className={`${getLinkClassName(href)} lg:block hidden`}>
+                    {label}
+                  </p>
                 </Link>
               ))}
               <button
@@ -129,42 +129,35 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                 className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] p-0 bg-transparent"
               >
                 <CirclePlus className={getLinkClassName("/posts")} size={24} />
-                {!isCoursesPage && (
-                  <p className="text-lg lg:block hidden">Post</p>
-                )}
+                <p className="text-lg lg:block hidden">Post</p>
               </button>
             </div>
           </div>
 
           <div className="flex flex-col space-y-2">
-            {!isCoursesPage && (
-              <p className="text-lg text-black/50 lg:block hidden">Account</p>
-            )}
-            <button onClick={openProfileModal} className="flex flex-row gap-3 items-center">
+            <p className="text-lg text-black/50 lg:block hidden">Account</p>
+            <button
+              onClick={openProfileModal}
+              className="flex flex-row gap-3 items-center"
+            >
               <IoPersonOutline
                 className={getLinkClassName("/profile")}
                 size={24}
               />
-              {!isCoursesPage && (
-                <p
-                  className={`${getLinkClassName("/profile")} lg:block hidden`}
-                >
-                  Profile
-                </p>
-              )}
+              <p className={`${getLinkClassName("/profile")} lg:block hidden`}>
+                Profile
+              </p>
             </button>
             <Link
               href="/notifications"
               className="flex flex-row gap-3 items-center"
             >
               <Bell className={getLinkClassName("/notifications")} size={24} />
-              {!isCoursesPage && (
-                <p
-                  className={`${getLinkClassName("/notifications")} lg:block hidden`}
-                >
-                  Notifications
-                </p>
-              )}
+              <p
+                className={`${getLinkClassName("/notifications")} lg:block hidden`}
+              >
+                Notifications
+              </p>
             </Link>
           </div>
         </div>
@@ -175,30 +168,23 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               className={getLinkClassName("/help")}
               size={24}
             />
-            {!isCoursesPage && (
-              <p className={`${getLinkClassName("/help")} lg:block hidden`}>
-                Help & support
-              </p>
-            )}
+            <p className={`${getLinkClassName("/help")} lg:block hidden`}>
+              Help & support
+            </p>
           </Link>
           <div
             onClick={handleLogout}
             className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
           >
             <LogOut size={24} />
-            {!isCoursesPage && (
-              <p className="text-lg lg:block hidden">Logout</p>
-            )}
+            <p className="text-lg lg:block hidden">Logout</p>
           </div>
         </div>
       </div>
 
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <CreatePost
-            userId={user?.user_id || ""}
-            onPostCreated={addNewPost}
-          />
+          <CreatePost userId={user?.user_id || ""} onPostCreated={addNewPost} />
         </Modal>
       )}
 
@@ -215,6 +201,20 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Restricted Modal */}
+      {isRestrictedModalOpen && (
+        <Modal
+          isOpen={isRestrictedModalOpen}
+          onClose={() => setIsRestrictedModalOpen(false)}
+        >
+          <h2 className="text-lg font-bold">Restricted Access</h2>
+          <p>
+            This page is restricted. Please unlock the course to access this
+            page.
+          </p>
+        </Modal>
       )}
 
       <ModalComp

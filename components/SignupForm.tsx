@@ -1,6 +1,5 @@
 "use client";
 
-// import { register } from "@/lib/actions/user.actions";
 import { AuthState, UserInfo } from "@/types/schema";
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,11 @@ import { BasicInfoStep } from "./BaseInfoStep";
 import InputContact from "./InputContact";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { createVerify } from "@/lib/actions/user.actions";
+import { Button } from "./ui/button";
+import { CircleX, MoveLeft } from "lucide-react";
+import TermsAndConditions from "./TermsAndConditions";
+import PrivacyPolicy from "./PrivacyPolicy";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignupForm = () => {
   // Form state
@@ -18,6 +22,9 @@ const SignupForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState<boolean>(false);
+  const [showTerms, setShowTerms] = useState(false);
+  const [showPrivacy, setShowPrivacy] = useState(false);
   const router = useRouter();
 
   const { signup } = useAuthStore((state) => state as AuthState);
@@ -34,11 +41,28 @@ const SignupForm = () => {
     }
   };
 
+  const handleDisplayTerms = () => {
+    setShowTerms(!showTerms);
+  };
+
+  const handleDisplayPrivacyPoliciesContent = () => {
+    setShowPrivacy(!showPrivacy);
+  };
+
   useEffect(() => {
     const checkFormCompletion = () => {
       // Define required fields based on current step
       const requiredFields: { [key: number]: string[] } = {
-        0: ["firstname", "lastname", "email", "phone", "address", "password"],
+        0: [
+          "firstname",
+          "lastname",
+          "email",
+          "phone",
+          "country",
+          "city",
+          "earlier",
+          "password",
+        ],
         1: ["age"],
         2: ["gender"],
         3: ["categories"],
@@ -70,10 +94,23 @@ const SignupForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    if (!isFormComplete) {
+      toast.error("Please fill in all required fields");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!termsAgreed) {
+      toast.error("Please agree to the terms and conditions");
+      setIsLoading(false);
+      return;
+    }
     try {
       const newUser = await signup(formData as UserInfo);
       console.log("New user:", newUser);
       if (newUser) {
+        // Toast success message
+        toast.success("User registered successfully");
         await createVerify(); // Trigger email verification
         // Redirect to the "Check Your Email" page
         router.push("/check-email");
@@ -84,7 +121,6 @@ const SignupForm = () => {
       setIsLoading(false);
     }
   };
-  
 
   if (isLoading) {
     <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
@@ -94,6 +130,15 @@ const SignupForm = () => {
 
   return (
     <div className="w-full mx-auto p-6 bg-white flex justify-center items-center flex-col relative h-screen overflow-hidden">
+      <Button
+        onClick={() => router.push("/")}
+        className="absolute top-6 right-6 bg-transparent text-gray-800 hover:text-zinc-200 hover:bg-green-500"
+      >
+        <MoveLeft className="mx-3" />
+        Go Back
+      </Button>
+      <Toaster />
+      <h1 className="text-3xl font-bold text-gray-800 mb-4">Sign up</h1>
       {/* Progress Bar */}
       <div className="flex items-center justify-center w-full my-10">
         <ProgressBar currentStep={currentStep} />
@@ -108,7 +153,7 @@ const SignupForm = () => {
             <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto">
               <PersonInfo
                 question="What is your age group?"
-                options={["18-25", "26-35", "36-45", "46 and +"]}
+                options={["16-25", "26-35", "36-45", "46 and +"]}
                 description="Please select your age group."
                 selectedValue={formData.age || ""}
                 onselect={(value) =>
@@ -307,6 +352,42 @@ const SignupForm = () => {
             </div>
           )}
         </div>
+        {/* Terms and Conditions */}
+        {currentStep === 3 && (
+          <div className="flex justify-center items-center space-x-2">
+            <input
+              type="checkbox"
+              name="termsAgreed"
+              id="termsAgreed"
+              checked={termsAgreed}
+              onChange={(e) => setTermsAgreed(e.target.checked)}
+              className="rounded-md p-4"
+            />
+            <div className="text-gray-600">
+              <div className="flex items-center space-x-2">
+                <p className="p-2">I agree to the </p>
+                <Button
+                  onClick={handleDisplayTerms}
+                  className="text-green-600 bg-transparent"
+                >
+                  Terms and Conditions
+                  <span className="text-red-500">*</span>
+                </Button>
+                <Button
+                  onClick={handleDisplayPrivacyPoliciesContent}
+                  className="text-green-600 bg-transparent"
+                >
+                  Privacy Policy
+                  <span className="text-red-500">*</span>
+                </Button>
+                <span className="text-gray-600">.</span>
+              </div>
+              <p className="text-xs text-gray-600">
+                By checking this box, you agree to our terms and conditions.
+              </p>
+            </div>
+          </div>
+        )}
         {/* Navigation buttons */}
         <div className="flex justify-center items-center gap-x-4 my-6">
           {currentStep > 0 && (
@@ -332,17 +413,18 @@ const SignupForm = () => {
               {!isFormComplete ? "Next" : "Next"}
             </button>
           )}
+          {/* Submit button */}
           {currentStep === 3 && (
             <button
               type="submit"
               className={
                 !isFormComplete
-                  ? "bg-black text-white/10"
+                  ? "px-8 py-2 bg-gray-300 text-gray-800 rounded-md"
                   : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md z-50"
               }
-              disabled={!isFormComplete}
+              disabled={!isFormComplete || !termsAgreed}
             >
-              Sign up
+              {!isFormComplete || !termsAgreed ? "Submit" : "Submit"}
             </button>
           )}
         </div>
@@ -351,12 +433,49 @@ const SignupForm = () => {
         <div className="mt-12 text-center z-50">
           <p className="text-sm text-gray-600">
             Already a member?{" "}
-            <a href="/signIn" className="text-green-600 font-medium underline z-50">
+            <a
+              href="/signIn"
+              className="text-green-600 font-medium underline z-50"
+            >
               Sign in
             </a>
           </p>
         </div>
       </form>
+
+      {/* Terms and Conditions */}
+      {showTerms && (
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] relative">
+            <button
+              onClick={handleDisplayTerms}
+              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+            >
+              <CircleX className="h-6 w-6" />
+            </button>
+            <div className="overflow-y-auto h-[calc(90vh-2rem)] p-6">
+              <TermsAndConditions />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Policy */}
+      {showPrivacy && (
+        <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] relative">
+            <button
+              onClick={handleDisplayPrivacyPoliciesContent}
+              className="absolute right-4 top-4 text-gray-500 hover:text-gray-700"
+            >
+              <CircleX className="h-6 w-6" />
+            </button>
+            <div className="overflow-y-auto h-[calc(90vh-2rem)] p-6">
+              <PrivacyPolicy />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

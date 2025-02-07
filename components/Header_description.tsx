@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
 import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const Header_description = () => {
+  const router = useRouter();
   return (
     <div className="flex flex-col lg:items-start xl:items-start items-center space-y-4 w-full px-4 lg:px-0 xl:px-2 4k:px-6">
       {/* Reduced and responsive heading */}
@@ -14,7 +18,9 @@ const Header_description = () => {
         Venture For You
       </p>
       {/* Responsive button */}
-      <Button className="bg-gradient-to-tr from-[#5AC35A] to-[#00AE76] w-fit text-sm sm:text-base md:text-2xl xl:text-3xl 4k:text-6xl px-4 py-2 4k:px-8 4k:py-10 4k:rounded-md">
+      <Button
+        onClick={() => router.push("/signIn")}
+        className="bg-gradient-to-tr from-[#5AC35A] to-[#00AE76] w-fit text-sm sm:text-base md:text-2xl xl:text-3xl p-3 4k:rounded-md">
         Start Your Journey
       </Button>
     </div>

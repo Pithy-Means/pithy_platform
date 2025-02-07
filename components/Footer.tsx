@@ -47,11 +47,7 @@ const Footer = () => {
                 "Plot No 546, ROFRA house, 4th Floor,Room No 2, Ggaba Road, Kansanga, Kampala."
               }
               email={"pithymeansafrica@gmail.com"}
-              phone={[
-                "+256 750 175 892",
-                "+256 760 389 466",
-                "+256 783 184 543",
-              ]}
+              phone={["+256 77 228 9692"]}
               className="text-white mb-4 md:mb-0 text-center break-normal "
             />
             <QuickLinks />

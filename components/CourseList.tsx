@@ -6,19 +6,26 @@ import { Courses } from "@/types/schema";
 import { useRouter } from "next/navigation";
 import PaymentButton from "./PaymentButton";
 import { useCourseStore } from "@/lib/store/courseStore";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isLocked } = useCourseStore();
+  const { isLocked, setLocked } = useCourseStore();
+  const { user } = useAuthStore((state) => state);
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
+  const studentName = user?.lastname + " " + user?.firstname;
 
   return (
     <div className="flex flex-col gap-6 px-8 py-4 max-w-full">
       {courses.map((course) => {
+        const isEnrolled =
+          course.students?.find((name) => name === studentName) &&
+          course.student_email === user?.email;
+        if (isEnrolled) setLocked(false);
         return (
           <div
             key={course.course_id}
@@ -27,16 +34,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
             {/* Image and Title/Description */}
             <div className="flex items-center gap-6">
               {/* Image */}
-              <div className="flex-shrink-0">
-                <Image
-                  src={course.image}
-                  alt={course.title}
-                  width={120}
-                  height={120}
-                  unoptimized
-                  className="object-cover rounded-lg w-[220px] h-[120px]"
-                />
-              </div>
+
               {/* Title and Description */}
               <div className="flex flex-col">
                 {isLocked === true ? (
@@ -55,8 +53,18 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       }}
                     />
                   </div>
-                ) : (
+                ) : isEnrolled ? (
                   <>
+                    <div className="flex-shrink-0">
+                      <Image
+                        src={course.image}
+                        alt={course.title}
+                        width={120}
+                        height={120}
+                        unoptimized
+                        className="object-cover rounded-lg w-[220px] h-[120px]"
+                      />
+                    </div>
                     <p className="text-lg font-semibold text-gray-800">
                       {course.title}
                     </p>
@@ -75,6 +83,8 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       View more
                     </button>
                   </>
+                ) : (
+                  ""
                 )}
               </div>
             </div>

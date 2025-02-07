@@ -1,8 +1,5 @@
 "use client";
 
-import CreateScholarshipComment from "@/components/CreateScholarshipComment";
-import GetScholarshipComments from "@/components/GetScholarshipComments";
-import Modal from "@/components/Modal";
 import { getScholarship } from "@/lib/actions/user.actions";
 import { Scholarship } from "@/types/schema";
 import { useParams, useRouter } from "next/navigation";
@@ -12,8 +9,6 @@ const ScholarshipDetailPage = () => {
   const { scholarship_id } = useParams();
   const [scholarship, setScholarship] = useState<Scholarship | null>(null);
   const [loading, setLoading] = useState(true);
-  const [modal, setModal] = useState(false);
-  const [modalComment, setModalComment] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -38,13 +33,6 @@ const ScholarshipDetailPage = () => {
     }
   }, [scholarship_id]);
 
-  const handleModal = () => {
-    setModal(!modal);
-  };
-
-  const handleModalComment = () => {
-    setModalComment(!modalComment);
-  };
 
   if (loading) {
     return (
@@ -130,48 +118,9 @@ const ScholarshipDetailPage = () => {
             >
               &larr; Back to Listings
             </button>
-            <button
-              onClick={() => handleModal()}
-              className="inline-block bg-gradient-to-l from-green-500 to-green-500/5 text-white text-lg font-medium py-2 px-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-            >
-              Leave a Comment
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-5 h-5 inline-block ml-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7.5 12h9m-9 4.5h6m-6-9h9m-9 0h.008v.008H7.5V7.5zM21 12c0 7.5-9 9-9 9s-9-1.5-9-9 9-9 9-9 9 1.5 9 9z"
-                />
-              </svg>
-            </button>
-          </div>
-          <div className="mt-6 text-right">
-            <button
-              onClick={() => handleModalComment()}
-             className="text-lg font-semibold text-green-600 bg-white shadow-lg transition duration-300 hover:shadow-xl px-4 py-2 rounded-lg">
-              Comments
-            </button>
-            {modalComment && (
-              <Modal isOpen={modalComment} onClose={handleModalComment}>
-                <GetScholarshipComments />
-              </Modal>
-            )}
           </div>
         </div>
       </div>
-      {modal && (
-        <Modal isOpen={modal} onClose={handleModal}>
-          <CreateScholarshipComment
-            scholarshipId={scholarship.scholarship_id}
-          />
-        </Modal>
-      )}
     </div>
   );
 };

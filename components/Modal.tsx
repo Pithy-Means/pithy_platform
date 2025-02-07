@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         <>
           {/* Backdrop */}
           <motion.div
-            className="fixed inset-0 z-40 bg-gradient-to-br from-black/60 via-gray-900/20 to-black/80 bg-opacity-40"
+            className="fixed inset-0 z-40 bg-gradient-to-br from-black/60 via-gray-900/20 to-black/80 bg-opacity-40 h-[50%]"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}

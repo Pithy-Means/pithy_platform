@@ -1,154 +1,83 @@
-"use client";
-import dynamic from "next/dynamic";
-import React from "react";
-import Image from "next/legacy/image";
-import "../app/globals.css";
-import { IoPersonCircleOutline } from "react-icons/io5";
-import { IoMdArrowForward, IoMdArrowBack } from "react-icons/io";
-import { CustomArrowProps as ReactSlickArrowProps } from "react-slick";
+'use client';
 
-const Slider = dynamic(() => import("react-slick"), { ssr: false });
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-interface CardProps {
-  title: string;
-  description: string;
-  imageSrc?: string;
-  name: string;
-  role: string;
-}
+const comments = [
+  { id: 1, name: 'Alice Johnson', text: 'This platform is amazing! Highly recommended.', avatar: 'https://randomuser.me/api/portraits/women/1.jpg' },
+  { id: 2, name: 'Michael Smith', text: 'A wonderful experience using this service.', avatar: 'https://randomuser.me/api/portraits/men/2.jpg' },
+  { id: 3, name: 'Samantha Lee', text: 'Great customer support and seamless UI.', avatar: 'https://randomuser.me/api/portraits/women/3.jpg' },
+  { id: 4, name: 'David Brown', text: 'Absolutely love the intuitive design!', avatar: 'https://randomuser.me/api/portraits/men/4.jpg' },
+  { id: 5, name: 'Jessica White', text: 'Fast, reliable, and easy to use.', avatar: 'https://randomuser.me/api/portraits/women/5.jpg' },
+  { id: 6, name: 'Chris Taylor', text: 'Very satisfied with the service.', avatar: 'https://randomuser.me/api/portraits/mens/3.jpg' },
+  { id: 7, name: 'Emily Davis', text: 'The best platform I have ever used!', avatar: 'https://randomuser.me/api/portraits/women/7.jpg' },
+  { id: 8, name: 'John Wilson', text: 'Highly recommended to everyone!', avatar: 'https://randomuser.me/api/portraits/men/8.jpg' },
+];
 
-const Card: React.FC<CardProps> = ({
-  title,
-  description,
-  imageSrc,
-  name,
-  role,
-}) => {
-  const imagePath = imageSrc ? `${imageSrc}` : null;
+export default function SlidingComments() {
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <div className=" w-full h-56 shadow-lg rounded-lg p-6 bg-slate-100">
-      <h2 className="text-xl font-bold ">{title}</h2>
-      <p className="text-lg mt-2 ">{description}</p>
-      <div className="mt-2 flex flex-row items-center">
-        {imagePath ? (
-          <Image
-            src={imagePath}
-            height={50}
-            width={50}
-            alt={`${name}'s image`}
-            className=""
-          />
-        ) : (
-          <IoPersonCircleOutline size={50} className="text-gray-400" />
-        )}
-        <div className="ml-4">
-          <h3 className="text-lg mt-2">{name}</h3>
-          <p className="text-sm">{role}</p>
-        </div>
-      </div>
-    </div>
-  );
-};
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+        if (
+          scrollRef.current.scrollLeft + scrollRef.current.clientWidth >=
+          scrollRef.current.scrollWidth
+        ) {
+          scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
-interface CardCarouselProps {
-  cards?: CardProps[];
-}
-
-const CardCarousel: React.FC<CardCarouselProps> = ({ cards = [] }) => {
-  // const [currentSlide, setCurrentSlide] = useState(0);
-  // const totalSlides = cards.length;
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 300,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          slidesToShow: 1,
-        },
-      },
-    ],
+  const scroll = (offset: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+      if (
+        scrollRef.current.scrollLeft + scrollRef.current.clientWidth >=
+        scrollRef.current.scrollWidth
+      ) {
+        scrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+      }
+    }
   };
 
   return (
-    <div className="w-full">
-      {cards.length > 0 ? (
-        <>
-          <Slider {...settings}>
-            {cards.map((card, index) => (
-              <div key={index} className="px-2">
-                <Card
-                  key={index}
-                  title={card.title}
-                  description={card.description}
-                  imageSrc={card.imageSrc}
-                  name={card.name}
-                  role={card.role}
-                />
-              </div>
-            ))}
-          </Slider>
+    <>
+    <div className="relative w-full max-w-4xl mx-auto overflow-hidden p-4">
+      <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
+        <Button onClick={() => scroll(-300)} className="rounded-full bg-white shadow-md p-2">
+          <ChevronLeft size={24} />
+        </Button>
+      </div>
 
-          <div className="flex items-center">
-            <div className=" left-0 w-full flex space-x-4 p-4">
-              <PrevArrow
-                slickPrev={() =>
-                  (document.querySelector(".slick-prev") as HTMLElement).click()
-                }
-              />
-              <NextArrow
-                slickNext={() =>
-                  (document.querySelector(".slick-next") as HTMLElement).click()
-                }
-              />
-            </div>
-          </div>
-        </>
-      ) : (
-        <p>No cards to show</p>
-      )}
+      <motion.div
+        ref={scrollRef}
+        className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth"
+      >
+        {comments.map((comment) => (
+          <motion.div
+            key={comment.id}
+            className="min-w-[300px] h-64 p-6 rounded-2xl shadow-lg bg-white flex flex-col justify-center items-center text-gray-800 border"
+            whileHover={{ scale: 1.05 }}
+          >
+            <Image src={comment.avatar} alt={comment.name} width={64} height={64} unoptimized className="w-16 h-16 rounded-full mb-4" />
+            <h2 className="text-lg font-bold">{comment.name}</h2>
+            <p className="text-sm text-center mt-2">{comment.text}</p>
+          </motion.div>
+        ))}
+      </motion.div>
+    <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
+        <Button onClick={() => scroll(300)} className="rounded-full bg-white shadow-md p-2">
+          <ChevronRight size={24} />
+        </Button>
+      </div>
     </div>
+    </>
   );
-};
-
-export default CardCarousel;
-
-interface CustomArrowProps extends ReactSlickArrowProps {
-  slickPrev?: () => void;
-  slickNext?: () => void;
 }
-
-const NextArrow: React.FC<CustomArrowProps> = ({ className, slickNext }) => {
-  // const { className, onClick } = props;
-  return (
-    <div
-      className={`${className} bg-transparent border border-green-400 rounded cursor-pointer`}
-      onClick={slickNext}
-    >
-      <IoMdArrowForward size={40} className="text-green-500 px-2 " />
-    </div>
-  );
-};
-
-const PrevArrow: React.FC<CustomArrowProps> = ({ className, slickPrev }) => {
-  // const { className, onClick } = props;
-  return (
-    <div
-      className={`${className} bg-transparent border border-green-400 rounded cursor-pointer`}
-      onClick={slickPrev}
-    >
-      <IoMdArrowBack size={40} className="text-green-500 px-2" />
-    </div>
-  );
-};

@@ -52,7 +52,7 @@ const ScholarshipList = () => {
           {scholarships.map((scholarship) => (
             <div
               key={scholarship.scholarship_id}
-              className="bg-white bg-opacity-20 backdrop-blur-md rounded-lg shadow-xl p-6 flex flex-col justify-between z-20 relative overflow-hidden"
+              className="bg-white bg-opacity-20 backdrop-blur-md border border-green-400 rounded-lg shadow-xl p-6 flex flex-col justify-between z-20 relative overflow-hidden"
             >
               {/* Title */}
               <h2 className="text-3xl font-semibold text-gray-900 mb-4 z-50 relative">
