@@ -17,6 +17,8 @@ export type BaseUserInfo = {
   age?: "18-25" | "26-35" | "36-45" | "46 and +";
   gender?: "male" | "female";
   secret?: string;
+  referral_code?: string;
+  referral_points?: number;
   [key: string]: any; // Allow for other fields
 };
 
@@ -340,6 +342,7 @@ export type PostCourseQuestion = {
   user_id: string;
   question: string;
   choices?: string[];
+  categories?: string;
 }
 
 export type PostCourseQuestionAnswer = {

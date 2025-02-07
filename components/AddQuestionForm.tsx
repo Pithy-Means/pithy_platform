@@ -9,6 +9,7 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 const AddQuestionForm = () => {
   const [questionText, setQuestionText] = useState<string>("");
   const [choices, setChoices] = useState<string[]>([""]);
+  const [categories, setCategories] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
@@ -53,6 +54,7 @@ const AddQuestionForm = () => {
       user_id: user?.user_id || "", // Replace with dynamic user ID
       question: questionText.trim(),
       choices: choices.map((choice) => choice.trim()),
+      categories: ""
     };
 
     setIsSubmitting(true);
@@ -133,6 +135,17 @@ const AddQuestionForm = () => {
           Add Choice
         </button>
       </div>
+      <select
+        name="categories"
+        value={categories}
+        onChange={(e) => setCategories(e.target.value)}
+        required
+      >
+        <option value="">Select a category</option>
+        <option value="student">Student</option>
+        <option value="job seeker">Job Seeker</option>
+        <option value="employer">Employer</option>
+      </select>
 
       <button
         type="submit"
