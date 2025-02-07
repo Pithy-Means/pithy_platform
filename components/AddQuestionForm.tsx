@@ -140,6 +140,7 @@ const AddQuestionForm = () => {
         value={categories}
         onChange={(e) => setCategories(e.target.value)}
         required
+        className="w-full mt-1 p-2 border rounded focus:ring focus:ring-green-500 text-black"
       >
         <option value="">Select a category</option>
         <option value="student">Student</option>
