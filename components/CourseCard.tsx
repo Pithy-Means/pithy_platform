@@ -36,7 +36,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
           >
             <div className="py-4 px-6 flex flex-col justify-between flex-grow">
               {/* Check if the course is locked */}
-              {isLocked === true ? (
+              {isLocked === true || !isEnrolled ? (
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   <p className="text-red-600 font-bold text-lg mb-2">
                     This course is locked.
@@ -49,7 +49,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     }}
                   />
                 </div>
-              ) : isEnrolled ? (
+              ) :  (
                 <>
                   {/* Display course details if enrolled */}
                   <div className="flex flex-col space-y-1 border-b-slate-300 border-b-4">
@@ -91,8 +91,6 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     </button>
                   </div>
                 </>
-              ) : (
-                ""
               )}
             </div>
           </div>
