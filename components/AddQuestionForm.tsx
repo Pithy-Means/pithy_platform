@@ -54,7 +54,7 @@ const AddQuestionForm = () => {
       user_id: user?.user_id || "", // Replace with dynamic user ID
       question: questionText.trim(),
       choices: choices.map((choice) => choice.trim()),
-      categories: ""
+      categories,
     };
 
     setIsSubmitting(true);
@@ -72,6 +72,7 @@ const AddQuestionForm = () => {
   const resetForm = () => {
     setQuestionText("");
     setChoices([""]);
+    setCategories("");
   };
 
   return (
@@ -136,7 +137,7 @@ const AddQuestionForm = () => {
         </button>
       </div>
       <select
-        name="categories"
+        id="categories"
         value={categories}
         onChange={(e) => setCategories(e.target.value)}
         required
