@@ -207,24 +207,36 @@ const Posts = () => {
         </div>
       ) : (
         <>
-          {posts.map((post) => (
-            <PostItem
-              key={post.post_id}
-              post={post}
-              loggedInUserId={user?.user_id || null}
-              likeStatus={
-                post.post_id
-                  ? likeStatus[post.post_id] || { isLiked: false, likeCount: 0 }
-                  : { isLiked: false, likeCount: 0 }
-              }
-              comments={post.post_id ? comments[post.post_id] || [] : []}
-              onLike={handleLike}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-              onAddComment={handleAddComment}
-              onRepost={handleRepost}
-            />
-          ))}
+          {" "}
+          {posts.length > 0 ? (
+            posts.map((post) => (
+              <PostItem
+                key={post.post_id}
+                post={post}
+                loggedInUserId={user?.user_id || null}
+                likeStatus={
+                  post.post_id
+                    ? likeStatus[post.post_id] || {
+                        isLiked: false,
+                        likeCount: 0,
+                      }
+                    : { isLiked: false, likeCount: 0 }
+                }
+                comments={post.post_id ? comments[post.post_id] || [] : []}
+                onLike={handleLike}
+                onDelete={handleDelete}
+                onUpdate={handleUpdate}
+                onAddComment={handleAddComment}
+                onRepost={handleRepost}
+              />
+            ))
+          ) : (
+            <div className="flex items-center justify-center h-96">
+              <p className="text-2xl font-semibold text-gray-400">
+                No posts available
+              </p>
+            </div>
+          )}
         </>
       )}
     </div>
