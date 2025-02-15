@@ -8,26 +8,20 @@ import { useRouter } from "next/navigation";
 import { Courses } from "@/types/schema";
 import PaymentButton from "./PaymentButton";
 import { useCourseStore } from "@/lib/store/courseStore";
-import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isLocked, setLocked } = useCourseStore();
-  const { user } = useAuthStore((state) => state);
+  const { isLocked } = useCourseStore();
+
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
-  const studentName = user?.lastname + " " + user?.firstname;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {courses.map((course) => {
-        const isEnrolled =
-          course.students?.find((name) => name === studentName) &&
-          course.student_email === user?.email;
-          if (isEnrolled) setLocked(false);
         return (
           <div
             key={course.course_id}
@@ -36,7 +30,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
           >
             <div className="py-4 px-6 flex flex-col justify-between flex-grow">
               {/* Check if the course is locked */}
-              {isLocked === true || !isEnrolled ? (
+              {isLocked === true ? (
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   <p className="text-red-600 font-bold text-lg mb-2">
                     This course is locked.
