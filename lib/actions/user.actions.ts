@@ -26,7 +26,12 @@ import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, OAuthProvider, Query } from "node-appwrite";
-import { generateValidPostId, parseStringify, generateValidId } from "../utils";
+import {
+  generateValidPostId,
+  parseStringify,
+  generateValidId,
+  generateReferralCode,
+} from "../utils";
 import {
   commentJobsCollection,
   courseCollection,
@@ -131,9 +136,10 @@ export const logoutUser = async () => {
     const { account } = await createSessionClient();
 
     // Delete all Appwrite sessions
-    (await
-      // Delete all Appwrite sessions
-      cookies()).delete("my-session"); // Clear the session token cookie
+    (
+      await // Delete all Appwrite sessions
+      cookies()
+    ).delete("my-session"); // Clear the session token cookie
     await account.deleteSessions();
     console.log("User logged out successfully");
   } catch (error) {
@@ -222,67 +228,161 @@ export const registerWithGoogle = async (data: UserInfo) => {
   }
 };
 
-export const register = async (userdata: Partial<UserInfo>) => {
-  const { user_id, email, password, firstname, lastname, categories } =
-    userdata;
-
-  const userId = generateValidPostId(user_id); // Custom user ID logic
+export const updateReferralPoints = async (
+  data: UserInfo,
+  pointsToAdd: number = 1
+) => {
   try {
-    const { account, databases } = await createAdminClient();
+    const { databases } = await createAdminClient();
+    const user = await databases.getDocument(db, userCollection, data.user_id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+    // Calculate new points
+    const currentPoints = user.referral_points || 0;
+    const newPoints = currentPoints + pointsToAdd;
 
+    // Update user document with new points
+    const referrerUpdated = await databases.updateDocument(db, userCollection, data.user_id, {
+      referral_points: newPoints,
+    });
+    console.log("Referrer updated:", referrerUpdated);
+    return parseStringify(referrerUpdated);
+  } catch (error) {
+    console.error("Error updating user:", error);
+  }
+};
+
+export const register = async (userdata: Partial<UserInfo>) => {
+  const {
+    user_id,
+    email,
+    password,
+    firstname,
+    lastname,
+    categories,
+    referral_code,
+  } = userdata;
+  const userId = generateValidPostId(user_id);
+  let createdAccount = null;
+  let createdUserInfo = null;
+
+  const { account, databases } = await createAdminClient();
+  try {
     if (!email || !password) {
       throw new Error("Email and password must be provided");
     }
 
     // Step 1: Create the account
-    const newUserAccount = await account.create(
+    createdAccount = await account.create(
       userId,
       email,
       password,
       `${firstname} ${lastname}`
     );
-    console.log("New user account:", newUserAccount.emailVerification);
 
-    if (!newUserAccount) {
+    if (!createdAccount) {
       throw new Error("Account not created");
     }
 
-    // Step 2: Create user info in the database
-    const userinfo = await databases.createDocument(
-      db,
-      userCollection,
-      userId,
-      {
-        ...userdata,
-        user_id: userId,
-        categories: categories || [],
+    // Generate a unique referral code for the new user
+    const newUserReferralCode = generateReferralCode();
+
+    // Step 2: Create user info in the database with referral data
+    try {
+      createdUserInfo = await databases.createDocument(
+        db,
+        userCollection,
+        userId,
+        {
+          ...userdata,
+          user_id: userId,
+          categories: categories || [],
+          referral_code: newUserReferralCode,
+          referral_points: 0,
+        }
+      );
+      console.log("User info created", createdUserInfo);
+      // Step 3: If user was referred, update referrer's points
+      if (`http://localhost:3000/signUp?referral=${referral_code}`) {
+        try {
+          // Find the referrer by their referral code
+          const referrerQuery = await databases.listDocuments(
+            db,
+            userCollection,
+            referral_code ? [Query.equal("referral_code", referral_code)] : []
+          );
+          console.log("Referrer Query", referrerQuery);
+  
+          if (referrerQuery.documents.length > 0) {
+            const referrer = referrerQuery.documents[0];
+            console.log("Referrer", referrer);
+            await updateReferralPoints({ user_id: referrer.$id } as UserInfo);
+          } else {
+            console.error("Referrer not found with referral code:", referral_code);
+          }
+        } catch (referralError) {
+          // Log the error but don't fail the registration
+          console.error("Error processing referral:", referralError);
+        }
       }
-    );
-    console.log("User information created:", userinfo);
+    } catch (dbError) {
+      // If creating user info fails, delete the account we just created
+      if (createdAccount) {
+        try {
+          await account.deleteSession(userId);
+        } catch (deleteError) {
+          console.error("Error deleting account during rollback:", deleteError);
+        }
+      }
+      throw dbError;
+    }
 
-    // Step 3: Generate a session for the new user
-    const session = await account.createEmailPasswordSession(email, password);
-    console.log("Session created:", session);
 
-    // await createVerify();
+    // Step 4: Generate a session for the new user
+    let session;
+    try {
+      session = await account.createEmailPasswordSession(email, password);
+    } catch (sessionError) {
+      console.error("Error creating session:", sessionError);
+      // Don't fail the registration if session creation fails
+      // User can still log in manually
+    }
 
-    // Set a secure cookie for the session
-    (await
-      // await createVerify();
-      // Set a secure cookie for the session
-      cookies()).set("my-session", session.secret, {
-      path: "/",
-      httpOnly: true,
-      sameSite: "strict",
-      secure: true,
-    });
+    // Set session cookie if session was created
+    if (session) {
+      try {
+        (await cookies()).set("my-session", session.secret, {
+          path: "/",
+          httpOnly: true,
+          sameSite: "strict",
+          secure: true,
+        });
+      } catch (cookieError) {
+        console.error("Error setting cookie:", cookieError);
+        // Don't fail the registration if cookie setting fails
+      }
+    }
+
     return {
-      newUserAccount: parseStringify(newUserAccount),
-      userinfo: parseStringify(userinfo),
+      newUserAccount: parseStringify(createdAccount),
+      userinfo: parseStringify(createdUserInfo),
     };
   } catch (error) {
     console.error("Error in register function:", error);
-    throw new Error("Failed to register user");
+
+    // Cleanup if account was created but something else failed
+    if (createdAccount && !createdUserInfo) {
+      try {
+        await account.deleteSession(userId);
+      } catch (cleanupError) {
+        console.error("Error during cleanup:", cleanupError);
+      }
+    }
+
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to register user"
+    );
   }
 };
 
@@ -363,8 +463,8 @@ export const createPost = async (data: Post) => {
   const base64Match = hasImage
     ? image.match(/^data:(image)\/(\w+);base64,/)
     : hasVideo
-    ? video.match(/^data:(video)\/(\w+);base64,/)
-    : null;
+      ? video.match(/^data:(video)\/(\w+);base64,/)
+      : null;
 
   if (base64Match) {
     console.log("Base64 match", base64Match);
@@ -421,7 +521,6 @@ export const createPost = async (data: Post) => {
     throw error;
   }
 };
-
 
 export const updatePost = async (
   postId: string,
