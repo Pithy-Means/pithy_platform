@@ -230,7 +230,7 @@ export const registerWithGoogle = async (data: UserInfo) => {
 
 export const updateReferralPoints = async (
   data: UserInfo,
-  pointsToAdd: number = 1
+  amount: number
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -240,11 +240,17 @@ export const updateReferralPoints = async (
     }
     // Calculate new points
     const currentPoints = user.referral_points || 0;
-    const newPoints = currentPoints + pointsToAdd;
+    const newPoints = currentPoints + 1;
+
+    // Calculate new amount
+    const referral_fee = amount * 0.1;
+    const currentAmount = user.earned_referral_fees || 0;
+    const newAmount = currentAmount + referral_fee;
 
     // Update user document with new points
     const referrerUpdated = await databases.updateDocument(db, userCollection, data.user_id, {
       referral_points: newPoints,
+      earned_referral_fees: newAmount
     });
     console.log("Referrer updated:", referrerUpdated);
     return parseStringify(referrerUpdated);
@@ -300,6 +306,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
           categories: categories || [],
           referral_code: newUserReferralCode,
           referral_points: 0,
+          referred_by: referral_code || "",
         }
       );
       console.log("User info created", createdUserInfo);
@@ -317,7 +324,8 @@ export const register = async (userdata: Partial<UserInfo>) => {
           if (referrerQuery.documents.length > 0) {
             const referrer = referrerQuery.documents[0];
             console.log("Referrer", referrer);
-            await updateReferralPoints({ user_id: referrer.$id } as UserInfo);
+            const amount = referrer.earned_referral_fees || 0;
+            await updateReferralPoints({ user_id: referrer.$id } as UserInfo, amount);
           } else {
             console.error("Referrer not found with referral code:", referral_code);
           }
