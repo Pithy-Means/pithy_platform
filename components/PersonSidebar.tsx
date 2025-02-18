@@ -18,12 +18,12 @@ const PersonSidebar = () => {
   const { user } = useAuthStore((state) => state as { user: UserInfo });
   const referralLink = `http://localhost:3000/signUp?referral=${user?.referral_code || ""}`;
 
+  // Logic for copying referral link to clipboard
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
   return (
     <div className="flex flex-col bg-opacity-20 backdrop-blur-lg bg-white w-full text-black justify-start overflow-y-auto rounded-2xl overflow-hidden border border-gray-700 pb-4 shadow-2xl shadow-purple-500/20">
       {/* Gradient Header */}
