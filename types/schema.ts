@@ -19,6 +19,8 @@ export type BaseUserInfo = {
   secret?: string;
   referral_code?: string;
   referral_points?: number;
+  earned_referral_fees?: number;
+  referred_by?: string;
   [key: string]: any; // Allow for other fields
 };
 
@@ -219,6 +221,7 @@ export interface PaymentData {
   email?: string;
   phone_number?: string;
   network?: string;
+  customer_referral_code?: string;
   redirect_url?: string;
   voucher?: string;
   course_choice?: string;
