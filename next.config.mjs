@@ -13,10 +13,8 @@ const bundleAnalyzer = withBundleAnalyzer({
 });
 const nextConfig = {
   reactStrictMode: false,
-  // swcMinify: true,  // No longer configurable
-
+  // Webpack Configuration
   webpack: (config) => {
-    // console.log('webpack config', config);
     config.cache = {
       type: "filesystem",
       buildDependencies: {
@@ -32,7 +30,6 @@ const nextConfig = {
       {
         source:
           "/(.*).(js|css|woff|woff2|ttf|otf|eot|ico|jpg|jpeg|png|svg|gif|webp|avif)",
-        // source: "/:path*",
         headers: [
           {
             key: "Cache-Control",
@@ -51,28 +48,13 @@ const nextConfig = {
       },
     ];
   },
-  // images: {
-  //   remotePatterns: [
-  //       {
-  //         protocol: 'https',
-  //         hostname: 'api.microlink.io',
-  //         pathname: '/**', // This allows images from any path on this domain
-  //       },
-  //     ],
-  // },
 
   experimental: {
+    typedRoutes: true,
     serverActions: {
       bodySizeLimit: '50mb',
     },
   },
-
-  // // Incremental Static Regeneration not configured globally but per page basis
-  // async revalidate() {
-  //     return {
-  //         revalidate: 60, // Revalidate pages every 60 seconds
-  //     };
-  // },
 };
 
 export default bundleAnalyzer(nextConfig);
