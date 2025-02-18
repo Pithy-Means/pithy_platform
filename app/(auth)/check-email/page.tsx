@@ -2,6 +2,7 @@
 
 import { createVerify } from "@/lib/actions/user.actions";
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const CheckEmailPage = () => {
   const [isResending, setIsResending] = useState(false);
@@ -11,23 +12,24 @@ const CheckEmailPage = () => {
     setIsResending(true);
     try {
       await createVerify(); // Trigger the resend verification logic
-      alert("Verification email resent! Please check your inbox.");
+      toast.success("Verification email sent successfully.");
     } catch (error) {
       console.error("Error resending verification:", error);
-      alert("There was an error resending the verification email.");
+      toast.error("An error occurred while resending the verification email.");
     } finally {
       setIsResending(false);
     }
   };
 
   return (
-    <div className="h-screen flex justify-center items-center flex-col p-4 bg-white/50  ">
-      <h2 className="text-xl font-semibold mb-4">Check Your Email</h2>
-      <p>
+    <div className="h-screen flex justify-center items-center flex-col space-y-6 p-4 bg-white w-full">
+      <Toaster />
+      <h2 className="text-xl font-bold mb-4 text-black">Check Your Email</h2>
+      <p className="text-black">
         We have sent a verification link to your email. Please check your inbox
         and click on the link to verify your account.
       </p>
-      <p className="mt-4">
+      <p className="mt-4 text-black">
         If you haven&apos;t received the email, click the button below to resend the
         verification link.
       </p>
