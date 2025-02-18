@@ -21,7 +21,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
 }) => (
   <div className="w-full relative px-8">
     {/* Form Fields with Enhanced Layout */}
-    <div className="w-1/3 mx-auto flex flex-col space-y-5">
+    <div className="w-full lg:w-1/3 mx-auto flex flex-col space-y-5">
       {/* Left Column */}
       <InputContact
         label="First name"
@@ -55,9 +55,9 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
             target: { name: "phone", value: phone },
           } as React.ChangeEvent<HTMLInputElement>)
         }
-        className="!rounded-xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105 my-3"
+        className="w-full !rounded-xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105 my-3"
       />
-      <div className="flex items-center space-x-3">
+      <div className="flex flex-col md:flex-row items-center gap-3">
         <InputContact
           label="Country"
           type="text"
