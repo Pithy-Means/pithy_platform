@@ -45,7 +45,7 @@ CareerConnect Hub is a dynamic platform designed to bridge the gap between oppor
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/careerconnect-hub.git
+git clone https://github.com/Pithy-Means/pithy_platform
 
 # Navigate to project directory
 cd careerconnect-hub
