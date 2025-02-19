@@ -226,7 +226,7 @@ const SignInForm = () => {
               <div className="mt-4 text-center">
                 <Link
                   href="/reset-password"
-                  className="text-sm text-blue-500 hover:text-blue-700 transition duration-200"
+                  className="text-sm text-green-500 hover:text-green-700 transition duration-200"
                 >
                   Too many attempts? Reset your password
                 </Link>
@@ -234,7 +234,7 @@ const SignInForm = () => {
             )}
           </div>
 
-          <div className="w-full lg:w-2/4 p-10 md:mt-0 hidden md:flex justify-center glass-effect h-[calc(100vh-64px)] 2xl:h-[calc(100vh-64px)]">
+          <div className="w-full lg:w-2/4 p-10 md:mt-0 hidden md:flex justify-center glass-effect h-[calc(100vh-64px)] 2xl:h-[calc(100vh-64px)] border-2 border-[#92d192]">
             <div className="relative w-full h-full">
               <Image
                 src="/assets/sign.png"
