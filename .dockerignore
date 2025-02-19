@@ -1,0 +1,6 @@
+next.config.mjs
+Dockerfile
+node_modules
+.git
+.vscode
+.env

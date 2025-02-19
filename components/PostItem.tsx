@@ -51,7 +51,9 @@ const PostItem: React.FC<PostItemProps> = ({
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  console.log("COmments", comments);
+  console.log("Posts", post);
+
+  console.log("Comments", comments);
 
   const truncatedContent =
   (post?.content?.length ?? 0) > 100 ? post?.content?.slice(0, 100) + "..." : (post?.content ?? "");
@@ -69,14 +71,14 @@ const PostItem: React.FC<PostItemProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <CircleUserRound size={40} />
-            <div className="flex flex-col space-y-1">
+            <div className="flex flex-col space-y-0.5">
               <p className="font-semibold">
                 {post.user
                   ? `${post.user.firstname || "Unknown"} ${post.user.lastname || ""}`
                   : "Anonymous"}
               </p>
               <p className="text-sm text-gray-500 font-light">
-                {/* {dayjs(post?.createdAt).fromNow()} */}
+                {dayjs(post!.$createdAt).fromNow()}
               </p>
             </div>
           </div>
@@ -134,7 +136,7 @@ const PostItem: React.FC<PostItemProps> = ({
               height={100}
               alt="Post Image"
               unoptimized
-              className="h-72 w-full object-cover rounded-md"
+              className="h-72 w-full rounded-md"
             />
           )}
           {post.video && (
@@ -143,7 +145,7 @@ const PostItem: React.FC<PostItemProps> = ({
               controls
               width="800"
               height="100"
-              className="h-72 w-full object-cover rounded-md"
+              className="h-72 w-full rounded-md"
             />
           )}
         </div>

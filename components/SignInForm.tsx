@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import InputContact from "@/components/InputContact";
 import { AuthState, LoginInfo } from "@/types/schema";
@@ -11,7 +11,7 @@ import useAuth from "@/lib/hooks/useAuth";
 import { Button } from "./ui/button";
 import { Eye, EyeOff, MoveLeft } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-// import { UserInfo } from '@/types/schema';
+import toast, { Toaster } from "react-hot-toast";
 
 const MAX_ATTEMPTS = 5;
 
@@ -22,12 +22,19 @@ const SignInForm = () => {
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [attempts, setAttempts] = useState<number>(0);
 
-  const setUser = useAuth((state) => state.setUser); // Access Zustand's setUser
-  const { signin } = useAuthStore((state) => state as AuthState); // Access Zustand's signin
+  const setUser = useAuth((state) => state.setUser);
+  const { signin } = useAuthStore((state) => state as AuthState);
   const router = useRouter();
+
+  // Load saved attempts on component mount
+  useEffect(() => {
+    const savedAttempts = localStorage.getItem('loginAttempts');
+    if (savedAttempts) {
+      setAttempts(parseInt(savedAttempts));
+    }
+  }, []);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -45,36 +52,73 @@ const SignInForm = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setErrorMessage(null);
-
+  
     if (!formdata.email || !formdata.password) {
-      setErrorMessage("Email or Password is missing.");
+      toast.error("Email or Password is missing.");
       setLoading(false);
       return;
     }
-
+  
     try {
-      // const newUser = await signup(formdata as UserInfo);
-      // if (newUser.newUserAccount.)
       const response = await signin(formdata as LoginInfo);
-
+  
       if (response.success) {
-        setUser(response.data?.user); // Save user info in Zustand store
+        // Reset attempts on successful login
+        setAttempts(0);
+        localStorage.removeItem('loginAttempts');
+        
+        setUser(response.data?.user);
+        toast.success("Login successful! Redirecting to dashboard...");
         router.push("/dashboard");
       } else {
-        setErrorMessage(response.message ?? "An unknown error occurred.");
         // Calculate next attempts count
         const nextAttempts = attempts + 1;
         setAttempts(nextAttempts);
-
+        localStorage.setItem('loginAttempts', nextAttempts.toString());
+  
         // Check if attempts have reached the limit
         if (nextAttempts >= MAX_ATTEMPTS) {
-          router.push("/forgot-password");
+          toast.promise(
+            new Promise<void>((resolve) => {
+              setTimeout(() => {
+                router.push("/forgot-password");
+                resolve();
+              }, 3000);
+            }),
+            {
+              loading: "Maximum login attempts reached. Redirecting to password reset...",
+              success: "Redirecting...",
+              error: "An error occurred",
+            }
+          );
+        } else {
+          const remainingAttempts = MAX_ATTEMPTS - nextAttempts;
+          toast.error(`${response.message ?? "Invalid credentials"}. ${remainingAttempts} attempt${remainingAttempts !== 1 ? 's' : ''} remaining.`);
         }
       }
     } catch (error) {
-      setErrorMessage("An error occurred. Please try again.");
-      setAttempts((prev) => prev + 1);
+      const nextAttempts = attempts + 1;
+      setAttempts(nextAttempts);
+      localStorage.setItem('loginAttempts', nextAttempts.toString());
+      
+      if (nextAttempts >= MAX_ATTEMPTS) {
+        toast.promise(
+          new Promise<void>((resolve) => {
+            setTimeout(() => {
+              router.push("/forgot-password");
+              resolve();
+            }, 3000);
+          }),
+          {
+            loading: "Maximum login attempts reached. Redirecting to password reset...",
+            success: "Redirecting...",
+            error: "An error occurred",
+          }
+        );
+      } else {
+        const remainingAttempts = MAX_ATTEMPTS - nextAttempts;
+        toast.error(`An error occurred. Please try again. ${remainingAttempts} attempt${remainingAttempts !== 1 ? 's' : ''} remaining.`);
+      }
     } finally {
       setLoading(false);
     }
@@ -82,6 +126,7 @@ const SignInForm = () => {
 
   return (
     <div className="flex items-center justify-center w-full">
+      <Toaster />
       <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full h-screen relative">
         <Button
           onClick={() => router.push("/")}
@@ -120,20 +165,6 @@ const SignInForm = () => {
                   {showPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
-
-              {errorMessage && (
-                <div className="bg-white p-4 rounded-md">
-                  <p className="text-red-500 text-center">{errorMessage}</p>
-                </div>
-              )}
-              {attempts > 0 && attempts < 5 && (
-                <div className="bg-white p-4 rounded-md">
-                  <p className="text-red-500 text-center">
-                    You have {5 - attempts} attempt
-                    {5 - attempts === 1 ? "" : "s"} remaining.
-                  </p>
-                </div>
-              )}
 
               <Button
                 type="submit"
@@ -195,7 +226,7 @@ const SignInForm = () => {
               <div className="mt-4 text-center">
                 <Link
                   href="/reset-password"
-                  className="text-sm text-blue-500 hover:text-blue-700 transition duration-200"
+                  className="text-sm text-green-500 hover:text-green-700 transition duration-200"
                 >
                   Too many attempts? Reset your password
                 </Link>
@@ -203,7 +234,7 @@ const SignInForm = () => {
             )}
           </div>
 
-          <div className="w-full lg:w-2/4 p-10 md:mt-0 hidden md:flex justify-center glass-effect h-[calc(100vh-64px)] 2xl:h-[calc(100vh-64px)]">
+          <div className="w-full lg:w-2/4 p-10 md:mt-0 hidden md:flex justify-center glass-effect h-[calc(100vh-64px)] 2xl:h-[calc(100vh-64px)] border-2 border-[#92d192]">
             <div className="relative w-full h-full">
               <Image
                 src="/assets/sign.png"

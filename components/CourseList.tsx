@@ -37,7 +37,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
 
               {/* Title and Description */}
               <div className="flex flex-col">
-                {isLocked === true || !isEnrolled ? (
+                {(isLocked) ? (
                   <div className="flex flex-col items-center justify-center text-center h-full">
                     <p className="text-red-600 font-bold text-lg mb-2">
                       This course is locked.

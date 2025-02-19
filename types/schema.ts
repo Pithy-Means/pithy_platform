@@ -19,6 +19,8 @@ export type BaseUserInfo = {
   secret?: string;
   referral_code?: string;
   referral_points?: number;
+  earned_referral_fees?: number;
+  referred_by?: string;
   [key: string]: any; // Allow for other fields
 };
 
@@ -135,6 +137,7 @@ export type Post = {
   mediaInfo?: string; // URL or path to the post video or image
   repost_of?: string; // ID of the original post if this is a repost
   user_comment?: string; // Additional user content on top of the reposted content
+  [key: string]: any; // Allow for other fields
 };
 
 //post with user info
@@ -219,6 +222,7 @@ export interface PaymentData {
   email?: string;
   phone_number?: string;
   network?: string;
+  customer_referral_code?: string;
   redirect_url?: string;
   voucher?: string;
   course_choice?: string;

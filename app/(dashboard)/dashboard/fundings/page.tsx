@@ -53,12 +53,6 @@ const FundingList = () => {
                 const styles = [
                   // Style 1: Clean and Green
                   "relative bg-gradient-to-br from-white to-green-50 border border-green-300 rounded-2xl shadow-md hover:shadow-lg transition-transform transform hover:scale-105 overflow-hidden w-full",
-                  // Style 2: Bold and Dark Green
-                  "relative bg-gradient-to-br from-green-800 via-green-700 to-green-900 text-white border border-green-700 rounded-2xl shadow-md hover:shadow-lg transition-transform transform hover:scale-105 overflow-hidden w-full",
-                  // Style 3: Vibrant and Green Gradient
-                  "relative bg-gradient-to-br from-green-400 to-green-600 text-white rounded-2xl shadow-md hover:shadow-lg transition-transform transform hover:scale-105 overflow-hidden w-full",
-                  // Style 4: Minimalist Green Accent
-                  "relative bg-white border border-green-300 rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:scale-105 overflow-hidden w-full",
                   // Style 5: Modern Glassmorphism with Green Hints
                   "relative bg-white bg-opacity-30 backdrop-blur-lg border border-green-200 rounded-2xl shadow-lg hover:shadow-xl transition-transform transform hover:scale-105 overflow-hidden w-full",
                 ];

@@ -2,7 +2,7 @@
 
 import { AuthState, UserInfo } from "@/types/schema";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import PersonInfo from "./PersonalInfo";
 import ProgressBar from "./ProgressBar";
 import { BasicInfoStep } from "./BaseInfoStep";
@@ -14,30 +14,47 @@ import { CircleX, MoveLeft } from "lucide-react";
 import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
 import toast, { Toaster } from "react-hot-toast";
+import { useSignupFormStore } from "@/lib/store/useSignupFormStore";
 
 const SignupForm = () => {
-  // Form state
-  const [formData, setFormData] = useState<Partial<UserInfo>>({});
+  // Use the persistent store
+  const { 
+    formData, 
+    currentStep, 
+    termsAgreed, 
+    updateFormData, 
+    updateCurrentStep, 
+    updateTermsAgreed,
+    resetForm 
+  } = useSignupFormStore();
 
-  const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
-  const [termsAgreed, setTermsAgreed] = useState<boolean>(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
+  
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get("ref");
 
   const { signup } = useAuthStore((state) => state as AuthState);
 
+  // Set referral code from URL if present
+  useEffect(() => {
+    if (referralCode) {
+      updateFormData({ referral_code: referralCode });
+    }
+  }, [referralCode, updateFormData]);
+
   const handleNext = () => {
     if (currentStep < 4) {
-      setCurrentStep(currentStep + 1);
+      updateCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrev = () => {
     if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+      updateCurrentStep(currentStep - 1);
     }
   };
 
@@ -85,10 +102,7 @@ const SignupForm = () => {
     >
   ) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    updateFormData({ [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,6 +126,8 @@ const SignupForm = () => {
         // Toast success message
         toast.success("User registered successfully");
         await createVerify(); // Trigger email verification
+        // Reset the form store after successful registration
+        resetForm();
         // Redirect to the "Check Your Email" page
         router.push("/check-email");
       }
@@ -197,7 +213,7 @@ const SignupForm = () => {
               </div>
               <div className="flex flex-col justify-center space-y-4 w-1/3 mx-auto z-50">
                 {formData.categories === "student" && (
-                  <div className="space-y-4 z-50">
+                  <div className="flex flex-col space-y-4 z-50">
                     <div className="mb-4">
                       <h3 className="text-lg font-semibold text-gray-800">
                         Student Information
@@ -249,7 +265,7 @@ const SignupForm = () => {
                   </div>
                 )}
                 {formData.categories === "job seeker" && (
-                  <div className="space-y-4">
+                  <div className="flex flex-col space-y-4">
                     <InputContact
                       label="Desired Job Title"
                       type="text"
@@ -295,7 +311,7 @@ const SignupForm = () => {
                   </div>
                 )}
                 {formData.categories === "employer" && (
-                  <div className="space-y-4">
+                  <div className="flex flex-col space-y-4">
                     <InputContact
                       label="Company Name"
                       type="text"
@@ -360,7 +376,7 @@ const SignupForm = () => {
               name="termsAgreed"
               id="termsAgreed"
               checked={termsAgreed}
-              onChange={(e) => setTermsAgreed(e.target.checked)}
+              onChange={(e) => updateTermsAgreed(e.target.checked)}
               className="rounded-md p-4"
             />
             <div className="text-gray-600">
@@ -422,9 +438,35 @@ const SignupForm = () => {
                   ? "px-8 py-2 bg-gray-300 text-gray-800 rounded-md"
                   : "px-8 py-2 bg-gradient-to-r from-[#5AC35A] to-[#00AE76] text-white rounded-md z-50"
               }
-              disabled={!isFormComplete || !termsAgreed}
+              disabled={!isFormComplete || !termsAgreed || isLoading}
             >
-              {!isFormComplete || !termsAgreed ? "Submit" : "Submit"}
+              {isLoading ? (
+                <div className="flex items-center">
+                  <span>Signing Up...</span>
+                  <svg
+                    className="animate-spin h-5 w-5 ml-2 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+                    ></path>
+                  </svg>
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </button>
           )}
         </div>

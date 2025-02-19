@@ -33,13 +33,12 @@ const Phonenumber: React.FC<PhonenumberProps> = ({
       value={value || phone}
       onChange={handlePhoneChange}
       masks={{ UG: "+... (..) ... ...." }}
-      inputProps={{
-        name: "phone",
-        required: true,
-        "aria-label": "Phone number input",
-      }}
+      // inputProps={{
+      //   name: "phone",
+      //   required: true,
+      //   "aria-label": "Phone number input",
+      // }}
       containerClass={`z-50 bg-white border border-r-0 rounded-lg shadow-sm transition focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 ${className}`}
-      inputClass="w-full px-4 text-sm border rounded-lg outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 py-4"
     />
   );
 };

@@ -26,7 +26,7 @@ function DashboardContent({
 }) {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
   return (
-    <div className="flex">
+    <div className="flex h-screen">
       <AdminSidebar />
       <div className="flex-1 flex flex-col">
         <TopNav user={user?.firstname} />

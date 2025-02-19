@@ -1,8 +1,10 @@
-import { courseCollection, db, paymentCollection } from "@/models/name";
+import { courseCollection, db, paymentCollection, userCollection } from "@/models/name";
 import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 import { Query } from "node-appwrite";
 import env from "@/env";
+import { updateReferralPoints } from "@/lib/actions/user.actions";
+
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -56,7 +58,7 @@ export async function GET(req: Request) {
 
     const { tx_ref, amount, currency, auth_model } = data.data;
 
-    // Ensure the payment amount matches the expected amount (10000 in your case)
+    // Ensure the payment amount matches the expected amount
     if (amount !== data.data.amount) {
       return NextResponse.json(
         { error: "Invalid payment amount.", details: { amount } },
@@ -125,6 +127,49 @@ export async function GET(req: Request) {
         student_email: updateStudentEmail,
       }
     );
+
+    // Step A: Process referral fee if applicable
+    try {
+      // Fetch the user who made the payment to get their referral code
+      const userQuery = await databases.listDocuments(
+        db,
+        userCollection,
+        [Query.equal("email", data.data.customer.email)]
+      );
+
+      if (userQuery.documents.length > 0) {
+        const user = userQuery.documents[0];
+
+        // If this user was referred by someone (check user's registration data)
+        if (user.referred_by) {
+          const referrerQuery = await databases.listDocuments(
+            db, 
+            userCollection,
+            [Query.equal("referral_code", user.referred_by)]
+          );
+
+          if (referrerQuery.documents.length > 0) {
+            const referrer = referrerQuery.documents[0];
+            
+            // Calculate 10% of the payment amount as referral fee
+            const referralFee = amount * 0.1;
+            
+            // Update referrer's points and earned fees
+            await updateReferralPoints({
+              user_id: referrer.user_id,
+              email: referrer.email,
+              password: referrer.password,
+              categories: referrer.categories,
+              role: referrer.role,
+            }, referralFee);
+            console.log(`Referral fee of ${referralFee} awarded to user ${referrer.user_id}`);
+          }
+        }
+      }
+    } catch (referralError) {
+      // Log the error but don't fail the payment verification
+      console.error("Error processing referral fee:", referralError);
+    }
 
     return NextResponse.json({
       success: true,

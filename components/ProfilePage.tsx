@@ -45,7 +45,7 @@ export default function ProfilePage() {
         {/* Info Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 text-gray-700">
           <InfoCard label="Phone" value={user?.phone || "Not specified"} />
-          <InfoCard label="Address" value={user?.address || "Not specified"} />
+          <InfoCard label="Address" value={user?.country || "Not specified"} />
           <InfoCard label="Age Range" value={user?.age || "Not specified"} />
           <InfoCard label="Gender" value={user?.gender || "Not specified"} />
         </div>

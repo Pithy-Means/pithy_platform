@@ -7,7 +7,7 @@
     "type-check": "tsc --noEmit",
     "build": "next build",
     "start": "next start",
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build-and-serve": "npm run build && npm run start",
     "prod-watch": "nodemon --watch . -e mjs,js,json,jsx,ts,tsx,css --exec \"npm run build-and-serve\"",
     "ci": "npm run lint && npm run type-check && npm run build",
