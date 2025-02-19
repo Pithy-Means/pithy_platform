@@ -137,6 +137,7 @@ export type Post = {
   mediaInfo?: string; // URL or path to the post video or image
   repost_of?: string; // ID of the original post if this is a repost
   user_comment?: string; // Additional user content on top of the reposted content
+  [key: string]: any; // Allow for other fields
 };
 
 //post with user info
