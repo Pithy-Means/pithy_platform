@@ -17,11 +17,44 @@ import {
 import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const Loader = () => (
+  <div className="space-y-4 flex flex-col mt-4">
+    {Array.from({ length: 5 }).map((_, index) => (
+      <div
+        key={index}
+        className="flex animate-pulse bg-white shadow rounded-lg p-4 sm:space-x-4 space-y-4 flex-col sm:flex-row items-start sm:items-center w-full"
+      >
+        <div className="rounded-full bg-gray-300 h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16"/>
+        <div className="flex-1 space-y-4 w-full">
+          <div className="h-4 bg-gray-300 rounded w-1/3 sm:w-1/4 md:w-1/6"/>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-300 rounded w-full"/>
+            <div className="h-4 bg-gray-300 rounded w-5/6"/>
+            <div className="h-4 bg-gray-300 rounded w-4/6"/>
+          </div>
+          <div className="flex space-x-4 pt-2 justify-center sm:justify-start">
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+);
+
+const NoMorePost = () => (
+  <div className="flex items-center justify-center h-96">
+    <p className="text-2xl font-semibold text-gray-400">No posts available</p>
+  </div>
+);
 
 const Posts = () => {
   const [loading, setLoading] = useState(false);
 
-  const { posts, loadingPosts } = usePosts();
+  const { posts, loadingPosts, hasMore, loadMorePosts } = usePosts();
   console.log("Posts", posts);
   const [post, setPost] = useState<PostWithUser[]>([]);
   const [comments, setComments] = useState<{
@@ -146,15 +179,11 @@ const Posts = () => {
   const handleAddComment = async (postId: string, comment: string) => {
     if (!comment) return;
 
-    // Set loading state to block input for the current post
-    // setLoading((prev) => ({ ...prev, [postId]: true }));
-
     const commentData: CommentPost = {
       comment_id: "",
       post_id: postId,
       user_id: user?.user_id ?? "",
       comment,
-      // user: user ? { user_id: user.user_id, username: user.username } : {},
     };
 
     const createdComment = await createComment(commentData);
@@ -168,77 +197,41 @@ const Posts = () => {
     }
     // Empthy the comment input
     setNewComment((prev) => ({ ...prev, [postId]: "" }));
-    // setLoading((prev) => ({ ...prev, [postId]: false }));
   };
 
   return (
     <div className="flex flex-col gap-4 text-black">
-      {loadingPosts ? (
-        <div className="space-y-4 flex flex-col">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <div
-              key={index}
-              className="flex animate-pulse bg-white shadow rounded-lg p-4 sm:space-x-4 space-y-4 flex-col sm:flex-row items-start sm:items-center w-full"
-            >
-              {/* Profile Picture Placeholder */}
-              <div className="rounded-full bg-gray-300 h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16"></div>
-
-              {/* Content Placeholder */}
-              <div className="flex-1 space-y-4 w-full">
-                {/* Name Placeholder */}
-                <div className="h-4 bg-gray-300 rounded w-1/3 sm:w-1/4 md:w-1/6"></div>
-
-                {/* Post Text Placeholder */}
-                <div className="space-y-2">
-                  <div className="h-4 bg-gray-300 rounded w-full"></div>
-                  <div className="h-4 bg-gray-300 rounded w-5/6"></div>
-                  <div className="h-4 bg-gray-300 rounded w-4/6"></div>
-                </div>
-
-                {/* Action Buttons Placeholder */}
-                <div className="flex space-x-4 pt-2 justify-center sm:justify-start">
-                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
-                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
-                  <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"></div>
-                </div>
-              </div>
-            </div>
+      <InfiniteScroll
+        dataLength={posts.length}
+        next={loadMorePosts}
+        hasMore={hasMore}
+        loader={<Loader />}
+        endMessage={<NoMorePost />}
+      >
+        <div className="flex space-y-4 flex-col">
+          {posts.map((post) => (
+            <PostItem
+              key={post.post_id}
+              post={post}
+              loggedInUserId={user?.user_id || null}
+              likeStatus={
+                post.post_id
+                  ? likeStatus[post.post_id] || {
+                      isLiked: false,
+                      likeCount: 0,
+                    }
+                  : { isLiked: false, likeCount: 0 }
+              }
+              comments={post.post_id ? comments[post.post_id] || [] : []}
+              onLike={handleLike}
+              onDelete={handleDelete}
+              onUpdate={handleUpdate}
+              onAddComment={handleAddComment}
+              onRepost={handleRepost}
+            />
           ))}
         </div>
-      ) : (
-        <>
-          {" "}
-          {posts.length > 0 ? (
-            posts.map((post) => (
-              <PostItem
-                key={post.post_id}
-                post={post}
-                loggedInUserId={user?.user_id || null}
-                likeStatus={
-                  post.post_id
-                    ? likeStatus[post.post_id] || {
-                        isLiked: false,
-                        likeCount: 0,
-                      }
-                    : { isLiked: false, likeCount: 0 }
-                }
-                comments={post.post_id ? comments[post.post_id] || [] : []}
-                onLike={handleLike}
-                onDelete={handleDelete}
-                onUpdate={handleUpdate}
-                onAddComment={handleAddComment}
-                onRepost={handleRepost}
-              />
-            ))
-          ) : (
-            <div className="flex items-center justify-center h-96">
-              <p className="text-2xl font-semibold text-gray-400">
-                No posts available
-              </p>
-            </div>
-          )}
-        </>
-      )}
+      </InfiniteScroll>
     </div>
   );
 };
