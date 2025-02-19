@@ -620,41 +620,33 @@ export const repost = async (data: Post) => {
   }
 };
 
-export const getPosts = async () => {
+export const getPosts = async (page: number = 1, limit: number = 3) => {
   try {
     const { databases } = await createAdminClient();
-    const posts = await databases.listDocuments(db, postCollection);
-    // console.log("Posts", posts);
-    if (!posts || !posts.documents) {
-      console.error("No documents found in the posts collection");
-      return [];
-    }
+    const offset = (page - 1) * limit;
 
-    if (!Array.isArray(posts.documents)) {
-      console.error("posts.documents is not an array");
+    const posts = await databases.listDocuments(db, postCollection, [
+      Query.orderDesc('$createdAt'), // Sort by creation date, newest first
+      Query.limit(limit),
+      Query.offset(offset),
+    ]);
+
+    console.log("Posts", posts.documents);
+
+    if (!posts?.documents || !Array.isArray(posts.documents)) {
+      console.error("Invalid posts response");
       return [];
     }
 
     const postWithFiles = await Promise.all(
       posts.documents.map(async (post) => {
-        let imageUrl = null;
-        let videoUrl = null;
-
-        if (post.image) {
-          try {
-            imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`;
-          } catch (error) {
-            console.error(`Failed to fetch image for post ${post.$id}:`, error);
-          }
-        }
-
-        if (post.video) {
-          try {
-            videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`;
-          } catch (error) {
-            console.error(`Failed to fetch video for post ${post.$id}:`, error);
-          }
-        }
+        const imageUrl = post.image 
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`
+          : null;
+        
+        const videoUrl = post.video
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`
+          : null;
 
         return {
           ...post,
@@ -663,6 +655,7 @@ export const getPosts = async () => {
         };
       })
     );
+    console.log("Posts with files", postWithFiles);
     return parseStringify(postWithFiles);
   } catch (error) {
     console.error("Error in getPosts:", error);
