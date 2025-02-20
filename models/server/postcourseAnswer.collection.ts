@@ -30,7 +30,7 @@ export default async function createPostCourseAnswerCollection() {
     databases.createStringAttribute(
       db,
       postCourseAnswerCollection,
-      "user_id",
+      "username",
       100,
       true,
     ),
