@@ -20,7 +20,7 @@ export default async function createFundingCollection() {
     databases.createStringAttribute(db, fundingCollection, "funding_id", 100, true),
     databases.createStringAttribute(db, fundingCollection, "user_id", 100, true),
     databases.createStringAttribute(db, fundingCollection, "title", 1000, false),
-    databases.createStringAttribute(db, fundingCollection, "donor_name", 1000, false),
+    databases.createStringAttribute(db, fundingCollection, "donor", 1000, false),
     databases.createStringAttribute(
       db,
       fundingCollection,
@@ -52,7 +52,7 @@ export default async function createFundingCollection() {
     databases.createStringAttribute(
       db,
       fundingCollection,
-      "type",
+      "funding_type",
       100,
       false,
     ),
