@@ -209,7 +209,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           isOpen={isRestrictedModalOpen}
           onClose={() => setIsRestrictedModalOpen(false)}
         >
-          <h2 className="text-lg font-bold">Restricted Access</h2>
+          <h2 className="text-lg font-bold">Only Accessable For Paid Members</h2>
           <p>
             This page is restricted. Please unlock the course to access this
             page.
