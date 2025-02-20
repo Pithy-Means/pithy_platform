@@ -24,9 +24,6 @@ jobs:
     - name: Build the app
       run: npm run build
 
-    - name: Run start script
-      run: npm start
-
     - name: Deploy to production
       run: |
         echo "Deploying to production..."
