@@ -51,7 +51,7 @@ export default async function createPostCourseQuestionCollection() {
     databases.createStringAttribute(
       db,
       postCourseQuestionCollection,
-      "answer",
+      "categories",
       100,
       false,
     ),
