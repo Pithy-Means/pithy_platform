@@ -23,25 +23,25 @@ const Pricing = () => {
           />
         </div>
         <div className="flex flex-col space-y-4 w-full lg:items-start items-center md:w-auto text-center md:text-left">
-          <div className="text-black font-extrabold capitalize md:text-xl">
+          <div className="text-black font-extrabold capitalize md:text-3xl">
             Only For you
           </div>
           <div className="flex flex-col space-y-4">
             <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
               <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
-              <p className="capitalize text-black md:text-lg">
+              <p className="capitalize text-black md:text-xl font-bold">
                 Get access to all the courses and resources in period of 3 Months.
               </p>
             </div>
             <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
               <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
-              <p className="capitalize text-black md:text-lg">
-                Get access to all the courses, Job opportunities, Scholarship and Funding.
+              <p className="capitalize text-black md:text-xl font-bold">
+                Get access to all the courses, Job opportunities, Scholarships and Fundings.
               </p>
             </div>
             <div className="flex flex-col lg:flex-row space-y-2 lg:space-x-2 items-center">
               <div className="border-2 border-[#5AC35A] rotate-45 h-1 w-1 p-0.5 md:h-2 md:w-4 md:p-1.5"></div>
-              <p className="capitalize text-black md:text-lg">
+              <p className="capitalize text-black md:text-xl font-bold">
                 refering to a friend and get 10% discount on our course if the refered buy our course.
               </p>
             </div>
