@@ -67,5 +67,47 @@ export default async function createPaymentCollection() {
       100,
       false,
     ),
+    databases.createStringAttribute(
+      db,
+      paymentCollection,
+      "email",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      paymentCollection,
+      "method",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      paymentCollection,
+      "course_choice",
+      100,
+      false,
+    ),
+    databases.createBooleanAttribute(
+      db,
+      paymentCollection,
+      "checked",
+      false,
+      false
+    ),
+    databases.createStringAttribute(
+      db,
+      paymentCollection,
+      "name",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      paymentCollection,
+      "customer_referral_code",
+      100,
+      false,
+    ),
   ]);
 }

@@ -26,7 +26,7 @@ export default async function createCommentCollection() {
     databases.createStringAttribute(
       db,
       postCommentCollection,
-      "userid",
+      "user_id",
       100,
       true,
     ),

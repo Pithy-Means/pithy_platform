@@ -65,7 +65,7 @@ const PersonSidebar = () => {
           </motion.div>
 
           <h2 className="text-lg font-extrabold text-green-800 text-center mb-4">
-            Exclusive Referral Program
+            Referral Link
           </h2>
 
           <div className="flex items-center justify-between bg-white p-1.5 rounded-full shadow-md border border-green-300">

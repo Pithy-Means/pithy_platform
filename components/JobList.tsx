@@ -139,7 +139,7 @@ const JobList = () => {
         </>
       ) : (
         !loading && (
-          <div className="fixed inset-0 flex justify-center items-center bg-opacity-75 z-50">
+          <div className="flex justify-center items-center bg-opacity-75 z-50">
             <p className="text-green-500 text-xl font-medium animate-pulse">
               No jobs found. Check back later.
             </p>

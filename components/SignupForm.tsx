@@ -231,9 +231,8 @@ const SignupForm = () => {
                       >
                         <option value="">Select Education Level</option>
                         <option value="High School">High School</option>
-                        <option value="Tertiary">Tertiary</option>
                         <option value="Diploma">Diploma</option>
-                        <option value="Bachelors">Bachelors</option>
+                        <option value="Bachelors">Bachelor</option>
                         <option value="Masters">Masters</option>
                         <option value="PhD">PhD</option>
                       </select>
@@ -303,8 +302,8 @@ const SignupForm = () => {
                         <option value="immediately available">
                           Immediately Available
                         </option>
-                        <option value="open to opportunities">
-                          Open to Opportunities
+                        <option value="to be confirmed">
+                          To be confirmed
                         </option>
                       </select>
                     </div>
@@ -313,7 +312,7 @@ const SignupForm = () => {
                 {formData.categories === "employer" && (
                   <div className="flex flex-col space-y-4">
                     <InputContact
-                      label="Company Name"
+                      label="Company / Organization Name"
                       type="text"
                       name="company_name"
                       value={formData.company_name || ""}
@@ -321,7 +320,7 @@ const SignupForm = () => {
                     />
                     <div className="mb-4">
                       <label className="block text-gray-700">
-                        Company Size
+                        Company / Organization Size
                       </label>
                       <select
                         name="company_size"
@@ -329,7 +328,7 @@ const SignupForm = () => {
                         onChange={handleChange}
                         className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                       >
-                        <option value="">Select Company Size</option>
+                        <option value="">Select Company Or Organization Size</option>
                         <option value="1-10 employees">1-10 employees</option>
                         <option value="11-50 employees">11-50 employees</option>
                         <option value="51-200 employees">
@@ -342,24 +341,17 @@ const SignupForm = () => {
                       </select>
                     </div>
                     <InputContact
-                      label="Industry Type"
+                      label="Sector"
                       type="text"
                       name="industry_type"
                       value={formData.industry_type || ""}
                       onChange={handleChange}
                     />
                     <InputContact
-                      label="Position in Company"
+                      label="Position in Company / Organization"
                       type="text"
                       name="position_in_company"
                       value={formData.position_in_company || ""}
-                      onChange={handleChange}
-                    />
-                    <InputContact
-                      label="Job Posting Count"
-                      type="number"
-                      name="job_posting_count"
-                      value={formData.job_posting_count?.toString() || ""}
                       onChange={handleChange}
                     />
                   </div>

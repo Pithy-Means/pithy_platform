@@ -1,8 +1,9 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
+import env from '../../../../env';
 
 // Create a Resend instance using the API key
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(env.emails.apikey);
 
 export async function POST(request: Request) {
   try {

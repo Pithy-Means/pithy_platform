@@ -43,5 +43,19 @@ export default async function createPostCollection() {
       10000,
       false,
     ),
+    databases.createStringAttribute(
+      db,
+      postCollection,
+      "image",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      postCollection,
+      "video",
+      100,
+      false,
+    ),
   ]);
 }
