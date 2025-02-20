@@ -67,7 +67,7 @@ const faqs = [
       "Individuals or institutions can partner with us to advertise our services under agreed terms. Those who mobilize people to join will receive a 10% referral fee based on the amount paid by those they refer. Pithy Means may also partner with other companies when it aligns with our interests.",
   },
   {
-    category: "technical issues",
+    category: "technical support",
     question: "How to get technical support in case of any problem?",
     answer:
       "For support, use the inquiry space on the landing page, call +1 307 374-0993 / +256 772 289 692, or email pithymeans@gmail.com / contact@pithymeans.com.",
