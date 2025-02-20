@@ -3,19 +3,14 @@
 import {
   CommentPost,
   Funding,
-  FundingComment,
-  // Course,
   GetUserInfo,
   Job,
-  JobComment,
   LikePost,
   LoginInfo,
   Post,
   PostCourseQuestion,
   PostCourseQuestionAnswer,
   Scholarship,
-  ScholarshipComment,
-  // ResetPass,
   UpdateUser,
   UserInfo,
   VerifyUser,
@@ -33,23 +28,18 @@ import {
   generateReferralCode,
 } from "../utils";
 import {
-  commentJobsCollection,
   courseCollection,
-  // courseCollection,
   db,
   fundingCollection,
-  commentFundingCollection,
   jobCollection,
   likePostCollection,
   postAttachementBucket,
-  // postAttachementBucket,
   postCollection,
   postCommentCollection,
   postCourseAnswerCollection,
   postCourseQuestionCollection,
   scholarshipCollection,
   userCollection,
-  commentScholarshipCollection,
 } from "@/models/name";
 import env from "@/env";
 
@@ -228,34 +218,30 @@ export const registerWithGoogle = async (data: UserInfo) => {
   }
 };
 
-export const updateReferralPoints = async (
-  data: UserInfo,
-  amount: number
-) => {
+export const updateReferralPoints = async (referrerId: string, amount: number) => {
   try {
     const { databases } = await createAdminClient();
-    const user = await databases.getDocument(db, userCollection, data.user_id);
+    const user = await databases.getDocument(db, userCollection, referrerId);
+    
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("Referrer not found");
     }
-    // Calculate new points
+
+    // Calculate new points and amount
     const currentPoints = user.referral_points || 0;
-    const newPoints = currentPoints + 1;
-
-    // Calculate new amount
-    const referral_fee = amount * 0.1;
     const currentAmount = user.earned_referral_fees || 0;
-    const newAmount = currentAmount + referral_fee;
+    const referral_fee = amount * 0.1;
 
-    // Update user document with new points
-    const referrerUpdated = await databases.updateDocument(db, userCollection, data.user_id, {
-      referral_points: newPoints,
-      earned_referral_fees: newAmount
+    // Update referrer with new points and amount
+    const referrerUpdated = await databases.updateDocument(db, userCollection, referrerId, {
+      referral_points: currentPoints + 1,
+      earned_referral_fees: currentAmount + referral_fee
     });
-    console.log("Referrer updated:", referrerUpdated);
+
     return parseStringify(referrerUpdated);
   } catch (error) {
-    console.error("Error updating user:", error);
+    console.error("Error updating referrer points:", error);
+    throw error;
   }
 };
 
@@ -275,6 +261,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
   const { account, databases } = await createAdminClient();
   try {
+    // Validate required fields
     if (!email || !password) {
       throw new Error("Email and password must be provided");
     }
@@ -291,85 +278,63 @@ export const register = async (userdata: Partial<UserInfo>) => {
       throw new Error("Account not created");
     }
 
-    // Generate a unique referral code for the new user
+    // Generate new referral code for this user
     const newUserReferralCode = generateReferralCode();
 
-    // Step 2: Create user info in the database with referral data
-    try {
-      createdUserInfo = await databases.createDocument(
-        db,
-        userCollection,
-        userId,
-        {
-          ...userdata,
-          user_id: userId,
-          categories: categories || [],
-          referral_code: newUserReferralCode,
-          referral_points: 0,
-          referred_by: referral_code || "",
+    // Step 2: Process referral if code provided
+    let referrerInfo = null;
+    if (`http://localhost:3000/signUp?referral=${referral_code}`) {
+      try {
+        // Find referrer by their referral code
+        const referrerQuery = await databases.listDocuments(
+          db,
+          userCollection,
+          referral_code ? [Query.equal("referral_code", referral_code)] : []
+        );
+
+        if (referrerQuery.documents.length > 0) {
+          referrerInfo = referrerQuery.documents[0];
+          // Update referrer's points
+          const amount = referrerInfo.earned_referral_fees || 0;
+          await updateReferralPoints(referrerInfo.$id, amount);
         }
-      );
-      console.log("User info created", createdUserInfo);
-      // Step 3: If user was referred, update referrer's points
-      if (`http://localhost:3000/signUp?referral=${referral_code}`) {
-        try {
-          // Find the referrer by their referral code
-          const referrerQuery = await databases.listDocuments(
-            db,
-            userCollection,
-            referral_code ? [Query.equal("referral_code", referral_code)] : []
-          );
-          console.log("Referrer Query", referrerQuery);
-  
-          if (referrerQuery.documents.length > 0) {
-            const referrer = referrerQuery.documents[0];
-            console.log("Referrer", referrer);
-            const amount = referrer.earned_referral_fees || 0;
-            await updateReferralPoints({ user_id: referrer.$id } as UserInfo, amount);
-          } else {
-            console.error("Referrer not found with referral code:", referral_code);
-          }
-        } catch (referralError) {
-          // Log the error but don't fail the registration
-          console.error("Error processing referral:", referralError);
-        }
+      } catch (referralError) {
+        console.error("Error processing referral:", referralError);
+        // Continue registration even if referral processing fails
       }
-    } catch (dbError) {
-      // If creating user info fails, delete the account we just created
-      if (createdAccount) {
-        try {
-          await account.deleteSession(userId);
-        } catch (deleteError) {
-          console.error("Error deleting account during rollback:", deleteError);
-        }
-      }
-      throw dbError;
     }
 
+    // Step 3: Create user document
+    createdUserInfo = await databases.createDocument(
+      db,
+      userCollection,
+      userId,
+      {
+        ...userdata,
+        user_id: userId,
+        categories: categories || [],
+        referral_code: newUserReferralCode,
+        referral_points: 0,
+        referral_by: referrerInfo ? referral_code : "", // Only set if valid referral
+        earned_referral_fees: 0
+      }
+    );
 
-    // Step 4: Generate a session for the new user
+    // Step 4: Create session
     let session;
     try {
       session = await account.createEmailPasswordSession(email, password);
-    } catch (sessionError) {
-      console.error("Error creating session:", sessionError);
-      // Don't fail the registration if session creation fails
-      // User can still log in manually
-    }
-
-    // Set session cookie if session was created
-    if (session) {
-      try {
+      if (session) {
         (await cookies()).set("my-session", session.secret, {
           path: "/",
           httpOnly: true,
           sameSite: "strict",
           secure: true,
         });
-      } catch (cookieError) {
-        console.error("Error setting cookie:", cookieError);
-        // Don't fail the registration if cookie setting fails
       }
+    } catch (sessionError) {
+      console.error("Error creating session:", sessionError);
+      // Continue as session can be created on login
     }
 
     return {
@@ -379,7 +344,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
   } catch (error) {
     console.error("Error in register function:", error);
 
-    // Cleanup if account was created but something else failed
+    // Cleanup if needed
     if (createdAccount && !createdUserInfo) {
       try {
         await account.deleteSession(userId);
@@ -1180,126 +1145,5 @@ export const deleteScholarship = async (scholarshipId: string) => {
     return parseStringify(response);
   } catch (error) {
     console.error("Error deleting scholarship:", error);
-  }
-};
-
-export const createJobComment = async (data: JobComment) => {
-  const { comment_job_id } = data;
-  const validComment = generateValidPostId(comment_job_id);
-
-  try {
-    const { databases } = await createAdminClient();
-    const jobExists = await getJob(data.job_id);
-    const comment = await databases.createDocument(
-      db,
-      commentJobsCollection,
-      validComment,
-      {
-        ...data,
-        job_id: jobExists.job_id,
-        comment_job_id: validComment,
-      }
-    );
-    console.log("Comment created", comment);
-    return parseStringify(comment);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const getJobComments = async () => {
-  try {
-    const { databases } = await createAdminClient();
-    const comments = await databases.listDocuments(db, commentJobsCollection);
-    return parseStringify(comments);
-  } catch (error) {
-    console.error("Error fetching job comments:", error);
-  }
-};
-
-export const getJobCommentsByJobId = async (jobId: string) => {
-  try {
-    const { databases } = await createAdminClient();
-    const response = await databases.listDocuments(db, postCommentCollection, [
-      Query.equal("job_id", jobId),
-    ]);
-    return parseStringify(response.documents);
-  } catch (error) {
-    console.error("Error fetching comments:", error);
-    return [];
-  }
-};
-
-export const createFundingComment = async (data: FundingComment) => {
-  const { comment_funding_id } = data;
-  const validComment = generateValidPostId(comment_funding_id);
-
-  try {
-    const { databases } = await createAdminClient();
-    const fundExists = await getFunding(data.funding_id);
-    const comment = await databases.createDocument(
-      db,
-      commentFundingCollection,
-      validComment,
-      {
-        ...data,
-        funding_id: fundExists.funding_id,
-        comment_funding_id: validComment,
-      }
-    );
-    console.log("Comment created", comment);
-    return parseStringify(comment);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const getFundingComments = async () => {
-  try {
-    const { databases } = await createAdminClient();
-    const comments = await databases.listDocuments(
-      db,
-      commentFundingCollection
-    );
-    return parseStringify(comments);
-  } catch (error) {
-    console.error("Error fetching funding comments:", error);
-  }
-};
-
-export const createScholarshipComment = async (data: ScholarshipComment) => {
-  const { comment_scholarship_id } = data;
-  const validComment = generateValidPostId(comment_scholarship_id);
-
-  try {
-    const { databases } = await createAdminClient();
-    const scholarshipExists = await getScholarship(data.scholarship_id);
-    const comment = await databases.createDocument(
-      db,
-      commentScholarshipCollection,
-      validComment,
-      {
-        ...data,
-        scholarship_id: scholarshipExists.scholarship_id,
-        comment_scholarship_id: validComment,
-      }
-    );
-    console.log("Comment created", comment);
-    return parseStringify(comment);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-export const getScholarshipComments = async () => {
-  try {
-    const { databases } = await createAdminClient();
-    const comments = await databases.listDocuments(
-      db,
-      commentScholarshipCollection
-    );
-    return parseStringify(comments);
-  } catch (error) {
-    console.error("Error fetching scholarship comments:", error);
   }
 };
