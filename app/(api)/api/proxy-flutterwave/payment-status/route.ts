@@ -141,11 +141,11 @@ export async function GET(req: Request) {
         const user = userQuery.documents[0];
 
         // If this user was referred by someone (check user's registration data)
-        if (user.referred_by) {
+        if (user.referral_by) {
           const referrerQuery = await databases.listDocuments(
             db, 
             userCollection,
-            [Query.equal("referral_code", user.referred_by)]
+            [Query.equal("referral_by", user.referral_by)]
           );
 
           if (referrerQuery.documents.length > 0) {
@@ -155,13 +155,7 @@ export async function GET(req: Request) {
             const referralFee = amount * 0.1;
             
             // Update referrer's points and earned fees
-            await updateReferralPoints({
-              user_id: referrer.user_id,
-              email: referrer.email,
-              password: referrer.password,
-              categories: referrer.categories,
-              role: referrer.role,
-            }, referralFee);
+            await updateReferralPoints(referrer.user_id, referralFee);
             console.log(`Referral fee of ${referralFee} awarded to user ${referrer.user_id}`);
           }
         }
