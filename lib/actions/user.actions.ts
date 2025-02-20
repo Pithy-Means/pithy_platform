@@ -230,12 +230,13 @@ export const updateReferralPoints = async (referrerId: string, amount: number) =
     // Calculate new points and amount
     const currentPoints = user.referral_points || 0;
     const currentAmount = user.earned_referral_fees || 0;
-    const referral_fee = amount * 0.1;
+    const referral_fee = amount * 0.1; // 10% of the payment amount
 
     // Update referrer with new points and amount
     const referrerUpdated = await databases.updateDocument(db, userCollection, referrerId, {
       referral_points: currentPoints + 1,
-      earned_referral_fees: currentAmount + referral_fee
+      earned_referral_fees: currentAmount + referral_fee,
+      referred_users: user.referred_users ? [...user.referred_users, referrerId] : [referrerId],
     });
 
     return parseStringify(referrerUpdated);
@@ -316,7 +317,8 @@ export const register = async (userdata: Partial<UserInfo>) => {
         referral_code: newUserReferralCode,
         referral_points: 0,
         referral_by: referrerInfo ? referral_code : "", // Only set if valid referral
-        earned_referral_fees: 0
+        earned_referral_fees: 0,
+        referred_users: referrerInfo ? [userId] : [], // Add user to referrer's list
       }
     );
 
