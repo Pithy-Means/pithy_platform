@@ -25,7 +25,7 @@ const Footer = () => {
                     </div>
                   </div>
                   <p className="text-white text-[12px] md:text-[16px] lg:text-base md:text-start text-center break-normal">
-                    Lorem psum aoka psuma lroe taray aoksa mdak djskas aso
+                    Unlock your Potential to accomplish beyond your Dreams, Applying your unlimited capabilities from Vision to Victory!
                   </p>
                   <SocialMediaLinks className="text-white" />
                 </div>
