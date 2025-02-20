@@ -50,7 +50,7 @@ export default async function createCourseCollection() {
     databases.createStringAttribute(
       db,
       courseCollection,
-      "students",
+      "categories",
       100,
       false,
     ),
