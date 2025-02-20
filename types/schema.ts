@@ -20,7 +20,8 @@ export type BaseUserInfo = {
   referral_code?: string;
   referral_points?: number;
   earned_referral_fees?: number;
-  referred_by?: string;
+  referral_by?: string;
+  referred_users?: string[];
   [key: string]: any; // Allow for other fields
 };
 
