@@ -117,8 +117,9 @@ export const usePosts = () => {
 
   // Clear cache when component unmounts
   useEffect(() => {
+    const currentCache = cache.current;
     return () => {
-      cache.current.clear();
+      currentCache.clear();
       prefetchQueue.current = [];
     };
   }, []);
