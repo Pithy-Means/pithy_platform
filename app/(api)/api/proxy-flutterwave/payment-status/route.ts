@@ -155,7 +155,7 @@ export async function GET(req: Request) {
             const referralFee = amount * 0.1;
             
             // Update referrer's points and earned fees
-            await updateReferralPoints(referrer.user_id, referralFee);
+            await updateReferralPoints(referrer.user_id, referralFee, user.user_id);
             console.log(`Referral fee of ${referralFee} awarded to user ${referrer.user_id}`);
           }
         }
