@@ -376,14 +376,14 @@ const SignupForm = () => {
                 <p className="p-2">I agree to the </p>
                 <Button
                   onClick={handleDisplayTerms}
-                  className="text-green-600 bg-transparent"
+                  className="text-green-600 bg-transparent hover:underline"
                 >
                   Terms and Conditions
                   <span className="text-red-500">*</span>
                 </Button>
                 <Button
                   onClick={handleDisplayPrivacyPoliciesContent}
-                  className="text-green-600 bg-transparent"
+                  className="text-green-600 bg-transparent hover:underline"
                 >
                   Privacy Policy
                   <span className="text-red-500">*</span>

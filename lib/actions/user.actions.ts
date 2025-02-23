@@ -154,7 +154,7 @@ export const recovery = async (data: UserInfo) => {
     console.log("User ID:", userId);
 
     const resetToken = ID.unique(); // Unique token for reset
-    const resetLink = `http://localhost:3000/reset-password?userId=${userId}&secret=${resetToken}`;
+    const resetLink = `https://hilarious-tarsier-58aa63.netlify.app/reset-password?userId=${userId}&secret=${resetToken}`;
     console.log("Generated reset link:", resetLink);
 
     const recoveryPass = await account.createRecovery(data.email, resetLink);
@@ -431,13 +431,15 @@ export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
     const response = await account.createVerification(
-      "http://localhost:3000/verify"
+      "https://hilarious-tarsier-58aa63.netlify.app/verify"
     );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
     if (response && response.userId && response.secret) {
       // If the secret is present, create the verification URL
-      const verificationURL = `http://localhost:3000/verify?userId=${response.userId}&secret=${response.secret}`;
+      const verificationURL = `https://hilarious-tarsier-58aa63.netlify.app/verify?userId=${response.userId}&secret=${response.secret}`;
+
+      console.log("Generated verification URL:", verificationURL);
       return verificationURL;
     }
   } catch (error) {

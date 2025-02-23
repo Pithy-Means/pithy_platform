@@ -24,7 +24,7 @@ const PersonSidebar = () => {
   const [copied, setCopied] = useState(false);
   const [ showModal, setShowModal ] = useState<boolean>(false);
   const { user } = useAuthStore((state) => state as { user: UserInfo });
-  const referralLink = `http://localhost:3000/signUp?referral=${user?.referral_code || ""}`;
+  const referralLink = `https://hilarious-tarsier-58aa63.netlify.app/signUp?referral=${user?.referral_code || ""}`;
 
   // Logic for copying referral link to clipboard
   const copyToClipboard = () => {
