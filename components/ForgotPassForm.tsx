@@ -1,11 +1,11 @@
 "use client";
 
 import { recovery } from "@/lib/actions/user.actions";
-import { ResetPass, UserInfo } from "@/types/schema";
+import { UserInfo } from "@/types/schema";
 import { useState, FormEvent } from "react";
 
 const ForgotPasswordForm: React.FC = () => {
-  const [form, setForm] = useState<Partial<ResetPass>>({ email: "" });
+  const [form, setForm] = useState<Partial<UserInfo>>({ email: "" });
   const [message, setMessage] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
