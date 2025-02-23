@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { reset } from "@/lib/actions/user.actions";
 import { useRouter } from "next/navigation";
+import InputContact from "./InputContact";
+import toast, { Toaster } from "react-hot-toast";
+import { Button } from "./ui/button";
 
 type ResetFormData = {
   user_id: string;
@@ -18,9 +21,7 @@ const PasswordRecoveryForm: React.FC = () => {
     password: "",
     passwordAgain: "",
   });
-
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -44,64 +45,115 @@ const PasswordRecoveryForm: React.FC = () => {
     }
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLTextAreaElement | HTMLInputElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    setSuccess(null);
 
     if (formData.password !== formData.passwordAgain) {
-      setError("Passwords do not match.");
+      toast.error("Passwords do not match.");
       return;
     }
 
     // Check if user_id and secret are set
     if (!formData.user_id || !formData.secret) {
-      setError("User ID or secret is missing.");
+      toast.error("User ID or secret is missing.");
       return;
     }
 
     try {
+      setLoading(true);
       const response = await reset(formData);
-      setSuccess("Password reset successful!");
+      toast.success("Password reset successfully.");
       console.log("Response:", response);
       if (response.status === 200) {
         router.push("/login");
       }
     } catch (err) {
-      setError("An error occurred while resetting the password.");
+      toast.error("An error occurred. Please try again.");
       console.error("Error:", err);
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-      <input
-        type="password"
-        name="password"
-        placeholder="New Password"
-        className="border p-2"
-        value={formData.password}
-        onChange={handleChange}
-        required
-      />
-      <input
-        type="password"
-        name="passwordAgain"
-        placeholder="Confirm New Password"
-        className="border p-2 w-full"
-        value={formData.passwordAgain}
-        onChange={handleChange}
-        required
-      />
-      <button type="submit">Reset Password</button>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {success && <p style={{ color: "green" }}>{success}</p>}
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-full">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col space-y-6 max-w-xl mx-auto p-8 bg-white rounded-lg shadow-lg"
+      >
+        <Toaster />
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Welcome Back to Pithy Means. 🎉
+        </h2>
+
+        <p className="text-gray-600 text-center">
+          Let’s get you back into your account. Enter a new password below.
+        </p>
+
+        <div className="flex flex-col space-y-8">
+          <InputContact
+            type="password"
+            label="Password"
+            name="password"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          <InputContact
+            type="password"
+            label="Password Again"
+            name="passwordAgain"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all"
+            value={formData.passwordAgain}
+            onChange={handleChange}
+          />
+        </div>
+
+        <Button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
+        >
+          {loading ? (
+            <div className="flex items-center">
+              <span>Resetting...</span>
+              <svg
+                className="animate-spin h-5 w-5 ml-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+                ></path>
+              </svg>
+            </div>
+          ) : (
+            "Reset Password"
+          )}
+        </Button>
+      </form>
+    </div>
   );
 };
 

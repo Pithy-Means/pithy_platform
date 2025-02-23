@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 import { ID } from 'node-appwrite';
 
 export async function POST(req: Request) {
-  const allowedExtensions = ["mp4", "jpg", "jpeg", "png", "gif", "svg", "pdf"]; // Allowed file types
+  const allowedExtensions = ["mp4", "jpg", "jpeg", "png", "gif", "svg", "pdf", "webp"]; // Allowed file types
 
   const bodyText = await req.text();
   console.log('Incoming body:', bodyText);

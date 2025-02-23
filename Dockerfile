@@ -1,29 +1,46 @@
-# Use the official Node.js 20 image as the base image
-FROM node:20-alpine AS build
+# Use a lightweight Node.js image for building
+FROM node:22-alpine AS base
 
-# Set the working directory
-WORKDIR /src
+FROM base AS deps
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
+RUN apt add --no-cache libc6-compat
 
-# Install dependencies
-RUN npm install
+WORKDIR /app
 
-# Copy the rest of the application code
+COPY package.*json ./
+RUN npm ci
+
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Build the Next.js application
+
+
+ARG NODE_ENV=production
 RUN npm run build
 
-FROM build AS production
+FROM base AS runner
 
-COPY --from=build /src/.next ./.next
-COPY --from=build /src/public ./public
-COPY --from=build /src/node_modules ./node_modules
-COPY --from=build /src/package.json ./package.json
+WORKDIR /app
 
-RUN npm install
+ENV NODE_ENV ${NODE_ENV}
+ENV NEXT_TELEMETRY_DISABLED 1
 
-# Start the Next.js application
+RUN addgroup --system  --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/next.config.js ./
+COPY --from=builder /app/node_modules ./node_modules
+
+USER nextjs
+
+EXPOSE 3000
+
+ENV PORT 3000
+
 CMD ["npm", "start"]

@@ -140,18 +140,21 @@ export const logoutUser = async () => {
 
 export const recovery = async (data: UserInfo) => {
   try {
-    const { account, users } = await createAdminClient();
-    const userList = await users.list([Query.equal("email", data.email)]);
+    const { account, databases } = await createAdminClient();
+    const userList = await databases.listDocuments(db, userCollection, [
+      Query.equal("email", data.email),
+    ]);
+    console.log("User list:", userList);
 
     if (!userList || userList.total === 0) {
       throw new Error("User not found");
     }
 
-    const userId = userList.users[0].$id; // User ID extraction
+    const userId = userList.documents[0].$id; // User ID extraction
     console.log("User ID:", userId);
 
     const resetToken = ID.unique(); // Unique token for reset
-    const resetLink = `http://localhost:3000/reset-password?userId=${userId}&secret=${resetToken}`;
+    const resetLink = `https://hilarious-tarsier-58aa63.netlify.app/reset-password?userId=${userId}&secret=${resetToken}`;
     console.log("Generated reset link:", resetLink);
 
     const recoveryPass = await account.createRecovery(data.email, resetLink);
@@ -218,11 +221,65 @@ export const registerWithGoogle = async (data: UserInfo) => {
   }
 };
 
-export const updateReferralPoints = async (referrerId: string, amount: number) => {
+// Function to get referral details for a user
+export const getReferralDetails = async (userId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const user = await databases.getDocument(db, userCollection, userId);
+
+    if (!user?.referred_users?.length) {
+      return {
+        referrals: [],
+        totalPoints: 0,
+        totalEarnings: 0,
+      };
+    }
+
+    // Fetch full details of all referred users
+    const referralPromises = user.referred_users.map(
+      async (referredId: string) => {
+        try {
+          const referredUser = await databases.getDocument(
+            db,
+            userCollection,
+            referredId
+          );
+          return {
+            id: referredId,
+            firstname: referredUser.firstname,
+            lastname: referredUser.lastname,
+            date: referredUser.$createdAt,
+            // You can add more fields as needed
+          };
+        } catch (error) {
+          console.error(`Error fetching referred user ${referredId}:`, error);
+          return null;
+        }
+      }
+    );
+
+    const referrals = (await Promise.all(referralPromises)).filter(Boolean);
+
+    return {
+      referrals,
+      totalPoints: user.referral_points || 0,
+      totalEarnings: user.earned_referral_fees || 0,
+    };
+  } catch (error) {
+    console.error("Error getting referral details:", error);
+    throw error;
+  }
+};
+
+export const updateReferralPoints = async (
+  referrerId: string,
+  amount: number,
+  newReferredUserId: string
+) => {
   try {
     const { databases } = await createAdminClient();
     const user = await databases.getDocument(db, userCollection, referrerId);
-    
+
     if (!user) {
       throw new Error("Referrer not found");
     }
@@ -230,13 +287,22 @@ export const updateReferralPoints = async (referrerId: string, amount: number) =
     // Calculate new points and amount
     const currentPoints = user.referral_points || 0;
     const currentAmount = user.earned_referral_fees || 0;
-    const referral_fee = amount * 0.1;
+    const referral_fee = amount * 0.1; // 10% of the payment amount
 
     // Update referrer with new points and amount
-    const referrerUpdated = await databases.updateDocument(db, userCollection, referrerId, {
-      referral_points: currentPoints + 1,
-      earned_referral_fees: currentAmount + referral_fee
-    });
+    // Now using newReferredUserId instead of referrerId in the array
+    const referrerUpdated = await databases.updateDocument(
+      db,
+      userCollection,
+      referrerId,
+      {
+        referral_points: currentPoints + 1,
+        earned_referral_fees: currentAmount + referral_fee,
+        referred_users: user.referred_users
+          ? [...user.referred_users, newReferredUserId]
+          : [newReferredUserId],
+      }
+    );
 
     return parseStringify(referrerUpdated);
   } catch (error) {
@@ -283,7 +349,8 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
     // Step 2: Process referral if code provided
     let referrerInfo = null;
-    if (`http://localhost:3000/signUp?referral=${referral_code}`) {
+    // Fixed the referral code check
+    if (`http:localhost:3000/signUp?referral=${referral_code}`) {
       try {
         // Find referrer by their referral code
         const referrerQuery = await databases.listDocuments(
@@ -294,9 +361,9 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
         if (referrerQuery.documents.length > 0) {
           referrerInfo = referrerQuery.documents[0];
-          // Update referrer's points
+          // Update referrer's points with the new user's ID
           const amount = referrerInfo.earned_referral_fees || 0;
-          await updateReferralPoints(referrerInfo.$id, amount);
+          await updateReferralPoints(referrerInfo.$id, amount, userId);
         }
       } catch (referralError) {
         console.error("Error processing referral:", referralError);
@@ -315,8 +382,9 @@ export const register = async (userdata: Partial<UserInfo>) => {
         categories: categories || [],
         referral_code: newUserReferralCode,
         referral_points: 0,
-        referral_by: referrerInfo ? referral_code : "", // Only set if valid referral
-        earned_referral_fees: 0
+        referral_by: referrerInfo ? referral_code : "",
+        earned_referral_fees: 0,
+        referred_users: [], // New user starts with empty referred_users array
       }
     );
 
@@ -363,13 +431,15 @@ export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
     const response = await account.createVerification(
-      "http://localhost:3000/verify"
+      "https://hilarious-tarsier-58aa63.netlify.app/verify"
     );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
     if (response && response.userId && response.secret) {
       // If the secret is present, create the verification URL
-      const verificationURL = `http://localhost:3000/verify?userId=${response.userId}&secret=${response.secret}`;
+      const verificationURL = `https://hilarious-tarsier-58aa63.netlify.app/verify?userId=${response.userId}&secret=${response.secret}`;
+
+      console.log("Generated verification URL:", verificationURL);
       return verificationURL;
     }
   } catch (error) {
@@ -591,7 +661,7 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
     const offset = (page - 1) * limit;
 
     const posts = await databases.listDocuments(db, postCollection, [
-      Query.orderDesc('$createdAt'), // Sort by creation date, newest first
+      Query.orderDesc("$createdAt"), // Sort by creation date, newest first
       Query.limit(limit),
       Query.offset(offset),
     ]);
@@ -605,10 +675,10 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
 
     const postWithFiles = await Promise.all(
       posts.documents.map(async (post) => {
-        const imageUrl = post.image 
+        const imageUrl = post.image
           ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`
           : null;
-        
+
         const videoUrl = post.video
           ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`
           : null;

@@ -23,7 +23,7 @@ const CourseView: React.FC = () => {
     async (userCategory: string) => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/get-courses?timestamp=${Date.now()}`, { method: "GET", cache: "no-store" });
+        const response = await fetch(`/api/get-courses?timestamp=${Date.now()}`, { method: "GET", cache: "no-cache" });
         const data = await response.json();
         if (!response.ok || !data?.data) {
           throw new Error(data?.message || "Failed to fetch courses."); // Throw an error if the response is not okay
@@ -54,8 +54,7 @@ const CourseView: React.FC = () => {
   return (
     <div className="w-full h-full">
       {/* Header Section */}
-      <div className="w-full p-16 ">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center mb-8 w-full">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
             <button
@@ -76,7 +75,6 @@ const CourseView: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
 
       {/* Admin and User Welcome Section */}
       <div className="flex justify-end items-center">

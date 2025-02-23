@@ -232,7 +232,7 @@ const SignupForm = () => {
                         <option value="">Select Education Level</option>
                         <option value="High School">High School</option>
                         <option value="Diploma">Diploma</option>
-                        <option value="Bachelors">Bachelor</option>
+                        <option value="Bachelor">Bachelor</option>
                         <option value="Masters">Masters</option>
                         <option value="PhD">PhD</option>
                       </select>
@@ -376,14 +376,14 @@ const SignupForm = () => {
                 <p className="p-2">I agree to the </p>
                 <Button
                   onClick={handleDisplayTerms}
-                  className="text-green-600 bg-transparent"
+                  className="text-green-600 bg-transparent hover:underline"
                 >
                   Terms and Conditions
                   <span className="text-red-500">*</span>
                 </Button>
                 <Button
                   onClick={handleDisplayPrivacyPoliciesContent}
-                  className="text-green-600 bg-transparent"
+                  className="text-green-600 bg-transparent hover:underline"
                 >
                   Privacy Policy
                   <span className="text-red-500">*</span>

@@ -53,7 +53,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       width={800}
                       height={400}
                       unoptimized
-                      className="object-cover w-full h-48"
+                      className="w-full h-48"
                     />
                     <p className="text-black font-bold text-lg mb-2">
                       {course.title}
@@ -74,7 +74,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                   </div>
                   <div className="flex flex-row justify-between items-center">
                     <p className="text-green-600 text-base">
-                      {course.price} UGX
+                      {course.price} USD
                     </p>
                     <button
                       type="button"

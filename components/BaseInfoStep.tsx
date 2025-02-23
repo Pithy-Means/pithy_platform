@@ -75,7 +75,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           className="py-6"
         />
         <InputContact
-          label="Earlier"
+          label="Area"
           type="text"
           name="earlier"
           value={formData.earlier || ""}
