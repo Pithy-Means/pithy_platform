@@ -232,7 +232,7 @@ const SignupForm = () => {
                         <option value="">Select Education Level</option>
                         <option value="High School">High School</option>
                         <option value="Diploma">Diploma</option>
-                        <option value="Bachelors">Bachelor</option>
+                        <option value="Bachelor">Bachelor</option>
                         <option value="Masters">Masters</option>
                         <option value="PhD">PhD</option>
                       </select>
