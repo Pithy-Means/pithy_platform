@@ -35,7 +35,6 @@ const CourseDetail = () => {
     }
   }, [course_id]);
 
-
   if (error) {
     return (
       <div className="flex justify-center items-center h-48">
@@ -45,10 +44,29 @@ const CourseDetail = () => {
   }
 
   return (
-    <div className="text-black">
+    <>
       {course && (
         <>
-          <>
+          {/* Modal to create a new module */}
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+              <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
+                <button
+                  className="absolute top-2 right-2 text-gray-600 text-2xl hover:text-black"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  ✕
+                </button>
+
+                <ModuleForm
+                  course_id={course.course_id}
+                  closeModal={() => setIsModalOpen(false)}
+                />
+              </div>
+            </div>
+          )}
+          <div className="w-[80%] mx-auto">
+            <ModulesPage />
             {/* Button to open the Create Module modal */}
             {user?.role === "admin" && (
               <Button
@@ -58,30 +76,10 @@ const CourseDetail = () => {
                 Create Module
               </Button>
             )}
-
-            {/* Modal to create a new module */}
-            {isModalOpen && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-white rounded-lg p-6 w-full max-w-md relative">
-                  <button
-                    className="absolute top-2 right-2 text-gray-600 text-2xl hover:text-black"
-                    onClick={() => setIsModalOpen(false)}
-                  >
-                    ✕
-                  </button>
-
-                  <ModuleForm
-                    course_id={course.course_id}
-                    closeModal={() => setIsModalOpen(false)}
-                  />
-                </div>
-              </div>
-            )}
-          </>
-          <ModulesPage />
+          </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
