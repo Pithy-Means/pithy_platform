@@ -509,26 +509,42 @@ export const createPost = async (data: Post) => {
       ? video.match(/^data:(video)\/(\w+);base64,/)
       : null;
 
-  if (base64Match) {
-    console.log("Base64 match", base64Match);
-
-    fileType = base64Match[2]; // Extract file extension
-    console.log("Extracted file type:", fileType);
-
-    if (!allowedExtensions.includes(fileType)) {
-      console.error("Unsupported file type:", fileType);
-      throw new Error("Unsupported file type");
-    }
-
-    const base64Data = hasImage
-      ? image.replace(base64Match[0], "")
-      : video!.replace(base64Match[0], "");
-
-    const binaryData = Buffer.from(base64Data, "base64");
-    const fileName = `uploaded-file.${fileType}`;
-    const mimeType = `${base64Match[1]}/${fileType}`;
-    file = new File([binaryData], fileName, { type: mimeType });
-  }
+      if (base64Match) {
+        try {
+          fileType = base64Match[2];
+          
+          if (!allowedExtensions.includes(fileType)) {
+            console.error("Unsupported file type:", fileType);
+            throw new Error(`Unsupported file type: ${fileType}`);
+          }
+          
+          const base64Data = hasImage
+            ? image.replace(base64Match[0], "")
+            : video!.replace(base64Match[0], "");
+          
+          // Add validation for base64 content
+          if (!base64Data || base64Data.trim() === "") {
+            throw new Error("Empty base64 data");
+          }
+          
+          const binaryData = Buffer.from(base64Data, "base64");
+          
+          // Check if the binary data was properly converted
+          if (binaryData.length === 0) {
+            throw new Error("Failed to convert base64 to binary");
+          }
+          
+          const fileName = `uploaded-file-${Date.now()}.${fileType}`;
+          const mimeType = `${base64Match[1]}/${fileType}`;
+          
+          // TypeScript-safe File creation
+          file = new File([binaryData], fileName, { type: mimeType });
+        } catch (err: unknown) {
+          const errorMessage = err instanceof Error ? err.message : String(err);
+          console.error("Base64 processing error:", err);
+          throw new Error(`Failed to process file: ${errorMessage}`);
+        }
+      }
 
   try {
     const { databases, storage } = await createAdminClient();
