@@ -484,100 +484,147 @@ export const getLoggedInUser = async () => {
 };
 
 export const createPost = async (data: Post) => {
-  const { post_id, image, video } = data;
-  const validPost = generateValidPostId(post_id);
-  const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
-  let file: File | null = null;
-  let fileType = "";
-  let imageId = "";
-  let videoId = "";
-
-  // Ensure only one media type is set
-  const hasImage = image && image.startsWith("data:image");
-  const hasVideo = video && video.startsWith("data:video");
-
-  if (hasImage) {
-    videoId = ""; // Ensure video is empty if an image is present
-  } else if (hasVideo) {
-    imageId = ""; // Ensure image is empty if a video is present
-  }
-
-  // Process Base64 validation
-  const base64Match = hasImage
-    ? image.match(/^data:(image)\/(\w+);base64,/)
-    : hasVideo
-      ? video.match(/^data:(video)\/(\w+);base64,/)
-      : null;
-
-      if (base64Match) {
-        try {
-          fileType = base64Match[2];
-          
-          if (!allowedExtensions.includes(fileType)) {
-            console.error("Unsupported file type:", fileType);
-            throw new Error(`Unsupported file type: ${fileType}`);
-          }
-          
-          const base64Data = hasImage
-            ? image.replace(base64Match[0], "")
-            : video!.replace(base64Match[0], "");
-          
-          // Add validation for base64 content
-          if (!base64Data || base64Data.trim() === "") {
-            throw new Error("Empty base64 data");
-          }
-          
-          const binaryData = Buffer.from(base64Data, "base64");
-          
-          // Check if the binary data was properly converted
-          if (binaryData.length === 0) {
-            throw new Error("Failed to convert base64 to binary");
-          }
-          
-          const fileName = `uploaded-file-${Date.now()}.${fileType}`;
-          const mimeType = `${base64Match[1]}/${fileType}`;
-          
-          // TypeScript-safe File creation
-          file = new File([binaryData], fileName, { type: mimeType });
-        } catch (err: unknown) {
-          const errorMessage = err instanceof Error ? err.message : String(err);
-          console.error("Base64 processing error:", err);
-          throw new Error(`Failed to process file: ${errorMessage}`);
-        }
-      }
-
   try {
-    const { databases, storage } = await createAdminClient();
+    console.log("Starting post creation with data:", {
+      content: data.content?.substring(0, 20),
+      hasImage: !!data.image,
+      hasVideo: !!data.video,
+      user_id: data.user_id
+    });
+    
+    const { post_id, image, video, user_id, content } = data;
+    const validPost = generateValidPostId(post_id);
+    const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
+    let file: File | null = null;
+    let fileType = "";
+    let imageId = "";
+    let videoId = "";
 
-    if (file) {
-      console.log("Uploading file to Appwrite...");
-      const fileUpload = await storage.createFile(
-        postAttachementBucket,
-        ID.unique(),
-        file
-      );
-      console.log("Uploaded file:", fileUpload);
+    // Ensure content exists
+    if (!content) {
+      throw new Error("Post content is required");
+    }
 
-      if (hasImage) {
-        imageId = fileUpload.$id;
-      } else if (hasVideo) {
-        videoId = fileUpload.$id;
+    // Ensure user_id exists
+    if (!user_id) {
+      throw new Error("User ID is required");
+    }
+
+    // Check if we have an image or video
+    const hasImage = image && image.startsWith("data:image");
+    const hasVideo = video && video.startsWith("data:video");
+
+    // Process media if present
+    if (hasImage || hasVideo) {
+      const mediaData = hasImage ? image : video;
+      const mediaType = hasImage ? "image" : "video";
+      
+      // Process Base64 validation with improved error handling
+      if (!mediaData) {
+        throw new Error("Media data is undefined");
+      }
+      const base64Match = mediaData.match(/^data:(image|video)\/(\w+);base64,/);
+      
+      if (!base64Match) {
+        throw new Error(`Invalid ${mediaType} format`);
+      }
+      
+      try {
+        fileType = base64Match[2].toLowerCase();
+        
+        if (!allowedExtensions.includes(fileType)) {
+          throw new Error(`Unsupported file type: ${fileType}`);
+        }
+        
+        const base64Data = mediaData.replace(base64Match[0], "");
+        
+        if (!base64Data || base64Data.trim() === "") {
+          throw new Error(`Empty ${mediaType} data`);
+        }
+        
+        // Convert to binary with error checking
+        let binaryData: Buffer;
+        try {
+          binaryData = Buffer.from(base64Data, "base64");
+        } catch (err) {
+          throw new Error(`Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`);
+        }
+        
+        if (binaryData.length === 0) {
+          throw new Error(`Failed to convert ${mediaType} data`);
+        }
+        
+        // Check file size (max 5MB)
+        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        if (binaryData.length > MAX_SIZE) {
+          throw new Error(`${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`);
+        }
+        
+        const fileName = `post-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileType}`;
+        const mimeType = `${base64Match[1]}/${fileType}`;
+        
+        file = new File([binaryData], fileName, { type: mimeType });
+        console.log(`Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`);
+        
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error(`${mediaType} processing error:`, err);
+        throw new Error(`Failed to process ${mediaType}: ${errorMessage}`);
       }
     }
 
-    // Create post document with corrected image/video fields
-    const post = await databases.createDocument(db, postCollection, validPost, {
-      ...data,
-      post_id: validPost,
-      image: imageId, // Ensures image is empty if video exists
-      video: videoId, // Ensures video is empty if image exists
-    });
+    // Initialize Appwrite client
+    const { databases, storage } = await createAdminClient();
+    console.log("Appwrite client created successfully");
 
-    console.log("Post created:", post);
-    return parseStringify(post);
-  } catch (error) {
-    console.error(error);
-    throw error;
+    // Upload file if it exists
+    if (file) {
+      try {
+        console.log(`Uploading ${hasImage ? 'image' : 'video'} to Appwrite...`);
+        const fileUpload = await storage.createFile(
+          postAttachementBucket,
+          ID.unique(),
+          file
+        );
+        console.log("File uploaded successfully:", fileUpload.$id);
+
+        // Set the appropriate ID based on file type
+        if (hasImage) {
+          imageId = fileUpload.$id;
+        } else if (hasVideo) {
+          videoId = fileUpload.$id;
+        }
+      } catch (uploadErr) {
+        console.error("File upload error:", uploadErr);
+        throw new Error(`Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`);
+      }
+    }
+
+    // Create post document
+    try {
+      console.log("Creating post document with image/video IDs:", { imageId, videoId });
+      const post = await databases.createDocument(db, postCollection, validPost, {
+        user_id: data.user_id,
+        content: data.content,
+        post_id: validPost,
+        image: imageId, // Will be empty string if no image
+        video: videoId, // Will be empty string if no video
+      });
+
+      console.log("Post created successfully:", post.$id);
+      return parseStringify(post);
+    } catch (dbErr) {
+      console.error("Database error:", dbErr);
+      throw new Error(`Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`);
+    }
+  } catch (error: unknown) {
+    // Main error handler
+    console.error("Post creation failed:", error);
+    if (error instanceof Error) {
+      throw error;
+    } else {
+      throw new Error(`Unknown error during post creation: ${String(error)}`);
+    }
   }
 };
 
