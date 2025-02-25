@@ -53,7 +53,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       width={800}
                       height={400}
                       unoptimized
-                      className="w-full h-48"
+                      className="object-cover w-full h-72"
                     />
                     <p className="text-black font-bold text-lg mb-2">
                       {course.title}
