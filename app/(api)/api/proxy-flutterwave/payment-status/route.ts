@@ -128,7 +128,8 @@ export async function GET(req: Request) {
       }
     );
 
-    // Step A: Process referral fee if applicable
+    // Step A: Process referral fee if applicable and update user's paid status
+    let updatedUser = null;
     try {
       // Fetch the user who made the payment to get their referral code
       const userQuery = await databases.listDocuments(
@@ -139,6 +140,16 @@ export async function GET(req: Request) {
 
       if (userQuery.documents.length > 0) {
         const user = userQuery.documents[0];
+        
+        // Update the user's paid status to true
+        updatedUser = await databases.updateDocument(
+          db,
+          userCollection,
+          user.$id,
+          {
+            paid: true
+          }
+        );
 
         // If this user was referred by someone (check user's registration data)
         if (user.referral_by) {
@@ -162,7 +173,7 @@ export async function GET(req: Request) {
       }
     } catch (referralError) {
       // Log the error but don't fail the payment verification
-      console.error("Error processing referral fee:", referralError);
+      console.error("Error processing referral fee or updating user:", referralError);
     }
 
     return NextResponse.json({
@@ -171,6 +182,7 @@ export async function GET(req: Request) {
       course: courseUpdate,
       transaction: data.data,
       courseUnlocked: true, // Indicate that the course is unlocked
+      userUpdated: updatedUser ? true : false, // Indicate whether the user was updated
     });
   } catch (error) {
     console.error("Error during payment verification:", error);
