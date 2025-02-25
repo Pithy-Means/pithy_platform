@@ -1,3 +1,5 @@
+"use client"
+
 import { createPost } from "@/lib/actions/user.actions";
 import { Post, PostWithUser } from "@/types/schema";
 import React, { useState } from "react";
@@ -6,43 +8,67 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import toast, { Toaster } from "react-hot-toast";
 import { Textarea } from "./ui/textarea";
+import Image from "next/image";
+import { Video } from "./Video";
 
 interface CreatePostProps {
-  userId: string; // Pass the logged-in user ID as a prop
-  // onPostCreated: (post: Post) => void;
-  onPostCreated: (newPost: PostWithUser) => void; // Callback function to update the post list
+  userId: string;
+  onPostCreated: (newPost: PostWithUser) => void;
 }
 
 const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   // Define initial state for the post
   const [post, setPost] = useState<Post>({
     user_id: userId,
-    image: "", // Add the Image property
-    video: "", // Add the Video property
-    content: "", // Add the Content property with a default value
+    image: "",
+    video: "",
+    content: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [fileSize, setFileSize] = useState<number>(0);
+  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
 
-  // Handle file change (image file)
+  // Improved file change handler
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const imageFile = e.target.files[0];
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      
+      // Check file size
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Max size is 1MB.`);
+        return;
+      }
+      
+      setFileSize(file.size);
       const reader = new FileReader();
 
       reader.onload = () => {
-        const base64image = reader.result as string; // Base64 string
-        setPost((prevCourse) => ({
-          ...prevCourse,
-          image: base64image || "",
-          video: base64image || "",
-        }));
+        const base64Data = reader.result as string;
+        
+        // Determine if it's an image or video based on file type
+        if (file.type.startsWith('image/')) {
+          setPost((prevPost) => ({
+            ...prevPost,
+            image: base64Data || "",
+            video: "", // Clear video when image is set
+          }));
+        } else if (file.type.startsWith('video/')) {
+          setPost((prevPost) => ({
+            ...prevPost,
+            video: base64Data || "",
+            image: "", // Clear image when video is set
+          }));
+        } else {
+          toast.error("Unsupported file type. Please upload an image or video.");
+        }
       };
 
       reader.onerror = () => {
         console.error("Failed to read the file as Base64");
+        toast.error("Failed to process the file. Please try again.");
       };
 
-      reader.readAsDataURL(imageFile); // Convert the file to Base64
+      reader.readAsDataURL(file);
     }
   };
 
@@ -54,23 +80,40 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
     const { name, value } = e.target;
     setPost((prevPost) => ({
       ...prevPost,
-      [name]: value, // Update the corresponding state
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    // Validate content
+    if (!post.content?.trim()) {
+      toast.error("Please add some content to your post");
+      return;
+    }
+    
     try {
       setLoading(true);
-      // Call the createPost function from user.actions.ts
       const newPost = await createPost(post);
+      
+      // Reset form after successful submission
+      setPost({
+        user_id: userId,
+        image: "",
+        video: "",
+        content: "",
+      });
+      
+      // Update UI
       onPostCreated(newPost);
       toast.success("Post created successfully");
-      // Redirect to the dashboard after successful post creation
+      
     } catch (error) {
-      console.error(error);
+      console.error("Error creating post:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to create post");
     } finally {
-      setLoading(false); //Reset loading state
+      setLoading(false);
     }
   };
 
@@ -126,12 +169,36 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
               type="file"
               name="image"
               onChange={handleFileChange}
-              accept="image/*, video/*"
+              accept="image/jpeg,image/png,video/mp4"
               className="block w-full text-gray-600 text-sm border border-gray-300 rounded-lg shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-500/10 file:text-green-600 hover:file:bg-green-100 focus:ring-4 focus:ring-green-400 focus:outline-none"
             />
             <p className="mt-2 text-sm text-gray-400">
               Supported formats: JPG, PNG, MP4. Max size: 1MB.
+              {fileSize > 0 && ` Selected file size: ${(fileSize / 1024).toFixed(2)}KB`}
             </p>
+            
+            {/* Preview section */}
+            {post.image && (
+              <div className="mt-4">
+                <p className="text-sm font-medium">Image Preview:</p>
+                <Image 
+                  src={post.image} 
+                  alt="Preview" 
+                  className="mt-2 max-h-40 rounded-lg border border-gray-200" 
+                />
+              </div>
+            )}
+            
+            {post.video && (
+              <div className="mt-4">
+                <p className="text-sm font-medium">Video Preview:</p>
+                <Video 
+                  src={post.video} 
+                  controls 
+                  className="mt-2 max-h-40 rounded-lg border border-gray-200"
+                />
+              </div>
+            )}
           </div>
 
           {/* Action Button */}
