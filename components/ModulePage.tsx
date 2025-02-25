@@ -14,7 +14,7 @@ export default function ModulesPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"summary" | "resources">("summary");
-  const [videoSize, setVideoSize] = useState({ width: 800, height: 600 }); // Default video size
+  const [videoSize, setVideoSize] = useState({ width: 600, height: 400 }); // Default video size
 
   const router = useRouter();
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
@@ -51,8 +51,8 @@ export default function ModulesPage() {
       setActiveModuleIndex(index);
           // Adjust the video size when the user clicks next or previous
     setVideoSize((prevSize) => ({
-      width: prevSize.width === 800 ? 1024 : 800, // Toggle between two widths
-      height: prevSize.height === 600 ? 720 : 600, // Toggle between two heights
+      width: prevSize.width === 600 ? 800 : 600, // Toggle between two widths
+      height: prevSize.height === 400 ? 600 : 400, // Toggle between two heights
     }));
     } else {
       alert("Complete the current module to unlock this one.");
