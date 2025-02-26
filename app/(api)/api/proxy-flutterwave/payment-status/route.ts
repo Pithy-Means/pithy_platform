@@ -111,10 +111,14 @@ export async function GET(req: Request) {
     // Check if the name and email already exist in the arrays
     if (!updateStudent.includes(data.data.customer.name)) {
       updateStudent.push(data.data.customer.name);
+    } else {
+      throw new Error("Student already exists in the course.");
     }
 
     if (!updateStudentEmail.includes(data.data.customer.email)) {
       updateStudentEmail.push(data.data.customer.email);
+    } else {
+      throw new Error("Student email already exists in the course.");
     }
 
     // Step 5: Unlock the course associated with the payment
