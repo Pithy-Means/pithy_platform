@@ -13,11 +13,12 @@ import {
   CirclePlus,
   GraduationCap,
   HandCoins,
+  LockKeyhole,
   LogOut,
   School,
 } from "lucide-react";
 import ModalComp from "./ModalComp";
-import { AuthState, PostWithUser } from "@/types/schema";
+import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
@@ -55,7 +56,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
-  const { user, signout } = useAuthStore((state) => state as AuthState);
+  const { user, signout } = useAuthStore((state) => state);
 
   const router = useRouter();
   const pathname = usePathname();
@@ -82,6 +83,14 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         <div className="flex flex-col space-y-12">
           <div className="flex flex-col space-y-2 mb-10">
             <p className="text-lg text-black/50 lg:block hidden">Overview</p>
+            {user?.role === "admin" && (
+              <Link href="/admin" className="flex flex-row gap-3 items-center">
+                <LockKeyhole className={getLinkClassName("/admin")} size={24} />
+                <p className={`${getLinkClassName("/admin")} lg:block hidden`}>
+                  Admin
+                </p>
+              </Link>
+            )}
             <div className="flex flex-col space-y-2">
               {[
                 { href: "/dashboard", icon: GoHome, label: "Home" },
@@ -149,12 +158,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               </p>
             </button>
             <Link
-              href="/notifications"
+              href="/dashboard/notifications"
               className="flex flex-row gap-3 items-center"
             >
-              <Bell className={getLinkClassName("/notifications")} size={24} />
+              <Bell className={getLinkClassName("/dashboard/notifications")} size={24} />
               <p
-                className={`${getLinkClassName("/notifications")} lg:block hidden`}
+                className={`${getLinkClassName("/dashboard/notifications")} lg:block hidden`}
               >
                 Notifications
               </p>
@@ -163,9 +172,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <Link href="/help" className="flex flex-row gap-3 items-center">
+          <Link href="/dashboard/help" className="flex flex-row gap-3 items-center">
             <IoMdHelpCircleOutline
-              className={getLinkClassName("/help")}
+              className={getLinkClassName("/dashboard/help")}
               size={24}
             />
             <p className={`${getLinkClassName("/help")} lg:block hidden`}>
