@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
@@ -10,7 +12,7 @@ import {
   FilePenLine,
 } from "lucide-react";
 import Image from "next/image";
-import { Video } from "./Video";
+// import { Video } from "./Video";
 import { Button } from "./ui/button";
 import { PostWithUser, CommentPostWithUser } from "@/types/schema";
 import dayjs from "dayjs";
@@ -51,12 +53,13 @@ const PostItem: React.FC<PostItemProps> = ({
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  console.log("Posts", post);
 
   console.log("Comments", comments);
 
   const truncatedContent =
-  (post?.content?.length ?? 0) > 100 ? post?.content?.slice(0, 100) + "..." : (post?.content ?? "");
+    (post?.content?.length ?? 0) > 100
+      ? post?.content?.slice(0, 100) + "..."
+      : (post?.content ?? "");
 
   const handleUpdate = () => {
     if (editingPostId) {
@@ -99,9 +102,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     type="submit"
                     className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-green-600"
                   >
-                    <FilePenLine />
-                    {" "}
-                    Edit
+                    <FilePenLine /> Edit
                   </Button>
                   <Button
                     onClick={() => {
@@ -110,9 +111,7 @@ const PostItem: React.FC<PostItemProps> = ({
                     }}
                     className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-yellow-200"
                   >
-                    <Trash2 />
-                    {" "}
-                    Delete
+                    <Trash2 /> Delete
                   </Button>
                 </div>
               )}
@@ -120,7 +119,7 @@ const PostItem: React.FC<PostItemProps> = ({
           )}
         </div>
         <div className="flex flex-col space-y-4">
-        <p>{isExpanded ? post.content : truncatedContent}</p>
+          <p>{isExpanded ? post.content : truncatedContent}</p>
           {(post?.content?.length ?? 0) > 100 && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
@@ -133,19 +132,19 @@ const PostItem: React.FC<PostItemProps> = ({
             <Image
               src={post.image}
               width={800}
-              height={100}
+              height={450} // Adjust height to maintain aspect ratio (e.g., 16:9)
               alt="Post Image"
               unoptimized
-              className="h-72 w-full rounded-md"
+              className="h-72 w-full rounded-md object-cover" // object-cover ensures the image covers the area without distortion
             />
           )}
           {post.video && (
-            <Video
+            <video
               src={post.video}
               controls
-              width="800"
-              height="100"
-              className="h-72 w-full rounded-md"
+              width={800}
+              height={450} // Match the height with the image
+              className="h-72 w-full rounded-md object-cover" // object-cover ensures the video covers the area without distortion
             />
           )}
         </div>

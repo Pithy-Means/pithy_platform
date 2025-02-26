@@ -7,13 +7,13 @@ interface Video {
   src: string;
   subtitles?: string; // URL to subtitle file (.vtt)
   controls?: boolean;
-  width?: string;
-  height?: string;
+  width?: number | string;
+  height?: number | string;
   className?: string;
   key?: string;
 }
 
-export function Video({ src, subtitles }: Video) {
+export function Video({ src, subtitles, width, height }: Video) {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -39,6 +39,8 @@ export function Video({ src, subtitles }: Video) {
         className={`w-full h-auto ${
           isPlaying ? "opacity-100" : "opacity-0"
         } transition-opacity duration-300`}
+        width={width}
+        height={height}
         src={src}
         onClick={handlePlay}
         key={src}
