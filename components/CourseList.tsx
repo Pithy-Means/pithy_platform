@@ -20,7 +20,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const studentName = user?.lastname + " " + user?.firstname;
 
   return (
-    <div className="flex flex-col gap-6 px-8 py-4 max-w-full">
+    <div className="flex flex-col gap-6 px-8 py-4 w-full">
       {courses.map((course) => {
         const isEnrolled =
           course.students?.find((name) => name === studentName) &&
@@ -37,7 +37,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
 
               {/* Title and Description */}
               <div className="flex flex-col">
-                {(isLocked) ? (
+                {(isLocked || user?.paid === false) ? (
                   <div className="flex flex-col items-center justify-center text-center h-full">
                     <p className="text-red-600 font-bold text-lg mb-2">
                       This course is locked.
@@ -54,7 +54,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     />
                   </div>
                 ) :  (
-                  <>
+                  <div className="flex items-center gap-6">
                     <div className="flex-shrink-0">
                       <Image
                         src={course.image}
@@ -65,24 +65,26 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                         className="object-cover rounded-lg w-[220px] h-[120px]"
                       />
                     </div>
-                    <p className="text-lg font-semibold text-gray-800">
-                      {course.title}
-                    </p>
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
-                      {course.description}
-                    </p>
-                    {/* Price */}
-                    <div className="text-sm font-medium text-green-600 whitespace-nowrap">
-                      {course.price ? `${course.price} UGX` : "Free"}
-                    </div>
-                    <button
+                    <div className="flex flex-col gap-2">
+                      <p className="text-lg font-semibold text-gray-800">
+                        {course.title}
+                      </p>
+                      <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                        {course.description}
+                      </p>
+                      {/* Price */}
+                      <div className="text-sm font-medium text-green-600 whitespace-nowrap">
+                        {course.price ? `${course.price} UGX` : "Free"}
+                      </div>
+                      <button
                       type="button"
                       onClick={() => handleViewMore(course)}
                       className="text-black/85 font-semibold text-base hover:border rounded-md hov:bg-green-600/100 transition px-2 py-1"
-                    >
-                      View more
-                    </button>
-                  </>
+                      >
+                        View more
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
