@@ -729,8 +729,6 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
       Query.offset(offset),
     ]);
 
-    console.log("Posts", posts.documents);
-
     if (!posts?.documents || !Array.isArray(posts.documents)) {
       console.error("Invalid posts response");
       return [];
@@ -753,7 +751,6 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
         };
       })
     );
-    console.log("Posts with files", postWithFiles);
     return parseStringify(postWithFiles);
   } catch (error) {
     console.error("Error in getPosts:", error);
