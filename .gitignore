@@ -5,7 +5,8 @@
 /.pnp
 .pnp.js
 .yarn/install-state.gz
-
+/google-cloud-cli-linux-x86_64.tar.gz
+/google-cloud-sdk
 # testing
 /coverage
 
@@ -36,3 +37,4 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+node_modules
