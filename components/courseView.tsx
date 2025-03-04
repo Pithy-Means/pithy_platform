@@ -5,7 +5,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import CourseCard from "./CourseCard";
 import CourseList from "./CourseList";
 import { Courses, UserInfo } from "@/types/schema";
-import { LayoutGrid, List } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
@@ -52,27 +51,27 @@ const CourseView: React.FC = () => {
   }, [user, fetchCourses]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full p-6">
       {/* Header Section */}
         <div className="flex justify-between items-center mb-8 w-full">
           <p className="text-xl font-extrabold text-gray-800">All Courses</p>
           <div className="flex gap-2">
-            <button
+            {/* <button
               onClick={() => setLayout("grid")}
               className={`p-0.5 rounded transition-all duration-500 ease-in-out ${
                 layout === "grid" ? "bg-green-600 text-white" : "text-green-600"
               }`}
             >
               <LayoutGrid size={24} strokeWidth={3} />
-            </button>
-            <button
+            </button> */}
+            {/* <button
               onClick={() => setLayout("list")}
               className={`p-0.5 rounded transition-all duration-500 ease-in-out ${
                 layout === "list" ? "bg-green-600 text-white" : "text-green-600"
               }`}
             >
               <List size={24} strokeWidth={3} />
-            </button>
+            </button> */}
           </div>
         </div>
 

@@ -1,37 +1,76 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  FaHome,
+  FaBook,
+  FaQuestionCircle,
+  FaBriefcase,
+  FaMoneyCheckAlt,
+  FaGraduationCap,
+} from "react-icons/fa";
+import Logo from "./Logo";
 
 const links = [
-  { name: "Home", path: "/admin" },
-  { name: "Add Course", path: "/admin/addcourse" },
-  { name: "Add Questions", path: "/admin/add_question" },
-  { name: "Add Job", path: "/admin/add_job" },
-  { name: "Add Funding", path: "/admin/add_funding" },
-  { name: "Add Scholarship", path: "/admin/add_scholarship" },
+  { name: "Home", path: "/admin", icon: <FaHome /> },
+  { name: "Add Course", path: "/admin/addcourse", icon: <FaBook /> },
+  { name: "Add Questions", path: "/admin/add_question", icon: <FaQuestionCircle /> },
+  { name: "Add Job", path: "/admin/add_job", icon: <FaBriefcase /> },
+  { name: "Add Funding", path: "/admin/add_funding", icon: <FaMoneyCheckAlt /> },
+  { name: "Add Scholarship", path: "/admin/add_scholarship", icon: <FaGraduationCap /> },
 ];
 
 const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
+  const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
-    <aside className="h-full w-64 bg-gray-800 text-white flex flex-col py-8">
-      <div className="p-4 text-lg font-bold border-b border-gray-700">
-        Admin Panel
+    <aside
+      className={`h-full bg-white/80 text-black/60 flex flex-col transition-all duration-300 ${
+        isCollapsed ? "w-16" : "w-64"
+      }`}
+    >
+      {/* Sidebar Header */}
+      <div className="p-4 text-lg font-bold border-b border-gray-700 flex items-center justify-between">
+        {!isCollapsed && <Logo />}
+        <button
+          onClick={toggleSidebar}
+          className="p-2 hover:bg-gray-700 rounded-lg"
+        >
+          {isCollapsed ? "»" : "«"}
+        </button>
       </div>
+
+      {/* Navigation Links */}
       <nav className="flex-1">
         {links.map((link) => (
-          <Link key={link.path} href={link.path}
-              className={`block px-4 py-2 hover:bg-gray-700 ${
-                pathname === link.path ? "bg-gray-700" : ""
-              }`}
-            >
-              {link.name}
+          <Link
+            key={link.path}
+            href={link.path}
+            className={`flex items-center px-4 py-3 hover:bg-gray-700 hover:text-white/90 transition-colors ${
+              pathname === link.path ? "bg-gray-700 text-white/90" : ""
+            }`}
+          >
+            <span className="text-xl">{link.icon}</span>
+            {!isCollapsed && (
+              <span className="ml-3">{link.name}</span>
+            )}
           </Link>
         ))}
       </nav>
+
+      {/* Sidebar Footer (Optional) */}
+      <div className="p-4 border-t border-gray-700">
+        {!isCollapsed && (
+          <p className="text-sm text-gray-400">© 2025 Pithy Means</p>
+        )}
+      </div>
     </aside>
   );
 };

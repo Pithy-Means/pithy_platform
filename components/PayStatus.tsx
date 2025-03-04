@@ -1,85 +1,88 @@
 "use client";
 
-import { useAuthStore } from "@/lib/store/useAuthStore";
+// import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useCourseStore } from "@/lib/store/courseStore";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { UserInfo } from "@/types/schema";
 
 const PaymentStatus = () => {
   const searchParams = useSearchParams();
   const transaction_id = searchParams.get("transaction_id");
-  const status = searchParams.get("status");
+  // const status = searchParams.get("status");
   const [message, setMessage] = useState("Processing payment...");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
   const router = useRouter();
+  
   // Get user info from the store
-  const { user } = useAuthStore((state) => state as unknown as UserInfo);
+  // const { user } = useAuthStore(state => state);
+  
   // Get the setLocked function from the store
   const { setLocked } = useCourseStore();
 
   useEffect(() => {
-    if (status) {
-      const verifyPayment = async () => {
-        setLoading(true);
-        try {
-          const response = await fetch(
-            `/api/proxy-flutterwave/payment-status?transaction_id=${transaction_id}`
-          );
-          const data = await response.json();
-
-          if (data.success) {
-
-            const userName = `${user?.lastname} ${user?.firstname}`;
-            const isStudent = data.course.students.includes(userName) && data.course.student_email.includes(user?.email);
-
-            if (isStudent) {
-
-              setMessage("You have already purchased this course.");
-              setMessageStyle(
-                "text-green-600 bg-green-50 border border-green-200"
-              );
-
-              setLocked(false);
-
-              // Redirect after a slight delay
-              setTimeout(() => {
-                router.push("/dashboard/courses");
-              }, 2000);
-            } 
-          } else {
-            setMessage("Payment failed. Please try again.");
-            setMessageStyle("text-red-600 bg-red-50 border border-red-200");
-          }
-        } catch (error) {
-          setMessage(
-            "An error occurred while verifying the payment. Please try again later."
-          );
-          setMessageStyle(
-            "text-yellow-600 bg-yellow-50 border border-yellow-200"
-          );
-          console.error("Verification error:", error);
-          setLoading(false);
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      verifyPayment();
+    if (!transaction_id) {
+      setMessage("Invalid transaction. Missing transaction ID.");
+      setMessageStyle("text-red-600 bg-red-50 border border-red-200");
+      setLoading(false);
+      return;
     }
-  }, [transaction_id, status, router, setLocked, user?.lastname, user?.firstname, user?.email]); // Ensure dependencies are up-to-date
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="max-w-md p-6 rounded-lg shadow-md text-green-700">
-          <h1 className="text-xl font-semibold mb-2">Payment Status</h1>
-          <p>Processing payment...</p>
-        </div>
-      </div>
-    );
-  }
+    const verifyPayment = async () => {
+      try {
+        const response = await fetch(
+          `/api/proxy-flutterwave/payment-status?transaction_id=${transaction_id}`
+        );
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Payment verification failed");
+        }
+        
+        const data = await response.json();
+
+        if (data.success && data.courseUnlocked) {
+          setMessage("Payment successful! Your course has been unlocked.");
+          setMessageStyle("text-green-600 bg-green-50 border border-green-200");
+          
+          // Update the course lock status in the store
+          setLocked(false);
+          
+          // Redirect after a slight delay
+          setTimeout(() => {
+            router.push("/dashboard/courses");
+          }, 2000);
+        } else if (data.error === "Student already exists in the course." || 
+                  data.error === "Student email already exists in the course.") {
+          setMessage("You have already purchased this course.");
+          setMessageStyle("text-blue-600 bg-blue-50 border border-blue-200");
+          
+          // Update the course lock status
+          setLocked(false);
+          
+          // Redirect after a slight delay
+          setTimeout(() => {
+            router.push("/dashboard/courses");
+          }, 2000);
+        } else {
+          setMessage(data.error || "Payment verification failed. Please try again.");
+          setMessageStyle("text-red-600 bg-red-50 border border-red-200");
+        }
+      } catch (error) {
+        console.error("Verification error:", error);
+        setMessage(
+          error instanceof Error 
+            ? error.message 
+            : "An error occurred while verifying the payment. Please try again later."
+        );
+        setMessageStyle("text-yellow-600 bg-yellow-50 border border-yellow-200");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyPayment();
+  }, [transaction_id, router, setLocked]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -88,6 +91,11 @@ const PaymentStatus = () => {
       >
         <h1 className="text-xl font-semibold mb-2">Payment Status</h1>
         <p className="text-sm">{message}</p>
+        {loading && (
+          <div className="mt-4 flex justify-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-current"></div>
+          </div>
+        )}
       </div>
     </div>
   );

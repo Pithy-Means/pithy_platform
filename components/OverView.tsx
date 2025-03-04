@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -11,19 +11,22 @@ import {
   Bell,
   BriefcaseBusiness,
   CirclePlus,
+  CircleX,
   GraduationCap,
   HandCoins,
   LogOut,
   School,
+  ShieldAlert,
 } from "lucide-react";
 import ModalComp from "./ModalComp";
-import { AuthState, PostWithUser } from "@/types/schema";
+import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import Modal from "./Modal";
 import { useCourseStore } from "@/lib/store/courseStore";
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
+import QuestionSlider from "./QuestionSlider";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -36,32 +39,62 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const { isLocked } = useCourseStore(); // Get the lock state from the store
-  const { testStarted } = useQuestionStore();
+  const { testStarted, testCompleted } = useQuestionStore();
   const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false);
+  const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
   const [restrictedLink, setRestrictedLink] = useState("");
+  const [redirecting, setRedirecting] = useState(false);
+
+  const { user, signout } = useAuthStore((state) => state);
+  
+  // Check if user has paid
+  const isPaid = user?.paid || false;
+
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Effect to check if we should redirect to courses after test completion
+  useEffect(() => {
+    if (testCompleted && isQuestionsModalOpen) {
+      setRedirecting(true);
+      setTimeout(() => {
+        setIsQuestionsModalOpen(false);
+        router.push("/dashboard/courses");
+      }, 1500);
+    }
+  }, [testCompleted, isQuestionsModalOpen, router]);
 
   const handleLinkClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
     linkName: string,
-    isLocked: boolean
+    isRestricted: boolean,
+    isQuestionsRequired: boolean
   ) => {
-    if (isLocked) {
-      e.preventDefault(); // Prevent navigation only if locked
+    if (isRestricted) {
+      e.preventDefault(); // Prevent navigation
       setRestrictedLink(linkName);
       setIsRestrictedModalOpen(true);
+    } else if (isQuestionsRequired && !testCompleted) {
+      e.preventDefault(); // Prevent navigation
+      setIsQuestionsModalOpen(true);
     }
+    // If questionsRequired but testCompleted, allow normal navigation
   };
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
-  const { user, signout } = useAuthStore((state) => state as AuthState);
-
-  const router = useRouter();
-  const pathname = usePathname();
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const closeQuestionsModal = () => {
+    if (testCompleted || redirecting) {
+      setIsQuestionsModalOpen(false);
+      router.push("/dashboard/courses");
+    } else {
+      setIsQuestionsModalOpen(false);
+    }
+  };
 
   const addNewPost = (newPost: PostWithUser) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -82,6 +115,14 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         <div className="flex flex-col space-y-12">
           <div className="flex flex-col space-y-2 mb-10">
             <p className="text-lg text-black/50 lg:block hidden">Overview</p>
+            {user?.role === "admin" && (
+              <Link href="/admin" className="flex flex-row gap-3 items-center">
+                <ShieldAlert className={getLinkClassName("/admin")} size={24} />
+                <p className={`${getLinkClassName("/admin")} lg:block hidden`}>
+                  Admin
+                </p>
+              </Link>
+            )}
             <div className="flex flex-col space-y-2">
               {[
                 { href: "/dashboard", icon: GoHome, label: "Home" },
@@ -89,32 +130,37 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                   href: "/dashboard/courses",
                   icon: GraduationCap,
                   label: "Courses",
-                  restricted: testStarted,
+                  restricted: false,
+                  questionsRequired: !testCompleted
                 },
                 {
                   href: "/dashboard/jobs",
                   icon: BriefcaseBusiness,
                   label: "Jobs",
-                  restricted: isLocked,
+                  restricted: !isPaid, // Only accessible if user has paid
+                  questionsRequired: false
                 },
                 {
                   href: "/dashboard/scholarships",
                   icon: School,
                   label: "Scholarships",
-                  restricted: isLocked,
+                  restricted: !isPaid, // Only accessible if user has paid
+                  questionsRequired: false
                 },
                 {
                   href: "/dashboard/fundings",
                   icon: HandCoins,
                   label: "Fundings",
-                  restricted: isLocked,
+                  restricted: !isPaid, // Only accessible if user has paid
+                  questionsRequired: false
                 },
-              ].map(({ href, icon: Icon, label, restricted }) => (
+              ].map(({ href, icon: Icon, label, restricted, questionsRequired }) => (
                 <Link
                   key={label}
                   href={href}
                   onClick={(e) =>
-                    restricted && handleLinkClick(e, label, isLocked)
+                    (restricted || (questionsRequired && !testCompleted)) && 
+                    handleLinkClick(e, label, restricted, questionsRequired)
                   }
                   className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
                 >
@@ -149,12 +195,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               </p>
             </button>
             <Link
-              href="/notifications"
+              href="/dashboard/notifications"
               className="flex flex-row gap-3 items-center"
             >
-              <Bell className={getLinkClassName("/notifications")} size={24} />
+              <Bell className={getLinkClassName("/dashboard/notifications")} size={24} />
               <p
-                className={`${getLinkClassName("/notifications")} lg:block hidden`}
+                className={`${getLinkClassName("/dashboard/notifications")} lg:block hidden`}
               >
                 Notifications
               </p>
@@ -163,12 +209,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <Link href="/help" className="flex flex-row gap-3 items-center">
+          <Link href="/dashboard/help" className="flex flex-row gap-3 items-center">
             <IoMdHelpCircleOutline
-              className={getLinkClassName("/help")}
+              className={getLinkClassName("/dashboard/help")}
               size={24}
             />
-            <p className={`${getLinkClassName("/help")} lg:block hidden`}>
+            <p className={`${getLinkClassName("/dashboard/help")} lg:block hidden`}>
               Help & support
             </p>
           </Link>
@@ -203,17 +249,44 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
       )}
 
+      {/* Questions Modal */}
+      {isQuestionsModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
+            <h2 className="text-xl font-bold mb-4 text-black/70">Complete these questions to access courses</h2>
+            <QuestionSlider />
+            <button
+              onClick={closeQuestionsModal}
+              className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-2 hover:bg-green-700"
+            >
+              <CircleX size={24} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Restricted Modal */}
       {isRestrictedModalOpen && (
         <Modal
           isOpen={isRestrictedModalOpen}
           onClose={() => setIsRestrictedModalOpen(false)}
         >
-          <h2 className="text-lg font-bold">Only Accessable For Paid Members</h2>
+          <h2 className="text-lg font-bold">Only Accessible For Paid Members</h2>
           <p>
-            This page is restricted. Please unlock the course to access this
-            page.
+            This page is restricted. Please upgrade to a paid membership to access this
+            feature.
           </p>
+          <div className="mt-4 flex justify-end">
+            <button 
+              onClick={() => {
+                setIsRestrictedModalOpen(false);
+                router.push("/dashboard/subscription"); // Assuming you have a subscription page
+              }}
+              className="bg-green-500 text-white rounded-md p-2 hover:bg-green-600"
+            >
+              Upgrade Now
+            </button>
+          </div>
         </Modal>
       )}
 

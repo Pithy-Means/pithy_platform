@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useState, useCallback, memo } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import {
   ThumbsUp,
@@ -31,6 +33,101 @@ interface PostItemProps {
   onRepost: (post: PostWithUser, comment: string) => void;
 }
 
+// Memoized button component to reduce re-renders
+const ActionButton = memo(
+  ({
+    icon: Icon,
+    label,
+    onClick,
+  }: {
+    icon: React.ElementType;
+    label: string;
+    onClick?: () => void;
+  }) => (
+    <button
+      onClick={onClick}
+      className="flex flex-col space-y-1 items-center transition-colors hover:text-blue-500"
+    >
+      <Icon size={24} strokeWidth={2} />
+      <span className="text-sm">{label}</span>
+    </button>
+  )
+);
+ActionButton.displayName = "ActionButton";
+
+// Memoized user info component
+const UserInfo = memo(({ post }: { post: PostWithUser }) => (
+  <div className="flex items-center space-x-2">
+    <CircleUserRound size={40} />
+    <div className="flex flex-col space-y-0.5">
+      <p className="font-semibold">
+        {post.user
+          ? `${post.user.firstname || "Unknown"} ${post.user.lastname || ""}`
+          : "Anonymous"}
+      </p>
+      <p className="text-sm text-gray-500 font-light">
+        {dayjs(post!.$createdAt).fromNow()}
+      </p>
+    </div>
+  </div>
+));
+UserInfo.displayName = "UserInfo";
+
+// Memoized post content component with lazy loading
+const PostContent = memo(
+  ({
+    content,
+    image,
+    video,
+    isExpanded,
+    onToggleExpand,
+  }: {
+    content: string;
+    image?: string;
+    video?: string;
+    isExpanded: boolean;
+    onToggleExpand: () => void;
+  }) => {
+    const truncatedContent =
+      content?.length > 100 ? content?.slice(0, 100) + "..." : content;
+
+    return (
+      <div className="flex flex-col space-y-4">
+        <p>{isExpanded ? content : truncatedContent}</p>
+        {content?.length > 100 && (
+          <button
+            onClick={onToggleExpand}
+            className="text-green-500 underline w-fit"
+          >
+            {isExpanded ? "Show less" : "Read more"}
+          </button>
+        )}
+        {image && (
+          <Image
+            src={image}
+            alt="Post Image"
+            width={800}
+            height={400}
+            className="h-80 w-full rounded-md"
+            unoptimized
+          />
+        )}
+        {video && (
+          <Video
+            src={video}
+            controls
+            width={800}
+            height={400}
+            className="h-72 w-full rounded-md"
+          />
+        )}
+      </div>
+    );
+  }
+);
+PostContent.displayName = "PostContent";
+
+// Main PostItem component
 const PostItem: React.FC<PostItemProps> = ({
   post,
   loggedInUserId,
@@ -51,37 +148,61 @@ const PostItem: React.FC<PostItemProps> = ({
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
-  console.log("Posts", post);
+  // Memoized handlers
+  const handleToggleExpand = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
 
-  console.log("Comments", comments);
-
-  const truncatedContent =
-  (post?.content?.length ?? 0) > 100 ? post?.content?.slice(0, 100) + "..." : (post?.content ?? "");
-
-  const handleUpdate = () => {
+  const handleUpdate = useCallback(() => {
     if (editingPostId) {
       onUpdate(editingPostId, editedContent);
       setEditingPostId(null);
     }
-  };
+  }, [editingPostId, editedContent, onUpdate]);
 
+  const handleToggleComments = useCallback(() => {
+    setShowComments((prev) => !prev);
+  }, []);
+
+  const handleLike = useCallback(() => {
+    onLike(post.post_id || "");
+  }, [post.post_id, onLike]);
+
+  const handleDelete = useCallback(() => {
+    onDelete(post.post_id || "");
+    setShowOptions(false);
+  }, [post.post_id, onDelete]);
+
+  const handleEditClick = useCallback(() => {
+    setEditingPostId(post.post_id || "");
+    setEditedContent(post.content || "");
+    setShowOptions(false);
+  }, [post.post_id, post.content]);
+
+  const handleRepost = useCallback(() => {
+    setRepostingPostId(post.post_id || "");
+  }, [post.post_id]);
+
+  const handleSubmitRepost = useCallback(() => {
+    onRepost(post, repostContent);
+    setRepostingPostId(null);
+    setRepostContent("");
+  }, [post, repostContent, onRepost]);
+
+  const handleAddComment = useCallback(() => {
+    if (newComment.trim()) {
+      onAddComment(post.post_id || "", newComment);
+      setNewComment("");
+    }
+  }, [post.post_id, newComment, onAddComment]);
+
+  // Render optimizations - only render expensive parts when needed
   return (
     <div className="border border-gray-300 rounded-md p-4 bg-white/10 overflow-y-auto w-full">
       <div className="flex flex-col space-y-6 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <CircleUserRound size={40} />
-            <div className="flex flex-col space-y-0.5">
-              <p className="font-semibold">
-                {post.user
-                  ? `${post.user.firstname || "Unknown"} ${post.user.lastname || ""}`
-                  : "Anonymous"}
-              </p>
-              <p className="text-sm text-gray-500 font-light">
-                {dayjs(post!.$createdAt).fromNow()}
-              </p>
-            </div>
-          </div>
+          <UserInfo post={post} />
+
           {loggedInUserId === post.user_id && (
             <div className="relative">
               <HiOutlineDotsVertical
@@ -91,64 +212,31 @@ const PostItem: React.FC<PostItemProps> = ({
               {showOptions && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-300 rounded-md flex flex-col space-y-2 shadow-lg z-10">
                   <Button
-                    onClick={() => {
-                      setEditingPostId(post.post_id || "");
-                      setEditedContent(post.content || "");
-                      setShowOptions(false);
-                    }}
+                    onClick={handleEditClick}
                     type="submit"
                     className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-green-600"
                   >
-                    <FilePenLine />
-                    {" "}
-                    Edit
+                    <FilePenLine /> Edit
                   </Button>
                   <Button
-                    onClick={() => {
-                      onDelete(post.post_id || "");
-                      setShowOptions(false);
-                    }}
+                    onClick={handleDelete}
                     className="w-full text-black/30 bg-slate-400 text-left p-2 hover:bg-yellow-200"
                   >
-                    <Trash2 />
-                    {" "}
-                    Delete
+                    <Trash2 /> Delete
                   </Button>
                 </div>
               )}
             </div>
           )}
         </div>
-        <div className="flex flex-col space-y-4">
-        <p>{isExpanded ? post.content : truncatedContent}</p>
-          {(post?.content?.length ?? 0) > 100 && (
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-blue-500 underline"
-            >
-              {isExpanded ? "Collapse" : "View"}
-            </button>
-          )}
-          {post.image && (
-            <Image
-              src={post.image}
-              width={800}
-              height={100}
-              alt="Post Image"
-              unoptimized
-              className="h-72 w-full rounded-md"
-            />
-          )}
-          {post.video && (
-            <Video
-              src={post.video}
-              controls
-              width="800"
-              height="100"
-              className="h-72 w-full rounded-md"
-            />
-          )}
-        </div>
+
+        <PostContent
+          content={post.content || ""}
+          image={post.image}
+          video={post.video}
+          isExpanded={isExpanded}
+          onToggleExpand={handleToggleExpand}
+        />
       </div>
 
       {editingPostId === post.post_id && (
@@ -158,10 +246,10 @@ const PostItem: React.FC<PostItemProps> = ({
             onChange={(e) => setEditedContent(e.target.value)}
             className="border border-gray-300 rounded-md p-2 w-full"
           />
-          <div className="mt-2">
+          <div className="mt-2 flex space-x-2">
             <button
               onClick={handleUpdate}
-              className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600 mr-2"
+              className="bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600"
             >
               Save
             </button>
@@ -183,42 +271,25 @@ const PostItem: React.FC<PostItemProps> = ({
             </div>
             <span className="font-normal">{likeStatus.likeCount}</span>
           </div>
-          <button
-            onClick={() => setShowComments(!showComments)}
-            className="text-blue-500"
-          >
+          <button onClick={handleToggleComments} className="text-blue-500">
             {showComments ? "Hide Comments" : "Show Comments"} (
             {comments.length})
           </button>
         </div>
+
         <div className="w-full bg-gray-300 h-0.5 rounded" />
-        <div className="flex space-x-8 items-center">
-          <button
-            onClick={() => onLike(post.post_id || "")}
-            className={`flex flex-col space-y-1 items-center`}
-          >
-            <ThumbsUp size={24} strokeWidth={2} />
-            <span className="text-sm">Like</span>
-          </button>
-          <button
-            onClick={() => setShowComments(!showComments)}
-            className="flex flex-col space-y-1 items-center"
-          >
-            <MessageCircleMore />
-            <span className="text-sm">Comment</span>
-          </button>
-          <button
-            onClick={() => setRepostingPostId(post.post_id || "")}
-            className="flex flex-col space-y-1 items-center"
-          >
-            <BookCopy />
-            <span className="text-sm">Repost</span>
-          </button>
-          <button className="flex flex-col space-y-1 items-center">
-            <Share />
-            <span className="text-sm">Share</span>
-          </button>
+
+        <div className="flex space-x-8 items-center justify-between">
+          <ActionButton icon={ThumbsUp} label="Like" onClick={handleLike} />
+          <ActionButton
+            icon={MessageCircleMore}
+            label="Comment"
+            onClick={handleToggleComments}
+          />
+          <ActionButton icon={BookCopy} label="Repost" onClick={handleRepost} />
+          <ActionButton icon={Share} label="Share" />
         </div>
+
         {repostingPostId === post.post_id && (
           <div className="mt-2">
             <textarea
@@ -235,7 +306,7 @@ const PostItem: React.FC<PostItemProps> = ({
                 Cancel
               </button>
               <button
-                onClick={() => onRepost(post, repostContent)}
+                onClick={handleSubmitRepost}
                 className="bg-blue-500 text-white rounded-md px-4 py-2"
               >
                 Repost
@@ -243,6 +314,7 @@ const PostItem: React.FC<PostItemProps> = ({
             </div>
           </div>
         )}
+
         {showComments && (
           <div className="mt-4 flex flex-col space-y-4">
             <CommentsList comments={comments} />
@@ -255,8 +327,9 @@ const PostItem: React.FC<PostItemProps> = ({
                 className="border rounded-md p-2 w-full"
               />
               <button
-                onClick={() => onAddComment(post.post_id || "", newComment)}
+                onClick={handleAddComment}
                 className="bg-blue-500 text-white px-4 py-2 ml-2 rounded-md"
+                disabled={!newComment.trim()}
               >
                 Comment
               </button>
@@ -268,4 +341,4 @@ const PostItem: React.FC<PostItemProps> = ({
   );
 };
 
-export default PostItem;
+export default memo(PostItem);

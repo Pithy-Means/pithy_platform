@@ -22,6 +22,7 @@ export type BaseUserInfo = {
   earned_referral_fees?: number;
   referral_by?: string;
   referred_users?: string[];
+  paid?: false;
   [key: string]: any; // Allow for other fields
 };
 
@@ -355,4 +356,5 @@ export type PostCourseQuestionAnswer = {
   username: string;
   answer_id: string;
   answer: string;
+  user_category?: string;
 }
