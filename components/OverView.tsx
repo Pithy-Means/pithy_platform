@@ -175,7 +175,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                 className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] p-0 bg-transparent"
               >
                 <CirclePlus className={getLinkClassName("/posts")} size={24} />
-                <p className="text-lg lg:block hidden">Post</p>
+                <p className="text-lg lg:block hidden">Create A Post</p>
               </button>
             </div>
           </div>
