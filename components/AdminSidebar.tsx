@@ -11,7 +11,6 @@ import {
   FaMoneyCheckAlt,
   FaGraduationCap,
 } from "react-icons/fa";
-import Logo from "./Logo";
 
 const links = [
   { name: "Home", path: "/admin", icon: <FaHome /> },
@@ -32,18 +31,17 @@ const AdminSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`h-full bg-white/80 text-black/60 flex flex-col transition-all duration-300 ${
+      className={`h-screen rounded-tr-md bg-white text-black/60 flex flex-col transition-all duration-300 ${
         isCollapsed ? "w-16" : "w-64"
       }`}
     >
       {/* Sidebar Header */}
-      <div className="p-4 text-lg font-bold border-b border-gray-700 flex items-center justify-between">
-        {!isCollapsed && <Logo />}
+      <div className="p-4 text-lg font-bold border-b border-green-500 grid justify-items-end">
         <button
           onClick={toggleSidebar}
-          className="p-2 hover:bg-gray-700 rounded-lg"
+          className="p-2 hover:bg-green-500 rounded-lg"
         >
-          {isCollapsed ? "»" : "«"}
+          {isCollapsed ? "«" : "»" }
         </button>
       </div>
 
@@ -53,8 +51,8 @@ const AdminSidebar: React.FC = () => {
           <Link
             key={link.path}
             href={link.path}
-            className={`flex items-center px-4 py-3 hover:bg-gray-700 hover:text-white/90 transition-colors ${
-              pathname === link.path ? "bg-gray-700 text-white/90" : ""
+            className={`flex items-center px-4 py-3 hover:bg-green-500 hover:text-white/90 transition-colors ${
+              pathname === link.path ? "bg-green-500 text-white/90" : ""
             }`}
           >
             <span className="text-xl">{link.icon}</span>
@@ -66,9 +64,9 @@ const AdminSidebar: React.FC = () => {
       </nav>
 
       {/* Sidebar Footer (Optional) */}
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4 border-t border-green-500">
         {!isCollapsed && (
-          <p className="text-sm text-gray-400">© 2025 Pithy Means</p>
+          <p className="text-sm text-green-500">© 2025 Pithy Means</p>
         )}
       </div>
     </aside>
