@@ -1,9 +1,18 @@
+"use client";
+
 import SocialMediaLinks from "./SocialMediaLinks";
 import ContactInfo from "./ContactInfo";
 import QuickLinks from "./QuickLinks";
 import Logo from "./Logo";
+import { useState } from "react";
 
 const Footer = () => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  const text =
+    "Unlock your Potential to accomplish beyond your Dreams, Applying your unlimited capabilities from Vision to Victory!";
+  const displayText = isHovered ? text : text.slice(0, 50) + "...";
+
   return (
     <div className="bg-black ">
       <div className="flex flex-col space-y-2">
@@ -24,8 +33,12 @@ const Footer = () => {
                       <Logo />
                     </div>
                   </div>
-                  <p className="text-white text-[12px] md:text-[16px] lg:text-base md:text-start text-center break-normal">
-                    Unlock your Potential to accomplish beyond your Dreams, Applying your unlimited capabilities from Vision to Victory!
+                  <p
+                    className="text-white text-[12px] md:text-[16px] lg:text-base md:text-start text-center break-normal"
+                    onMouseEnter={() => setIsHovered(true)}
+                    onMouseLeave={() => setIsHovered(false)}
+                  >
+                    {displayText}
                   </p>
                   <SocialMediaLinks className="text-white" />
                 </div>
