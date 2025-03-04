@@ -36,10 +36,8 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative">
       <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
-        <OverView>
-          {children}
-        </OverView>
-          <FooterSmallScreen />
+        <OverView>{children}</OverView>
+        <FooterSmallScreen />
       </DashboardNavBar>
     </div>
   );
