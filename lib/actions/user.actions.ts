@@ -871,7 +871,6 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
         };
       })
     );
-    console.log("Posts with files:", postWithFiles);
     return parseStringify(postWithFiles);
   } catch (error) {
     console.error("Error in getPosts:", error);
