@@ -534,13 +534,13 @@ export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
     const response = await account.createVerification(
-      "https://hilarious-tarsier-58aa63.netlify.app/verify"
+      "https://pithy-platform.vercel.app/verify"
     );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
     if (response && response.userId && response.secret) {
       // If the secret is present, create the verification URL
-      const verificationURL = `https://hilarious-tarsier-58aa63.netlify.app/verify?userId=${response.userId}&secret=${response.secret}`;
+      const verificationURL = `https://pithy-platform.vercel.app/verify?userId=${response.userId}&secret=${response.secret}`;
 
       console.log("Generated verification URL:", verificationURL);
       return verificationURL;
