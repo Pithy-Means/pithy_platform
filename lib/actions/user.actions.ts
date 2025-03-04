@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 import {
@@ -427,6 +428,108 @@ export const register = async (userdata: Partial<UserInfo>) => {
   }
 };
 
+export const getAllUsers = async (limit = 25, offset = 0, filters: any[] = []) => {
+  try {
+    const { databases } = await createAdminClient();
+
+    // Query documents with pagination and optional filters
+    const response = await databases.listDocuments(db, userCollection, [
+      ...filters,
+      Query.limit(limit),
+      Query.offset(offset),
+    ]);
+
+    return {
+      users: parseStringify(response.documents),
+      total: response.total,
+    };
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to fetch users"
+    );
+  }
+};
+
+export const searchUsers = async ({
+  searchTerm,
+  filters = {},
+  limit = 25,
+  offset = 0,
+  sortField = "firstname",
+  // sortOrder = "asc"
+}: {
+  searchTerm?: string;
+  filters?: {
+    categories?: string[];
+    referral_by?: string;
+    user_id?: string;
+    email?: string;
+  };
+  limit?: number;
+  offset?: number;
+  sortField?: keyof UserInfo;
+  sortOrder?: "asc" | "desc";
+}) => {
+  const { databases } = await createAdminClient();
+  
+  try {
+    // Build query conditions
+    const queryConditions = [];
+    
+    // Search term can match against firstname, lastname, email, or user_id
+    if (searchTerm) {
+      queryConditions.push(
+        Query.or([
+          Query.search("firstname", searchTerm),
+          Query.search("lastname", searchTerm),
+          Query.search("email", searchTerm),
+          Query.search("user_id", searchTerm)
+        ])
+      );
+    }
+    
+    // Add filters
+    if (filters.categories && filters.categories.length > 0) {
+      // Search for users with any of the specified categories
+      queryConditions.push(Query.contains("categories", filters.categories));
+    }
+    
+    if (filters.referral_by) {
+      queryConditions.push(Query.equal("referral_by", filters.referral_by));
+    }
+    
+    if (filters.user_id) {
+      queryConditions.push(Query.equal("user_id", filters.user_id));
+    }
+    
+    if (filters.email) {
+      queryConditions.push(Query.equal("email", filters.email));
+    }
+    
+    // Execute the search query
+    const result = await databases.listDocuments(
+      db,
+      userCollection,
+      [
+        Query.limit(limit),
+        Query.offset(offset),
+        Query.orderAsc(sortField as string)
+      ]
+    );
+    
+    return {
+      users: parseStringify(result.documents),
+      total: result.total
+    };
+  } catch (error) {
+    console.error("Error searching users:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to search users"
+    );
+  }
+};
+
 export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
@@ -489,9 +592,9 @@ export const createPost = async (data: Post) => {
       content: data.content?.substring(0, 20),
       hasImage: !!data.image,
       hasVideo: !!data.video,
-      user_id: data.user_id
+      user_id: data.user_id,
     });
-    
+
     const { post_id, image, video, user_id, content } = data;
     const validPost = generateValidPostId(post_id);
     const allowedExtensions = ["jpg", "jpeg", "png", "mp4"];
@@ -518,54 +621,59 @@ export const createPost = async (data: Post) => {
     if (hasImage || hasVideo) {
       const mediaData = hasImage ? image : video;
       const mediaType = hasImage ? "image" : "video";
-      
+
       // Process Base64 validation with improved error handling
       if (!mediaData) {
         throw new Error("Media data is undefined");
       }
       const base64Match = mediaData.match(/^data:(image|video)\/(\w+);base64,/);
-      
+
       if (!base64Match) {
         throw new Error(`Invalid ${mediaType} format`);
       }
-      
+
       try {
         fileType = base64Match[2].toLowerCase();
-        
+
         if (!allowedExtensions.includes(fileType)) {
           throw new Error(`Unsupported file type: ${fileType}`);
         }
-        
+
         const base64Data = mediaData.replace(base64Match[0], "");
-        
+
         if (!base64Data || base64Data.trim() === "") {
           throw new Error(`Empty ${mediaType} data`);
         }
-        
+
         // Convert to binary with error checking
         let binaryData: Buffer;
         try {
           binaryData = Buffer.from(base64Data, "base64");
         } catch (err) {
-          throw new Error(`Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`);
+          throw new Error(
+            `Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`
+          );
         }
-        
+
         if (binaryData.length === 0) {
           throw new Error(`Failed to convert ${mediaType} data`);
         }
-        
+
         // Check file size (max 5MB)
         const MAX_SIZE = 5 * 1024 * 1024; // 5MB
         if (binaryData.length > MAX_SIZE) {
-          throw new Error(`${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`);
+          throw new Error(
+            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`
+          );
         }
-        
+
         const fileName = `post-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.${fileType}`;
         const mimeType = `${base64Match[1]}/${fileType}`;
-        
+
         file = new File([binaryData], fileName, { type: mimeType });
-        console.log(`Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`);
-        
+        console.log(
+          `Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`
+        );
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         console.error(`${mediaType} processing error:`, err);
@@ -580,7 +688,7 @@ export const createPost = async (data: Post) => {
     // Upload file if it exists
     if (file) {
       try {
-        console.log(`Uploading ${hasImage ? 'image' : 'video'} to Appwrite...`);
+        console.log(`Uploading ${hasImage ? "image" : "video"} to Appwrite...`);
         const fileUpload = await storage.createFile(
           postAttachementBucket,
           ID.unique(),
@@ -596,26 +704,38 @@ export const createPost = async (data: Post) => {
         }
       } catch (uploadErr) {
         console.error("File upload error:", uploadErr);
-        throw new Error(`Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`);
+        throw new Error(
+          `Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`
+        );
       }
     }
 
     // Create post document
     try {
-      console.log("Creating post document with image/video IDs:", { imageId, videoId });
-      const post = await databases.createDocument(db, postCollection, validPost, {
-        user_id: data.user_id,
-        content: data.content,
-        post_id: validPost,
-        image: imageId, // Will be empty string if no image
-        video: videoId, // Will be empty string if no video
+      console.log("Creating post document with image/video IDs:", {
+        imageId,
+        videoId,
       });
+      const post = await databases.createDocument(
+        db,
+        postCollection,
+        validPost,
+        {
+          user_id: data.user_id,
+          content: data.content,
+          post_id: validPost,
+          image: imageId, // Will be empty string if no image
+          video: videoId, // Will be empty string if no video
+        }
+      );
 
       console.log("Post created successfully:", post.$id);
       return parseStringify(post);
     } catch (dbErr) {
       console.error("Database error:", dbErr);
-      throw new Error(`Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`);
+      throw new Error(
+        `Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`
+      );
     }
   } catch (error: unknown) {
     // Main error handler
@@ -751,6 +871,7 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
         };
       })
     );
+    console.log("Posts with files:", postWithFiles);
     return parseStringify(postWithFiles);
   } catch (error) {
     console.error("Error in getPosts:", error);
@@ -1017,9 +1138,6 @@ export const fetchAllPostCourseQuestions = async () => {
       db,
       postCourseQuestionCollection
     );
-
-    console.log("Fetched questions:", response.documents);
-
     // Optionally, parse or format the response if needed
     const data = response.documents.map((doc) => ({
       id: doc.$id,
