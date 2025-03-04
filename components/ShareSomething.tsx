@@ -19,7 +19,7 @@ const ShareSomething = () => {
           {/* Input */}
           <input
             type="text"
-            placeholder="Share something"
+            placeholder="Search Posts"
             className="border border-gray-300 rounded-lg flex-1 py-1 mx-2  px-2 focus:outline-none focus:ring-2 focus:ring-[#5AC35A]" 
             value="" // Add the value property
             onChange={() => {}} // Open modal when the input is clicked
@@ -27,7 +27,7 @@ const ShareSomething = () => {
 
           {/* Button */}
           <Button className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0 hover:bg-gradient-to-tr from[#]">
-            Post
+            Search
           </Button>
         </div>
       </div>
