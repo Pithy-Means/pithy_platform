@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         tx_ref,
         amount,
         currency,
-        redirect_url: "http://localhost:3000/payment-status",
+        redirect_url: "https://pithy-platform.vercel.app/payment-status",
         payment_options:
           "card, ussd, mpesa, mobile_money_franco, qr, mobile_money_uganda, mobile_money_ghana, mobile_money_rwanda, mobile_money_tanzania, bank_transfer, opay, enaira, googlepay, applepay, capitec",
         customer: {
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         customizations: {
           title: "Course",
           description: "Payment for course",
-          logo: "http://localhost:3000/assets/logo.png",
+          logo: "https://pithy-platform.vercel.app/assets/logo.png",
         },
       }),
     });
