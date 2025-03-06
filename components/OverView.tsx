@@ -40,7 +40,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { isLocked } = useCourseStore(); // Get the lock state from the store
+  const { isCourseUnlocked } = useCourseStore(); // Get the lock state from the store
   const { testStarted, testCompleted } = useQuestionStore();
   const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false);
   const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
@@ -163,7 +163,11 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           rounded-br-xl 
           mt-6 
           shadow-lg 
-          shadow-black/10 
+          shadow-black/10
+          border-r
+          border-gray-800
+          border-t
+          border-b
           transition-all 
           duration-300 
           ease-in-out
