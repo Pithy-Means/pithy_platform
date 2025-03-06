@@ -21,11 +21,13 @@ export default function DashboardLayout({
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
   return (
-    <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
-      <div className="flex mt-4 space-x-4">
-        <AdminSidebar />
-        <main className="flex-1 px-4 bg-gray-50">{children}</main>
-      </div>
-    </DashboardNavBar>
+    <div className="relative">
+      <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
+        <div className="flex mt-4 space-x-4">
+          <AdminSidebar />
+          <main className="flex-1 px-4 bg-gray-50">{children}</main>
+        </div>
+      </DashboardNavBar>
+    </div>
   );
 }
