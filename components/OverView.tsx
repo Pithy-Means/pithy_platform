@@ -418,7 +418,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             <button
               onClick={() => {
                 setIsRestrictedModalOpen(false);
-                router.push("/dashboard/subscription"); // Assuming you have a subscription page
+                router.push("/dashboard/courses"); // Assuming you have a subscription page
               }}
               className="bg-green-500 text-white rounded-md p-2 hover:bg-green-600"
             >
