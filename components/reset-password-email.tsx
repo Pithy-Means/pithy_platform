@@ -16,7 +16,7 @@ const ResetPasswordEmail: React.FC<ResetPasswordEmailProps> = ({
       </h1>
       <p className="text-sm">Click the link below to reset your password</p>
       <a
-        href={`http://localhost:3000/reset-password?resetToken=${resetPasswordToken}`}
+        href={`https://pithy-platform.vercel.app/reset-password?resetToken=${resetPasswordToken}`}
         className="text-blue-500 underline"
       >
         Reset Password

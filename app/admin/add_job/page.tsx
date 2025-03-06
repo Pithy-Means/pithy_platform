@@ -1,8 +1,8 @@
-import JobForm from "@/components/JobForm";
+import JobManagement from "@/components/JobForm";
 
 const AddJobPage = () => {
   return(
-    <JobForm />
+    <JobManagement />
   )
 };
 
