@@ -10,7 +10,7 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isLocked, setLocked } = useCourseStore();
+  const { isCourseUnlocked, setCourseLockStatus } = useCourseStore();
   const { user } = useAuthStore((state) => state);
 
   const handleViewMore = (course: Courses) => {
@@ -25,7 +25,15 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
         const isEnrolled =
           course.students?.find((name) => name === studentName) &&
           course.student_email === user?.email;
-        if (isEnrolled) setLocked(false);
+        
+        // If user is enrolled, ensure the course is unlocked
+        if (isEnrolled) {
+          setCourseLockStatus(course.course_id, false);
+        }
+        
+        // Determine if this course should be displayed as locked
+        const shouldLockCourse = !isEnrolled && !isCourseUnlocked(course.course_id) && user?.paid === false;
+        
         return (
           <div
             key={course.course_id}
@@ -33,11 +41,9 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
           >
             {/* Image and Title/Description */}
             <div className="flex items-center gap-6">
-              {/* Image */}
-
               {/* Title and Description */}
               <div className="flex flex-col">
-                {(isLocked || user?.paid === false) ? (
+                {shouldLockCourse ? (
                   <div className="flex flex-col items-center justify-center text-center h-full">
                     <p className="text-red-600 font-bold text-lg mb-2">
                       This course is locked.
@@ -53,7 +59,7 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       }}
                     />
                   </div>
-                ) :  (
+                ) : (
                   <div className="flex items-center gap-6">
                     <div className="flex-shrink-0">
                       <Image
@@ -77,9 +83,9 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                         {course.price ? `${course.price} UGX` : "Free"}
                       </div>
                       <button
-                      type="button"
-                      onClick={() => handleViewMore(course)}
-                      className="text-black/85 font-semibold text-base hover:border rounded-md hov:bg-green-600/100 transition px-2 py-1"
+                        type="button"
+                        onClick={() => handleViewMore(course)}
+                        className="text-black/85 font-semibold text-base hover:border rounded-md hov:bg-green-600/100 transition px-2 py-1"
                       >
                         View more
                       </button>
