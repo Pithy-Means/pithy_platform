@@ -11,9 +11,11 @@ import {
   FaMoneyCheckAlt,
   FaGraduationCap,
 } from "react-icons/fa";
+import { Joystick } from "lucide-react";
 
 const links = [
   { name: "Home", path: "/admin", icon: <FaHome /> },
+  { name: "Dashboard", path: "/dashboard", icon: <Joystick /> },
   { name: "Add Course", path: "/admin/addcourse", icon: <FaBook /> },
   { name: "Add Questions", path: "/admin/add_question", icon: <FaQuestionCircle /> },
   { name: "Add Job", path: "/admin/add_job", icon: <FaBriefcase /> },
