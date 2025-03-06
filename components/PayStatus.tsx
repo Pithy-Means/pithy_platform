@@ -1,6 +1,5 @@
 "use client";
 
-// import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useCourseStore } from "@/lib/store/courseStore";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -8,17 +7,14 @@ import { useEffect, useState } from "react";
 const PaymentStatus = () => {
   const searchParams = useSearchParams();
   const transaction_id = searchParams.get("transaction_id");
-  // const status = searchParams.get("status");
+  const course_id = searchParams.get("course_id"); // Make sure you pass course_id in your payment flow
   const [message, setMessage] = useState("Processing payment...");
   const [loading, setLoading] = useState<boolean>(true);
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
   const router = useRouter();
   
-  // Get user info from the store
-  // const { user } = useAuthStore(state => state);
-  
-  // Get the setLocked function from the store
-  const { setLocked } = useCourseStore();
+  // Get the course store functions
+  const { setCourseLockStatus } = useCourseStore();
 
   useEffect(() => {
     if (!transaction_id) {
@@ -45,8 +41,10 @@ const PaymentStatus = () => {
           setMessage("Payment successful! Your course has been unlocked.");
           setMessageStyle("text-green-600 bg-green-50 border border-green-200");
           
-          // Update the course lock status in the store
-          setLocked(false);
+          // Immediately unlock the course using the updated store
+          if (course_id) {
+            setCourseLockStatus(course_id, false);
+          }
           
           // Redirect after a slight delay
           setTimeout(() => {
@@ -57,8 +55,10 @@ const PaymentStatus = () => {
           setMessage("You have already purchased this course.");
           setMessageStyle("text-blue-600 bg-blue-50 border border-blue-200");
           
-          // Update the course lock status
-          setLocked(false);
+          // Ensure the course is unlocked
+          if (course_id) {
+            setCourseLockStatus(course_id, false);
+          }
           
           // Redirect after a slight delay
           setTimeout(() => {
@@ -82,7 +82,7 @@ const PaymentStatus = () => {
     };
 
     verifyPayment();
-  }, [transaction_id, router, setLocked]);
+  }, [transaction_id, course_id, router, setCourseLockStatus]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
