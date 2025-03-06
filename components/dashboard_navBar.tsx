@@ -26,7 +26,7 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
         h-auto min-h-[5rem] 
         px-4 md:px-6 lg:px-10 xl:px-20 2xl:px-40 
         py-2 
-        max-w-screen-2xl mx-auto"  // Adds max-width and centers on very large screens
+        w-full mx-auto"  // Adds max-width and centers on very large screens
       >
         {/* Logo and Mobile Menu Toggle */}
         <div className="flex items-center justify-between w-full lg:w-auto">

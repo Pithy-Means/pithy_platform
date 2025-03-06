@@ -115,7 +115,7 @@ const FundingForm = () => {
 
       <div className="form-group">
         <label htmlFor="focus_earlier" className="block">
-          Focus Earlier
+          Focus Area
         </label>
         <select
           name="focus_earlier"
