@@ -10,13 +10,10 @@ import PaymentButton from "./PaymentButton";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useCourseStore } from "@/lib/store/courseStore";
 
-
 const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
   const { user } = useAuthStore((state) => state);
-  const { isLocked, setLocked } = useCourseStore();
-  
-
+  const { isCourseUnlocked, setCourseLockStatus } = useCourseStore();
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
@@ -27,10 +24,18 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       {courses.map((course) => {
-                const isEnrolled =
-                course.students?.find((name) => name === studentName) &&
-                course.student_email === user?.email;
-              if (isEnrolled) setLocked(false);
+        const isEnrolled =
+          course.students?.find((name) => name === studentName) &&
+          course.student_email === user?.email;
+        
+        // If user is enrolled, ensure the course is unlocked
+        if (isEnrolled) {
+          setCourseLockStatus(course.course_id, false);
+        }
+        
+        // Determine if this course should be displayed as locked
+        const shouldLockCourse = !isEnrolled && !isCourseUnlocked(course.course_id) && user?.paid === false;
+        
         return (
           <div
             key={course.course_id}
@@ -39,7 +44,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
           >
             <div className="py-4 px-6 flex flex-col justify-between flex-grow">
               {/* Check if the course is locked */}
-              {isLocked || user?.paid === false ? (
+              {shouldLockCourse ? (
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   <p className="text-red-600 font-bold text-lg mb-2">
                     This course is locked.
@@ -52,9 +57,9 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     }}
                   />
                 </div>
-              ) :  (
+              ) : (
                 <>
-                  {/* Display course details if enrolled */}
+                  {/* Display course details if enrolled or unlocked */}
                   <div className="flex flex-col space-y-1 border-b-slate-300 border-b-4">
                     <Image
                       src={course.image}
