@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { PostWithUser } from "@/types/schema";
@@ -252,8 +253,10 @@ export const usePosts = () => {
       
       // Don't clear cache on unmount to benefit from browser navigation
       // Only clear if cache gets too large
-      if (cache.current.size > 20) {
-        cache.current.clear();
+      const currentCache = cache.current;
+      const cacheCopy = new Map(currentCache);
+      if (cacheCopy.size > 20) {
+        cacheCopy.clear();
       }
     };
   }, [fetchInitialPosts]);
