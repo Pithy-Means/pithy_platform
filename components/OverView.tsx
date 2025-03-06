@@ -17,6 +17,8 @@ import {
   LogOut,
   School,
   ShieldAlert,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
 import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
@@ -44,9 +46,43 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
   const [restrictedLink, setRestrictedLink] = useState("");
   const [redirecting, setRedirecting] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Toggle sidebar collapse
+  const toggleSidebarCollapse = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  // Render sidebar item with optional text visibility
+  const renderSidebarItem = (
+    href: string,
+    icon: React.ElementType,
+    label: string,
+    additionalClasses?: string
+  ) => {
+    const iconClassName = getLinkClassName(href);
+    const textVisibility = isSidebarCollapsed ? "hidden" : "lg:block";
+
+    return (
+      <Link
+        href={href}
+        className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
+      >
+        {React.createElement(icon, {
+          className: getLinkClassName(href),
+          size: 24,
+        })}
+        <p
+          className={`${iconClassName} ${textVisibility} ${additionalClasses}`}
+        >
+          {label}
+        </p>
+      </Link>
+    );
+  };
 
   const { user, signout } = useAuthStore((state) => state);
-  
+
   // Check if user has paid
   const isPaid = user?.paid || false;
 
@@ -111,77 +147,143 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   return (
     <div className="flex space-x-4 relative w-full">
-      <div className="hidden overflow-y-auto md:flex h-[90vh] flex-col justify-between bg-white text-black py-20 items-center px-8 rounded-tr-xl rounded-br-xl mt-6 shadow-lg shadow-black/10 lg:w-[250px] md:w-[75px]">
-        <div className="flex flex-col space-y-12">
+      <div
+        className={`
+          hidden 
+          md:flex 
+          h-[90vh] 
+          flex-col 
+          justify-between 
+          bg-white 
+          text-black 
+          py-20 
+          items-center 
+          px-8 
+          rounded-tr-xl 
+          rounded-br-xl 
+          mt-6 
+          shadow-lg 
+          shadow-black/10 
+          transition-all 
+          duration-300 
+          ease-in-out
+          relative
+          ${isSidebarCollapsed ? "w-[100px]" : "w-[300px]"}
+        `}
+      >
+        {/* Collapse/Expand Button */}
+        <button
+          onClick={toggleSidebarCollapse}
+          className="absolute top-4 right-4 z-10 hover:bg-gray-100 p-2 rounded-full"
+        >
+          {isSidebarCollapsed ? (
+            <ChevronsRight size={24} />
+          ) : (
+            <ChevronsLeft size={24} />
+          )}
+        </button>
+
+        <div className="flex flex-col space-y-12 w-full">
           <div className="flex flex-col space-y-2 mb-10">
-            <p className="text-lg text-black/50 lg:block hidden">Overview</p>
-            {user?.role === "admin" && (
-              <Link href="/admin" className="flex flex-row gap-3 items-center">
-                <ShieldAlert className={getLinkClassName("/admin")} size={24} />
-                <p className={`${getLinkClassName("/admin")} lg:block hidden`}>
-                  Admin
-                </p>
-              </Link>
-            )}
+            <p
+              className={`text-lg text-black/50 ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
+            >
+              Overview
+            </p>
+
+            {/* Admin Link */}
+            {user?.role === "admin" &&
+              renderSidebarItem("/admin", ShieldAlert, "Admin")}
+
             <div className="flex flex-col space-y-2">
               {[
-                { href: "/dashboard", icon: GoHome, label: "Home" },
+                {
+                  href: "/dashboard",
+                  icon: GoHome,
+                  label: "Home",
+                  restricted: false,
+                  questionsRequired: false,
+                },
                 {
                   href: "/dashboard/courses",
                   icon: GraduationCap,
                   label: "Courses",
                   restricted: false,
-                  questionsRequired: !testCompleted
+                  questionsRequired: !testCompleted,
                 },
                 {
                   href: "/dashboard/jobs",
                   icon: BriefcaseBusiness,
                   label: "Jobs",
-                  restricted: !isPaid, // Only accessible if user has paid
-                  questionsRequired: false
+                  restricted: !isPaid,
+                  questionsRequired: false,
                 },
                 {
                   href: "/dashboard/scholarships",
                   icon: School,
                   label: "Scholarships",
-                  restricted: !isPaid, // Only accessible if user has paid
-                  questionsRequired: false
+                  restricted: !isPaid,
+                  questionsRequired: false,
                 },
                 {
                   href: "/dashboard/fundings",
                   icon: HandCoins,
                   label: "Fundings",
-                  restricted: !isPaid, // Only accessible if user has paid
-                  questionsRequired: false
+                  restricted: !isPaid,
+                  questionsRequired: false,
                 },
-              ].map(({ href, icon: Icon, label, restricted, questionsRequired }) => (
+              ].map(({ href, icon, label, restricted, questionsRequired }) => (
                 <Link
                   key={label}
                   href={href}
                   onClick={(e) =>
-                    (restricted || (questionsRequired && !testCompleted)) && 
+                    (restricted || (questionsRequired && !testCompleted)) &&
                     handleLinkClick(e, label, restricted, questionsRequired)
                   }
                   className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
                 >
-                  <Icon className={getLinkClassName(href)} size={24} />
-                  <p className={`${getLinkClassName(href)} lg:block hidden`}>
+                  {React.createElement(icon, {
+                    className: getLinkClassName(href),
+                    size: 24,
+                  })}
+                  <p
+                    className={`
+                      ${getLinkClassName(href)} 
+                      ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                    `}
+                  >
                     {label}
                   </p>
                 </Link>
               ))}
+
+              {/* Add Post Button */}
               <button
                 onClick={openModal}
                 className="flex flex-row gap-3 items-center cursor-pointer hover:text-[#37BB65] p-0 bg-transparent"
               >
                 <CirclePlus className={getLinkClassName("/posts")} size={24} />
-                <p className="text-lg lg:block hidden">Add Post</p>
+                <p
+                  className={`
+                    text-lg 
+                    ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                  `}
+                >
+                  Add Post
+                </p>
               </button>
             </div>
           </div>
 
+          {/* Account Section */}
           <div className="flex flex-col space-y-2">
-            <p className="text-lg text-black/50 lg:block hidden">Account</p>
+            <p
+              className={`text-lg text-black/50 ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
+            >
+              Account
+            </p>
+
+            {/* Profile Button */}
             <button
               onClick={openProfileModal}
               className="flex flex-row gap-3 items-center"
@@ -190,17 +292,30 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
                 className={getLinkClassName("/profile")}
                 size={24}
               />
-              <p className={`${getLinkClassName("/profile")} lg:block hidden`}>
+              <p
+                className={`
+                  ${getLinkClassName("/profile")} 
+                  ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                `}
+              >
                 Profile
               </p>
             </button>
+
+            {/* Notifications Link */}
             <Link
               href="/dashboard/notifications"
               className="flex flex-row gap-3 items-center"
             >
-              <Bell className={getLinkClassName("/dashboard/notifications")} size={24} />
+              <Bell
+                className={getLinkClassName("/dashboard/notifications")}
+                size={24}
+              />
               <p
-                className={`${getLinkClassName("/dashboard/notifications")} lg:block hidden`}
+                className={`
+                  ${getLinkClassName("/dashboard/notifications")} 
+                  ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                `}
               >
                 Notifications
               </p>
@@ -208,22 +323,41 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           </div>
         </div>
 
+        {/* Bottom Section */}
         <div className="flex flex-col space-y-2">
-          <Link href="/dashboard/help" className="flex flex-row gap-3 items-center">
+          {/* Help Link */}
+          <Link
+            href="/dashboard/help"
+            className="flex flex-row gap-3 items-center"
+          >
             <IoMdHelpCircleOutline
               className={getLinkClassName("/dashboard/help")}
               size={24}
             />
-            <p className={`${getLinkClassName("/dashboard/help")} lg:block hidden`}>
+            <p
+              className={`
+                ${getLinkClassName("/dashboard/help")} 
+                ${isSidebarCollapsed ? "hidden" : "lg:block"}
+              `}
+            >
               Help & support
             </p>
           </Link>
+
+          {/* Logout */}
           <div
             onClick={handleLogout}
             className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
           >
             <LogOut size={24} />
-            <p className="text-lg lg:block hidden">Logout</p>
+            <p
+              className={`
+                text-lg 
+                ${isSidebarCollapsed ? "hidden" : "lg:block"}
+              `}
+            >
+              Logout
+            </p>
           </div>
         </div>
       </div>
@@ -253,7 +387,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
       {isQuestionsModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
           <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
-            <h2 className="text-xl font-bold mb-4 text-black/70">Complete these questions to access courses</h2>
+            <h2 className="text-xl font-bold mb-4 text-black/70">
+              Complete these questions to access courses
+            </h2>
             <QuestionSlider />
             <button
               onClick={closeQuestionsModal}
@@ -271,13 +407,15 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           isOpen={isRestrictedModalOpen}
           onClose={() => setIsRestrictedModalOpen(false)}
         >
-          <h2 className="text-lg font-bold">Only Accessible For Paid Members</h2>
+          <h2 className="text-lg font-bold">
+            Only Accessible For Paid Members
+          </h2>
           <p>
-            This page is restricted. Please upgrade to a paid membership to access this
-            feature.
+            This page is restricted. Please upgrade to a paid membership to
+            access this feature.
           </p>
           <div className="mt-4 flex justify-end">
-            <button 
+            <button
               onClick={() => {
                 setIsRestrictedModalOpen(false);
                 router.push("/dashboard/subscription"); // Assuming you have a subscription page
