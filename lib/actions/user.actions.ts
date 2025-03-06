@@ -195,7 +195,7 @@ export const registerWithGoogle = async (data: UserInfo) => {
     const { account, databases } = await createAdminClient();
     const info = await account.createOAuth2Token(
       OAuthProvider.Google,
-      "http://localhost:3000/dashboard",
+      "https://pithy-platform.vercel.app/dashboard",
       "http://localhost:3000"
     );
     console.log("Google info", info);
@@ -1154,9 +1154,32 @@ export const getJobs = async () => {
   try {
     const { databases } = await createAdminClient();
     const jobs = await databases.listDocuments(db, jobCollection);
+    console.log("Jobs", jobs);
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
+  }
+};
+
+export const updateJob = async (jobId: string, data: Partial<Job>) => {
+  try {
+    const { databases } = await createAdminClient();
+    const job = await databases.updateDocument(db, jobCollection, jobId, data);
+    return parseStringify(job);
+  } catch (error) {
+    console.error("Error updating job:", error);    
+    return { success: false, message: "Error updating job" };
+  }
+}
+
+export const deleteJob = async (jobId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    const job = await databases.deleteDocument(db, jobCollection, jobId);
+    return parseStringify(job);
+  } catch (error) {
+    console.error("Error deleting job:", error);
+    return { success: false, message: "Error deleting job" };
   }
 };
 
