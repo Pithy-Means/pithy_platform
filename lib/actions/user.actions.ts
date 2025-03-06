@@ -888,6 +888,98 @@ export const getPost = async (postId: string) => {
   }
 };
 
+export const searchPostsByContent = async (searchTerm: string, page: number = 1, limit: number = 3) => {
+  try {
+    const { databases } = await createAdminClient();
+    const offset = (page - 1) * limit;
+
+    const posts = await databases.listDocuments(db, postCollection, [
+      Query.search("content", searchTerm),
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
+    ]);
+
+    if (!posts?.documents || !Array.isArray(posts.documents)) {
+      console.error("Invalid posts response");
+      return [];
+    }
+
+    const postWithFiles = await Promise.all(
+      posts.documents.map(async (post) => {
+        const imageUrl = post.image
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`
+          : null;
+
+        const videoUrl = post.video
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`
+          : null;
+
+        return {
+          ...post,
+          image: imageUrl,
+          video: videoUrl,
+        };
+      })
+    );
+    return parseStringify(postWithFiles);
+  } catch (error) {
+    console.error("Error in searchPostsByContent:", error);
+    return [];
+  }
+};
+
+export const searchPostsByUser = async (firstname?: string, lastname?: string, page: number = 1, limit: number = 3) => {
+  try {
+    const { databases } = await createAdminClient();
+    const offset = (page - 1) * limit;
+
+    // Create an array of queries based on provided search parameters
+    const searchQueries = [
+      ...(firstname ? [Query.search("firstname", firstname)] : []),
+      ...(lastname ? [Query.search("lastname", lastname)] : []),
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+      Query.offset(offset),
+    ];
+
+    // Only perform the search if at least one search parameter is provided
+    if (searchQueries.length <= 3) {
+      console.error("No search parameters provided");
+      return [];
+    }
+
+    const posts = await databases.listDocuments(db, postCollection, searchQueries);
+
+    if (!posts?.documents || !Array.isArray(posts.documents)) {
+      console.error("Invalid posts response");
+      return [];
+    }
+
+    const postWithFiles = await Promise.all(
+      posts.documents.map(async (post) => {
+        const imageUrl = post.image
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`
+          : null;
+
+        const videoUrl = post.video
+          ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`
+          : null;
+
+        return {
+          ...post,
+          image: imageUrl,
+          video: videoUrl,
+        };
+      })
+    );
+    return parseStringify(postWithFiles);
+  } catch (error) {
+    console.error("Error in searchPostsByUser:", error);
+    return [];
+  }
+};
+
 export const createComment = async (data: CommentPost) => {
   const { comment_id } = data;
   const validComment = generateValidPostId(comment_id);
