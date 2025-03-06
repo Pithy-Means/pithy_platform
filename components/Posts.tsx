@@ -11,6 +11,7 @@ import {
 import {
   CommentPost,
   CommentPostWithUser,
+  Post,
   PostWithUser,
   UserInfo,
 } from "@/types/schema";
@@ -18,6 +19,10 @@ import usePostInitialization from "@/lib/hooks/usePostInitialization";
 import PostItem from "./PostItem";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import InfiniteScroll from "react-infinite-scroll-component";
+
+interface PostsProps {
+  searchPosts?: Post[];
+}
 
 const Loader = () => (
   <div className="space-y-4 flex flex-col mt-4">
@@ -51,7 +56,7 @@ const NoMorePost = () => (
   </div>
 );
 
-const Posts = () => {
+const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
   const [loading, setLoading] = useState(false);
 
   const { posts, loadingPosts, hasMore, loadMorePosts } = usePosts();
