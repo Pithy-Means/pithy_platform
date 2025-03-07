@@ -71,7 +71,7 @@ export const ReferralHistoryModal = ({ isOpen, onClose, userId }: ReferralHistor
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-800"></div>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto h-24 overflow-y-auto">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-gray-50">
