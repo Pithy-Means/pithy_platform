@@ -5,10 +5,10 @@ import { Query } from "node-appwrite";
 import env from "@/env";
 import { updateReferralPoints } from "@/lib/actions/user.actions";
 
-
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const transaction_id = searchParams.get("transaction_id");
+  const requesting_user_id = searchParams.get("user_id"); // Add this parameter
 
   if (!transaction_id) {
     return NextResponse.json(
@@ -82,6 +82,23 @@ export async function GET(req: Request) {
 
     const payment = paymentRecord.documents[0];
 
+    // Verify requesting user matches the payment customer email
+    if (requesting_user_id) {
+      const requestingUser = await databases.listDocuments(db, userCollection, [
+        Query.equal("user_id", requesting_user_id),
+      ]);
+
+      if (requestingUser.documents.length > 0) {
+        const user = requestingUser.documents[0];
+        if (user.email !== data.data.customer.email) {
+          return NextResponse.json(
+            { error: "Unauthorized: requesting user does not match payment customer." },
+            { status: 403 }
+          );
+        }
+      }
+    }
+
     // Step 4: Update the payment status
     const updatedPayment = await databases.updateDocument(
       db,
@@ -92,6 +109,7 @@ export async function GET(req: Request) {
         currency,
         method: auth_model,
         status: "successful",
+        user_id: requesting_user_id, // Store user_id with payment for security
       }
     );
 

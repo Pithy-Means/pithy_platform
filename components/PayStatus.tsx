@@ -1,26 +1,36 @@
 "use client";
 
 import { useCourseStore } from "@/lib/store/courseStore";
+import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const PaymentStatus = () => {
   const searchParams = useSearchParams();
   const transaction_id = searchParams.get("transaction_id");
-  const course_id = searchParams.get("course_id"); // Make sure you pass course_id in your payment flow
+  const course_id = searchParams.get("course_id");
   const [message, setMessage] = useState("Processing payment...");
   const [loading, setLoading] = useState<boolean>(true);
   const [messageStyle, setMessageStyle] = useState("text-gray-700");
   const router = useRouter();
   
-  // Get the course store functions
-  const { setCourseLockStatus } = useCourseStore();
+  // Get the auth store and course store
+  const { user } = useAuthStore();
+  const { setUserCoursePurchase, syncPurchasesFromServer } = useCourseStore();
 
   useEffect(() => {
     if (!transaction_id) {
       setMessage("Invalid transaction. Missing transaction ID.");
       setMessageStyle("text-red-600 bg-red-50 border border-red-200");
       setLoading(false);
+      return;
+    }
+
+    if (!user || !user.user_id) {
+      setMessage("You must be logged in to verify payments.");
+      setMessageStyle("text-red-600 bg-red-50 border border-red-200");
+      setLoading(false);
+      setTimeout(() => router.push("/login"), 2000);
       return;
     }
 
@@ -41,9 +51,14 @@ const PaymentStatus = () => {
           setMessage("Payment successful! Your course has been unlocked.");
           setMessageStyle("text-green-600 bg-green-50 border border-green-200");
           
-          // Immediately unlock the course using the updated store
-          if (course_id) {
-            setCourseLockStatus(course_id, false);
+          // Only unlock the course for the current logged-in user
+          if (course_id && user && user.user_id) {
+            // Mark this course as purchased by this user
+            setUserCoursePurchase(user.user_id, course_id, true);
+            
+            // Additionally, sync all purchases from server to ensure
+            // we have the complete list of user's purchased courses
+            await syncPurchasesFromServer(user.user_id);
           }
           
           // Redirect after a slight delay
@@ -55,9 +70,9 @@ const PaymentStatus = () => {
           setMessage("You have already purchased this course.");
           setMessageStyle("text-blue-600 bg-blue-50 border border-blue-200");
           
-          // Ensure the course is unlocked
-          if (course_id) {
-            setCourseLockStatus(course_id, false);
+          // Ensure the course is marked as purchased for this user
+          if (course_id && user && user.user_id) {
+            setUserCoursePurchase(user.user_id, course_id, true);
           }
           
           // Redirect after a slight delay
@@ -82,7 +97,7 @@ const PaymentStatus = () => {
     };
 
     verifyPayment();
-  }, [transaction_id, course_id, router, setCourseLockStatus]);
+  }, [transaction_id, course_id, router, user, setUserCoursePurchase, syncPurchasesFromServer]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">

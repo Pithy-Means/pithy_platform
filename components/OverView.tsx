@@ -19,6 +19,7 @@ import {
   ShieldAlert,
   ChevronsLeft,
   ChevronsRight,
+  LockKeyhole,
 } from "lucide-react";
 import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
@@ -28,7 +29,6 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 import Modal from "./Modal";
 import { useCourseStore } from "@/lib/store/courseStore";
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
-import QuestionSlider from "./QuestionSlider";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -40,11 +40,8 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { isCourseUnlocked } = useCourseStore(); // Get the lock state from the store
+  const { isCoursePurchased } = useCourseStore();
   const { testStarted, testCompleted } = useQuestionStore();
-  const [isRestrictedModalOpen, setIsRestrictedModalOpen] = useState(false);
-  const [isQuestionsModalOpen, setIsQuestionsModalOpen] = useState(false);
-  const [restrictedLink, setRestrictedLink] = useState("");
   const [redirecting, setRedirecting] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
@@ -58,26 +55,25 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     href: string,
     icon: React.ElementType,
     label: string,
-    additionalClasses?: string
+    isPremium: boolean = false
   ) => {
     const iconClassName = getLinkClassName(href);
     const textVisibility = isSidebarCollapsed ? "hidden" : "lg:block";
 
+    // If premium feature and user hasn't paid, apply disabled styling
+    const premiumStyle = isPremium && !isPaid ? "opacity-50 cursor-not-allowed" : "hover:text-[#37BB65]";
+
     return (
-      <Link
-        href={href}
-        className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
-      >
+      <div className={`flex flex-row gap-3 items-center ${premiumStyle}`}>
         {React.createElement(icon, {
           className: getLinkClassName(href),
           size: 24,
         })}
-        <p
-          className={`${iconClassName} ${textVisibility} ${additionalClasses}`}
-        >
+        <p className={`${iconClassName} ${textVisibility}`}>
           {label}
+          {isPremium && !isPaid && <span className="ml-2 text-xs text-[#F26900]">(Premium)</span>}
         </p>
-      </Link>
+      </div>
     );
   };
 
@@ -91,46 +87,18 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   // Effect to check if we should redirect to courses after test completion
   useEffect(() => {
-    if (testCompleted && isQuestionsModalOpen) {
-      setRedirecting(true);
+    if (testCompleted && redirecting) {
       setTimeout(() => {
-        setIsQuestionsModalOpen(false);
         router.push("/dashboard/courses");
       }, 1500);
     }
-  }, [testCompleted, isQuestionsModalOpen, router]);
-
-  const handleLinkClick = (
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
-    linkName: string,
-    isRestricted: boolean,
-    isQuestionsRequired: boolean
-  ) => {
-    if (isRestricted) {
-      e.preventDefault(); // Prevent navigation
-      setRestrictedLink(linkName);
-      setIsRestrictedModalOpen(true);
-    } else if (isQuestionsRequired && !testCompleted) {
-      e.preventDefault(); // Prevent navigation
-      setIsQuestionsModalOpen(true);
-    }
-    // If questionsRequired but testCompleted, allow normal navigation
-  };
+  }, [testCompleted, redirecting, router]);
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
-
-  const closeQuestionsModal = () => {
-    if (testCompleted || redirecting) {
-      setIsQuestionsModalOpen(false);
-      router.push("/dashboard/courses");
-    } else {
-      setIsQuestionsModalOpen(false);
-    }
-  };
 
   const addNewPost = (newPost: PostWithUser) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -144,6 +112,46 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   const getLinkClassName = (href: string) =>
     `${pathname === href ? "text-green-500 font-bold" : ""} text-lg cursor-pointer`;
+
+  // Creates either a normal link or a disabled div based on premium status
+  const createNavigationItem = (
+    href: string, 
+    icon: React.ElementType, 
+    label: string, 
+    isPremium: boolean = false
+  ) => {
+    if (isPremium && !isPaid) {
+      return (
+        <div 
+          className="flex flex-row gap-3 items-center opacity-50 cursor-not-allowed"
+          onClick={() => router.push("/dashboard/courses")} // Redirect to courses page when clicked
+        >
+          {React.createElement(icon, {
+            className: getLinkClassName(href),
+            size: 24,
+          })}
+          <p className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}>
+            {label} <span className="ml-2 text-xs text-[#F26900]"><LockKeyhole /></span>
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <Link
+        href={href}
+        className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
+      >
+        {React.createElement(icon, {
+          className: getLinkClassName(href),
+          size: 24,
+        })}
+        <p className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}>
+          {label}
+        </p>
+      </Link>
+    );
+  };
 
   return (
     <div className="flex space-x-4 relative w-full">
@@ -197,69 +205,19 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
             {/* Admin Link */}
             {user?.role === "admin" &&
-              renderSidebarItem("/admin", ShieldAlert, "Admin")}
+              createNavigationItem("/admin", ShieldAlert, "Admin")}
 
             <div className="flex flex-col space-y-2">
-              {[
-                {
-                  href: "/dashboard",
-                  icon: GoHome,
-                  label: "Home",
-                  restricted: false,
-                  questionsRequired: false,
-                },
-                {
-                  href: "/dashboard/courses",
-                  icon: GraduationCap,
-                  label: "Courses",
-                  restricted: false,
-                  questionsRequired: !testCompleted,
-                },
-                {
-                  href: "/dashboard/jobs",
-                  icon: BriefcaseBusiness,
-                  label: "Jobs",
-                  restricted: !isPaid,
-                  questionsRequired: false,
-                },
-                {
-                  href: "/dashboard/scholarships",
-                  icon: School,
-                  label: "Scholarships",
-                  restricted: !isPaid,
-                  questionsRequired: false,
-                },
-                {
-                  href: "/dashboard/fundings",
-                  icon: HandCoins,
-                  label: "Fundings",
-                  restricted: !isPaid,
-                  questionsRequired: false,
-                },
-              ].map(({ href, icon, label, restricted, questionsRequired }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  onClick={(e) =>
-                    (restricted || (questionsRequired && !testCompleted)) &&
-                    handleLinkClick(e, label, restricted, questionsRequired)
-                  }
-                  className="flex flex-row gap-3 items-center hover:text-[#37BB65]"
-                >
-                  {React.createElement(icon, {
-                    className: getLinkClassName(href),
-                    size: 24,
-                  })}
-                  <p
-                    className={`
-                      ${getLinkClassName(href)} 
-                      ${isSidebarCollapsed ? "hidden" : "lg:block"}
-                    `}
-                  >
-                    {label}
-                  </p>
-                </Link>
-              ))}
+              {/* Home link - always accessible */}
+              {createNavigationItem("/dashboard", GoHome, "Home")}
+              
+              {/* Courses link - always accessible */}
+              {createNavigationItem("/dashboard/courses", GraduationCap, "Courses")}
+              
+              {/* Premium features */}
+              {createNavigationItem("/dashboard/jobs", BriefcaseBusiness, "Jobs", true)}
+              {createNavigationItem("/dashboard/scholarships", School, "Scholarships", true)}
+              {createNavigationItem("/dashboard/fundings", HandCoins, "Fundings", true)}
 
               {/* Add Post Button */}
               <button
@@ -387,58 +345,15 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
       )}
 
-      {/* Questions Modal */}
-      {isQuestionsModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">
-            <h2 className="text-xl font-bold mb-4 text-black/70">
-              Complete these questions to access courses
-            </h2>
-            <QuestionSlider />
-            <button
-              onClick={closeQuestionsModal}
-              className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-2 hover:bg-green-700"
-            >
-              <CircleX size={24} />
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Restricted Modal */}
-      {isRestrictedModalOpen && (
-        <Modal
-          isOpen={isRestrictedModalOpen}
-          onClose={() => setIsRestrictedModalOpen(false)}
+      {isCoursesModalOpen && (
+        <ModalComp
+          isOpen={isCoursesModalOpen}
+          onClose={() => setCoursesModalOpen(false)}
         >
-          <h2 className="text-lg font-bold">
-            Only Accessible For Paid Members
-          </h2>
-          <p>
-            This page is restricted. Please upgrade to a paid membership to
-            access this feature.
-          </p>
-          <div className="mt-4 flex justify-end">
-            <button
-              onClick={() => {
-                setIsRestrictedModalOpen(false);
-                router.push("/dashboard/courses"); // Assuming you have a subscription page
-              }}
-              className="bg-green-500 text-white rounded-md p-2 hover:bg-green-600"
-            >
-              Upgrade Now
-            </button>
-          </div>
-        </Modal>
+          <h2 className="text-lg font-bold">Courses Information</h2>
+          <p>This modal shows detailed information about courses.</p>
+        </ModalComp>
       )}
-
-      <ModalComp
-        isOpen={isCoursesModalOpen}
-        onClose={() => setCoursesModalOpen(false)}
-      >
-        <h2 className="text-lg font-bold">Courses Information</h2>
-        <p>This modal shows detailed information about courses.</p>
-      </ModalComp>
 
       {children}
     </div>
