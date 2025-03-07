@@ -10,29 +10,30 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 
 const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
-  const { isCourseUnlocked, setCourseLockStatus } = useCourseStore();
+  const { isCoursePurchased } = useCourseStore();
   const { user } = useAuthStore((state) => state);
+
+  // Sync courses on component mount
+  React.useEffect(() => {
+    if (user?.user_id) {
+      // This would be a good place to sync with server on initial load
+      const { syncPurchasesFromServer } = useCourseStore.getState();
+      syncPurchasesFromServer(user.user_id);
+    }
+  }, [user?.user_id]);
 
   const handleViewMore = (course: Courses) => {
     router.push(`/dashboard/courses/${course.course_id}`);
   };
 
-  const studentName = user?.lastname + " " + user?.firstname;
-
   return (
     <div className="flex flex-col gap-6 px-8 py-4 w-full">
       {courses.map((course) => {
-        const isEnrolled =
-          course.students?.find((name) => name === studentName) &&
-          course.student_email === user?.email;
-        
-        // If user is enrolled, ensure the course is unlocked
-        if (isEnrolled) {
-          setCourseLockStatus(course.course_id, false);
-        }
+        // Check if course is purchased by current user
+        const isEnrolled = isCoursePurchased(user?.user_id, course.course_id);
         
         // Determine if this course should be displayed as locked
-        const shouldLockCourse = !isEnrolled && !isCourseUnlocked(course.course_id) && user?.paid === false;
+        const shouldLockCourse = !isEnrolled && user?.paid === false;
         
         return (
           <div
