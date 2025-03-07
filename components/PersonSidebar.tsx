@@ -39,7 +39,7 @@ const PersonSidebar = () => {
   };
 
   return (
-    <div className="hidden xl:flex flex-col bg-opacity-20 backdrop-blur-lg bg-white w-[350px] mr-4 mt-6 h-full text-black justify-start overflow-y-auto rounded-2xl overflow-hidden border border-gray-700 pb-4 shadow-2xl shadow-purple-500/20">
+    <div className="flex flex-col bg-opacity-20 backdrop-blur-lg bg-white w-[350px] mr-4 mt-6 h-fit text-black justify-start overflow-y-auto rounded-2xl overflow-hidden border border-gray-700 pb-4 shadow-2xl shadow-purple-500/20">
       {/* Gradient Header */}
       <div className="h-20 rounded-t-2xl w-full bg-gradient-to-r from-green-600 via-green-300 to-green-500"></div>
 
