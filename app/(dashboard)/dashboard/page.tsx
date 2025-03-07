@@ -23,14 +23,21 @@ function Dashboard() {
         {/* Sidebar Toggle for Mobile */}
         <button 
           onClick={toggleSidebar}
-          className="lg:hidden fixed bottom-4 right-4 z-50 bg-black text-white p-2 rounded-full shadow-lg"
+          className="lg:hidden fixed bottom-10 right-4 z-50 bg-black text-white p-2 rounded-full shadow-lg"
         >
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
+          {isSidebarOpen && (
+            <div className="lg:hidden fixed inset-0 bg-black/50 z-40">
+              <div className="h-full shadow-lg">
+                <PersonSidebar />
+              </div>
+            </div>
+          )}
           {/* Sidebar Content */}
-          <>
+          <div className="hidden lg:block">
             <PersonSidebar />
-          </>
+          </div>
         </div>
       </div>
   );
