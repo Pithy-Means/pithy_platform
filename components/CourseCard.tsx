@@ -89,9 +89,11 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                     </div>
                   </div>
                   <div className="flex flex-row justify-between items-center mt-4">
-                    <p className="text-green-600 text-lg font-bold">
+                    <p className="flex space-x-2 items-center">
                       <CircleDollarSign size={20} className="text-green-600" />
-                      {course.price} USD
+                      <span className="text-green-600 font-bold text-lg">
+                        {course.price} USD
+                      </span>
                     </p>
                     <button
                       type="button"
