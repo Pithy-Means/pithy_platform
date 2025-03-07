@@ -43,7 +43,7 @@ function FooterSmallScreen() {
         <Link href='/dashboard/jobs' aria-label="Jobs">
           <BriefcaseBusiness size={28} className="hover:text-gray-800" />
         </Link>
-        <Link href='/dashboard/courses' aria-label="Fundings">
+        <Link href='/dashboard/funding' aria-label="Fundings">
           <HandCoins size={28} className="hover:text-gray-800" />
         </Link>
       </div>

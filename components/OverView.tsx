@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -11,7 +11,6 @@ import {
   Bell,
   BriefcaseBusiness,
   CirclePlus,
-  CircleX,
   GraduationCap,
   HandCoins,
   LogOut,
@@ -21,14 +20,12 @@ import {
   ChevronsRight,
   LockKeyhole,
 } from "lucide-react";
-import ModalComp from "./ModalComp";
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import Modal from "./Modal";
-import { useCourseStore } from "@/lib/store/courseStore";
-import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
+
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -36,45 +33,14 @@ interface OverViewProps {
 }
 
 const OverView: React.FC<OverViewProps> = ({ children }) => {
-  const [isCoursesModalOpen, setCoursesModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const { isCoursePurchased } = useCourseStore();
-  const { testStarted, testCompleted } = useQuestionStore();
-  const [redirecting, setRedirecting] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Toggle sidebar collapse
   const toggleSidebarCollapse = () => {
     setIsSidebarCollapsed(!isSidebarCollapsed);
-  };
-
-  // Render sidebar item with optional text visibility
-  const renderSidebarItem = (
-    href: string,
-    icon: React.ElementType,
-    label: string,
-    isPremium: boolean = false
-  ) => {
-    const iconClassName = getLinkClassName(href);
-    const textVisibility = isSidebarCollapsed ? "hidden" : "lg:block";
-
-    // If premium feature and user hasn't paid, apply disabled styling
-    const premiumStyle = isPremium && !isPaid ? "opacity-50 cursor-not-allowed" : "hover:text-[#37BB65]";
-
-    return (
-      <div className={`flex flex-row gap-3 items-center ${premiumStyle}`}>
-        {React.createElement(icon, {
-          className: getLinkClassName(href),
-          size: 24,
-        })}
-        <p className={`${iconClassName} ${textVisibility}`}>
-          {label}
-          {isPremium && !isPaid && <span className="ml-2 text-xs text-[#F26900]">(Premium)</span>}
-        </p>
-      </div>
-    );
   };
 
   const { user, signout } = useAuthStore((state) => state);
@@ -84,15 +50,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   const router = useRouter();
   const pathname = usePathname();
-
-  // Effect to check if we should redirect to courses after test completion
-  useEffect(() => {
-    if (testCompleted && redirecting) {
-      setTimeout(() => {
-        router.push("/dashboard/courses");
-      }, 1500);
-    }
-  }, [testCompleted, redirecting, router]);
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
@@ -120,6 +77,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     label: string, 
     isPremium: boolean = false
   ) => {
+    // If the feature is premium and user hasn't paid, show locked version
     if (isPremium && !isPaid) {
       return (
         <div 
@@ -137,6 +95,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
       );
     }
 
+    // For non-premium features or if user has paid
     return (
       <Link
         href={href}
@@ -343,16 +302,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             </button>
           </div>
         </div>
-      )}
-
-      {isCoursesModalOpen && (
-        <ModalComp
-          isOpen={isCoursesModalOpen}
-          onClose={() => setCoursesModalOpen(false)}
-        >
-          <h2 className="text-lg font-bold">Courses Information</h2>
-          <p>This modal shows detailed information about courses.</p>
-        </ModalComp>
       )}
 
       {children}
