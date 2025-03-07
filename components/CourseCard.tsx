@@ -9,6 +9,7 @@ import { Courses } from "@/types/schema";
 import PaymentButton from "./PaymentButton";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useCourseStore } from "@/lib/store/courseStore";
+import { CircleDollarSign } from "lucide-react";
 
 const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
   const router = useRouter();
@@ -74,27 +75,30 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
                       {course.title}
                     </p>
                     <div className="flex items-center justify-between pb-3">
-                      <p className="text-gray-600 flex gap-1 items-center">
+                      <p className="text-gray-600 flex gap-1 items-center font-bold text-lg">
                         <MdAccessTimeFilled
                           size={20}
-                          className="text-orange-600 gap-1"
+                          className="text-gray-600 gap-1"
                         />
                         {course.duration}
                       </p>
-                      <p className="text-gray-600 flex gap-2">
-                        <FaBookReader size={20} className="text-orange-600" />
+                      <p className="text-gray-600 flex gap-2 font-bold text-lg items-center">
+                        <FaBookReader size={20} className="text-gray-600" />
                         {course.students?.length || 0} Learners
                       </p>
                     </div>
                   </div>
-                  <div className="flex flex-row justify-between items-center">
-                    <p className="text-green-600 text-base">
-                      {course.price} USD
+                  <div className="flex flex-row justify-between items-center mt-4">
+                    <p className="flex space-x-2 items-center">
+                      <CircleDollarSign size={20} className="text-green-600" />
+                      <span className="text-green-600 font-bold text-lg">
+                        {course.price} USD
+                      </span>
                     </p>
                     <button
                       type="button"
                       onClick={() => handleViewMore(course)}
-                      className="text-black/85 font-semibold text-base hover:border rounded-md hov:bg-green-600/100 transition px-2 py-1"
+                      className="hover:text-black/85 hover:bg-green-100 font-bold text-lg hover:border rounded-md transition px-4 py-2 bg-green-600 text-white"
                     >
                       View more
                     </button>
