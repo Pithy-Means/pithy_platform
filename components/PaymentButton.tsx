@@ -48,6 +48,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
       const amountInSelectedCurrency = Math.floor((formData.amount || 6) * exchangeRate); // Convert USD to selected currency and round down to nearest integer
       console.log("Amount in selected currency:", amountInSelectedCurrency);
 
+      const tx_ref = `${Date.now()}-${formData.user_id}-${formData.course_choice}`;
+
       const response = await fetch("/api/proxy-flutterwave/initiate", {
         method: "POST",
         headers: {
@@ -55,7 +57,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
         },
         body: JSON.stringify({
           ...formData,
-          tx_ref: Date.now().toString(),
+          tx_ref: tx_ref,
           amount: amountInSelectedCurrency,
           currency: selectedCountry.currency,
           email: user?.email,

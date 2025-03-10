@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GoHome } from "react-icons/go";
@@ -24,8 +24,8 @@ import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import { useCourseStore } from "@/lib/store/courseStore";
 import Modal from "./Modal";
-
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -37,6 +37,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [hasPremiumAccess, setHasPremiumAccess] = useState(false);
 
   // Toggle sidebar collapse
   const toggleSidebarCollapse = () => {
@@ -44,12 +45,47 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   };
 
   const { user, signout } = useAuthStore((state) => state);
+  const { isCoursePurchased } = useCourseStore();
 
   // Check if user has paid
   const isPaid = user?.paid || false;
-
+  
   const router = useRouter();
   const pathname = usePathname();
+
+  // Check if the user has purchased any courses
+  useEffect(() => {
+    const checkPremiumAccess = async () => {
+      if (user && user.user_id) {
+        // First check if the user is already marked as paid in their profile
+        if (user.paid) {
+          setHasPremiumAccess(true);
+          return;
+        }
+        
+        // Otherwise, check if they've purchased any courses
+        try {
+          const response = await fetch(`/api/user/purchased-courses?userId=${user.user_id}`);
+          if (response.ok) {
+            const data = await response.json();
+            const hasPurchasedCourses = data.courses && data.courses.length > 0;
+            setHasPremiumAccess(hasPurchasedCourses);
+            
+            // Update the user's paid status in AuthStore if they have purchased courses
+            if (hasPurchasedCourses && !user.paid) {
+              // This would require adding an updateUser method to the auth store
+              // We'll create this method in the next step
+              useAuthStore.getState().updateUserPaidStatus(true);
+            }
+          }
+        } catch (error) {
+          console.error("Error checking purchased courses:", error);
+        }
+      }
+    };
+    
+    checkPremiumAccess();
+  }, [user]);
 
   const openProfileModal = () => setIsProfileModalOpen(true);
   const closeProfileModal = () => setIsProfileModalOpen(false);
@@ -77,8 +113,11 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     label: string, 
     isPremium: boolean = false
   ) => {
+    // Use the combined premium status check (user.paid OR hasPremiumAccess)
+    const hasAccess = isPaid || hasPremiumAccess;
+    
     // If the feature is premium and user hasn't paid, show locked version
-    if (isPremium && !isPaid) {
+    if (isPremium && !hasAccess) {
       return (
         <div 
           className="flex flex-row gap-3 items-center opacity-50 cursor-not-allowed"
