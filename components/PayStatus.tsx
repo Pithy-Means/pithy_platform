@@ -15,7 +15,7 @@ const PaymentStatus = () => {
   const router = useRouter();
   
   // Get the auth store and course store
-  const { user } = useAuthStore();
+  const { user, updateUserPaidStatus } = useAuthStore();
   const { setUserCoursePurchase, syncPurchasesFromServer } = useCourseStore();
 
   useEffect(() => {
@@ -56,6 +56,9 @@ const PaymentStatus = () => {
             // Mark this course as purchased by this user
             setUserCoursePurchase(user.user_id, course_id, true);
             
+            // Update user's paid status to unlock premium features
+            updateUserPaidStatus(true);
+            
             // Additionally, sync all purchases from server to ensure
             // we have the complete list of user's purchased courses
             await syncPurchasesFromServer(user.user_id);
@@ -73,6 +76,8 @@ const PaymentStatus = () => {
           // Ensure the course is marked as purchased for this user
           if (course_id && user && user.user_id) {
             setUserCoursePurchase(user.user_id, course_id, true);
+            // Since they've already purchased a course, make sure premium status is set
+            updateUserPaidStatus(true);
           }
           
           // Redirect after a slight delay
@@ -97,7 +102,7 @@ const PaymentStatus = () => {
     };
 
     verifyPayment();
-  }, [transaction_id, course_id, router, user, setUserCoursePurchase, syncPurchasesFromServer]);
+  }, [transaction_id, course_id, router, user, setUserCoursePurchase, syncPurchasesFromServer, updateUserPaidStatus]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
