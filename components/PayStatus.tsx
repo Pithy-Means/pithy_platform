@@ -26,14 +26,6 @@ const PaymentStatus = () => {
       return;
     }
 
-    if (!user || !user.user_id) {
-      setMessage("You must be logged in to verify payments.");
-      setMessageStyle("text-red-600 bg-red-50 border border-red-200");
-      setLoading(false);
-      setTimeout(() => router.push("/login"), 2000);
-      return;
-    }
-
     const verifyPayment = async () => {
       try {
         const response = await fetch(
@@ -66,7 +58,7 @@ const PaymentStatus = () => {
           
           // Redirect after a slight delay
           setTimeout(() => {
-            router.push("/dashboard/courses");
+            router.push("/dashboard");
           }, 2000);
         } else if (data.error === "Student already exists in the course." || 
                   data.error === "Student email already exists in the course.") {
@@ -82,7 +74,7 @@ const PaymentStatus = () => {
           
           // Redirect after a slight delay
           setTimeout(() => {
-            router.push("/dashboard/courses");
+            router.push("/dashboard");
           }, 2000);
         } else {
           setMessage(data.error || "Payment verification failed. Please try again.");
