@@ -27,19 +27,33 @@ const Phonenumber: React.FC<PhonenumberProps> = ({
   };
 
   return (
-    <PhoneInput
-      country={country}
-      placeholder="Enter your phone number"
-      value={value || phone}
-      onChange={handlePhoneChange}
-      masks={{ UG: "+... (..) ... ...." }}
-      // inputProps={{
-      //   name: "phone",
-      //   required: true,
-      //   "aria-label": "Phone number input",
-      // }}
-      containerClass={`z-50 bg-white border border-r-0 rounded-lg shadow-sm transition focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 ${className}`}
-    />
+    <div className="w-full">
+      <PhoneInput
+        country={country}
+        placeholder="Enter your phone number"
+        value={value || phone}
+        onChange={handlePhoneChange}
+        masks={{ UG: "... (..) ... ...." }}
+        inputProps={{
+          name: "phone",
+          required: true,
+          "aria-label": "Phone number input",
+          className: "w-full"
+        }}
+        containerClass={`z-50 bg-white border rounded-lg shadow-sm transition focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 max-w-full ${className}`}
+        inputStyle={{
+          width: "100%",
+          height: "60px",
+          fontSize: "16px"
+        }}
+        buttonStyle={{
+          borderRadius: "8px 0 0 8px"
+        }}
+        containerStyle={{
+          width: "100%"
+        }}
+      />
+    </div>
   );
 };
 
