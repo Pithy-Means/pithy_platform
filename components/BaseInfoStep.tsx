@@ -21,7 +21,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
 }) => (
   <div className="w-full relative px-8">
     {/* Form Fields with Enhanced Layout */}
-    <div className="w-full lg:w-1/3 mx-auto flex flex-col space-y-5">
+    <div className="w-full mx-auto flex flex-col space-y-5">
       {/* Left Column */}
       <InputContact
         label="First name"
