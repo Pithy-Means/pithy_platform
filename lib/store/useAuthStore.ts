@@ -11,6 +11,7 @@ interface AuthState {
   signup: (data: Partial<UserInfo>) => Promise<{ success: boolean }>;
   signin: (data: LoginInfo) => Promise<{ success: boolean }>;
   signout: () => void;
+  updateUserPaidStatus: (isPaid: boolean) => void; // New method to update paid status
 }
 
 const loadPersistedUser = (): Pick<AuthState, "user" | "isAuthenticated"> => {
@@ -45,7 +46,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: userInfo, isAuthenticated: true, loading: false });
       return { success: true };
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : String(error), loading: false });
+      set({
+        error: error instanceof Error ? error.message : String(error),
+        loading: false,
+      });
       throw error; // To handle errors in the caller function
     }
   },
@@ -64,7 +68,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       localStorage.setItem("isAuthenticated", "true");
       return { success: true };
     } catch (error) {
-      set({ error: error instanceof Error ? error.message : String(error), loading: false });
+      set({
+        error: error instanceof Error ? error.message : String(error),
+        loading: false,
+      });
       throw error; // To handle errors in the caller function
     }
   },
@@ -73,5 +80,22 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user: null, isAuthenticated: false });
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
+  },
+
+  // New method to update the user's paid status
+  updateUserPaidStatus: (isPaid: boolean) => {
+    set((state) => {
+      let updatedUser;
+      if (state.user) {
+        updatedUser = { ...state.user, isPaid };
+      } else {
+        return state;
+      }
+      // Update local storage with new user info
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+      return { user: updatedUser };
+    });
   },
 }));
