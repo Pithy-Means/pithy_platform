@@ -195,7 +195,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           )}
         </button>
 
-        <div className="flex flex-col justify-between space-y-24 w-full">
+        <div className="flex flex-col justify-between h-full w-full">
           <div className="flex flex-col space-y-2 mb-10">
             <p
               className={`text-lg text-black/50 ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
@@ -284,7 +284,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             </Link>
           </div>
           {/* Bottom Section */}
-          <div className="flex flex-col space-y-2 mt-40">
+          <div className="flex flex-col space-y-2">
             {/* Help Link */}
             <Link
               href="/dashboard/help"
