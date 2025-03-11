@@ -22,10 +22,10 @@ import {
 } from "lucide-react";
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
-import ProfilePage from "./ProfilePage";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useCourseStore } from "@/lib/store/courseStore";
 import Modal from "./Modal";
+import ProfileContainer from "./ProfileContainer";
 
 interface OverViewProps {
   children?: React.ReactNode;
@@ -284,7 +284,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
 
         {/* Bottom Section */}
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 mx-0">
           {/* Help Link */}
           <Link
             href="/dashboard/help"
@@ -330,17 +330,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
       {/* Profile Modal */}
       {isProfileModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90 z-50">
-          <div className="bg-white p-6 rounded-lg w-1/2 shadow-lg">
-            <ProfilePage />
-            <button
-              onClick={closeProfileModal}
-              className="mt-4 bg-red-500 text-white rounded-md p-2 hover:bg-red-600"
-            >
-              Close
-            </button>
-          </div>
-        </div>
+        <Modal isOpen={isProfileModalOpen} onClose={closeProfileModal}>
+          <ProfileContainer />
+        </Modal>
       )}
 
       {children}
