@@ -26,15 +26,6 @@ const Header_description = () => {
       >
         Start Your Journey
       </Button>
-      {/* Scholarships - Bottom Center */}
-      <div className="absolute left-1/2 transform -translate-x-1/2 bottom-0 sm:bottom-4 md:bottom-8">
-        <div className="flex items-center bg-white/10 px-8 py-10 rounded-full shadow-sm backdrop-blur-sm">
-          <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
-          <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
-            Scholarships
-          </span>
-        </div>
-      </div>
     </div>
   );
 };
