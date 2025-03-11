@@ -177,7 +177,7 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
         prevPosts.map((post) => (post.post_id === postId ? updatedPost : post))
       );
     } catch (error) {
-      console.error(error);
+      console.log("Update the post error:", error);
     }
   };
 
