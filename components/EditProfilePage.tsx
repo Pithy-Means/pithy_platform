@@ -18,7 +18,7 @@ export default function EditProfilePage() {
   
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="flex items-center justify-center h-full">
         <p className="text-gray-600 text-lg animate-pulse">Loading user info...</p>
       </div>
     );
@@ -101,9 +101,9 @@ export default function EditProfilePage() {
   };
   
   return (
-    <div className="h-[calc(100vh-4rem)]">
-      <main className="flex items-center justify-center py-8">
-        <div className="w-full max-w-4xl bg-white shadow-lg rounded-3xl p-8">
+    <div className="h-[70vh] overflow-auto rounded-md shadow-md bg-gray-100">
+      <main className="flex items-center justify-center py-4">
+        <div className="w-full max-w-4xl bg-white rounded-lg p-6">
           <h1 className="text-2xl font-bold text-center mb-6">Edit Your Profile</h1>
           
           {message.text && (
@@ -114,17 +114,17 @@ export default function EditProfilePage() {
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Avatar Section */}
-            <div className="flex flex-col items-center mb-8">
+            <div className="flex flex-col items-center mb-6">
               {user?.avatar ? (
                 <Image
                   src={user?.avatar}
                   alt="User Avatar"
                   width={96}
                   height={96}
-                  className="w-24 h-24 rounded-full shadow-md mb-4"
+                  className="w-20 h-20 rounded-full shadow-md mb-4"
                 />
               ) : (
-                <div className="w-24 h-24 flex items-center justify-center rounded-full shadow-md bg-gray-200 mb-4 text-gray-700 text-xl font-semibold">
+                <div className="w-20 h-20 flex items-center justify-center rounded-full shadow-md bg-gray-200 mb-4 text-gray-700 text-xl font-semibold">
                   {user.firstname?.[0] || user?.lastname?.[0] || "?"}
                 </div>
               )}
@@ -473,7 +473,7 @@ export default function EditProfilePage() {
             </section>
             
             {/* Submit Button */}
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-4 pb-8">
               <button
                 type="submit"
                 disabled={isLoading}
