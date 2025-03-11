@@ -82,20 +82,16 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem("isAuthenticated");
   },
 
-  // New method to update the user's paid status
   updateUserPaidStatus: (isPaid: boolean) => {
     set((state) => {
-      let updatedUser;
       if (state.user) {
-        updatedUser = { ...state.user, isPaid };
-      } else {
-        return state;
+        const updatedUser = { ...state.user, paid: isPaid };
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+        }
+        return { user: updatedUser } as Partial<AuthState>;
       }
-      // Update local storage with new user info
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-      }
-      return { user: updatedUser };
+      return state;
     });
   },
 }));

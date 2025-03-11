@@ -428,6 +428,174 @@ export const register = async (userdata: Partial<UserInfo>) => {
   }
 };
 
+export const updateUserProfile = async (
+  userId: string,
+  updatedData: Partial<UserInfo>
+) => {
+  if (!userId) {
+    throw new Error("User ID must be provided");
+  }
+
+  // Always remove user_id from the update data to prevent changes
+  if (updatedData.user_id) {
+    delete updatedData.user_id;
+  }
+
+  const { account, databases } = await createAdminClient();
+  
+  try {
+    // First verify the user exists
+    const userQuery = await databases.getDocument(
+      db,
+      userCollection,
+      userId
+    );
+    
+    if (!userQuery) {
+      throw new Error("User not found");
+    }
+    
+    // Filter out any fields that shouldn't be updated
+    const sanitizedData = { ...updatedData };
+    
+    // Remove protected fields if they exist in the update data
+    const protectedFields = [
+      'user_id', // This is now explicitly protected
+      'created_at', 
+      '$id', 
+      '$createdAt', 
+      '$updatedAt',
+      'referral_code',
+      'referral_points',
+      'earned_referral_fees',
+      'referred_users',
+      'paid'
+    ];
+    
+    protectedFields.forEach(field => {
+      if (field in sanitizedData) {
+        delete sanitizedData[field];
+      }
+    });
+    
+    // Handle special cases for email or name updates
+    if (sanitizedData.email) {
+      try {
+        // Update the account email if it's changing
+        if (updatedData.password) {
+          await account.updateEmail(sanitizedData.email, updatedData.password);
+        } else {
+          throw new Error("Password must be provided to update email");
+        }
+      } catch (emailError) {
+        if (emailError instanceof Error) {
+          throw new Error(`Failed to update email: ${emailError.message}`);
+        } else {
+          throw new Error("Failed to update email due to an unknown error");
+        }
+      }
+    }
+    
+    // Update name in account if firstname or lastname is changing
+    if (sanitizedData.firstname || sanitizedData.lastname) {
+      const newFirstName = sanitizedData.firstname || userQuery.firstname;
+      const newLastName = sanitizedData.lastname || userQuery.lastname;
+      
+      try {
+        await account.updateName(`${newFirstName} ${newLastName}`);
+      } catch (nameError) {
+        console.error("Error updating account name:", nameError);
+        // Continue with profile update even if name update fails
+      }
+    }
+    
+    // Handle password update if provided
+    if (sanitizedData.password && sanitizedData.new_password) {
+      try {
+        await account.updatePassword(userId, sanitizedData.new_password as string);
+        // Remove password fields from database update
+        delete sanitizedData.password;
+        delete sanitizedData.new_password;
+      } catch (passwordError) {
+        if (passwordError instanceof Error) {
+          throw new Error(`Failed to update password: ${passwordError.message}`);
+        } else {
+          throw new Error("Failed to update password due to an unknown error");
+        }
+      }
+    }
+    
+    // Type-specific updates based on user categories
+    if (sanitizedData.categories) {
+      // If user is changing categories, handle specific info fields
+      switch (sanitizedData.categories) {
+        case "student":
+          // Convert any studentInfo properties if provided
+          if (updatedData.studentInfo) {
+            for (const [key, value] of Object.entries(updatedData.studentInfo)) {
+              sanitizedData[key] = value;
+            }
+          }
+          // Remove other category info if present
+          delete sanitizedData.jobSeekerInfo;
+          delete sanitizedData.employerInfo;
+          break;
+          
+        case "job seeker":
+          // Convert any jobSeekerInfo properties if provided
+          if (updatedData.jobSeekerInfo) {
+            for (const [key, value] of Object.entries(updatedData.jobSeekerInfo)) {
+              sanitizedData[key] = value;
+            }
+          }
+          // Remove other category info if present
+          delete sanitizedData.studentInfo;
+          delete sanitizedData.employerInfo;
+          break;
+          
+        case "employer":
+          // Convert any employerInfo properties if provided
+          if (updatedData.employerInfo) {
+            for (const [key, value] of Object.entries(updatedData.employerInfo)) {
+              sanitizedData[key] = value;
+            }
+          }
+          // Remove other category info if present
+          delete sanitizedData.studentInfo;
+          delete sanitizedData.jobSeekerInfo;
+          break;
+      }
+      
+      // Remove the category-specific objects after we've extracted their properties
+      delete sanitizedData.studentInfo;
+      delete sanitizedData.jobSeekerInfo;
+      delete sanitizedData.employerInfo;
+    }
+    
+    // Add updated timestamp
+    sanitizedData.updated_at = new Date().toISOString();
+    
+    // Update the document
+    const updatedProfile = await databases.updateDocument(
+      db,
+      userCollection,
+      userId,
+      sanitizedData
+    );
+    
+    return {
+      success: true,
+      userinfo: parseStringify(updatedProfile)
+    };
+  } catch (error) {
+    console.error("Error updating user profile:", error);
+    
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to update user profile"
+    );
+  }
+};
+
 export const getAllUsers = async (limit = 25, offset = 0, filters: any[] = []) => {
   try {
     const { databases } = await createAdminClient();
