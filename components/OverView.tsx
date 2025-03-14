@@ -157,7 +157,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         className={`
           hidden 
           md:flex 
-          h-[90vh] 
+          min-h-[80vh]
+          max-h-[calc(100vh-40px)]
+          overflow-y-auto
           flex-col 
           justify-between 
           bg-white 
@@ -178,7 +180,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           duration-300 
           ease-in-out
           relative
-          ${isSidebarCollapsed ? "w-[100px]" : "w-[300px]"}
+          ${isSidebarCollapsed ? "w-[100px]" : "w-[340px]"}
         `}
       >
         {/* Collapse/Expand Button */}
@@ -193,7 +195,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           )}
         </button>
 
-        <div className="flex flex-col space-y-12 w-full">
+        <div className="flex flex-col justify-between h-full w-full">
           <div className="flex flex-col space-y-2 mb-10">
             <p
               className={`text-lg text-black/50 ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
@@ -281,45 +283,45 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
               </p>
             </Link>
           </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="flex flex-col space-y-2 mx-0">
-          {/* Help Link */}
-          <Link
-            href="/dashboard/help"
-            className="flex flex-row gap-3 items-center"
-          >
-            <IoMdHelpCircleOutline
-              className={getLinkClassName("/dashboard/help")}
-              size={24}
-            />
-            <p
-              className={`
-                ${getLinkClassName("/dashboard/help")} 
-                ${isSidebarCollapsed ? "hidden" : "lg:block"}
-              `}
+          {/* Bottom Section */}
+          <div className="flex flex-col space-y-2">
+            {/* Help Link */}
+            <Link
+              href="/dashboard/help"
+              className="flex flex-row gap-3 items-center"
             >
-              Help & support
-            </p>
-          </Link>
+              <IoMdHelpCircleOutline
+                className={getLinkClassName("/dashboard/help")}
+                size={24}
+              />
+              <p
+                className={`
+                  ${getLinkClassName("/dashboard/help")} 
+                  ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                `}
+              >
+                Help & support
+              </p>
+            </Link>
 
-          {/* Logout */}
-          <div
-            onClick={handleLogout}
-            className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
-          >
-            <LogOut size={24} />
-            <p
-              className={`
-                text-lg 
-                ${isSidebarCollapsed ? "hidden" : "lg:block"}
-              `}
+            {/* Logout */}
+            <div
+              onClick={handleLogout}
+              className="flex flex-row gap-3 items-center text-[#F26900] hover:text-green-600 cursor-pointer"
             >
-              Logout
-            </p>
+              <LogOut size={24} />
+              <p
+                className={`
+                  text-lg 
+                  ${isSidebarCollapsed ? "hidden" : "lg:block"}
+                `}
+              >
+                Logout
+              </p>
+            </div>
           </div>
         </div>
+
       </div>
 
       {isModalOpen && (

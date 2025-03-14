@@ -432,171 +432,33 @@ export const updateUserProfile = async (
   userId: string,
   updatedData: Partial<UserInfo>
 ) => {
-  if (!userId) {
-    throw new Error("User ID must be provided");
-  }
+  const { databases } = await createAdminClient();
 
-  // Always remove user_id from the update data to prevent changes
-  if (updatedData.user_id) {
-    delete updatedData.user_id;
-  }
-
-  const { account, databases } = await createAdminClient();
-  
   try {
-    // First verify the user exists
-    const userQuery = await databases.getDocument(
-      db,
-      userCollection,
-      userId
-    );
-    
-    if (!userQuery) {
-      throw new Error("User not found");
-    }
-    
-    // Filter out any fields that shouldn't be updated
-    const sanitizedData = { ...updatedData };
-    
-    // Remove protected fields if they exist in the update data
-    const protectedFields = [
-      'user_id', // This is now explicitly protected
-      'created_at', 
-      '$id', 
-      '$createdAt', 
-      '$updatedAt',
-      'referral_code',
-      'referral_points',
-      'earned_referral_fees',
-      'referred_users',
-      'paid'
-    ];
-    
-    protectedFields.forEach(field => {
-      if (field in sanitizedData) {
-        delete sanitizedData[field];
-      }
-    });
-    
-    // Handle special cases for email or name updates
-    if (sanitizedData.email) {
-      try {
-        // Update the account email if it's changing
-        if (updatedData.password) {
-          await account.updateEmail(sanitizedData.email, updatedData.password);
-        } else {
-          throw new Error("Password must be provided to update email");
-        }
-      } catch (emailError) {
-        if (emailError instanceof Error) {
-          throw new Error(`Failed to update email: ${emailError.message}`);
-        } else {
-          throw new Error("Failed to update email due to an unknown error");
-        }
-      }
-    }
-    
-    // Update name in account if firstname or lastname is changing
-    if (sanitizedData.firstname || sanitizedData.lastname) {
-      const newFirstName = sanitizedData.firstname || userQuery.firstname;
-      const newLastName = sanitizedData.lastname || userQuery.lastname;
-      
-      try {
-        await account.updateName(`${newFirstName} ${newLastName}`);
-      } catch (nameError) {
-        console.error("Error updating account name:", nameError);
-        // Continue with profile update even if name update fails
-      }
-    }
-    
-    // Handle password update if provided
-    if (sanitizedData.password && sanitizedData.new_password) {
-      try {
-        await account.updatePassword(userId, sanitizedData.new_password as string);
-        // Remove password fields from database update
-        delete sanitizedData.password;
-        delete sanitizedData.new_password;
-      } catch (passwordError) {
-        if (passwordError instanceof Error) {
-          throw new Error(`Failed to update password: ${passwordError.message}`);
-        } else {
-          throw new Error("Failed to update password due to an unknown error");
-        }
-      }
-    }
-    
-    // Type-specific updates based on user categories
-    if (sanitizedData.categories) {
-      // If user is changing categories, handle specific info fields
-      switch (sanitizedData.categories) {
-        case "student":
-          // Convert any studentInfo properties if provided
-          if (updatedData.studentInfo) {
-            for (const [key, value] of Object.entries(updatedData.studentInfo)) {
-              sanitizedData[key] = value;
-            }
-          }
-          // Remove other category info if present
-          delete sanitizedData.jobSeekerInfo;
-          delete sanitizedData.employerInfo;
-          break;
-          
-        case "job seeker":
-          // Convert any jobSeekerInfo properties if provided
-          if (updatedData.jobSeekerInfo) {
-            for (const [key, value] of Object.entries(updatedData.jobSeekerInfo)) {
-              sanitizedData[key] = value;
-            }
-          }
-          // Remove other category info if present
-          delete sanitizedData.studentInfo;
-          delete sanitizedData.employerInfo;
-          break;
-          
-        case "employer":
-          // Convert any employerInfo properties if provided
-          if (updatedData.employerInfo) {
-            for (const [key, value] of Object.entries(updatedData.employerInfo)) {
-              sanitizedData[key] = value;
-            }
-          }
-          // Remove other category info if present
-          delete sanitizedData.studentInfo;
-          delete sanitizedData.jobSeekerInfo;
-          break;
-      }
-      
-      // Remove the category-specific objects after we've extracted their properties
-      delete sanitizedData.studentInfo;
-      delete sanitizedData.jobSeekerInfo;
-      delete sanitizedData.employerInfo;
-    }
-    
-    // Add updated timestamp
-    sanitizedData.updated_at = new Date().toISOString();
-    
-    // Update the document
+    // Update the document with the new data
     const updatedProfile = await databases.updateDocument(
       db,
       userCollection,
       userId,
-      sanitizedData
+      updatedData
     );
-    
-    return {
-      success: true,
-      userinfo: parseStringify(updatedProfile)
-    };
+
+    console.log(`User profile updated for userId: ${userId}`);
+    return parseStringify(updatedProfile);
   } catch (error) {
-    console.error("Error updating user profile:", error);
-    
+    console.log("Error updating user profile:", error);
+
     throw new Error(
       error instanceof Error ? error.message : "Failed to update user profile"
     );
   }
 };
 
-export const getAllUsers = async (limit = 25, offset = 0, filters: any[] = []) => {
+export const getAllUsers = async (
+  limit = 25,
+  offset = 0,
+  filters: any[] = []
+) => {
   try {
     const { databases } = await createAdminClient();
 
@@ -640,11 +502,11 @@ export const searchUsers = async ({
   sortOrder?: "asc" | "desc";
 }) => {
   const { databases } = await createAdminClient();
-  
+
   try {
     // Build query conditions
     const queryConditions = [];
-    
+
     // Search term can match against firstname, lastname, email, or user_id
     if (searchTerm) {
       queryConditions.push(
@@ -652,43 +514,39 @@ export const searchUsers = async ({
           Query.search("firstname", searchTerm),
           Query.search("lastname", searchTerm),
           Query.search("email", searchTerm),
-          Query.search("user_id", searchTerm)
+          Query.search("user_id", searchTerm),
         ])
       );
     }
-    
+
     // Add filters
     if (filters.categories && filters.categories.length > 0) {
       // Search for users with any of the specified categories
       queryConditions.push(Query.contains("categories", filters.categories));
     }
-    
+
     if (filters.referral_by) {
       queryConditions.push(Query.equal("referral_by", filters.referral_by));
     }
-    
+
     if (filters.user_id) {
       queryConditions.push(Query.equal("user_id", filters.user_id));
     }
-    
+
     if (filters.email) {
       queryConditions.push(Query.equal("email", filters.email));
     }
-    
+
     // Execute the search query
-    const result = await databases.listDocuments(
-      db,
-      userCollection,
-      [
-        Query.limit(limit),
-        Query.offset(offset),
-        Query.orderAsc(sortField as string)
-      ]
-    );
-    
+    const result = await databases.listDocuments(db, userCollection, [
+      Query.limit(limit),
+      Query.offset(offset),
+      Query.orderAsc(sortField as string),
+    ]);
+
     return {
       users: parseStringify(result.documents),
-      total: result.total
+      total: result.total,
     };
   } catch (error) {
     console.error("Error searching users:", error);
@@ -923,12 +781,16 @@ export const updatePost = async (
   try {
     const { databases } = await createAdminClient();
 
-    const post = await databases.updateDocument(db, postCollection, postId, {
-      ...updatedData,
-    });
+    const post = await databases.updateDocument(
+      db,
+      postCollection,
+      postId,
+      updatedData
+    );
     return parseStringify(post);
   } catch (error) {
-    console.error(error);
+    console.error("Error updating post:", error);
+    throw error;
   }
 };
 
@@ -1056,7 +918,11 @@ export const getPost = async (postId: string) => {
   }
 };
 
-export const searchPostsByContent = async (searchTerm: string, page: number = 1, limit: number = 3) => {
+export const searchPostsByContent = async (
+  searchTerm: string,
+  page: number = 1,
+  limit: number = 3
+) => {
   try {
     const { databases } = await createAdminClient();
     const offset = (page - 1) * limit;
@@ -1097,7 +963,12 @@ export const searchPostsByContent = async (searchTerm: string, page: number = 1,
   }
 };
 
-export const searchPostsByUser = async (firstname?: string, lastname?: string, page: number = 1, limit: number = 3) => {
+export const searchPostsByUser = async (
+  firstname?: string,
+  lastname?: string,
+  page: number = 1,
+  limit: number = 3
+) => {
   try {
     const { databases } = await createAdminClient();
     const offset = (page - 1) * limit;
@@ -1117,7 +988,11 @@ export const searchPostsByUser = async (firstname?: string, lastname?: string, p
       return [];
     }
 
-    const posts = await databases.listDocuments(db, postCollection, searchQueries);
+    const posts = await databases.listDocuments(
+      db,
+      postCollection,
+      searchQueries
+    );
 
     if (!posts?.documents || !Array.isArray(posts.documents)) {
       console.error("Invalid posts response");
@@ -1335,10 +1210,10 @@ export const updateJob = async (jobId: string, data: Partial<Job>) => {
     const job = await databases.updateDocument(db, jobCollection, jobId, data);
     return parseStringify(job);
   } catch (error) {
-    console.error("Error updating job:", error);    
+    console.error("Error updating job:", error);
     return { success: false, message: "Error updating job" };
   }
-}
+};
 
 export const deleteJob = async (jobId: string) => {
   try {
