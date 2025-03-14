@@ -435,15 +435,36 @@ export const updateUserProfile = async (
   const { databases } = await createAdminClient();
 
   try {
+    //  Check if the user exists
+    const user = await databases.listDocuments(db, userCollection, [
+      Query.equal("user_id", userId),
+    ]);
+    console.log("User found:", user);
+    if (!user || user.documents.length === 0) {
+      throw new Error("User not found");
+    }
+
+    // Create a clean copy without $databaseId
+    const cleanData = { ...updatedData };
+    if ('$databaseId' in cleanData) {
+      delete cleanData.$databaseId;
+    } 
+    if ('$collectionId' in cleanData) {
+      delete cleanData.$collectionId; 
+    } 
+    if ('$id' in cleanData) {
+      delete cleanData.$id; 
+    }
+
     // Update the document with the new data
     const updatedProfile = await databases.updateDocument(
       db,
       userCollection,
-      userId,
-      updatedData
+      user.documents[0].$id,
+      cleanData
     );
 
-    console.log(`User profile updated for userId: ${userId}`);
+    console.log(`User profile updated for userId: ${updatedProfile.$id}`);
     return parseStringify(updatedProfile);
   } catch (error) {
     console.log("Error updating user profile:", error);

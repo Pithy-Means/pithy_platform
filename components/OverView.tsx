@@ -173,11 +173,11 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           shadow-lg 
           shadow-black/10
           border-r
-          border-gray-800
+          border-slate-500
           border-t
           border-b
           transition-all 
-          duration-300 
+          duration-800 
           ease-in-out
           relative
           ${isSidebarCollapsed ? "w-[100px]" : "w-[340px]"}
@@ -186,12 +186,12 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         {/* Collapse/Expand Button */}
         <button
           onClick={toggleSidebarCollapse}
-          className="absolute top-4 right-4 z-10 hover:bg-gray-100 p-2 rounded-full"
+          className="absolute top-4 right-4 z-10 hover:bg-green-400 p-2 rounded-full"
         >
           {isSidebarCollapsed ? (
-            <ChevronsRight size={24} />
+            <ChevronsRight size={24} className="text-black/25 hover:text-white" />
           ) : (
-            <ChevronsLeft size={24} />
+            <ChevronsLeft size={24} className="text-black/25 hover:text-white" />
           )}
         </button>
 

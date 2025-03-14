@@ -4,6 +4,7 @@ import { login, register } from "../actions/user.actions";
 
 interface AuthState {
   user: UserInfo | null;
+  setUser: (user: UserInfo) => void; // Added setUser method
   token: string | null;
   isAuthenticated: boolean;
   error: string | null;
@@ -93,5 +94,22 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
       return state;
     });
+  },
+
+  setUser: (user: UserInfo) => {
+    set({ user });
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("isAuthenticated", "true");
+        return { success: true };
+      }
+    } catch (error) {
+      set({
+        error: error instanceof Error ? error.message : String(error),
+        loading: false,
+      });
+      throw error;
+    }
   },
 }));
