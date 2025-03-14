@@ -4,7 +4,8 @@ import { useState } from "react";
 import { UserInfo } from "@/types/schema";
 import Image from "next/image";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-import { updateUserProfile } from "@/lib/actions/user.actions"; // Adjust import path as needed
+import { updateUserProfile } from "@/lib/actions/user.actions";
+import toast, { Toaster } from "react-hot-toast"; // Import toast
 
 export default function EditProfilePage() {
   const { user, setUser } = useAuthStore((state) => state as unknown as { 
@@ -13,7 +14,6 @@ export default function EditProfilePage() {
   });
   
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState({ text: "", type: "" });
   const [formData, setFormData] = useState<Partial<UserInfo>>(user || {});
   
   if (!user) {
@@ -45,7 +45,6 @@ export default function EditProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage({ text: "", type: "" });
     
     try {
       // Clean up the data for submission
@@ -53,48 +52,37 @@ export default function EditProfilePage() {
       
       // Format category-specific data based on selected category
       if (formData.categories) {
-        switch (formData.categories) {
-          case "student":
-            dataToSubmit.studentInfo = {
-              education_level: formData.education_level as string,
-              institution_name: formData.institution_name,
-              major_subject: formData.major_subject,
+            if (formData.categories === "student")  {
+              education_level: formData.education_level as string;
+              institution_name: formData.institution_name;
+              major_subject: formData.major_subject;
               expected_graduation_year: Number(formData.expected_graduation_year)
             };
-            break;
-          case "job seeker":
-            dataToSubmit.jobSeekerInfo = {
-              desired_job_title: formData.desired_job_title,
-              skills: formData.skills,
-              years_of_work_experience: Number(formData.years_of_work_experience),
-              resume_link: formData.resume_link,
+            
+          if (formData.categories === "job seeker") {
+              desired_job_title: formData.desired_job_title;
+              skills: formData.skills;
+              years_of_work_experience: Number(formData.years_of_work_experience);
+              resume_link: formData.resume_link;
               availability_status: formData.availability_status as string
             };
-            break;
-          case "employer":
-            dataToSubmit.employerInfo = {
-              company_name: formData.company_name,
-              company_size: formData.company_size as string,
-              industry_type: formData.industry_type,
-              position_in_company: formData.position_in_company,
+        if (formData.categories === "employer") {
+              company_name: formData.company_name;
+              company_size: formData.company_size as string;
+              industry_type: formData.industry_type;
+              position_in_company: formData.position_in_company;
               url: formData.url
             };
-            break;
         }
-      }
       
       const result = await updateUserProfile(user.user_id, dataToSubmit);
+      console.log("Profile updated:", result);
       
-      if (result.success) {
-        setUser(result.userinfo);
-        setMessage({ text: "Profile updated successfully!", type: "success" });
-      }
+      setUser({ ...user, ...dataToSubmit } as UserInfo);
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.error("Failed to update profile:", error);
-      setMessage({ 
-        text: error instanceof Error ? error.message : "Failed to update profile", 
-        type: "error" 
-      });
+      toast.error("Failed to update profile. Please, try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -102,15 +90,27 @@ export default function EditProfilePage() {
   
   return (
     <div className="h-[70vh] overflow-auto rounded-md shadow-md bg-gray-100">
+      {/* Add Toaster component to render notifications */}
+      <Toaster position="top-center" toastOptions={{
+        success: {
+          style: {
+            background: '#10B981',
+            color: 'white',
+          },
+          duration: 3000,
+        },
+        error: {
+          style: {
+            background: '#EF4444',
+            color: 'white',
+          },
+          duration: 4000,
+        },
+      }} />
+      
       <main className="flex items-center justify-center py-4">
         <div className="w-full max-w-4xl bg-white rounded-lg p-6">
           <h1 className="text-2xl font-bold text-center mb-6">Edit Your Profile</h1>
-          
-          {message.text && (
-            <div className={`p-4 mb-6 rounded-lg ${message.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-              {message.text}
-            </div>
-          )}
           
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Avatar Section */}
