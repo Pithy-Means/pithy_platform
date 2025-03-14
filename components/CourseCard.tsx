@@ -49,7 +49,7 @@ const CourseCard: React.FC<{ courses: Courses[] }> = ({ courses }) => {
               {shouldLockCourse ? (
                 <div className="flex flex-col items-center justify-center text-center h-full">
                   <p className="text-red-600 font-bold text-lg mb-2">
-                    This course is locked.
+                    Upgrade your membership
                   </p>
                   <PaymentButton
                     course={{
