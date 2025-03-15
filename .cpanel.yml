@@ -1,0 +1,8 @@
+---
+deployment:
+  tasks:
+    - export DEPLOY_PATH=/home/$USER/public_html
+    - npm install
+    - npm run build
+    - npm run export
+    - rsync -av --delete out/ $DEPLOY_PATH/
