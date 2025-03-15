@@ -163,8 +163,8 @@ const ContactFormWithToast: React.FC<ContactFormWithToastProps> = ({ setResponse
   };
 
   return (
-    <div className="py-6 px-4">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+    <div className="bg-white py-6 px-4">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
         <InputContact 
           label="Name"
           type="text"
