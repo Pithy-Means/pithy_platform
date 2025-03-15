@@ -12,7 +12,7 @@ import toast, { Toaster } from "react-hot-toast";
 import InputContact from '@/components/InputContact';
 import { sendContactEmail } from '@/lib/store/emailService';
 
-export const Help = () => {
+const Help = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
 
@@ -102,6 +102,8 @@ export const Help = () => {
     </>
   );
 };
+
+export default Help;
 
 // Enhanced ContactForm with toast notifications
 interface ContactFormWithToastProps {
