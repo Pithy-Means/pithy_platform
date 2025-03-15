@@ -6,56 +6,17 @@ import TitleDot from "@/components/TitleDot";
 import SocialMediaLinks from "@/components/SocialMediaLinks";
 import ContactInfo from "@/components/ContactInfo";
 import { Card } from "@/components/ui/card";
-import InputContact from "@/components/InputContact";
 import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import Footer from "@/components/Footer";
-// import GoogleMaps from "@/components/GoogleMaps";
+import ContactForm from "@/components/ContactForm";
+import ThankYouMessage from "@/components/ThankYouMessage";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
 });
 
 const Contact = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const formData = { name, email, phone, message };
-
-    try {
-      const res = await fetch("/api/emails/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        
-        setResponseMessage("Email sent successfully!");
-      } else {
-        setResponseMessage("Failed to send email.");
-      }
-    } catch (error) {
-      console.error("Error sending form:", error);
-      setResponseMessage("An error occurred. Please try again later.");
-    } finally {
-      setLoading(false);
-      setName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
-    }
-  };
 
   return (
     <div>
@@ -99,62 +60,9 @@ const Contact = () => {
               <SocialMediaLinks className="text-black" />
             </div>
             {!responseMessage ? (
-              <Card className="bg-white py-20 px-6 h-fit w-full">
-                <form
-                  onSubmit={handleSubmit}
-                  className="flex flex-col space-y-4"
-                >
-                  <InputContact
-                    label="Name"
-                    type="text"
-                    className="w-full"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <InputContact
-                    label="Email"
-                    type="email"
-                    className="w-full"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <InputContact
-                    label="Phone Number"
-                    type="tel"
-                    className="w-full"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                  <InputContact
-                    label="Message"
-                    isTextarea={true}
-                    className="w-full"
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                  />
-                  <button
-                    type="submit"
-                    className="bg-[#5AC35A] text-white p-2 rounded-lg w-fit mx-auto md:w-52 md:text-lg lg:w-72 lg:text-2xl flex justify-center text-center"
-                    disabled={loading}
-                  >
-                    {loading ? "Sending..." : "Submit"}
-                  </button>
-                </form>
-              </Card>
+              <ContactForm setResponseMessage={setResponseMessage} />
             ) : (
-              <Card className="bg-[#5AC35A] py-10 px-6 w-full flex justify-center items-center">
-                <div className="flex flex-col space-y-8">
-                  <h3 className="text-black text-5xl font-extrabold capitalize">
-                    Thank you
-                  </h3>
-                  <div className="flex flex-col space-y-2 items-center">
-                    <div className="bg-[#1111116c] h-1 w-full rounded" />
-                    <p className="text-black capitalize">
-                      We’ll be in touch soon
-                    </p>
-                  </div>
-                </div>
-              </Card>
+              <ThankYouMessage />
             )}
           </div>
           <div className="h-24">
