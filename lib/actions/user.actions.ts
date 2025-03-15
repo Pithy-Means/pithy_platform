@@ -279,19 +279,20 @@ export const updateReferralPoints = async (
 ) => {
   try {
     const { databases } = await createAdminClient();
-    const user = await databases.getDocument(db, userCollection, referrerId);
+    const user = await databases.listDocuments(db, userCollection, [
+      Query.equal("user_id", referrerId),
+    ]);
 
-    if (!user) {
+    if (!user || user.documents.length === 0) { // corrected 'userdocu' to 'user.documents'
       throw new Error("Referrer not found");
     }
 
     // Calculate new points and amount
-    const currentPoints = user.referral_points || 0;
-    const currentAmount = user.earned_referral_fees || 0;
+    const currentPoints = user.documents[0].referral_points || 0;
+    const currentAmount = user.documents[0].earned_referral_fees || 0;
     const referral_fee = amount * 0.1; // 10% of the payment amount
 
     // Update referrer with new points and amount
-    // Now using newReferredUserId instead of referrerId in the array
     const referrerUpdated = await databases.updateDocument(
       db,
       userCollection,
@@ -299,8 +300,8 @@ export const updateReferralPoints = async (
       {
         referral_points: currentPoints + 1,
         earned_referral_fees: currentAmount + referral_fee,
-        referred_users: user.referred_users
-          ? [...user.referred_users, newReferredUserId]
+        referred_users: user.documents[0].referred_users // corrected syntax error here
+          ? [...user.documents[0].referred_users, newReferredUserId]
           : [newReferredUserId],
       }
     );
@@ -350,26 +351,54 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
     // Step 2: Process referral if code provided
     let referrerInfo = null;
-    // Fixed the referral code check
-    if (`http:localhost:3000/signUp?referral=${referral_code}`) {
+    let actualReferralCode = referral_code;
+    
+    // Check if the referral_code is a URL and extract the actual code
+    if (referral_code && referral_code.includes('?referral=')) {
+      try {
+        const url = new URL(referral_code);
+        const urlParams = new URLSearchParams(url.search);
+        actualReferralCode = urlParams.get('referral') ?? undefined;
+      } catch (e) {
+        // If parsing as URL fails, check if it contains the pattern and extract manually
+        const match = referral_code.match(/[?&]referral=([^&]+)/);
+        if (match && match[1]) {
+          actualReferralCode = match[1];
+        }
+      }
+    } else if (referral_code && referral_code.startsWith('https://')) {
+      // For backward compatibility with the previous implementation
+      // This handles the case where the URL doesn't have the expected format
+      console.log("Received referral URL without proper parameters:", referral_code);
+    }
+    
+    // Process referral if we have a valid code
+    if (actualReferralCode && actualReferralCode.trim() !== "") {
       try {
         // Find referrer by their referral code
         const referrerQuery = await databases.listDocuments(
           db,
           userCollection,
-          referral_code ? [Query.equal("referral_code", referral_code)] : []
+          [Query.equal("referral_code", actualReferralCode)]
         );
+
+        console.log("Referrer query result:", referrerQuery.documents[0].lastname);
 
         if (referrerQuery.documents.length > 0) {
           referrerInfo = referrerQuery.documents[0];
           // Update referrer's points with the new user's ID
           const amount = referrerInfo.earned_referral_fees || 0;
           await updateReferralPoints(referrerInfo.$id, amount, userId);
+          console.log(`Referral processed successfully for code: ${actualReferralCode}`);
+        } else {
+          console.log(`No referrer found for code: ${actualReferralCode}`);
         }
       } catch (referralError) {
         console.error("Error processing referral:", referralError);
         // Continue registration even if referral processing fails
       }
+    } else {
+      console.log("No valid referral code provided");
     }
 
     // Step 3: Create user document
@@ -383,7 +412,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
         categories: categories || [],
         referral_code: newUserReferralCode,
         referral_points: 0,
-        referral_by: referrerInfo ? referral_code : "",
+        referral_by: referrerInfo ? actualReferralCode : "",
         earned_referral_fees: 0,
         referred_users: [], // New user starts with empty referred_users array
       }
@@ -409,6 +438,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
     return {
       newUserAccount: parseStringify(createdAccount),
       userinfo: parseStringify(createdUserInfo),
+      referralProcessed: !!referrerInfo,
     };
   } catch (error) {
     console.error("Error in register function:", error);
@@ -1218,7 +1248,6 @@ export const getJobs = async () => {
   try {
     const { databases } = await createAdminClient();
     const jobs = await databases.listDocuments(db, jobCollection);
-    console.log("Jobs", jobs);
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);

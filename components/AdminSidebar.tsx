@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   FaHome,
   FaBook,
@@ -11,7 +11,9 @@ import {
   FaMoneyCheckAlt,
   FaGraduationCap,
 } from "react-icons/fa";
-import { Joystick } from "lucide-react";
+import { Joystick, LogOut } from "lucide-react";
+import { useAuthStore } from "@/lib/store/useAuthStore";
+import { AuthState } from "@/types/schema";
 
 const links = [
   { name: "Home", path: "/admin", icon: <FaHome /> },
@@ -26,9 +28,22 @@ const links = [
 const AdminSidebar: React.FC = () => {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const { signout } = useAuthStore((state) => state as AuthState);
+
+  const router = useRouter();
+  
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signout();
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+    }
   };
 
   return (
@@ -67,6 +82,13 @@ const AdminSidebar: React.FC = () => {
 
       {/* Sidebar Footer (Optional) */}
       <div className="p-4 border-t border-green-500">
+        <button
+          onClick={handleLogout}
+          className="hover:bg-orange-300 text-black hover:text-white rounded-lg px-4 py-2"
+        >
+          <LogOut />
+          {!isCollapsed && <span className="ml-2">Logout</span>}
+        </button>
         {!isCollapsed && (
           <p className="text-sm text-green-500">© 2025 Pithy Means</p>
         )}
