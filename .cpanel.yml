@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOY_PATH=/home/$USER/public_html
-    - npm install
+    - npm ci
     - npm run build
-    - npm run export
-    - rsync -av --delete out/ $DEPLOY_PATH/
+    - rsync -a --delete .next/static/ $DEPLOY_PATH/_next/static/
+    - rsync -a --delete public/ $DEPLOY_PATH/
