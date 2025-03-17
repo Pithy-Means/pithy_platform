@@ -45,14 +45,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
           {/* Post Header */}
           <div className="flex items-center space-x-3 mb-3">
             <Avatar className="h-10 w-10">
-              {post.user.avatar ? (
-                <Image 
-                  src={post.user.avatar} 
-                  alt={post.user.name || "User"} 
-                  width={40} 
-                  height={40} 
-                />
-              ) : (
+              {post.user?.firstname && (
                 <div className="bg-gray-200 h-full w-full flex items-center justify-center text-gray-500">
                   {(post.user.firstname || "U")[0].toUpperCase()}
                 </div>
