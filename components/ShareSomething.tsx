@@ -9,28 +9,29 @@ import { searchPostsByContent } from "@/lib/actions/user.actions"; // Import the
 const ShareSomething = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  
   interface Post {
     id: string;
     title: string;
     content: string;
-    // Add other fields as necessary
   }
 
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const [page, setPage] = useState(1);
+  const [hasSearched, setHasSearched] = useState(false); // Track if search has been performed
 
-  // Handle search input change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
 
-  // Handle search button click
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
     
     setIsSearching(true);
+    setHasSearched(true); // Mark that a search was performed
+
     try {
-      const results = await searchPostsByContent(searchTerm, 1, 10); // Search first page with 10 results
+      const results = await searchPostsByContent(searchTerm, 1, 10);
       setSearchResults(results);
       setPage(1);
     } catch (error) {
@@ -40,20 +41,18 @@ const ShareSomething = () => {
     }
   };
 
-  // Handle Enter key press in search input
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
   };
 
-  // Clear search results
   const clearSearch = () => {
     setSearchTerm("");
     setSearchResults([]);
+    setHasSearched(false); // Reset search state
   };
 
-  // Load more results
   const loadMoreResults = async () => {
     if (isSearching) return;
     
@@ -77,10 +76,8 @@ const ShareSomething = () => {
       {/* Header Section */}
       <div className="flex flex-col bg-white text-black rounded-lg shadow-md p-2 w-full mt-2">
         <div className="flex items-center justify-center">
-          {/* Icon */}
           <CircleUserRound size={32} className="flex-shrink-0 text-gray-600 hidden md:block" />
 
-          {/* Input */}
           <input
             type="text"
             placeholder="Search Posts"
@@ -90,9 +87,8 @@ const ShareSomething = () => {
             onKeyPress={handleKeyPress}
           />
 
-          {/* Button */}
           <Button 
-            className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0 hover:bg-gradient-to-tr from[#]"
+            className="bg-gradient-to-t from-[#5AC35A] to-[#00AE76] text-white rounded-lg py-1 px-2 flex-shrink-0 hover:bg-gradient-to-tr"
             onClick={handleSearch}
             disabled={isSearching}
           >
@@ -118,7 +114,7 @@ const ShareSomething = () => {
             <p className="text-sm text-gray-600">
               {searchResults.length > 0 
                 ? `Found ${searchResults.length} result${searchResults.length !== 1 ? 's' : ''} for "${searchTerm}"`
-                : searchTerm && !isSearching 
+                : hasSearched && !isSearching 
                   ? `No results found for "${searchTerm}"`
                   : ''}
             </p>
@@ -134,24 +130,28 @@ const ShareSomething = () => {
         )}
       </div>
 
-      {/* Scrollable Posts Section */}
+      {/* Posts Section */}
       <div className="overflow-y-auto no-scrollbar h-full mt-8 w-full">
-        {searchResults.length > 0 ? (
-          <>
-            <Posts searchPosts={searchResults} />
-            {searchResults.length >= 10 * page && (
-              <div className="flex justify-center my-4">
-                <Button 
-                  onClick={loadMoreResults}
-                  variant="outline" 
-                  className="text-[#00AE76] border-[#00AE76] hover:bg-[#00AE76]/10"
-                  disabled={isSearching}
-                >
-                  {isSearching ? "Loading..." : "Load more"}
-                </Button>
-              </div>
-            )}
-          </>
+        {hasSearched ? (
+          searchResults.length > 0 ? (
+            <>
+              <Posts searchPosts={searchResults} />
+              {searchResults.length >= 10 * page && (
+                <div className="flex justify-center my-4">
+                  <Button 
+                    onClick={loadMoreResults}
+                    variant="outline" 
+                    className="text-[#00AE76] border-[#00AE76] hover:bg-[#00AE76]/10"
+                    disabled={isSearching}
+                  >
+                    {isSearching ? "Loading..." : "Load more"}
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-center text-gray-500 mt-4">No posts found.</p>
+          )
         ) : (
           <Posts />
         )}
