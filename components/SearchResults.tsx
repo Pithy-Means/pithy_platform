@@ -1,7 +1,7 @@
 import React from "react";
 import { Avatar } from "./ui/avatar";
 import { formatDistanceToNow } from "date-fns";
-import Link from "next/link";
+// import Link from "next/link";
 // import { HeartIcon, MessageCircle, Share2 } from "lucide-react";
 import Image from "next/image";
 import { PostWithUser } from "@/types/schema";
@@ -52,11 +52,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
               )}
             </Avatar>
             <div>
-              <Link href={`/profile/${post.user.user_id}`} className="font-medium hover:underline">
-                {post.user.name || "User"}
-              </Link>
               <p className="text-xs text-gray-500">
-                {post.createdAt ? formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) : "Recently"}
+                {post!.$createdAt ? formatDistanceToNow(new Date(post!.$createdAt), { addSuffix: true }) : "Recently"}
               </p>
             </div>
           </div>
