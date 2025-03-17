@@ -28,7 +28,7 @@ const Help = () => {
   return (
     <>
       <Toaster position="top-center" />
-      <div className="p-8 w-full flex justify-center items-center flex-col m-8 bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl transform transition-all hover:scale-75 hover:shadow-2xl">
+      <div className="p-8 w-full flex justify-center items-center flex-col m-8 bg-gradient-to-br from-green-50 to-white rounded-2xl shadow-xl hover:shadow-2xl">
         <div className="text-center">
           <svg
             className="w-16 h-16 mx-auto text-green-500 animate-pulse"
@@ -163,8 +163,8 @@ const ContactFormWithToast: React.FC<ContactFormWithToastProps> = ({ setResponse
   };
 
   return (
-    <div className="py-6 px-4">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+    <div className="bg-white py-6 px-4">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
         <InputContact 
           label="Name"
           type="text"

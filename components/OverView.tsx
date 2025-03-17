@@ -169,7 +169,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           px-8 
           rounded-tr-xl 
           rounded-br-xl 
-          mt-6 
+          my-6 
           shadow-lg 
           shadow-black/10
           border-r

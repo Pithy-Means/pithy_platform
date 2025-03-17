@@ -60,7 +60,7 @@ const InputContact: React.FC<InputContactProps> = ({
             required
             className={`px-6 h-24 py-4 ${className} text-lg ${
               isValid ? "bg-green-100" : "bg-white"
-            } border rounded border-black border-opacity-50 outline-none focus:border-green-500 focus:text-black transition duration-200`}
+            } border rounded border-black border-opacity-50 outline-none text-black focus:border-green-500 focus:text-black transition duration-200`}
           />
         ) : (
           <Input
@@ -71,10 +71,10 @@ const InputContact: React.FC<InputContactProps> = ({
             required
             className={`px-6 h-10 ${className} text-lg ${
               isValid ? "bg-white" : "bg-white"
-            } border rounded border-black border-opacity-50 outline-none focus:text-black transition duration-200`}
+            } border rounded border-black border-opacity-50 outline-none text-black focus:text-black transition duration-200`}
           />
         )}
-        <span className="text-lg text-black text-opacity-80 absolute top-0 left-0 mx-4 py-1 px-2 transition duration-200 input-text">
+        <span className="text-black text-opacity-80 absolute top-2 left-0 mx-4 py-1 px-2 transition duration-200 input-text">
           {label}
         </span>
       </Label>
