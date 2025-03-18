@@ -14,7 +14,7 @@ const Footer = () => {
   const displayText = isHovered ? text : text.slice(0, 50) + "...";
 
   return (
-    <div className="bg-black w-ful">
+    <div className="bg-black w-full">
       <div className="flex flex-col space-y-2">
         <div className="flex flex-col md:flex-row h-auto md:h-96 w-full lg:flex-row">
           <div
