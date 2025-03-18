@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar } from "./ui/avatar";
+// import { Avatar } from "./ui/avatar";
 import { formatDistanceToNow } from "date-fns";
 // import Link from "next/link";
 // import { HeartIcon, MessageCircle, Share2 } from "lucide-react";
@@ -38,20 +38,23 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold px-4">Search Results</h2>
+      <h2 className="text-lg font-semibold px-4 text-gray-300">Search Results</h2>
       
       {searchPosts.map((post) => (
         <div key={post.id} className="bg-white rounded-lg shadow-md p-4">
           {/* Post Header */}
           <div className="flex items-center space-x-3 mb-3">
-            <Avatar className="h-10 w-10">
+            <div className="h-10 w-10 bg-gray-900 rounded-full">
               {post.user?.firstname && (
                 <div className="bg-gray-200 h-full w-full flex items-center justify-center text-gray-500">
                   {(post.user.firstname || "U")[0].toUpperCase()}
                 </div>
               )}
-            </Avatar>
-            <div>
+            </div>
+            <div className="flex flex-col space-x-2">
+              <p className="text-gray-500">
+                {post.user?.firstname} {post.user?.lastname}
+              </p>
               <p className="text-xs text-gray-500">
                 {post!.$createdAt ? formatDistanceToNow(new Date(post!.$createdAt), { addSuffix: true }) : "Recently"}
               </p>
@@ -74,6 +77,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 width={500} 
                 height={300} 
                 className="w-full h-auto object-cover"
+                unoptimized
               />
             </div>
           )}
