@@ -8,9 +8,8 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import toast, { Toaster } from "react-hot-toast";
-import InputContact from '@/components/InputContact';
-import { sendContactEmail } from '@/lib/store/emailService';
+import { Toaster } from "react-hot-toast";
+import ContactForm from '@/components/ContactForm';
 
 const Help = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -84,7 +83,7 @@ const Help = () => {
           </DialogHeader>
           
           {!responseMessage ? (
-            <ContactFormWithToast setResponseMessage={setResponseMessage} closeModal={closeModal} />
+            <ContactForm setResponseMessage={setResponseMessage} />
           ) : (
             <ThankYouMessage closeModal={closeModal} />
           )}
@@ -104,119 +103,6 @@ const Help = () => {
 };
 
 export default Help;
-
-// Enhanced ContactForm with toast notifications
-interface ContactFormWithToastProps {
-  setResponseMessage: (message: string) => void;
-  closeModal: () => void;
-}
-
-const ContactFormWithToast: React.FC<ContactFormWithToastProps> = ({ setResponseMessage, closeModal }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: ""
-  });
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-
-    const loadingToast = toast.loading("Sending your message...");
-
-    try {
-      // Simulate API call
-      const success = await sendContactEmail(formData);
-      
-      toast.dismiss(loadingToast);
-      
-      if (success) {
-        toast.success("Message sent successfully!", {
-          duration: 3000
-        });
-        setResponseMessage("Email sent successfully!");
-        // Don't close modal here, as we'll show the thank you message
-      } else {
-        toast.error("Failed to send message. Please try again.", {
-          duration: 5000
-        });
-      }
-    } catch (error) {
-      console.error("Error sending form:", error);
-      toast.dismiss(loadingToast);
-      toast.error("An error occurred. Please try again later.", {
-        duration: 5000
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <div className="bg-white py-6 px-4">
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-8">
-        <InputContact 
-          label="Name"
-          type="text"
-          name="name"
-          className="w-full"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        <InputContact
-          label="Email"
-          type="email"
-          name="email"
-          className="w-full"
-          value={formData.email}
-          onChange={handleChange}
-        />
-        <InputContact
-          label="Phone Number"
-          type="tel"
-          name="phone"
-          className="w-full"
-          value={formData.phone}
-          onChange={handleChange}
-        />
-        <InputContact
-          label="Message"
-          isTextarea={true}
-          name="message"
-          className="w-full"
-          value={formData.message}
-          onChange={handleChange}
-        />
-        <div className="flex gap-4 justify-center">
-          <button
-            type="button"
-            onClick={closeModal}
-            className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-500 text-white rounded-md hover:from-green-700 hover:to-emerald-600 disabled:opacity-70"
-            disabled={loading}
-          >
-            {loading ? "Sending..." : "Submit"}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
 
 // ThankYou component for successful form submission
 interface ThankYouMessageProps {
