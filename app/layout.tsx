@@ -3,9 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { UserProvider } from "@/context/UserContext";
-// import Navbar from "@/components/Navbar";
-// import DashboardNavBar from "@/components/dashboard_navBar";
-// import { usePathname } from "next/navigation";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <>
+      <head>
         {/* Favicon for all devices */}
         <link rel="icon" href="/favicon.ico" />
 
@@ -48,7 +46,7 @@ export default function RootLayout({
           href="/favicon-16x16.png"
         />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      </>
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
@@ -57,6 +55,7 @@ export default function RootLayout({
               {children}
             </ConditionalLayout>
           </UserProvider>
+          <Analytics />
       </body>
     </html>
   );
