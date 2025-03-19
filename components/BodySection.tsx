@@ -14,39 +14,45 @@ const BodySection = () => {
       <div className="flex-1">
         <Header_description />
       </div>
-      {/* Scholarships - Bottom Center */}
-      <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 px-8 py-10 rounded-full transform rotate-0 lg:rotate-90 shadow-sm backdrop-blur-sm">
-        <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
-        <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
-          Scholarships
-        </span>
-      </Button>
+
+      <div className="flex flex-row  lg:justify-evenly sm:justify-items-center space-y-20  space-x-20 px-6 sm:space-y-0 sm:space-x-10 sm:mb-10 lg:mb-0">
+        {/* Scholarships - Bottom Center */}
+        <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 lg:px-20 lg:py-8 lg:rounded-full px-4 py-6 rounded-md transform lg:rotate-90 shadow-sm backdrop-blur-sm">
+          <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
+          <span className="lg:absolute text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
+            Scholarships
+          </span>
+        </Button>
+        <>
+          {/* Jobs - Top Left */}
+          <div className="lg:absolute lg:left-0 lg:top-0 sm:left-4 md:left-8 transform lg:-rotate-6 mt-8">
+            <Button onClick={() => router.push("signIn")} className="flex items-center justify-center bg-white/10 lg:px-8 lg:py-10 lg:rounded-full px-4 py-6 rounded-md shadow-sm backdrop-blur-xl">
+              <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
+              <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
+                Jobs
+              </span>
+            </Button>
+          </div>
+          {/* Fundings - Top Right */}
+          <div className="lg:absolute lg:left-0 lg:bottom-0 sm:left-10 md:left-16 transform lg:rotate-3 mb-10">
+            <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 lg:px-8 lg: lg:py-10 lg:rounded-full px-4 py-6 rounded-md shadow-sm backdrop-blur-sm">
+              <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
+              <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
+                Fundings
+              </span>
+            </Button>
+          </div>
+        </>
+
+
+      </div>
+
       {/* Right Section - Image Centered But Positioned on the Right */}
       <div className="flex-1 flex justify-center lg:justify-end pb-20 lg:pb-0">
         <CardImage />
       </div>
 
       {/* Absolute Positioned Elements */}
-      <>
-        {/* Jobs - Top Left */}
-        <div className="absolute left-0 top-0 sm:left-4 md:left-8 transform -rotate-6 mt-8">
-          <Button onClick={() => router.push("signIn")} className="flex items-center justify-center bg-white/10 px-8 py-10 rounded-full shadow-sm backdrop-blur-xl">
-            <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
-            <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
-              Jobs
-            </span>
-          </Button>
-        </div>
-        {/* Fundings - Top Right */}
-        <div className="absolute left-0 bottom-0 sm:left-10 md:left-16 transform rotate-3">
-          <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 px-8 py-10 rounded-full shadow-sm backdrop-blur-sm">
-            <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
-            <span className="text-sm sm:text-base md:text-lg xl:text-xl font-medium text-[#5AC35A]">
-              Fundings
-            </span>
-          </Button>
-        </div>
-      </>
     </div>
   );
 };
