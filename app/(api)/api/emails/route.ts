@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     // Send the email using Resend
     const response = await resend.emails.send({
       from: "onboarding@resend.dev", // Replace with your sender email
-      to: "bandonkeyea@gmail.com", // Replace with your target email
+      to: "pithymeansads@gmail.com", // Replace with your target email
       subject: "New Contact Form Submission",
       react: `Hello, I'm ${name} and I have a message for you: ${message}. You can reach me at ${phone} or ${email}.`,
     });
