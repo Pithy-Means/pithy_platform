@@ -2,7 +2,6 @@
 // import { cookies } from 'next/headers'
 // import { NextRequest, NextResponse } from 'next/server';
 
-
 // export default async function authenticateSessionToken(req: NextRequest) {
 //   try {
 //     // Step1: Get the Authorization header from the request
@@ -13,7 +12,6 @@
 //       return { status: 401, message: 'Authorization header missing or malformed' };
 //     }
 //     console.log('Full headers:', req.headers);
-
 
 //     // Step2: Extract the token from the Authorization header
 //     // const authToken = authHeader.slice(7); // Remove 'Bearer ' from the token
@@ -64,7 +62,6 @@
 // };
 
 // // export default authenticateSessionToken;
-
 
 // // Refreshing the session
 // export const refreshSession = async (req: NextRequest, res: NextResponse) => {

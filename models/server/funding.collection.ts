@@ -17,10 +17,34 @@ export default async function createFundingCollection() {
 
   // Create common attributes
   await Promise.all([
-    databases.createStringAttribute(db, fundingCollection, "funding_id", 100, true),
-    databases.createStringAttribute(db, fundingCollection, "user_id", 100, true),
-    databases.createStringAttribute(db, fundingCollection, "title", 1000, false),
-    databases.createStringAttribute(db, fundingCollection, "donor", 1000, false),
+    databases.createStringAttribute(
+      db,
+      fundingCollection,
+      "funding_id",
+      100,
+      true,
+    ),
+    databases.createStringAttribute(
+      db,
+      fundingCollection,
+      "user_id",
+      100,
+      true,
+    ),
+    databases.createStringAttribute(
+      db,
+      fundingCollection,
+      "title",
+      1000,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      fundingCollection,
+      "donor",
+      1000,
+      false,
+    ),
     databases.createStringAttribute(
       db,
       fundingCollection,
@@ -56,7 +80,17 @@ export default async function createFundingCollection() {
       100,
       false,
     ),
-    databases.createDatetimeAttribute(db, fundingCollection, "closing_date", false),
-    databases.createUrlAttribute(db, fundingCollection, "reference_link", false),
+    databases.createDatetimeAttribute(
+      db,
+      fundingCollection,
+      "closing_date",
+      false,
+    ),
+    databases.createUrlAttribute(
+      db,
+      fundingCollection,
+      "reference_link",
+      false,
+    ),
   ]);
-};
+}

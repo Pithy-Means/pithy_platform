@@ -1,9 +1,9 @@
-'use server';
+"use server";
 
-import { courseCollection, db, postAttachementBucket } from '@/models/name';
-import { createAdminClient } from '@/utils/appwrite';
-import { NextResponse } from 'next/server';
-import env from '@/env';
+import { courseCollection, db, postAttachementBucket } from "@/models/name";
+import { createAdminClient } from "@/utils/appwrite";
+import { NextResponse } from "next/server";
+import env from "@/env";
 
 export async function GET() {
   try {
@@ -20,7 +20,10 @@ export async function GET() {
             imageUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${course.image}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
             // imageUrl = filePreview.href;
           } catch (error) {
-            console.error(`Failed to fetch image for course ${course.$id}:`, error);
+            console.error(
+              `Failed to fetch image for course ${course.$id}:`,
+              error,
+            );
           }
         }
 
@@ -28,14 +31,17 @@ export async function GET() {
           ...course,
           image: imageUrl, // Attach the working image URL
         };
-      })
+      }),
     );
-    return NextResponse.json({ message: 'Courses fetched successfully', data: coursesWithImages });
+    return NextResponse.json({
+      message: "Courses fetched successfully",
+      data: coursesWithImages,
+    });
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    console.error("Error fetching courses:", error);
     return NextResponse.json(
-      { message: 'Failed to fetch courses', error: (error as Error).message },
-      { status: 500 }
+      { message: "Failed to fetch courses", error: (error as Error).message },
+      { status: 500 },
     );
   }
 }

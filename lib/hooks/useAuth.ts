@@ -1,5 +1,5 @@
-import {create} from 'zustand';
-import { LoginInfo } from '@/types/schema';
+import { create } from "zustand";
+import { LoginInfo } from "@/types/schema";
 
 interface AuthState {
   user: LoginInfo | null;

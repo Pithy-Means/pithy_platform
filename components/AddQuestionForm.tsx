@@ -19,7 +19,7 @@ const AddQuestionForm = () => {
 
   const handleChoiceChange = (index: number, value: string) => {
     setChoices((prev) =>
-      prev.map((choice, i) => (i === index ? value : choice))
+      prev.map((choice, i) => (i === index ? value : choice)),
     );
   };
 

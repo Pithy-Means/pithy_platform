@@ -19,10 +19,22 @@ const links = [
   { name: "Home", path: "/admin", icon: <FaHome /> },
   { name: "Dashboard", path: "/dashboard", icon: <Joystick /> },
   { name: "Add Course", path: "/admin/addcourse", icon: <FaBook /> },
-  { name: "Add Questions", path: "/admin/add_question", icon: <FaQuestionCircle /> },
+  {
+    name: "Add Questions",
+    path: "/admin/add_question",
+    icon: <FaQuestionCircle />,
+  },
   { name: "Add Job", path: "/admin/add_job", icon: <FaBriefcase /> },
-  { name: "Add Funding", path: "/admin/add_funding", icon: <FaMoneyCheckAlt /> },
-  { name: "Add Scholarship", path: "/admin/add_scholarship", icon: <FaGraduationCap /> },
+  {
+    name: "Add Funding",
+    path: "/admin/add_funding",
+    icon: <FaMoneyCheckAlt />,
+  },
+  {
+    name: "Add Scholarship",
+    path: "/admin/add_scholarship",
+    icon: <FaGraduationCap />,
+  },
 ];
 
 const AdminSidebar: React.FC = () => {
@@ -31,7 +43,6 @@ const AdminSidebar: React.FC = () => {
   const { signout } = useAuthStore((state) => state as AuthState);
 
   const router = useRouter();
-  
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
@@ -58,7 +69,7 @@ const AdminSidebar: React.FC = () => {
           onClick={toggleSidebar}
           className="p-2 hover:bg-green-500 rounded-lg"
         >
-          {isCollapsed ? "«" : "»" }
+          {isCollapsed ? "«" : "»"}
         </button>
       </div>
 
@@ -73,9 +84,7 @@ const AdminSidebar: React.FC = () => {
             }`}
           >
             <span className="text-xl">{link.icon}</span>
-            {!isCollapsed && (
-              <span className="ml-3">{link.name}</span>
-            )}
+            {!isCollapsed && <span className="ml-3">{link.name}</span>}
           </Link>
         ))}
       </nav>

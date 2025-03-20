@@ -9,14 +9,24 @@ interface ReferralHistoryModalProps {
   userId: string;
 }
 interface ReferralDetails {
-  referrals: { id: string; firstname: string; lastname: string; date: string; earnings: number }[];
+  referrals: {
+    id: string;
+    firstname: string;
+    lastname: string;
+    date: string;
+    earnings: number;
+  }[];
   totalPoints: number;
   totalEarnings: number;
 }
 
-export const ReferralHistoryModal = ({ isOpen, onClose, userId }: ReferralHistoryModalProps) => {
-  
-  const [referralDetails, setReferralDetails] = useState<ReferralDetails | null>(null);
+export const ReferralHistoryModal = ({
+  isOpen,
+  onClose,
+  userId,
+}: ReferralHistoryModalProps) => {
+  const [referralDetails, setReferralDetails] =
+    useState<ReferralDetails | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -88,7 +98,7 @@ export const ReferralHistoryModal = ({ isOpen, onClose, userId }: ReferralHistor
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {referralDetails?.referrals.map((referral) => (
-                      <tr 
+                      <tr
                         key={referral.id}
                         className="hover:bg-gray-50 transition-colors"
                       >

@@ -11,7 +11,7 @@ interface ModuleFormProps {
 export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
   const [formData, setFormData] = useState<Modules>({
     module_id: "",
-    course_id: Array.isArray(course_id) ? course_id[0] : course_id, 
+    course_id: Array.isArray(course_id) ? course_id[0] : course_id,
     module_title: "",
     module_description: "",
     video: "",
@@ -19,20 +19,23 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
 
-  const truncatedCourseId = (id: string) => id.length > 100 ? id.substring(0, 100) : id;
+  const truncatedCourseId = (id: string) =>
+    id.length > 100 ? id.substring(0, 100) : id;
 
   useEffect(() => {
     if (course_id) {
       setFormData((prev) => ({
         ...prev,
-        course_id: truncatedCourseId(Array.isArray(course_id) ? course_id[0] : course_id), 
+        course_id: truncatedCourseId(
+          Array.isArray(course_id) ? course_id[0] : course_id,
+        ),
       }));
       console.log("Course ID:", course_id);
     }
   }, [course_id]);
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -44,7 +47,7 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
       const reader = new FileReader();
 
       reader.onload = () => {
-        const base64Video = reader.result as string; 
+        const base64Video = reader.result as string;
         setFormData((prev) => ({
           ...prev,
           video: base64Video,
@@ -55,7 +58,7 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
         console.error("Failed to read the file as Base64");
       };
 
-      reader.readAsDataURL(videoFile); 
+      reader.readAsDataURL(videoFile);
     }
   };
 
@@ -70,9 +73,9 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-          ...formData, 
-          course_id: truncatedCourseId((formData.course_id?.toString() || "")),
+        body: JSON.stringify({
+          ...formData,
+          course_id: truncatedCourseId(formData.course_id?.toString() || ""),
         }),
       });
 
@@ -87,7 +90,7 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
           module_description: "",
           video: "",
         });
-        setTimeout(() => closeModal(), 1500); 
+        setTimeout(() => closeModal(), 1500);
       } else {
         setMessage(`Error: ${result.message}`);
       }
@@ -108,30 +111,30 @@ export default function ModuleForm({ course_id, closeModal }: ModuleFormProps) {
       )}
 
       <form onSubmit={handleSubmit} className="space-y-4">
-        <input 
-          type="text" 
-          name="module_title" 
-          value={formData.module_title} 
-          onChange={handleInputChange} 
-          required 
-          className="w-full px-3 py-2 border rounded" 
+        <input
+          type="text"
+          name="module_title"
+          value={formData.module_title}
+          onChange={handleInputChange}
+          required
+          className="w-full px-3 py-2 border rounded"
         />
 
-        <textarea 
-          name="module_description" 
-          value={formData.module_description} 
-          onChange={handleInputChange} 
-          required 
-          className="w-full px-3 py-2 border rounded" 
+        <textarea
+          name="module_description"
+          value={formData.module_description}
+          onChange={handleInputChange}
+          required
+          className="w-full px-3 py-2 border rounded"
         />
 
-        <input 
-          type="file" 
-          name="module_video" 
+        <input
+          type="file"
+          name="module_video"
           onChange={handleFileChange}
           accept="video/mp4"
-          required 
-          className="w-full px-3 py-2" 
+          required
+          className="w-full px-3 py-2"
         />
 
         <button

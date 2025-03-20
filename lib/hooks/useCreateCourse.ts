@@ -16,12 +16,17 @@ export const useCreateCourse = () => {
       user_id: user?.user_id,
     };
 
-    const result = await fetchData('/api/create-course', 'POST', { 'Content-Type': 'application/json' } ,newCourse);
+    const result = await fetchData(
+      "/api/create-course",
+      "POST",
+      { "Content-Type": "application/json" },
+      newCourse,
+    );
 
     if (result) {
-      console.log('Course created:', result);
+      console.log("Course created:", result);
     } else {
-      console.error('Failed to create course.');
+      console.error("Failed to create course.");
     }
 
     return result;

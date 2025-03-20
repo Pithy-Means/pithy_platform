@@ -3,11 +3,18 @@ import InputContact from "./InputContact";
 
 interface StudentFieldsProps {
   data: Partial<StudentInfo>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => void;
 }
 
 // Component for student-specific form fields
-export const StudentFields: React.FC<StudentFieldsProps> = ({ data, onChange }) => (
+export const StudentFields: React.FC<StudentFieldsProps> = ({
+  data,
+  onChange,
+}) => (
   <div className="space-y-4">
     <div className="mb-4">
       <label className="block text-gray-700">Education Level</label>

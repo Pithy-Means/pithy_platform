@@ -3,11 +3,18 @@ import InputContact from "./InputContact";
 
 interface JobSeekerFieldsProps {
   data: Partial<JobSeekerInfo>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => void;
 }
 
 // Component for job seeker-specific form fields
-export const JobSeekerFields: React.FC<JobSeekerFieldsProps> = ({ data, onChange }) => (
+export const JobSeekerFields: React.FC<JobSeekerFieldsProps> = ({
+  data,
+  onChange,
+}) => (
   <div className="space-y-4">
     <InputContact
       label="Desired Job Title"

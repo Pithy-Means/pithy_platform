@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PhoneInput from "react-phone-input-2";
-import 'react-phone-input-2/lib/material.css'
+import "react-phone-input-2/lib/material.css";
 
 interface PhonenumberProps {
   initialPhone?: string;
@@ -38,19 +38,19 @@ const Phonenumber: React.FC<PhonenumberProps> = ({
           name: "phone",
           required: true,
           "aria-label": "Phone number input",
-          className: "w-full"
+          className: "w-full",
         }}
         containerClass={`z-50 bg-white border rounded-lg shadow-sm transition focus-within:ring-2 focus-within:ring-green-500 focus-within:border-green-500 max-w-full ${className}`}
         inputStyle={{
           width: "100%",
           height: "60px",
-          fontSize: "16px"
+          fontSize: "16px",
         }}
         buttonStyle={{
-          borderRadius: "8px 0 0 8px"
+          borderRadius: "8px 0 0 8px",
         }}
         containerStyle={{
-          width: "100%"
+          width: "100%",
         }}
       />
     </div>

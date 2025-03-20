@@ -68,7 +68,9 @@ export const LinkPreview = ({
   const translateX = useSpring(x, springConfig);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const targetRect = (event.target as HTMLAnchorElement).getBoundingClientRect();
+    const targetRect = (
+      event.target as HTMLAnchorElement
+    ).getBoundingClientRect();
     const eventOffsetX = event.clientX - targetRect.left;
     const offsetFromCenter = (eventOffsetX - targetRect.width / 2) / 2; // Reduce the effect to make it subtle
     x.set(offsetFromCenter);

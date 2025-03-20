@@ -36,6 +36,12 @@ export default function createCertificateCollection() {
       100,
       true,
     ),
-    databases.createStringAttribute(db, certificateCollection, "certificate", 100, true),
+    databases.createStringAttribute(
+      db,
+      certificateCollection,
+      "certificate",
+      100,
+      true,
+    ),
   ]);
 }

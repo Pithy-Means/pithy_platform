@@ -30,7 +30,7 @@ const SignInForm = () => {
 
   // Load saved attempts on component mount
   useEffect(() => {
-    const savedAttempts = localStorage.getItem('loginAttempts');
+    const savedAttempts = localStorage.getItem("loginAttempts");
     if (savedAttempts) {
       setAttempts(parseInt(savedAttempts));
     }
@@ -43,7 +43,7 @@ const SignInForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setFormdata((prev) => ({ ...prev, [name]: value }));
@@ -52,21 +52,21 @@ const SignInForm = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-  
+
     if (!formdata.email || !formdata.password) {
       toast.error("Email or Password is missing.");
       setLoading(false);
       return;
     }
-  
+
     try {
       const response = await signin(formdata as LoginInfo);
-  
+
       if (response.success) {
         // Reset attempts on successful login
         setAttempts(0);
-        localStorage.removeItem('loginAttempts');
-        
+        localStorage.removeItem("loginAttempts");
+
         setUser(response.data?.user);
         toast.success("Login successful! Redirecting to dashboard...");
         router.push("/dashboard");
@@ -74,8 +74,8 @@ const SignInForm = () => {
         // Calculate next attempts count
         const nextAttempts = attempts + 1;
         setAttempts(nextAttempts);
-        localStorage.setItem('loginAttempts', nextAttempts.toString());
-  
+        localStorage.setItem("loginAttempts", nextAttempts.toString());
+
         // Check if attempts have reached the limit
         if (nextAttempts >= MAX_ATTEMPTS) {
           toast.promise(
@@ -86,21 +86,24 @@ const SignInForm = () => {
               }, 3000);
             }),
             {
-              loading: "Maximum login attempts reached. Redirecting to password reset...",
+              loading:
+                "Maximum login attempts reached. Redirecting to password reset...",
               success: "Redirecting...",
               error: "An error occurred",
-            }
+            },
           );
         } else {
           const remainingAttempts = MAX_ATTEMPTS - nextAttempts;
-          toast.error(`${response.message ?? "Invalid credentials"}. ${remainingAttempts} attempt${remainingAttempts !== 1 ? 's' : ''} remaining.`);
+          toast.error(
+            `${response.message ?? "Invalid credentials"}. ${remainingAttempts} attempt${remainingAttempts !== 1 ? "s" : ""} remaining.`,
+          );
         }
       }
     } catch (error) {
       const nextAttempts = attempts + 1;
       setAttempts(nextAttempts);
-      localStorage.setItem('loginAttempts', nextAttempts.toString());
-      
+      localStorage.setItem("loginAttempts", nextAttempts.toString());
+
       if (nextAttempts >= MAX_ATTEMPTS) {
         toast.promise(
           new Promise<void>((resolve) => {
@@ -110,14 +113,17 @@ const SignInForm = () => {
             }, 3000);
           }),
           {
-            loading: "Maximum login attempts reached. Redirecting to password reset...",
+            loading:
+              "Maximum login attempts reached. Redirecting to password reset...",
             success: "Redirecting...",
             error: "An error occurred",
-          }
+          },
         );
       } else {
         const remainingAttempts = MAX_ATTEMPTS - nextAttempts;
-        toast.error(`An error occurred. Please try again. ${remainingAttempts} attempt${remainingAttempts !== 1 ? 's' : ''} remaining.`);
+        toast.error(
+          `An error occurred. Please try again. ${remainingAttempts} attempt${remainingAttempts !== 1 ? "s" : ""} remaining.`,
+        );
       }
     } finally {
       setLoading(false);
@@ -130,7 +136,8 @@ const SignInForm = () => {
       <div className="bg-gradient-to-r from-[#ffffff] via-green-300 to-green-100 p-8 rounded-lg shadow-lg w-full h-screen relative">
         <Button
           onClick={() => router.push("/")}
-          className="fixed md:top-8 left-8 bottom-4 bg-transparent text-black hover:text-green-500 hover:bg-white">
+          className="fixed md:top-8 left-8 bottom-4 bg-transparent text-black hover:text-green-500 hover:bg-white"
+        >
           <MoveLeft size={24} className="mx-3" />
           Go Back
         </Button>

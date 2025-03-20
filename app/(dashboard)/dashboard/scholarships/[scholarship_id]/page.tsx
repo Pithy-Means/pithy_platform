@@ -33,7 +33,6 @@ const ScholarshipDetailPage = () => {
     }
   }, [scholarship_id]);
 
-
   if (loading) {
     return (
       <div className="fixed inset-0 flex justify-center items-center bg-opacity-75 z-50">

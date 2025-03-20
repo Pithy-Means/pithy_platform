@@ -14,7 +14,9 @@ export const UserContext = createContext<UserContextValue>({
   setUser: () => {},
 });
 
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserInfo | null>(null);
 
   useEffect(() => {
@@ -31,5 +33,5 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <UserContext.Provider value={{ user, setUser }}>
       {children}
     </UserContext.Provider>
-  );  
+  );
 };

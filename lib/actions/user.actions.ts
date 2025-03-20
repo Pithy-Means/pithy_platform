@@ -180,7 +180,7 @@ export const reset = async (data: UpdateUser) => {
     const response = await account.updateRecovery(
       data.user_id,
       data.secret,
-      data.password
+      data.password,
     );
     console.log("Password reset response", response);
 
@@ -195,7 +195,7 @@ export const getReferralDetails = async (userId: string) => {
   try {
     const { databases } = await createAdminClient();
     const user = await databases.listDocuments(db, userCollection, [
-      Query.equal("user_id", userId)
+      Query.equal("user_id", userId),
     ]);
 
     // Check if user exists and has documents
@@ -223,7 +223,7 @@ export const getReferralDetails = async (userId: string) => {
           const referredUser = await databases.getDocument(
             db,
             userCollection,
-            referredId
+            referredId,
           );
           return {
             id: referredId,
@@ -236,7 +236,7 @@ export const getReferralDetails = async (userId: string) => {
           console.error(`Error fetching referred user ${referredId}:`, error);
           return null;
         }
-      }
+      },
     );
 
     const referrals = (await Promise.all(referralPromises)).filter(Boolean);
@@ -255,11 +255,11 @@ export const getReferralDetails = async (userId: string) => {
 export const updateReferralPoints = async (
   referrerId: string,
   amount: number,
-  newReferredUserId: string
+  newReferredUserId: string,
 ) => {
   try {
     const { databases } = await createAdminClient();
-    
+
     // Important: Check if we're using user_id or document $id
     // First, try to find the user document by user_id field
     const userQuery = await databases.listDocuments(db, userCollection, [
@@ -269,11 +269,13 @@ export const updateReferralPoints = async (
     // If not found, try directly with document ID
     let userDoc;
     let userDocId;
-    
+
     if (userQuery?.documents?.length > 0) {
       userDoc = userQuery.documents[0];
       userDocId = userDoc.$id;
-      console.log(`Found user by user_id: ${referrerId}, document ID: ${userDocId}`);
+      console.log(
+        `Found user by user_id: ${referrerId}, document ID: ${userDocId}`,
+      );
     } else {
       // Try as document ID directly
       try {
@@ -291,11 +293,14 @@ export const updateReferralPoints = async (
     }
 
     // Log the current state before update
-    console.log("Current referrer state:", JSON.stringify({
-      referral_points: userDoc.referral_points || 0,
-      earned_referral_fees: userDoc.earned_referral_fees || 0,
-      referred_users: userDoc.referred_users || []
-    }));
+    console.log(
+      "Current referrer state:",
+      JSON.stringify({
+        referral_points: userDoc.referral_points || 0,
+        earned_referral_fees: userDoc.earned_referral_fees || 0,
+        referred_users: userDoc.referred_users || [],
+      }),
+    );
 
     // Calculate new points and amount
     const currentPoints = userDoc.referral_points || 0;
@@ -303,13 +308,19 @@ export const updateReferralPoints = async (
     const referral_fee = amount * 0.1; // 10% of the payment amount
 
     // Ensure referred_users is an array and prevent duplicates
-    const currentReferredUsers = Array.isArray(userDoc.referred_users) ? userDoc.referred_users : [];
+    const currentReferredUsers = Array.isArray(userDoc.referred_users)
+      ? userDoc.referred_users
+      : [];
     if (!currentReferredUsers.includes(newReferredUserId)) {
       currentReferredUsers.push(newReferredUserId);
     }
 
-    console.log(`Updating referrer ${userDocId} with new referred user ${newReferredUserId}`);
-    console.log(`New state will be: points=${currentPoints + 1}, fees=${currentAmount + referral_fee}, users=${currentReferredUsers.length}`);
+    console.log(
+      `Updating referrer ${userDocId} with new referred user ${newReferredUserId}`,
+    );
+    console.log(
+      `New state will be: points=${currentPoints + 1}, fees=${currentAmount + referral_fee}, users=${currentReferredUsers.length}`,
+    );
 
     // Update referrer with new points and amount
     const referrerUpdated = await databases.updateDocument(
@@ -320,14 +331,17 @@ export const updateReferralPoints = async (
         referral_points: currentPoints + 1,
         earned_referral_fees: currentAmount + referral_fee,
         referred_users: currentReferredUsers,
-      }
+      },
     );
 
-    console.log("Update successful, new state:", JSON.stringify({
-      referral_points: referrerUpdated.referral_points,
-      earned_referral_fees: referrerUpdated.earned_referral_fees,
-      referred_users: referrerUpdated.referred_users
-    }));
+    console.log(
+      "Update successful, new state:",
+      JSON.stringify({
+        referral_points: referrerUpdated.referral_points,
+        earned_referral_fees: referrerUpdated.earned_referral_fees,
+        referred_users: referrerUpdated.referred_users,
+      }),
+    );
 
     return parseStringify(referrerUpdated);
   } catch (error) {
@@ -365,7 +379,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
       userId,
       email,
       password,
-      `${firstname} ${lastname}`
+      `${firstname} ${lastname}`,
     );
 
     if (!createdAccount) {
@@ -378,35 +392,42 @@ export const register = async (userdata: Partial<UserInfo>) => {
     // Step 2: Process referral if code provided
     let referrerInfo = null;
     let actualReferralCode = null;
-    
+
     // IMPROVED: More robust referral code handling
     if (referral_code) {
       console.log("Raw referral code/URL:", referral_code);
       let codeToUse = referral_code;
-      
+
       // Convert to string if not already
-      if (typeof codeToUse !== 'string') {
+      if (typeof codeToUse !== "string") {
         codeToUse = String(codeToUse);
         console.log("Converted non-string code to string:", codeToUse);
       }
-      
+
       // Check if it's potentially a URL with referral parameter
-      if (codeToUse.includes('?') || codeToUse.includes('=') || codeToUse.startsWith('http')) {
+      if (
+        codeToUse.includes("?") ||
+        codeToUse.includes("=") ||
+        codeToUse.startsWith("http")
+      ) {
         try {
           // First try standard URL parsing
           let urlObj;
           try {
             urlObj = new URL(codeToUse);
             const urlParams = new URLSearchParams(urlObj.search);
-            const extracted = urlParams.get('referral');
+            const extracted = urlParams.get("referral");
             if (extracted) {
               actualReferralCode = extracted;
-              console.log("Successfully extracted from URL object:", actualReferralCode);
+              console.log(
+                "Successfully extracted from URL object:",
+                actualReferralCode,
+              );
             }
           } catch (urlError) {
             console.log("Not a valid URL, trying regex extraction");
           }
-          
+
           // If URL parsing failed or didn't get a code, try regex
           if (!actualReferralCode) {
             const match = codeToUse.match(/[?&]referral=([^&]+)/);
@@ -419,77 +440,66 @@ export const register = async (userdata: Partial<UserInfo>) => {
           console.error("Error extracting referral code:", e);
         }
       }
-      
+
       // If we couldn't extract from URL/pattern or it wasn't a URL, use as-is
       if (!actualReferralCode) {
         actualReferralCode = codeToUse.trim();
         console.log("Using direct referral code:", actualReferralCode);
       }
     }
-    
+
     // DEBUGGING: Log the final referral code
     console.log("Final referral code to use:", actualReferralCode);
-    
+
     // Process referral if we have what looks like a valid code
     if (actualReferralCode && actualReferralCode.trim() !== "") {
       try {
         // Normalize the code - trim and ensure it's a clean string
         const normalizedCode = actualReferralCode.trim();
-        console.log("Looking up referrer with normalized code:", normalizedCode);
-        
+        console.log(
+          "Looking up referrer with normalized code:",
+          normalizedCode,
+        );
+
         // Find referrer by their referral code - EXACT match
         const referrerQuery = await databases.listDocuments(
           db,
           userCollection,
-          [Query.equal("referral_code", normalizedCode)]
+          [Query.equal("referral_code", normalizedCode)],
         );
 
         console.log(`Referrer query results: ${referrerQuery.total} documents`);
 
-        if (referrerQuery.total > 0 && referrerQuery.documents && referrerQuery.documents.length > 0) {
+        if (
+          referrerQuery.total > 0 &&
+          referrerQuery.documents &&
+          referrerQuery.documents.length > 0
+        ) {
           referrerInfo = referrerQuery.documents[0];
-          console.log(`Found referrer: ${referrerInfo.$id} (${referrerInfo.firstname || 'Unknown'} ${referrerInfo.lastname || 'User'})`);
-          
+          console.log(
+            `Found referrer: ${referrerInfo.$id} (${referrerInfo.firstname || "Unknown"} ${referrerInfo.lastname || "User"})`,
+          );
+
           // Get the document ID for updating
           const referrerDocId = referrerInfo.$id;
-          
+
           // Manual referral update without calling updateReferralPoints function
           try {
             // Get current values with safe defaults
-            const currentPoints = referrerInfo.referral_points || 0;
-            const currentAmount = referrerInfo.earned_referral_fees || 0;
-            const referral_fee = 10 * 0.1; // Default amount * 10%
-            
+            await updateReferralPoints(referrerDocId, 1, userId);
+
             // Safely handle referred_users array
             let currentReferredUsers: string[] = [];
             if (Array.isArray(referrerInfo.referred_users)) {
               currentReferredUsers = [...referrerInfo.referred_users];
             }
-            
+
             // Add the new user if not already included
             if (!currentReferredUsers.includes(userId)) {
               currentReferredUsers.push(userId);
             }
-            
-            console.log("About to update referrer with new values:", {
-              points: currentPoints + 1,
-              fees: currentAmount + referral_fee,
-              users: currentReferredUsers
-            });
-            
-            // Direct update without going through the function
-            const updatedReferrer = await databases.updateDocument(
-              db,
-              userCollection,
-              referrerDocId,
-              {
-                referral_points: currentPoints + 1,
-                earned_referral_fees: currentAmount + referral_fee,
-                referred_users: currentReferredUsers
-              }
-            );
-            
-            console.log("Referral updated directly:", updatedReferrer.$id);
+            console.log("Updated referred users array:", currentReferredUsers);
+            console.log("Updated referral points for referrer:", referrerDocId);
           } catch (directUpdateError) {
             console.error("Failed direct referral update:", directUpdateError);
           }
@@ -517,7 +527,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
         referral_by: actualReferralCode || "",
         earned_referral_fees: 0,
         referred_users: [], // New user starts with empty referred_users array
-      }
+      },
     );
 
     // Step 4: Create session
@@ -555,14 +565,14 @@ export const register = async (userdata: Partial<UserInfo>) => {
     }
 
     throw new Error(
-      error instanceof Error ? error.message : "Failed to register user"
+      error instanceof Error ? error.message : "Failed to register user",
     );
   }
 };
 
 export const updateUserProfile = async (
   userId: string,
-  updatedData: Partial<UserInfo>
+  updatedData: Partial<UserInfo>,
 ) => {
   const { databases } = await createAdminClient();
 
@@ -578,14 +588,14 @@ export const updateUserProfile = async (
 
     // Create a clean copy without $databaseId
     const cleanData = { ...updatedData };
-    if ('$databaseId' in cleanData) {
+    if ("$databaseId" in cleanData) {
       delete cleanData.$databaseId;
-    } 
-    if ('$collectionId' in cleanData) {
-      delete cleanData.$collectionId; 
-    } 
-    if ('$id' in cleanData) {
-      delete cleanData.$id; 
+    }
+    if ("$collectionId" in cleanData) {
+      delete cleanData.$collectionId;
+    }
+    if ("$id" in cleanData) {
+      delete cleanData.$id;
     }
 
     // Update the document with the new data
@@ -593,7 +603,7 @@ export const updateUserProfile = async (
       db,
       userCollection,
       user.documents[0].$id,
-      cleanData
+      cleanData,
     );
 
     console.log(`User profile updated for userId: ${updatedProfile.$id}`);
@@ -602,7 +612,7 @@ export const updateUserProfile = async (
     console.log("Error updating user profile:", error);
 
     throw new Error(
-      error instanceof Error ? error.message : "Failed to update user profile"
+      error instanceof Error ? error.message : "Failed to update user profile",
     );
   }
 };
@@ -610,7 +620,7 @@ export const updateUserProfile = async (
 export const getAllUsers = async (
   limit = 25,
   offset = 0,
-  filters: any[] = []
+  filters: any[] = [],
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -629,7 +639,7 @@ export const getAllUsers = async (
   } catch (error) {
     console.error("Error fetching users:", error);
     throw new Error(
-      error instanceof Error ? error.message : "Failed to fetch users"
+      error instanceof Error ? error.message : "Failed to fetch users",
     );
   }
 };
@@ -668,7 +678,7 @@ export const searchUsers = async ({
           Query.search("lastname", searchTerm),
           Query.search("email", searchTerm),
           Query.search("user_id", searchTerm),
-        ])
+        ]),
       );
     }
 
@@ -704,7 +714,7 @@ export const searchUsers = async ({
   } catch (error) {
     console.error("Error searching users:", error);
     throw new Error(
-      error instanceof Error ? error.message : "Failed to search users"
+      error instanceof Error ? error.message : "Failed to search users",
     );
   }
 };
@@ -713,7 +723,7 @@ export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
     const response = await account.createVerification(
-      "https://pithy-platform.vercel.app/verify"
+      "https://pithy-platform.vercel.app/verify",
     );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
@@ -830,7 +840,7 @@ export const createPost = async (data: Post) => {
           binaryData = Buffer.from(base64Data, "base64");
         } catch (err) {
           throw new Error(
-            `Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`
+            `Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`,
           );
         }
 
@@ -842,7 +852,7 @@ export const createPost = async (data: Post) => {
         const MAX_SIZE = 5 * 1024 * 1024; // 5MB
         if (binaryData.length > MAX_SIZE) {
           throw new Error(
-            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`
+            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`,
           );
         }
 
@@ -851,7 +861,7 @@ export const createPost = async (data: Post) => {
 
         file = new File([binaryData], fileName, { type: mimeType });
         console.log(
-          `Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`
+          `Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`,
         );
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -871,7 +881,7 @@ export const createPost = async (data: Post) => {
         const fileUpload = await storage.createFile(
           postAttachementBucket,
           ID.unique(),
-          file
+          file,
         );
         console.log("File uploaded successfully:", fileUpload.$id);
 
@@ -884,7 +894,7 @@ export const createPost = async (data: Post) => {
       } catch (uploadErr) {
         console.error("File upload error:", uploadErr);
         throw new Error(
-          `Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`
+          `Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`,
         );
       }
     }
@@ -905,7 +915,7 @@ export const createPost = async (data: Post) => {
           post_id: validPost,
           image: imageId, // Will be empty string if no image
           video: videoId, // Will be empty string if no video
-        }
+        },
       );
 
       console.log("Post created successfully:", post.$id);
@@ -913,7 +923,7 @@ export const createPost = async (data: Post) => {
     } catch (dbErr) {
       console.error("Database error:", dbErr);
       throw new Error(
-        `Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`
+        `Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`,
       );
     }
   } catch (error: unknown) {
@@ -929,7 +939,7 @@ export const createPost = async (data: Post) => {
 
 export const updatePost = async (
   postId: string,
-  updatedData: Partial<Post>
+  updatedData: Partial<Post>,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -938,7 +948,7 @@ export const updatePost = async (
       db,
       postCollection,
       postId,
-      updatedData
+      updatedData,
     );
     return parseStringify(post);
   } catch (error) {
@@ -1010,7 +1020,7 @@ export const repost = async (data: Post) => {
         user_comment: user_comment || "", // Optional user comment
         created_at: now,
         updated_at: now,
-      }
+      },
     );
 
     console.log("Repost created successfully:", repost);
@@ -1052,7 +1062,7 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
           image: imageUrl,
           video: videoUrl,
         };
-      })
+      }),
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1074,7 +1084,7 @@ export const getPost = async (postId: string) => {
 export const searchPostsByContent = async (
   searchTerm: string,
   page: number = 1,
-  limit: number = 3
+  limit: number = 3,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1107,7 +1117,7 @@ export const searchPostsByContent = async (
           image: imageUrl,
           video: videoUrl,
         };
-      })
+      }),
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1123,83 +1133,94 @@ export const searchPosts = async (
     dateRange?: { start?: Date; end?: Date };
     page?: number;
     limit?: number;
-    sortBy?: 'recent' | 'popular' | 'relevant';
-  } = {}
+    sortBy?: "recent" | "popular" | "relevant";
+  } = {},
 ) => {
   try {
     const { databases } = await createAdminClient();
     const {
-      searchTerm = '',
-      author = '',
+      searchTerm = "",
+      author = "",
       dateRange = {},
       page = 1,
       limit = 10,
-      sortBy = 'recent'
+      sortBy = "recent",
     } = options;
-    
+
     const offset = (page - 1) * limit;
     const queries = [];
-    
+
     // Content search
     if (searchTerm) {
       queries.push(Query.search("content", searchTerm));
     }
-    
+
     // Filter by author if provided
     if (author) {
       queries.push(Query.equal("user_id", author));
     }
-    
+
     // Date range filtering
     if (dateRange.start) {
-      queries.push(Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()));
+      queries.push(
+        Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()),
+      );
     }
     if (dateRange.end) {
-      queries.push(Query.lessThanEqual("$createdAt", dateRange.end.toISOString()));
+      queries.push(
+        Query.lessThanEqual("$createdAt", dateRange.end.toISOString()),
+      );
     }
-    
+
     // Sorting
     switch (sortBy) {
-      case 'recent':
+      case "recent":
         queries.push(Query.orderDesc("$createdAt"));
         break;
-      case 'popular':
+      case "popular":
         queries.push(Query.orderDesc("likesCount"));
         break;
-      case 'relevant':
+      case "relevant":
         // If searching by term, relevance is applied by default
         if (!searchTerm) {
           queries.push(Query.orderDesc("$createdAt"));
         }
         break;
     }
-    
+
     // Pagination
     queries.push(Query.limit(limit));
     queries.push(Query.offset(offset));
-    
+
     const posts = await databases.listDocuments(db, postCollection, queries);
-    
+
     if (!posts?.documents || !Array.isArray(posts.documents)) {
       console.error("Invalid posts response");
       return {
         posts: [],
         totalPosts: 0,
         currentPage: page,
-        totalPages: 0
+        totalPages: 0,
       };
     }
-    
+
     // Get total posts count for pagination
-    const totalQuery = [...queries.filter(q => 
-      !q.toString().includes('limit') && 
-      !q.toString().includes('offset') && 
-      !q.toString().includes('orderBy')
-    )];
-    
-    const totalPosts = await databases.listDocuments(db, postCollection, totalQuery);
+    const totalQuery = [
+      ...queries.filter(
+        (q) =>
+          !q.toString().includes("limit") &&
+          !q.toString().includes("offset") &&
+          !q.toString().includes("orderBy"),
+      ),
+    ];
+
+    const totalPosts = await databases.listDocuments(
+      db,
+      postCollection,
+      totalQuery,
+    );
     const totalPages = Math.ceil((totalPosts?.total || 0) / limit);
-    
+
     // Process posts to include file URLs
     const postsWithFiles = await Promise.all(
       posts.documents.map(async (post) => {
@@ -1216,14 +1237,14 @@ export const searchPosts = async (
           image: imageUrl,
           video: videoUrl,
         };
-      })
+      }),
     );
-    
+
     return {
       posts: parseStringify(postsWithFiles),
       totalPosts: totalPosts?.total || 0,
       currentPage: page,
-      totalPages
+      totalPages,
     };
   } catch (error) {
     console.error("Error in searchPosts:", error);
@@ -1231,7 +1252,7 @@ export const searchPosts = async (
       posts: [],
       totalPosts: 0,
       currentPage: 1,
-      totalPages: 0
+      totalPages: 0,
     };
   }
 };
@@ -1240,7 +1261,7 @@ export const searchPostsByUser = async (
   firstname?: string,
   lastname?: string,
   page: number = 1,
-  limit: number = 3
+  limit: number = 3,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1264,7 +1285,7 @@ export const searchPostsByUser = async (
     const posts = await databases.listDocuments(
       db,
       postCollection,
-      searchQueries
+      searchQueries,
     );
 
     if (!posts?.documents || !Array.isArray(posts.documents)) {
@@ -1287,7 +1308,7 @@ export const searchPostsByUser = async (
           image: imageUrl,
           video: videoUrl,
         };
-      })
+      }),
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1311,7 +1332,7 @@ export const createComment = async (data: CommentPost) => {
         ...data,
         post_id: postExists.post_id,
         comment_id: validComment,
-      }
+      },
     );
     console.log("Comment created", comment);
     return parseStringify(comment);
@@ -1349,7 +1370,7 @@ export const likePost = async (data: LikePost) => {
         ...data,
         post_id: postExists.post_id,
         like_post_id: validLike,
-      }
+      },
     );
     console.log("Like created", like);
     return parseStringify(like);
@@ -1390,7 +1411,7 @@ export const toggleLike = async (data: LikePost) => {
           ...data,
           post_id: postExists.post_id,
           like_post_id: validLike,
-        }
+        },
       );
       console.log("Like created", like);
       return parseStringify(like);
@@ -1455,7 +1476,7 @@ export const createJob = async (job: Job) => {
         ...job,
         user_id: job.user_id,
         job_id: validJobId,
-      }
+      },
     );
 
     console.log("Job created", response);
@@ -1526,7 +1547,7 @@ export const getModules = async () => {
 
 export const createPostCourseQuestions = async (
   data: PostCourseQuestion,
-  questions: Array<{ text: string; choices: string[] }>
+  questions: Array<{ text: string; choices: string[] }>,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1535,7 +1556,7 @@ export const createPostCourseQuestions = async (
 
     for (const [index, question] of questions.entries()) {
       const validQuestionId = generateValidPostId(
-        `${data.post_course_question_id}-${index}`
+        `${data.post_course_question_id}-${index}`,
       );
 
       questionDocument = await databases.createDocument(
@@ -1548,7 +1569,7 @@ export const createPostCourseQuestions = async (
           choices: question.choices,
           user_id: data.user_id,
           post_course_question_id: validQuestionId,
-        }
+        },
       );
       console.log("Question created", questionDocument);
     }
@@ -1565,7 +1586,7 @@ export const fetchAllPostCourseQuestions = async () => {
 
     const response = await databases.listDocuments(
       db,
-      postCourseQuestionCollection
+      postCourseQuestionCollection,
     );
     // Optionally, parse or format the response if needed
     const data = response.documents.map((doc) => ({
@@ -1590,7 +1611,7 @@ export const fetchPostCourseQuestion = async (questionId: string) => {
     const response = await databases.getDocument(
       db,
       postCourseQuestionCollection,
-      questionId
+      questionId,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1600,7 +1621,7 @@ export const fetchPostCourseQuestion = async (questionId: string) => {
 
 export const updatePostCourseQuestion = async (
   questionId: string,
-  data: Partial<PostCourseQuestion>
+  data: Partial<PostCourseQuestion>,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1608,7 +1629,7 @@ export const updatePostCourseQuestion = async (
       db,
       postCourseQuestionCollection,
       questionId,
-      data
+      data,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1622,7 +1643,7 @@ export const deletePostCourseQuestion = async (questionId: string) => {
     const response = await databases.deleteDocument(
       db,
       postCourseQuestionCollection,
-      questionId
+      questionId,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1631,7 +1652,7 @@ export const deletePostCourseQuestion = async (questionId: string) => {
 };
 
 export const createPostCourseAnswer = async (
-  data: PostCourseQuestionAnswer
+  data: PostCourseQuestionAnswer,
 ) => {
   const { answer_id } = data;
   const validAnswerId = generateValidPostId(answer_id);
@@ -1640,7 +1661,7 @@ export const createPostCourseAnswer = async (
     const getQuestionId = await databases.listDocuments(
       db,
       postCourseQuestionCollection,
-      [Query.equal("post_course_question_id", data.post_course_question_id)]
+      [Query.equal("post_course_question_id", data.post_course_question_id)],
     );
 
     console.log("Question ID", getQuestionId.documents[0].$id);
@@ -1656,7 +1677,7 @@ export const createPostCourseAnswer = async (
         answer: data.answer,
         post_course_question_id: questionId,
         answer_id: validAnswerId,
-      }
+      },
     );
 
     console.log("Answer created", answer);
@@ -1679,7 +1700,7 @@ export const createFunding = async (data: Funding) => {
       {
         ...data,
         funding_id: validFundingId,
-      }
+      },
     );
     console.log("Funding created", funding);
     return parseStringify(funding);
@@ -1704,7 +1725,7 @@ export const getFunding = async (fundingId: string) => {
     const funding = await databases.getDocument(
       db,
       fundingCollection,
-      fundingId
+      fundingId,
     );
     return parseStringify(funding);
   } catch (error) {
@@ -1714,7 +1735,7 @@ export const getFunding = async (fundingId: string) => {
 
 export const updateFunding = async (
   fundingId: string,
-  data: Partial<Funding>
+  data: Partial<Funding>,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1722,7 +1743,7 @@ export const updateFunding = async (
       db,
       fundingCollection,
       fundingId,
-      data
+      data,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1736,7 +1757,7 @@ export const deleteFunding = async (fundingId: string) => {
     const response = await databases.deleteDocument(
       db,
       fundingCollection,
-      fundingId
+      fundingId,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1757,7 +1778,7 @@ export const createScholarship = async (data: Scholarship) => {
       {
         ...data,
         scholarship_id: validScholarshipId,
-      }
+      },
     );
     console.log("Scholarship created", scholarship);
     return parseStringify(scholarship);
@@ -1771,7 +1792,7 @@ export const getScholarships = async () => {
     const { databases } = await createAdminClient();
     const scholarships = await databases.listDocuments(
       db,
-      scholarshipCollection
+      scholarshipCollection,
     );
     return parseStringify(scholarships);
   } catch (error) {
@@ -1785,7 +1806,7 @@ export const getScholarship = async (scholarshipId: string) => {
     const scholarship = await databases.getDocument(
       db,
       scholarshipCollection,
-      scholarshipId
+      scholarshipId,
     );
     return parseStringify(scholarship);
   } catch (error) {
@@ -1795,7 +1816,7 @@ export const getScholarship = async (scholarshipId: string) => {
 
 export const updateScholarship = async (
   scholarshipId: string,
-  data: Partial<Scholarship>
+  data: Partial<Scholarship>,
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1803,7 +1824,7 @@ export const updateScholarship = async (
       db,
       scholarshipCollection,
       scholarshipId,
-      data
+      data,
     );
     return parseStringify(response);
   } catch (error) {
@@ -1817,7 +1838,7 @@ export const deleteScholarship = async (scholarshipId: string) => {
     const response = await databases.deleteDocument(
       db,
       scholarshipCollection,
-      scholarshipId
+      scholarshipId,
     );
     return parseStringify(response);
   } catch (error) {

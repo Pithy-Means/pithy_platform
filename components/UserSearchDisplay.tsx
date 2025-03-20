@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { UserInfo } from '@/types/schema';
+import React, { useState, useEffect, useCallback } from "react";
+import { UserInfo } from "@/types/schema";
 
 // Define the Props interface for UserSearchDisplay
 interface UserSearchDisplayProps {
@@ -20,7 +20,9 @@ interface UserSearchDisplayProps {
   }) => Promise<{ users: UserInfo[]; total: number }>;
 }
 
-const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction }) => {
+const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({
+  searchFunction,
+}) => {
   // State for search parameters
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string[]>([]);
@@ -43,50 +45,70 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
   const handleSearch = useCallback(async () => {
     setIsSearching(true);
     setError("");
-    
+
     try {
       const offset = (currentPage - 1) * pageSize;
-      
+
       const filters: {
         categories?: string[];
         referral_by?: string;
       } = {};
       if (categoryFilter.length > 0) filters.categories = categoryFilter;
       if (referralFilter) filters.referral_by = referralFilter;
-      
+
       const result = await searchFunction({
         searchTerm: searchTerm.trim() === "" ? undefined : searchTerm,
         filters,
         limit: pageSize,
         offset,
         sortField,
-        sortOrder
+        sortOrder,
       });
-      
+
       setUsers(result.users);
       setTotalUsers(result.total);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred during search");
+      setError(
+        err instanceof Error ? err.message : "An error occurred during search",
+      );
       setUsers([]);
       setTotalUsers(0);
     } finally {
       setIsSearching(false);
     }
-  }, [searchTerm, categoryFilter, referralFilter, currentPage, pageSize, sortField, sortOrder, searchFunction]);
+  }, [
+    searchTerm,
+    categoryFilter,
+    referralFilter,
+    currentPage,
+    pageSize,
+    sortField,
+    sortOrder,
+    searchFunction,
+  ]);
 
   // Perform search when page changes
   useEffect(() => {
     if (searchTerm || categoryFilter.length > 0 || referralFilter) {
       handleSearch();
     }
-  }, [currentPage, sortField, sortOrder, pageSize, searchTerm, categoryFilter.length, referralFilter, handleSearch]);
+  }, [
+    currentPage,
+    sortField,
+    sortOrder,
+    pageSize,
+    searchTerm,
+    categoryFilter.length,
+    referralFilter,
+    handleSearch,
+  ]);
 
   // Handle category selection
   const toggleCategory = (category: string) => {
-    setCategoryFilter(prev => 
-      prev.includes(category) 
-        ? prev.filter(c => c !== category) 
-        : [...prev, category]
+    setCategoryFilter((prev) =>
+      prev.includes(category)
+        ? prev.filter((c) => c !== category)
+        : [...prev, category],
     );
   };
 
@@ -96,7 +118,7 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
   return (
     <div className="w-full max-w-6xl mx-auto p-4">
       <h2 className="text-2xl font-bold mb-6">User Search</h2>
-      
+
       {/* Search Form */}
       <div className="bg-gray-100 p-4 rounded-lg mb-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -110,18 +132,18 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
               className="w-full p-2 border rounded"
             />
           </div>
-          
+
           <div>
             <label className="block text-sm font-medium mb-1">Categories</label>
             <div className="flex flex-wrap gap-2">
-              {availableCategories.map(category => (
+              {availableCategories.map((category) => (
                 <button
                   key={category}
                   onClick={() => toggleCategory(category)}
                   className={`px-2 py-1 text-sm rounded ${
                     categoryFilter.includes(category)
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-200'
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200"
                   }`}
                 >
                   {category}
@@ -129,9 +151,11 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
               ))}
             </div>
           </div>
-          
+
           <div>
-            <label className="block text-sm font-medium mb-1">Referral Code</label>
+            <label className="block text-sm font-medium mb-1">
+              Referral Code
+            </label>
             <input
               type="text"
               placeholder="Referral Code"
@@ -141,12 +165,12 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
             />
           </div>
         </div>
-        
+
         <div className="flex justify-between items-center">
           <div className="flex gap-4">
             <div>
               <label className="block text-sm font-medium mb-1">Sort By</label>
-              <select 
+              <select
                 value={sortField as string}
                 onChange={(e) => setSortField(e.target.value as keyof UserInfo)}
                 className="p-2 border rounded"
@@ -157,7 +181,7 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                 <option value="referral_points">Referral Points</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">Order</label>
               <select
@@ -169,7 +193,7 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                 <option value="desc">Descending</option>
               </select>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium mb-1">Per Page</label>
               <select
@@ -187,7 +211,7 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
               </select>
             </div>
           </div>
-          
+
           <button
             onClick={handleSearch}
             disabled={isSearching}
@@ -197,14 +221,14 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
           </button>
         </div>
       </div>
-      
+
       {/* Error message */}
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
         </div>
       )}
-      
+
       {/* Results table */}
       {users.length > 0 ? (
         <div>
@@ -216,8 +240,12 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                   <th className="py-2 px-4 border-b text-left">Email</th>
                   <th className="py-2 px-4 border-b text-left">User ID</th>
                   <th className="py-2 px-4 border-b text-left">Categories</th>
-                  <th className="py-2 px-4 border-b text-left">Referral Code</th>
-                  <th className="py-2 px-4 border-b text-left">Referral Points</th>
+                  <th className="py-2 px-4 border-b text-left">
+                    Referral Code
+                  </th>
+                  <th className="py-2 px-4 border-b text-left">
+                    Referral Points
+                  </th>
                   <th className="py-2 px-4 border-b text-left">Actions</th>
                 </tr>
               </thead>
@@ -235,7 +263,9 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                       </div>
                     </td>
                     <td className="py-2 px-4 border-b">{user.referral_code}</td>
-                    <td className="py-2 px-4 border-b">{user.referral_points}</td>
+                    <td className="py-2 px-4 border-b">
+                      {user.referral_points}
+                    </td>
                     <td className="py-2 px-4 border-b">
                       <button className="text-blue-600 hover:text-blue-800 mr-2">
                         Edit
@@ -249,11 +279,13 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
               </tbody>
             </table>
           </div>
-          
+
           {/* Pagination */}
           <div className="flex justify-between items-center mt-4">
             <div>
-              Showing {(currentPage - 1) * pageSize + 1} to {Math.min(currentPage * pageSize, totalUsers)} of {totalUsers} users
+              Showing {(currentPage - 1) * pageSize + 1} to{" "}
+              {Math.min(currentPage * pageSize, totalUsers)} of {totalUsers}{" "}
+              users
             </div>
             <div className="flex gap-2">
               <button
@@ -264,7 +296,7 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                 First
               </button>
               <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className="px-3 py-1 border rounded disabled:opacity-50"
               >
@@ -274,7 +306,9 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
                 Page {currentPage} of {totalPages || 1}
               </span>
               <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
                 disabled={currentPage === totalPages || totalPages === 0}
                 className="px-3 py-1 border rounded disabled:opacity-50"
               >
@@ -295,7 +329,11 @@ const UserSearchDisplay: React.FC<UserSearchDisplayProps> = ({ searchFunction })
           {isSearching ? (
             <p>Searching for users...</p>
           ) : (
-            <p>{searchTerm || categoryFilter.length > 0 || referralFilter ? "No users found matching your criteria." : "Enter search criteria and click 'Search' to find users."}</p>
+            <p>
+              {searchTerm || categoryFilter.length > 0 || referralFilter
+                ? "No users found matching your criteria."
+                : "Enter search criteria and click 'Search' to find users."}
+            </p>
           )}
         </div>
       )}

@@ -8,7 +8,9 @@ const CommentsList = ({ comments }: { comments: CommentPostWithUser[] }) => {
       <div className="flex flex-col items-center justify-center text-center py-20">
         <MessageCircle className="w-14 h-14 text-gray-300 mb-6" />
         <p className="text-xl font-semibold text-gray-600">No comments yet</p>
-        <p className="text-sm text-gray-500">Be the first to share your thoughts and start a conversation!</p>
+        <p className="text-sm text-gray-500">
+          Be the first to share your thoughts and start a conversation!
+        </p>
       </div>
     );
   }

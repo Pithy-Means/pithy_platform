@@ -43,7 +43,12 @@ const countries = [
   { name: "Cuba", code: "CU", flag: "🇨🇺", currency: "CUP" },
   { name: "Cyprus", code: "CY", flag: "🇨🇾", currency: "EUR" },
   { name: "Czech Republic", code: "CZ", flag: "🇨🇿", currency: "CZK" },
-  { name: "Democratic Republic of the Congo", code: "CD", flag: "🇨🇩", currency: "CDF" },
+  {
+    name: "Democratic Republic of the Congo",
+    code: "CD",
+    flag: "🇨🇩",
+    currency: "CDF",
+  },
   { name: "Denmark", code: "DK", flag: "🇩🇰", currency: "DKK" },
   { name: "Djibouti", code: "DJ", flag: "🇩🇯", currency: "DJF" },
   { name: "Dominica", code: "DM", flag: "🇩🇲", currency: "XCD" },
@@ -146,7 +151,12 @@ const countries = [
   { name: "Rwanda", code: "RW", flag: "🇷🇼", currency: "RWF" },
   { name: "Saint Kitts and Nevis", code: "KN", flag: "🇰🇳", currency: "XCD" },
   { name: "Saint Lucia", code: "LC", flag: "🇱🇨", currency: "XCD" },
-  { name: "Saint Vincent and the Grenadines", code: "VC", flag: "🇻🇨", currency: "XCD" },
+  {
+    name: "Saint Vincent and the Grenadines",
+    code: "VC",
+    flag: "🇻🇨",
+    currency: "XCD",
+  },
   { name: "Samoa", code: "WS", flag: "🇼🇸", currency: "WST" },
   { name: "San Marino", code: "SM", flag: "🇸🇲", currency: "EUR" },
   { name: "Sao Tome and Principe", code: "ST", flag: "🇸🇹", currency: "STN" },
@@ -195,7 +205,7 @@ const countries = [
   { name: "Vietnam", code: "VN", flag: "🇻🇳", currency: "VND" },
   { name: "Yemen", code: "YE", flag: "🇾🇪", currency: "YER" },
   { name: "Zambia", code: "ZM", flag: "🇿🇲", currency: "ZMW" },
-  { name: "Zimbabwe", code: "ZW", flag: "🇿🇼", currency: "ZWL" }
+  { name: "Zimbabwe", code: "ZW", flag: "🇿🇼", currency: "ZWL" },
 ];
 
 export default countries;

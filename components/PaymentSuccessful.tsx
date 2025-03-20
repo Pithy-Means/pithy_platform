@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Companion Modal Component
-import React from 'react';
-import { CheckCircle2, XCircle } from 'lucide-react';
+import React from "react";
+import { CheckCircle2, XCircle } from "lucide-react";
 
 interface PaymentStatusModalProps {
-  status: 'idle' | 'success' | 'failed';
+  status: "idle" | "success" | "failed";
   details?: any;
   message?: string;
   onClose: () => void;
@@ -14,14 +14,14 @@ export const PaymentStatusModal: React.FC<PaymentStatusModalProps> = ({
   status,
   details,
   message,
-  onClose
+  onClose,
 }) => {
-  if (status === 'idle') return null;
+  if (status === "idle") return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full text-center">
-        {status === 'success' ? (
+        {status === "success" ? (
           <div>
             <div className="flex justify-center mb-4">
               <CheckCircle2 size={64} className="text-green-500" />
@@ -52,13 +52,15 @@ export const PaymentStatusModal: React.FC<PaymentStatusModalProps> = ({
             <p className="text-gray-700 mb-4">{message}</p>
           </div>
         )}
-        <button 
+        <button
           onClick={onClose}
           className={`
             px-6 py-2 rounded-md transition-colors
-            ${status === 'success' 
-              ? 'bg-green-500 hover:bg-green-600 text-white' 
-              : 'bg-red-500 hover:bg-red-600 text-white'}
+            ${
+              status === "success"
+                ? "bg-green-500 hover:bg-green-600 text-white"
+                : "bg-red-500 hover:bg-red-600 text-white"
+            }
           `}
         >
           Close

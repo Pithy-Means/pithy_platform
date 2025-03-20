@@ -122,7 +122,8 @@ textarea:valid ~ .input-text {
 }
 
 @keyframes bounce3D {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -131,7 +132,8 @@ textarea:valid ~ .input-text {
 }
 
 @keyframes pulse3D {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
     opacity: 1;
   }
@@ -142,7 +144,8 @@ textarea:valid ~ .input-text {
 }
 
 @keyframes jiggle3D {
-  0%, 100% {
+  0%,
+  100% {
     transform: rotate(0deg);
   }
   25% {

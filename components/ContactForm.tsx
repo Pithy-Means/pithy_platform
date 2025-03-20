@@ -24,7 +24,7 @@ const ContactForm: React.FC<ContactFormProps> = ({ setResponseMessage }) => {
 
     try {
       const success = await sendContactEmail(formData);
-      
+
       if (success) {
         setResponseMessage("Email sent successfully!");
       } else {

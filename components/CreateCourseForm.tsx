@@ -1,6 +1,6 @@
 "use client";
 
-import {useCreateCourse} from "@/lib/hooks/useCreateCourse"
+import { useCreateCourse } from "@/lib/hooks/useCreateCourse";
 import { Courses, UserInfo } from "@/types/schema";
 import React, { useEffect, useState } from "react";
 import { Input } from "./ui/input";
@@ -8,7 +8,6 @@ import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-
 
 const CreateCourseForm = () => {
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
@@ -26,13 +25,13 @@ const CreateCourseForm = () => {
   });
 
   useEffect(() => {
-    if ( course.user_id ) {
-        // Update the user_id in the course object
-        setCourse((prevCourse) => ({
-          ...prevCourse,
-          user_id: user?.user_id || "",
-        }));
-    };
+    if (course.user_id) {
+      // Update the user_id in the course object
+      setCourse((prevCourse) => ({
+        ...prevCourse,
+        user_id: user?.user_id || "",
+      }));
+    }
   }, [course.user_id, user?.user_id]);
 
   // Handle file change (image file)
@@ -59,7 +58,9 @@ const CreateCourseForm = () => {
 
   // Handle input changes
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     const { name, value } = e.target;
     setCourse((prevCourse) => ({
@@ -76,16 +77,16 @@ const CreateCourseForm = () => {
     try {
       await handleSubmit(course);
       setCourse({
-        course_id: '',
+        course_id: "",
         user_id: course.user_id,
-        title: '',
-        description: '',
+        title: "",
+        description: "",
         price: 0,
-        duration: '',
-        image: '',
-        requirements: '',
+        duration: "",
+        image: "",
+        requirements: "",
         students: [],
-        categories: ''
+        categories: "",
       });
     } catch (err: unknown) {
       console.error("Failed to create course:", err);
@@ -216,7 +217,7 @@ const CreateCourseForm = () => {
       </div>
 
       <div className="mb-4">
-      <Label
+        <Label
           htmlFor="Category"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
@@ -240,44 +241,43 @@ const CreateCourseForm = () => {
 
       {/* Submit Button */}
       <div className="flex items-center justify-between">
-      <Button
-        type="submit"
-        disabled={loading}
-        className={`px-4 py-2 text-white font-semibold rounded-md ${
-          loading
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
-        }`}
-      >
-        {loading ? (
-          <div className="flex items-center">
-            <span>Creating Course...</span>
-            <svg
-              className="animate-spin h-5 w-5 ml-2 text-white"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
-              ></path>
-            </svg>
-          </div>
-        ) : (
-          "Create Course"
-        )}
-      </Button>
-
+        <Button
+          type="submit"
+          disabled={loading}
+          className={`px-4 py-2 text-white font-semibold rounded-md ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center">
+              <span>Creating Course...</span>
+              <svg
+                className="animate-spin h-5 w-5 ml-2 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 11-8 8z"
+                ></path>
+              </svg>
+            </div>
+          ) : (
+            "Create Course"
+          )}
+        </Button>
       </div>
 
       {error && <p className="mt-4 text-sm text-red-600">{error}</p>}

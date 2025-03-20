@@ -10,10 +10,10 @@ const OurStory = () => {
         <div className="pb-6">
           <TitleDot title={"Our story"} />
           <p className="text-lg text-center lg:text-left my-2">
-            Pithy means was founded to address the increasing concern of academic
-            regrets, professional issues, and business collapse. Our team
-            realized that many people invest time and resources in the wrong
-            areas, leading to dissatisfaction and poor performance.
+            Pithy means was founded to address the increasing concern of
+            academic regrets, professional issues, and business collapse. Our
+            team realized that many people invest time and resources in the
+            wrong areas, leading to dissatisfaction and poor performance.
           </p>
         </div>
         <div className="flex flex-col lg:justify-start justify-center">

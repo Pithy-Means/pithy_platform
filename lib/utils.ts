@@ -8,8 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 
 // Generate a unique referral code for users
 export const generateReferralCode = (length: number = 40): string => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
@@ -39,7 +39,7 @@ export const parseString = (data: string) => {
     console.error("Error parsing JSON:", error);
   }
   return data;
-}
+};
 
 export const generateValidPostId = (post_id?: string): string => {
   const isValidPostId = post_id && /^[a-zA-Z0-9._-]{1,36}$/.test(post_id);
@@ -55,4 +55,3 @@ export const timeFetcher = (date: string, daysOffset: number): string => {
   newDate.setDate(newDate.getDate() + daysOffset);
   return newDate.toISOString(); // Ensure it returns the ISO string
 };
-

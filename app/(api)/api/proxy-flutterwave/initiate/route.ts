@@ -69,7 +69,7 @@ export async function POST(req: Request) {
           payment_id: payId,
           course_choice,
           status: "pending",
-        }
+        },
       );
 
       console.log("storePayment", storePayment);

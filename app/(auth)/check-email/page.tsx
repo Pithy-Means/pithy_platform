@@ -30,8 +30,8 @@ const CheckEmailPage = () => {
         and click on the link to verify your account.
       </p>
       <p className="mt-4 text-black">
-        If you haven&apos;t received the email, click the button below to resend the
-        verification link.
+        If you haven&apos;t received the email, click the button below to resend
+        the verification link.
       </p>
       <button
         onClick={handleResendVerification}
