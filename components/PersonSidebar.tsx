@@ -22,9 +22,9 @@ import { ReferralHistoryModal } from "./ReferralHistoryModal";
 
 const PersonSidebar = () => {
   const [copied, setCopied] = useState(false);
-  const [ showModal, setShowModal ] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const { user } = useAuthStore((state) => state as { user: UserInfo });
-  const referralLink = `https://pithy-platform.vercel.app/signUp?referral=${user?.referral_code || ""}`;
+  const referralLink = `http://localhost:3000/signUp?referral=${user?.referral_code || ""}`;
 
   // Logic for copying referral link to clipboard
   const copyToClipboard = () => {
@@ -197,7 +197,7 @@ const PersonSidebar = () => {
             <Button
               onClick={openReferralHistory}
               className="bg-green-600 hover:bg-green-700 text-white shadow-md text-center py-2 px-4 rounded-full"
-              >
+            >
               Referral History
             </Button>
           </motion.div>
@@ -207,7 +207,11 @@ const PersonSidebar = () => {
       {showModal && (
         <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-center">
           <div className="bg-white w-96 max-h-[80vh] rounded-2xl p-4 overflow-y-auto">
-            <ReferralHistoryModal isOpen={showModal} onClose={() => setShowModal(false)} userId={user.user_id} />
+            <ReferralHistoryModal
+              isOpen={showModal}
+              onClose={() => setShowModal(false)}
+              userId={user.user_id}
+            />
           </div>
         </div>
       )}

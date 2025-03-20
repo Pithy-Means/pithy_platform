@@ -56,7 +56,7 @@ const AddScholarship = () => {
   }, [user]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prevState: Scholarship) => ({
@@ -118,8 +118,8 @@ const AddScholarship = () => {
           prevScholarships.map((scholarship) =>
             scholarship.scholarship_id === editingId
               ? { ...scholarship, ...formData }
-              : scholarship
-          )
+              : scholarship,
+          ),
         );
         setTimeout(() => {
           setEditingId(null);
@@ -284,7 +284,9 @@ const AddScholarship = () => {
                 <p className="text-green-700">Amount: {scholarship.amount}</p>
                 <p className="text-green-700">
                   Deadline:{" "}
-                  {scholarship.deadline ? new Date(scholarship.deadline).toLocaleDateString() : "No deadline"}
+                  {scholarship.deadline
+                    ? new Date(scholarship.deadline).toLocaleDateString()
+                    : "No deadline"}
                 </p>
                 <div className="flex gap-2 mt-2">
                   <button

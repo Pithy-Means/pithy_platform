@@ -1,5 +1,5 @@
-import React from 'react';
-import Image from 'next/image';
+import React from "react";
+import Image from "next/image";
 
 const PaymentForm: React.FC = () => {
   return (
@@ -8,9 +8,8 @@ const PaymentForm: React.FC = () => {
         <h1 className="text-xl font-bold text-center mb-2">Payment Details</h1>
         <p className="text-center text-gray-600 mb-4">
           To Access The Full Services Offered By Pithy Means, Note That Will Be
-          Charged $50, To Have Pass Any Test
-          To Access The Full Services Offered By Pithy Means, Note That Will Be Charged
-          $50, To Have Pass Any Test
+          Charged $50, To Have Pass Any Test To Access The Full Services Offered
+          By Pithy Means, Note That Will Be Charged $50, To Have Pass Any Test
         </p>
 
         {/* Product Card */}
@@ -106,7 +105,8 @@ const PaymentForm: React.FC = () => {
                 alt="Visa"
                 width={40}
                 height={40}
-                className="h-12" />
+                className="h-12"
+              />
             </div>
             <div className="p-2 border border-green-500 rounded-xl">
               <Image

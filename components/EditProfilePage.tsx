@@ -8,76 +8,83 @@ import { updateUserProfile } from "@/lib/actions/user.actions";
 import toast, { Toaster } from "react-hot-toast"; // Import toast
 
 export default function EditProfilePage() {
-  const { user, setUser } = useAuthStore((state) => state as unknown as { 
-    user: UserInfo;
-    setUser: (user: UserInfo) => void;
-  });
-  
+  const { user, setUser } = useAuthStore(
+    (state) =>
+      state as unknown as {
+        user: UserInfo;
+        setUser: (user: UserInfo) => void;
+      },
+  );
+
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Partial<UserInfo>>(user || {});
-  
+
   if (!user) {
     return (
       <div className="flex items-center justify-center h-full">
-        <p className="text-gray-600 text-lg animate-pulse">Loading user info...</p>
+        <p className="text-gray-600 text-lg animate-pulse">
+          Loading user info...
+        </p>
       </div>
     );
   }
-  
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
-    
+
     // Handle nested fields
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
         ...prev,
         [parent]: {
           ...(prev[parent] as Record<string, unknown>),
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
       // Clean up the data for submission
       const dataToSubmit = { ...formData };
-      
+
       // Format category-specific data based on selected category
       if (formData.categories) {
-            if (formData.categories === "student")  {
-              education_level: formData.education_level as string;
-              institution_name: formData.institution_name;
-              major_subject: formData.major_subject;
-              expected_graduation_year: Number(formData.expected_graduation_year)
-            };
-            
-          if (formData.categories === "job seeker") {
-              desired_job_title: formData.desired_job_title;
-              skills: formData.skills;
-              years_of_work_experience: Number(formData.years_of_work_experience);
-              resume_link: formData.resume_link;
-              availability_status: formData.availability_status as string
-            };
-        if (formData.categories === "employer") {
-              company_name: formData.company_name;
-              company_size: formData.company_size as string;
-              industry_type: formData.industry_type;
-              position_in_company: formData.position_in_company;
-              url: formData.url
-            };
+        if (formData.categories === "student") {
+          education_level: formData.education_level as string;
+          institution_name: formData.institution_name;
+          major_subject: formData.major_subject;
+          expected_graduation_year: Number(formData.expected_graduation_year);
         }
-      
+
+        if (formData.categories === "job seeker") {
+          desired_job_title: formData.desired_job_title;
+          skills: formData.skills;
+          years_of_work_experience: Number(formData.years_of_work_experience);
+          resume_link: formData.resume_link;
+          availability_status: formData.availability_status as string;
+        }
+        if (formData.categories === "employer") {
+          company_name: formData.company_name;
+          company_size: formData.company_size as string;
+          industry_type: formData.industry_type;
+          position_in_company: formData.position_in_company;
+          url: formData.url;
+        }
+      }
+
       const result = await updateUserProfile(user.user_id, dataToSubmit);
       console.log("Profile updated:", result);
-      
+
       setUser({ ...user, ...dataToSubmit } as UserInfo);
       toast.success("Profile updated successfully!");
     } catch (error) {
@@ -87,31 +94,36 @@ export default function EditProfilePage() {
       setIsLoading(false);
     }
   };
-  
+
   return (
     <div className="h-[70vh] overflow-auto rounded-md shadow-md bg-gray-100">
       {/* Add Toaster component to render notifications */}
-      <Toaster position="top-center" toastOptions={{
-        success: {
-          style: {
-            background: '#10B981',
-            color: 'white',
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          success: {
+            style: {
+              background: "#10B981",
+              color: "white",
+            },
+            duration: 3000,
           },
-          duration: 3000,
-        },
-        error: {
-          style: {
-            background: '#EF4444',
-            color: 'white',
+          error: {
+            style: {
+              background: "#EF4444",
+              color: "white",
+            },
+            duration: 4000,
           },
-          duration: 4000,
-        },
-      }} />
-      
+        }}
+      />
+
       <main className="flex items-center justify-center py-4">
         <div className="w-full max-w-4xl bg-white rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-center mb-6">Edit Your Profile</h1>
-          
+          <h1 className="text-2xl font-bold text-center mb-6">
+            Edit Your Profile
+          </h1>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Avatar Section */}
             <div className="flex flex-col items-center mb-6">
@@ -130,13 +142,15 @@ export default function EditProfilePage() {
               )}
               {/* Avatar upload could be added here */}
             </div>
-            
+
             {/* Basic Information */}
             <section>
               <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    First Name
+                  </label>
                   <input
                     type="text"
                     name="firstname"
@@ -145,9 +159,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     name="lastname"
@@ -156,9 +172,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -166,11 +184,15 @@ export default function EditProfilePage() {
                     onChange={handleChange}
                     className="w-full p-2 border rounded-lg"
                   />
-                  <p className="text-xs text-gray-500 mt-1">Changing email requires password verification</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Changing email requires password verification
+                  </p>
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Phone
+                  </label>
                   <input
                     type="tel"
                     name="phone"
@@ -179,9 +201,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Country
+                  </label>
                   <input
                     type="text"
                     name="country"
@@ -190,9 +214,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    City
+                  </label>
                   <input
                     type="text"
                     name="city"
@@ -201,9 +227,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Age Range</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Age Range
+                  </label>
                   <select
                     name="age"
                     value={formData.age || ""}
@@ -217,9 +245,11 @@ export default function EditProfilePage() {
                     <option value="46 and +">46 and +</option>
                   </select>
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Gender
+                  </label>
                   <select
                     name="gender"
                     value={formData.gender || ""}
@@ -233,12 +263,14 @@ export default function EditProfilePage() {
                 </div>
               </div>
             </section>
-            
+
             {/* Category Selection */}
             <section>
               <h2 className="text-xl font-semibold mb-4">User Category</h2>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
                 <select
                   name="categories"
                   value={formData.categories || ""}
@@ -252,14 +284,18 @@ export default function EditProfilePage() {
                 </select>
               </div>
             </section>
-            
+
             {/* Category-specific fields */}
             {formData.categories === "student" && (
               <section>
-                <h2 className="text-xl font-semibold mb-4">Student Information</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Student Information
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Education Level</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Education Level
+                    </label>
                     <select
                       name="education_level"
                       value={formData.education_level || ""}
@@ -275,9 +311,11 @@ export default function EditProfilePage() {
                       <option value="PhD">PhD</option>
                     </select>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Institution Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Institution Name
+                    </label>
                     <input
                       type="text"
                       name="institution_name"
@@ -286,9 +324,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Major Subject</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Major Subject
+                    </label>
                     <input
                       type="text"
                       name="major_subject"
@@ -297,9 +337,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Expected Graduation Year</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Expected Graduation Year
+                    </label>
                     <input
                       type="number"
                       name="expected_graduation_year"
@@ -311,13 +353,17 @@ export default function EditProfilePage() {
                 </div>
               </section>
             )}
-            
+
             {formData.categories === "job seeker" && (
               <section>
-                <h2 className="text-xl font-semibold mb-4">Job Seeker Information</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Job Seeker Information
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Desired Job Title</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Desired Job Title
+                    </label>
                     <input
                       type="text"
                       name="desired_job_title"
@@ -326,9 +372,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Skills</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Skills
+                    </label>
                     <input
                       type="text"
                       name="skills"
@@ -338,9 +386,11 @@ export default function EditProfilePage() {
                       placeholder="Separate skills with commas"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Years of Experience
+                    </label>
                     <input
                       type="number"
                       name="years_of_work_experience"
@@ -349,9 +399,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Resume Link</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Resume Link
+                    </label>
                     <input
                       type="url"
                       name="resume_link"
@@ -360,9 +412,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Availability</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Availability
+                    </label>
                     <select
                       name="availability_status"
                       value={formData.availability_status || ""}
@@ -370,20 +424,28 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     >
                       <option value="">Select Availability</option>
-                      <option value="immediately available">Immediately Available</option>
-                      <option value="open to opportunities">Open to Opportunities</option>
+                      <option value="immediately available">
+                        Immediately Available
+                      </option>
+                      <option value="open to opportunities">
+                        Open to Opportunities
+                      </option>
                     </select>
                   </div>
                 </div>
               </section>
             )}
-            
+
             {formData.categories === "employer" && (
               <section>
-                <h2 className="text-xl font-semibold mb-4">Employer Information</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                  Employer Information
+                </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Company Name
+                    </label>
                     <input
                       type="text"
                       name="company_name"
@@ -392,9 +454,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Size</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Company Size
+                    </label>
                     <select
                       name="company_size"
                       value={formData.company_size || ""}
@@ -405,13 +469,17 @@ export default function EditProfilePage() {
                       <option value="1-10 employees">1-10 employees</option>
                       <option value="11-50 employees">11-50 employees</option>
                       <option value="51-200 employees">51-200 employees</option>
-                      <option value="201-500 employees">201-500 employees</option>
+                      <option value="201-500 employees">
+                        201-500 employees
+                      </option>
                       <option value="501+ employees">501+ employees</option>
                     </select>
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Industry Type</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Industry Type
+                    </label>
                     <input
                       type="text"
                       name="industry_type"
@@ -420,9 +488,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Position in Company</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Position in Company
+                    </label>
                     <input
                       type="text"
                       name="position_in_company"
@@ -431,9 +501,11 @@ export default function EditProfilePage() {
                       className="w-full p-2 border rounded-lg"
                     />
                   </div>
-                  
+
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Website</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Company Website
+                    </label>
                     <input
                       type="url"
                       name="url"
@@ -445,13 +517,17 @@ export default function EditProfilePage() {
                 </div>
               </section>
             )}
-            
+
             {/* Password Update Section (Optional) */}
             <section>
-              <h2 className="text-xl font-semibold mb-4">Update Password (Optional)</h2>
+              <h2 className="text-xl font-semibold mb-4">
+                Update Password (Optional)
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Current Password
+                  </label>
                   <input
                     type="password"
                     name="password"
@@ -459,9 +535,11 @@ export default function EditProfilePage() {
                     className="w-full p-2 border rounded-lg"
                   />
                 </div>
-                
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    New Password
+                  </label>
                   <input
                     type="password"
                     name="new_password"
@@ -471,7 +549,7 @@ export default function EditProfilePage() {
                 </div>
               </div>
             </section>
-            
+
             {/* Submit Button */}
             <div className="flex justify-center pt-4 pb-8">
               <button

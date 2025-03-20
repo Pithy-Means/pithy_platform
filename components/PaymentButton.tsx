@@ -29,7 +29,9 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
   useEffect(() => {
     const fetchExchangeRate = async () => {
       try {
-        const response = await fetch(`https://api.exchangerate-api.com/v4/latest/USD`);
+        const response = await fetch(
+          `https://api.exchangerate-api.com/v4/latest/USD`,
+        );
         if (!response.ok) throw new Error("Failed to fetch exchange rate");
 
         const data = await response.json();
@@ -45,7 +47,9 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
   const initiatePayment = async () => {
     setLoading(true);
     try {
-      const amountInSelectedCurrency = Math.floor((formData.amount || 6) * exchangeRate); // Convert USD to selected currency and round down to nearest integer
+      const amountInSelectedCurrency = Math.floor(
+        (formData.amount || 6) * exchangeRate,
+      ); // Convert USD to selected currency and round down to nearest integer
       console.log("Amount in selected currency:", amountInSelectedCurrency);
 
       const tx_ref = `${Date.now()}-${formData.user_id}-${formData.course_choice}`;
@@ -97,7 +101,9 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
 
       {/* Currency Selector */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Select Currency:</label>
+        <label className="block text-sm font-medium text-gray-700">
+          Select Currency:
+        </label>
         <select
           value={selectedCountry.code}
           onChange={(e) => {
@@ -119,7 +125,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
       {/* Display Converted Amount */}
       <div className="flex items-center space-x-4">
         <span className="text-lg font-semibold text-yellow-300">
-          {selectedCountry.currency} {((formData.amount || 6) * exchangeRate).toFixed(2)}
+          {selectedCountry.currency}{" "}
+          {((formData.amount || 6) * exchangeRate).toFixed(2)}
         </span>
       </div>
 
@@ -139,7 +146,8 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
           By proceeding, you agree to our{" "}
           <a href="#" className="text-indigo-200 hover:underline">
             terms and conditions
-          </a>.
+          </a>
+          .
         </p>
       </div>
 

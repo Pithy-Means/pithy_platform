@@ -31,6 +31,8 @@ export default function RootLayout({
       <head>
         {/* Favicon for all devices */}
         <link rel="icon" href="/favicon.ico" />
+        {/** Manifest */}
+        <link rel="manifest" href="/manifest.json" />
 
         {/* Optionally, add more sizes for better support */}
         <link
@@ -50,12 +52,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
-          <UserProvider>
-            <ConditionalLayout>
-              {children}
-            </ConditionalLayout>
-          </UserProvider>
-          <Analytics />
+        <UserProvider>
+          <ConditionalLayout>{children}</ConditionalLayout>
+        </UserProvider>
+        <Analytics />
       </body>
     </html>
   );

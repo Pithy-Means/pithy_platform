@@ -33,7 +33,9 @@ const SpecialMobile = () => {
           </div>
         </div>
         <div className=" text-black flex flex-col items-center space-y-4">
-          <h1 className="text-xl capitalize font-bold md:text-2xl">special offer!</h1>
+          <h1 className="text-xl capitalize font-bold md:text-2xl">
+            special offer!
+          </h1>
           <div className="flex flex-col space-y-4 items-center px-6 md:px-0">
             <p className="text-[14px] capitalize text-center md:text-lg">
               Join now and get up to <b>40%</b> discount globally

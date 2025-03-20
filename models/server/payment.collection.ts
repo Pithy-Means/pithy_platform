@@ -42,10 +42,7 @@ export default async function createPaymentCollection() {
       100,
       false,
     ),
-    databases.createIntegerAttribute(
-      db,
-      paymentCollection, "amount", false
-    ),
+    databases.createIntegerAttribute(db, paymentCollection, "amount", false),
     databases.createStringAttribute(
       db,
       paymentCollection,
@@ -67,13 +64,7 @@ export default async function createPaymentCollection() {
       100,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      paymentCollection,
-      "email",
-      100,
-      false,
-    ),
+    databases.createStringAttribute(db, paymentCollection, "email", 100, false),
     databases.createStringAttribute(
       db,
       paymentCollection,
@@ -93,15 +84,9 @@ export default async function createPaymentCollection() {
       paymentCollection,
       "checked",
       false,
-      false
-    ),
-    databases.createStringAttribute(
-      db,
-      paymentCollection,
-      "name",
-      100,
       false,
     ),
+    databases.createStringAttribute(db, paymentCollection, "name", 100, false),
     databases.createStringAttribute(
       db,
       paymentCollection,

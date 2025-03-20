@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { NextResponse } from "next/server";
-import env from '../../../../env';
+import env from "../../../../env";
 
 // Create a Resend instance using the API key
 const resend = new Resend(env.emails.apikey);

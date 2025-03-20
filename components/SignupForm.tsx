@@ -18,24 +18,24 @@ import { useSignupFormStore } from "@/lib/store/useSignupFormStore";
 
 const SignupForm = () => {
   // Use the persistent store
-  const { 
-    formData, 
-    currentStep, 
-    termsAgreed, 
-    updateFormData, 
-    updateCurrentStep, 
+  const {
+    formData,
+    currentStep,
+    termsAgreed,
+    updateFormData,
+    updateCurrentStep,
     updateTermsAgreed,
-    resetForm 
+    resetForm,
   } = useSignupFormStore();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
-  
+
   const router = useRouter();
   const searchParams = useSearchParams();
-  const referralCode = searchParams.get("ref");
+  const referralCode = searchParams.get("referral");
 
   const { signup } = useAuthStore((state) => state as AuthState);
 
@@ -77,7 +77,6 @@ const SignupForm = () => {
           "phone",
           "country",
           "city",
-          "earlier",
           "password",
         ],
         1: ["age"],
@@ -87,7 +86,7 @@ const SignupForm = () => {
 
       const fields = requiredFields[currentStep] || [];
       const isComplete = fields.every(
-        (field) => formData[field as keyof UserInfo]
+        (field) => formData[field as keyof UserInfo],
       );
       setIsFormComplete(isComplete);
     };
@@ -99,7 +98,7 @@ const SignupForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     updateFormData({ [name]: value });
@@ -119,8 +118,10 @@ const SignupForm = () => {
       setIsLoading(false);
       return;
     }
+    const linkUsed = window.location.href;
+    const updatedFormData = { ...formData, signup_url: linkUsed };
     try {
-      const newUser = await signup(formData as UserInfo);
+      const newUser = await signup(updatedFormData as UserInfo);
       console.log("New user:", newUser);
       if (newUser) {
         // Toast success message
@@ -156,7 +157,9 @@ const SignupForm = () => {
         Go Back
       </Button>
       <Toaster />
-      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 mt-16 sm:mt-6">Sign up</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 mt-16 sm:mt-6">
+        Sign up
+      </h1>
       {/* Progress Bar */}
       <div className="flex items-center justify-center w-full my-6 sm:my-10">
         <ProgressBar currentStep={currentStep} />
@@ -260,7 +263,7 @@ const SignupForm = () => {
                         label="Expected Graduation Year"
                         type="number"
                         name="expected_graduation_year"
-                        value={formData.expected_graduation_year ?? 0} 
+                        value={formData.expected_graduation_year ?? 0}
                         onChange={handleChange}
                         className="py-2"
                       />
@@ -331,9 +334,13 @@ const SignupForm = () => {
                           onChange={handleChange}
                           className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
                         >
-                          <option value="">Select Company Or Organization Size</option>
+                          <option value="">
+                            Select Company Or Organization Size
+                          </option>
                           <option value="1-10 employees">1-10 employees</option>
-                          <option value="11-50 employees">11-50 employees</option>
+                          <option value="11-50 employees">
+                            11-50 employees
+                          </option>
                           <option value="51-200 employees">
                             51-200 employees
                           </option>
@@ -364,7 +371,7 @@ const SignupForm = () => {
             </div>
           )}
         </div>
-        
+
         {/* Terms and Conditions */}
         {currentStep === 3 && (
           <div className="flex flex-col sm:flex-row justify-center items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2 mt-4 px-4">
@@ -404,7 +411,7 @@ const SignupForm = () => {
             </div>
           </div>
         )}
-        
+
         {/* Navigation buttons */}
         <div className="flex justify-center items-center gap-x-4 my-6">
           {currentStep > 0 && (

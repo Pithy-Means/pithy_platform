@@ -16,8 +16,10 @@ interface FormData {
   message: string;
 }
 
-export const sendContactEmail = async (formData: FormData): Promise<boolean> => {
-   try {
+export const sendContactEmail = async (
+  formData: FormData,
+): Promise<boolean> => {
+  try {
     const res = await fetch("/api/emails/", {
       method: "POST",
       headers: {

@@ -49,7 +49,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   // Check if user has paid
   const isPaid = user?.paid || false;
-  
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -62,15 +62,17 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           setHasPremiumAccess(true);
           return;
         }
-        
+
         // Otherwise, check if they've purchased any courses
         try {
-          const response = await fetch(`/api/user/purchased-courses?userId=${user.user_id}`);
+          const response = await fetch(
+            `/api/user/purchased-courses?userId=${user.user_id}`,
+          );
           if (response.ok) {
             const data = await response.json();
             const hasPurchasedCourses = data.courses && data.courses.length > 0;
             setHasPremiumAccess(hasPurchasedCourses);
-            
+
             // Update the user's paid status in AuthStore if they have purchased courses
             if (hasPurchasedCourses && !user.paid) {
               // This would require adding an updateUser method to the auth store
@@ -83,7 +85,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         }
       }
     };
-    
+
     checkPremiumAccess();
   }, [user]);
 
@@ -108,18 +110,18 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   // Creates either a normal link or a disabled div based on premium status
   const createNavigationItem = (
-    href: string, 
-    icon: React.ElementType, 
-    label: string, 
-    isPremium: boolean = false
+    href: string,
+    icon: React.ElementType,
+    label: string,
+    isPremium: boolean = false,
   ) => {
     // Use the combined premium status check (user.paid OR hasPremiumAccess)
     const hasAccess = isPaid || hasPremiumAccess;
-    
+
     // If the feature is premium and user hasn't paid, show locked version
     if (isPremium && !hasAccess) {
       return (
-        <div 
+        <div
           className="flex flex-row gap-3 items-center opacity-50 cursor-not-allowed"
           onClick={() => router.push("/dashboard/courses")} // Redirect to courses page when clicked
         >
@@ -127,8 +129,13 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             className: getLinkClassName(href),
             size: 24,
           })}
-          <p className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}>
-            {label} <span className="ml-2 text-xs text-[#F26900]"><LockKeyhole /></span>
+          <p
+            className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
+          >
+            {label}{" "}
+            <span className="ml-2 text-xs text-[#F26900]">
+              <LockKeyhole />
+            </span>
           </p>
         </div>
       );
@@ -144,7 +151,9 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           className: getLinkClassName(href),
           size: 24,
         })}
-        <p className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}>
+        <p
+          className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
+        >
           {label}
         </p>
       </Link>
@@ -189,9 +198,15 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           className="absolute top-4 right-4 z-10 hover:bg-green-400 p-2 rounded-full"
         >
           {isSidebarCollapsed ? (
-            <ChevronsRight size={24} className="text-black/25 hover:text-white" />
+            <ChevronsRight
+              size={24}
+              className="text-black/25 hover:text-white"
+            />
           ) : (
-            <ChevronsLeft size={24} className="text-black/25 hover:text-white" />
+            <ChevronsLeft
+              size={24}
+              className="text-black/25 hover:text-white"
+            />
           )}
         </button>
 
@@ -210,14 +225,33 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             <div className="flex flex-col space-y-2">
               {/* Home link - always accessible */}
               {createNavigationItem("/dashboard", GoHome, "Home")}
-              
+
               {/* Courses link - always accessible */}
-              {createNavigationItem("/dashboard/courses", GraduationCap, "Courses")}
-              
+              {createNavigationItem(
+                "/dashboard/courses",
+                GraduationCap,
+                "Courses",
+              )}
+
               {/* Premium features */}
-              {createNavigationItem("/dashboard/jobs", BriefcaseBusiness, "Jobs", true)}
-              {createNavigationItem("/dashboard/scholarships", School, "Scholarships", true)}
-              {createNavigationItem("/dashboard/fundings", HandCoins, "Fundings", true)}
+              {createNavigationItem(
+                "/dashboard/jobs",
+                BriefcaseBusiness,
+                "Jobs",
+                true,
+              )}
+              {createNavigationItem(
+                "/dashboard/scholarships",
+                School,
+                "Scholarships",
+                true,
+              )}
+              {createNavigationItem(
+                "/dashboard/fundings",
+                HandCoins,
+                "Fundings",
+                true,
+              )}
 
               {/* Add Post Button */}
               <button
@@ -321,7 +355,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             </div>
           </div>
         </div>
-
       </div>
 
       {isModalOpen && (

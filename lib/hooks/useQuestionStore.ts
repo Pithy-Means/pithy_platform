@@ -1,5 +1,5 @@
 // lib/hooks/useQuestionStore.ts
-import { create } from 'zustand';
+import { create } from "zustand";
 
 interface QuestionState {
   currentQuestionIndex: number;
@@ -14,7 +14,7 @@ export const useQuestionStore = create<QuestionState>((set) => ({
   currentQuestionIndex: 0,
   testStarted: false,
   testCompleted: false,
-  
+
   setCurrentQuestionIndex: (index) => set({ currentQuestionIndex: index }),
   setTestStarted: (started) => set({ testStarted: started }),
   setTestCompleted: (completed) => set({ testCompleted: completed }),

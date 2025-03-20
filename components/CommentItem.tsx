@@ -23,12 +23,16 @@ const CommentItem = ({ comment }: { comment: CommentPostWithUser }) => {
         <div className="flex-1">
           {/* Username and Timestamp */}
           <div className="flex justify-between items-center">
-            <CardTitle className="text-lg font-bold text-gray-900">{userName}</CardTitle>
+            <CardTitle className="text-lg font-bold text-gray-900">
+              {userName}
+            </CardTitle>
             {/* Add created time */}
           </div>
 
           {/* Comment Text */}
-          <p className="mt-2 text-sm text-gray-700 leading-relaxed">{comment.comment}</p>
+          <p className="mt-2 text-sm text-gray-700 leading-relaxed">
+            {comment.comment}
+          </p>
 
           {/* Action Buttons */}
           <div className="mt-1 flex items-center gap-6 justify-end">
@@ -44,7 +48,9 @@ const CommentItem = ({ comment }: { comment: CommentPostWithUser }) => {
             {/* Delete Button */}
             <button
               className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 hover:bg-red-50 px-3 py-1 rounded-md transition-all duration-200"
-              onClick={() => console.log(`Delete comment: ${comment.comment_id}`)}
+              onClick={() =>
+                console.log(`Delete comment: ${comment.comment_id}`)
+              }
             >
               <Trash2 className="w-5 h-5" />
               <span>Delete</span>

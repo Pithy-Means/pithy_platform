@@ -2,7 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { Job, UserInfo } from "@/types/schema";
-import { getJobs, updateJob, deleteJob, createJob } from "@/lib/actions/user.actions";
+import {
+  getJobs,
+  updateJob,
+  deleteJob,
+  createJob,
+} from "@/lib/actions/user.actions";
 import { Button } from "./ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 
@@ -27,8 +32,8 @@ const JobDashboard = () => {
     employer: "",
     job_earlier: "",
     country_of_work: "",
-    closing_date: new Date().toISOString().split('T')[0],
-    application_link: ""
+    closing_date: new Date().toISOString().split("T")[0],
+    application_link: "",
   });
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);
@@ -43,7 +48,7 @@ const JobDashboard = () => {
       try {
         const jobsData = await getJobs();
         console.log("Fetched jobs:", jobsData);
-        if (jobsData) {          
+        if (jobsData) {
           // Ensure jobsData is always treated as an array
           const jobsArray = jobsData.documents || [];
           setJobs(jobsArray);
@@ -69,14 +74,17 @@ const JobDashboard = () => {
     }
   }, [user]);
 
-
-
   // Form handling for creating a new job
-  const handleFormInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleFormInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState: Job) => ({
       ...prevState,
-      [name]: name === "closing_date" ? new Date(value).toISOString().split('T')[0] : value,
+      [name]:
+        name === "closing_date"
+          ? new Date(value).toISOString().split("T")[0]
+          : value,
     }));
   };
 
@@ -99,13 +107,13 @@ const JobDashboard = () => {
 
       // Create job document
       const createdJob = await createJob(jobToCreate);
-      
+
       if (createdJob) {
         setFormSuccess("Job created successfully!");
-        
+
         // Add the new job to the jobs list immediately
-        setJobs(prevJobs => [...prevJobs, createdJob]);
-        
+        setJobs((prevJobs) => [...prevJobs, createdJob]);
+
         // Reset form
         setFormData({
           job_id: "",
@@ -116,10 +124,10 @@ const JobDashboard = () => {
           employer: "",
           job_earlier: "",
           country_of_work: "",
-          closing_date: new Date().toISOString().split('T')[0],
-          application_link: ""
+          closing_date: new Date().toISOString().split("T")[0],
+          application_link: "",
         });
-        
+
         // Close the form after a short delay
         setTimeout(() => {
           setShowCreateForm(false);
@@ -146,30 +154,37 @@ const JobDashboard = () => {
     setEditFormData(null);
   };
 
-  const handleEditInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleEditInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    
+
     if (editFormData) {
       setEditFormData({
         ...editFormData,
-        [name]: name === "closing_date" ? new Date(value).toISOString().split('T')[0] : value,
+        [name]:
+          name === "closing_date"
+            ? new Date(value).toISOString().split("T")[0]
+            : value,
       });
     }
   };
 
   const handleUpdateJob = async () => {
     if (!editingJob || !editFormData) return;
-    
+
     setLoading(true);
     try {
       const result = await updateJob(editingJob.job_id, editFormData);
       if (result) {
         setUpdateSuccess("Job updated successfully!");
         // Update the jobs list with the updated job
-        setJobs(prevJobs => 
-          prevJobs.map(job => 
-            job.job_id === editingJob.job_id ? { ...job, ...editFormData } : job
-          )
+        setJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job.job_id === editingJob.job_id
+              ? { ...job, ...editFormData }
+              : job,
+          ),
         );
         // Close edit form after short delay
         setTimeout(() => {
@@ -199,7 +214,7 @@ const JobDashboard = () => {
     setLoading(true);
     try {
       await deleteJob(jobId);
-      setJobs(prevJobs => prevJobs.filter(job => job.job_id !== jobId));
+      setJobs((prevJobs) => prevJobs.filter((job) => job.job_id !== jobId));
       setDeleteConfirm(null);
     } catch (error) {
       setError("Failed to delete job. Please try again.");
@@ -222,27 +237,42 @@ const JobDashboard = () => {
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Job Dashboard</h2>
-        <Button 
+        <Button
           className="bg-green-600 hover:bg-green-700 text-white"
           onClick={() => setShowCreateForm(!showCreateForm)}
         >
           {showCreateForm ? "Cancel" : "Create New Job"}
         </Button>
       </div>
-      
-      {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
-      
+
+      {error && (
+        <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>
+      )}
+
       {/* Create Job Form */}
       {showCreateForm && (
         <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200 mb-8">
           <h3 className="text-xl font-semibold mb-4">Create a New Job</h3>
-          {formSuccess && <div className="bg-green-100 text-green-700 p-3 rounded mb-4">{formSuccess}</div>}
-          {formError && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{formError}</div>}
-          
+          {formSuccess && (
+            <div className="bg-green-100 text-green-700 p-3 rounded mb-4">
+              {formSuccess}
+            </div>
+          )}
+          {formError && (
+            <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
+              {formError}
+            </div>
+          )}
+
           <form onSubmit={handleCreateSubmit} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="job_title" className="block text-sm font-medium text-black">Job Title</label>
+                <label
+                  htmlFor="job_title"
+                  className="block text-sm font-medium text-black"
+                >
+                  Job Title
+                </label>
                 <input
                   id="job_title"
                   name="job_title"
@@ -255,7 +285,12 @@ const JobDashboard = () => {
               </div>
 
               <div>
-                <label htmlFor="employer" className="block text-sm font-medium text-black">Employer</label>
+                <label
+                  htmlFor="employer"
+                  className="block text-sm font-medium text-black"
+                >
+                  Employer
+                </label>
                 <input
                   type="text"
                   id="employer"
@@ -269,7 +304,12 @@ const JobDashboard = () => {
             </div>
 
             <div>
-              <label htmlFor="job_description" className="block text-sm font-medium text-black">Job Description</label>
+              <label
+                htmlFor="job_description"
+                className="block text-sm font-medium text-black"
+              >
+                Job Description
+              </label>
               <textarea
                 id="job_description"
                 name="job_description"
@@ -284,7 +324,12 @@ const JobDashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="location_of_work" className="block text-sm font-medium text-black">Location of Work</label>
+                <label
+                  htmlFor="location_of_work"
+                  className="block text-sm font-medium text-black"
+                >
+                  Location of Work
+                </label>
                 <input
                   type="text"
                   id="location_of_work"
@@ -297,7 +342,12 @@ const JobDashboard = () => {
               </div>
 
               <div>
-                <label htmlFor="country_of_work" className="block text-sm font-medium text-black">Country of Work</label>
+                <label
+                  htmlFor="country_of_work"
+                  className="block text-sm font-medium text-black"
+                >
+                  Country of Work
+                </label>
                 <input
                   type="text"
                   id="country_of_work"
@@ -312,7 +362,12 @@ const JobDashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label htmlFor="job_earlier" className="block text-sm font-medium text-black">Job Earlier</label>
+                <label
+                  htmlFor="job_earlier"
+                  className="block text-sm font-medium text-black"
+                >
+                  Job Earlier
+                </label>
                 <input
                   type="text"
                   id="job_earlier"
@@ -325,12 +380,17 @@ const JobDashboard = () => {
               </div>
 
               <div>
-                <label htmlFor="closing_date" className="block text-sm font-medium text-black">Closing Date</label>
+                <label
+                  htmlFor="closing_date"
+                  className="block text-sm font-medium text-black"
+                >
+                  Closing Date
+                </label>
                 <input
                   type="date"
                   id="closing_date"
                   name="closing_date"
-                  value={formData.closing_date.toString().split('T')[0]}
+                  value={formData.closing_date.toString().split("T")[0]}
                   onChange={handleFormInputChange}
                   className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
                 />
@@ -338,7 +398,12 @@ const JobDashboard = () => {
             </div>
 
             <div>
-              <label htmlFor="application_link" className="block text-sm font-medium text-black">Application Link</label>
+              <label
+                htmlFor="application_link"
+                className="block text-sm font-medium text-black"
+              >
+                Application Link
+              </label>
               <input
                 type="url"
                 id="application_link"
@@ -379,22 +444,26 @@ const JobDashboard = () => {
                     ></path>
                   </svg>
                 </div>
-              ): (
+              ) : (
                 "Create Job"
               )}
             </Button>
           </form>
         </div>
       )}
-      
+
       {/* Job List Section */}
       <div className="mt-6">
-        <h3 className="text-xl font-semibold mb-4">{jobs.length > 0 ? "Your Jobs" : ""}</h3>
-        
+        <h3 className="text-xl font-semibold mb-4">
+          {jobs.length > 0 ? "Your Jobs" : ""}
+        </h3>
+
         {jobs.length === 0 && !showCreateForm ? (
           <div className="text-center py-8 bg-white rounded-lg shadow-md">
-            <p className="text-gray-600 mb-4">You haven&apos;t posted any jobs yet.</p>
-            <Button 
+            <p className="text-gray-600 mb-4">
+              You haven&apos;t posted any jobs yet.
+            </p>
+            <Button
               className="bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => setShowCreateForm(true)}
             >
@@ -404,19 +473,24 @@ const JobDashboard = () => {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {jobs.map((job) => (
-              <div key={job.job_id} className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+              <div
+                key={job.job_id}
+                className="bg-white rounded-lg shadow-md p-6 border border-gray-200"
+              >
                 {deleteConfirm === job.job_id ? (
                   <div className="space-y-4">
-                    <p className="font-medium text-red-600">Are you sure you want to delete this job?</p>
+                    <p className="font-medium text-red-600">
+                      Are you sure you want to delete this job?
+                    </p>
                     <div className="flex space-x-2">
-                      <Button 
+                      <Button
                         className="bg-red-600 hover:bg-red-700 text-white"
                         onClick={() => handleDeleteJob(job.job_id)}
                         disabled={loading}
                       >
                         Yes, Delete
                       </Button>
-                      <Button 
+                      <Button
                         className="bg-gray-200 hover:bg-gray-300 text-gray-800"
                         onClick={handleDeleteCancel}
                         disabled={loading}
@@ -432,87 +506,120 @@ const JobDashboard = () => {
                         {updateSuccess}
                       </div>
                     )}
-                    
+
                     <div>
-                      <label htmlFor="job_title" className="block text-sm font-medium text-gray-700">Job Title</label>
+                      <label
+                        htmlFor="job_title"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Job Title
+                      </label>
                       <input
                         id="job_title"
                         name="job_title"
-                        value={editFormData?.job_title || ''}
+                        value={editFormData?.job_title || ""}
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                         required
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="job_description" className="block text-sm font-medium text-gray-700">Job Description</label>
+                      <label
+                        htmlFor="job_description"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Job Description
+                      </label>
                       <textarea
                         id="job_description"
                         name="job_description"
-                        value={editFormData?.job_description || ''}
+                        value={editFormData?.job_description || ""}
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                         rows={3}
                         required
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="location_of_work" className="block text-sm font-medium text-gray-700">Location</label>
+                      <label
+                        htmlFor="location_of_work"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Location
+                      </label>
                       <input
                         id="location_of_work"
                         name="location_of_work"
-                        value={editFormData?.location_of_work || ''}
+                        value={editFormData?.location_of_work || ""}
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="employer" className="block text-sm font-medium text-gray-700">Employer</label>
+                      <label
+                        htmlFor="employer"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Employer
+                      </label>
                       <input
                         id="employer"
                         name="employer"
-                        value={editFormData?.employer || ''}
+                        value={editFormData?.employer || ""}
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="closing_date" className="block text-sm font-medium text-gray-700">Closing Date</label>
+                      <label
+                        htmlFor="closing_date"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Closing Date
+                      </label>
                       <input
                         type="date"
                         id="closing_date"
                         name="closing_date"
-                        value={editFormData?.closing_date.toString().split('T')[0] || ''}
+                        value={
+                          editFormData?.closing_date.toString().split("T")[0] ||
+                          ""
+                        }
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                       />
                     </div>
-                    
+
                     <div>
-                      <label htmlFor="application_link" className="block text-sm font-medium text-gray-700">Application Link</label>
+                      <label
+                        htmlFor="application_link"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Application Link
+                      </label>
                       <input
                         type="url"
                         id="application_link"
                         name="application_link"
-                        value={editFormData?.application_link || ''}
+                        value={editFormData?.application_link || ""}
                         onChange={handleEditInputChange}
                         className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                       />
                     </div>
-                    
+
                     <div className="flex space-x-2">
-                      <Button 
+                      <Button
                         className="bg-blue-600 hover:bg-blue-700 text-white"
                         onClick={handleUpdateJob}
                         disabled={loading}
                       >
                         {loading ? "Updating..." : "Update Job"}
                       </Button>
-                      <Button 
+                      <Button
                         className="bg-gray-200 hover:bg-gray-300 text-gray-800"
                         onClick={handleCancelEdit}
                         disabled={loading}
@@ -523,27 +630,30 @@ const JobDashboard = () => {
                   </div>
                 ) : (
                   <>
-                    <h3 className="text-xl font-semibold mb-2 text-gray-800">{job.job_title}</h3>
+                    <h3 className="text-xl font-semibold mb-2 text-gray-800">
+                      {job.job_title}
+                    </h3>
                     <p className="text-gray-600 mb-2">{job.employer}</p>
                     <p className="text-gray-600 mb-2">{job.location_of_work}</p>
                     <p className="text-sm text-gray-500 mb-4">
                       Closing: {new Date(job.closing_date).toLocaleDateString()}
                     </p>
-                    
+
                     <div className="mb-4 h-24 overflow-hidden text-ellipsis">
-                      <p className="text-gray-700 text-sm">{job.job_description.substring(0, 150)}
-                        {job.job_description.length > 150 ? '...' : ''}
+                      <p className="text-gray-700 text-sm">
+                        {job.job_description.substring(0, 150)}
+                        {job.job_description.length > 150 ? "..." : ""}
                       </p>
                     </div>
-                    
+
                     <div className="flex space-x-2 mt-4">
-                      <Button 
+                      <Button
                         className="bg-blue-600 hover:bg-blue-700 text-white text-sm flex-1"
                         onClick={() => handleEditClick(job)}
                       >
                         Edit
                       </Button>
-                      <Button 
+                      <Button
                         className="bg-red-600 hover:bg-red-700 text-white text-sm flex-1"
                         onClick={() => handleDeleteConfirm(job.job_id)}
                       >

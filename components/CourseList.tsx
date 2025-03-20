@@ -31,10 +31,10 @@ const CourseList: React.FC<{ courses: Courses[] }> = ({ courses }) => {
       {courses.map((course) => {
         // Check if course is purchased by current user
         const isEnrolled = isCoursePurchased(user?.user_id, course.course_id);
-        
+
         // Determine if this course should be displayed as locked
         const shouldLockCourse = !isEnrolled && user?.paid === false;
-        
+
         return (
           <div
             key={course.course_id}

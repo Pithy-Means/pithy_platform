@@ -81,7 +81,7 @@ const FreqAskeQuestion = () => {
 
   const toggleFAQ = (index: number) => {
     setOpenFAQs((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
   };
 
@@ -113,15 +113,15 @@ const FreqAskeQuestion = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
           {filteredFAQs.map((faq) => {
-            const globalIndex = faqs.findIndex(f => f === faq);
+            const globalIndex = faqs.findIndex((f) => f === faq);
             const isOpen = openFAQs.includes(globalIndex);
 
             return (
-              <Card 
-                key={globalIndex} 
+              <Card
+                key={globalIndex}
                 className="bg-white border rounded-lg shadow-sm p-5"
               >
-                <div 
+                <div
                   className="flex justify-between py-2 items-center cursor-pointer"
                   onClick={() => toggleFAQ(globalIndex)}
                 >
@@ -137,9 +137,7 @@ const FreqAskeQuestion = () => {
                   </div>
                 </div>
                 {isOpen && (
-                  <p className="text-black capitalize mt-2">
-                    {faq.answer}
-                  </p>
+                  <p className="text-black capitalize mt-2">{faq.answer}</p>
                 )}
               </Card>
             );

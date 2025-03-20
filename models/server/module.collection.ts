@@ -10,19 +10,67 @@ export default async function createModuleCollection() {
     Permission.update(Role.user("user")),
     Permission.delete(Role.user("user")),
     Permission.delete(Role.team("admin")),
-    Permission.read(Role.team("admin"))
+    Permission.read(Role.team("admin")),
   ]);
 
   console.log("Module collection created");
-  
+
   await Promise.all([
-    databases.createStringAttribute(db, moduleCollection, "module_id", 100, true),
-    databases.createStringAttribute(db, moduleCollection, "course_id", 100, true),
-    databases.createStringAttribute(db, moduleCollection, "module_title", 100, false),
-    databases.createStringAttribute(db, moduleCollection, "module_description", 100000, false),
-    databases.createStringAttribute(db, moduleCollection, "video", 10000, false),
-    databases.createStringAttribute(db, moduleCollection, "module_duration", 100, false),
-    databases.createStringAttribute(db, moduleCollection, "module_comment", 100, false),
-    databases.createEnumAttribute(db, moduleCollection, "module_status", ["open", "closed"], false),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "module_id",
+      100,
+      true,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "course_id",
+      100,
+      true,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "module_title",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "module_description",
+      100000,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "video",
+      10000,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "module_duration",
+      100,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      moduleCollection,
+      "module_comment",
+      100,
+      false,
+    ),
+    databases.createEnumAttribute(
+      db,
+      moduleCollection,
+      "module_status",
+      ["open", "closed"],
+      false,
+    ),
   ]);
-};
+}

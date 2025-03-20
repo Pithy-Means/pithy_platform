@@ -6,7 +6,7 @@ import EditProfilePage from "./EditProfilePage";
 
 export default function ProfileContainer() {
   const [isEditing, setIsEditing] = useState(false);
-  
+
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="flex justify-end mb-4">
@@ -17,7 +17,7 @@ export default function ProfileContainer() {
           {isEditing ? "View Profile" : "Edit Profile"}
         </button>
       </div>
-      
+
       <div className="modal-content-container">
         {isEditing ? <EditProfilePage /> : <ProfilePage />}
       </div>

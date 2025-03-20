@@ -12,10 +12,10 @@ interface SearchResultsProps {
   searchTerm?: string;
 }
 
-const SearchResults: React.FC<SearchResultsProps> = ({ 
-  searchPosts, 
+const SearchResults: React.FC<SearchResultsProps> = ({
+  searchPosts,
   loading = false,
-  searchTerm = "" 
+  searchTerm = "",
 }) => {
   if (loading) {
     return (
@@ -30,7 +30,8 @@ const SearchResults: React.FC<SearchResultsProps> = ({
       <div className="bg-white rounded-lg shadow-md p-6 text-center my-4">
         <h3 className="text-lg font-medium text-gray-700">No results found</h3>
         <p className="text-gray-500 mt-2">
-          No posts matching &quot;{searchTerm}&quot; were found. Try a different search term.
+          No posts matching &quot;{searchTerm}&quot; were found. Try a different
+          search term.
         </p>
       </div>
     );
@@ -38,8 +39,10 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 
   return (
     <div className="space-y-4">
-      <h2 className="text-lg font-semibold px-4 text-gray-300">Search Results</h2>
-      
+      <h2 className="text-lg font-semibold px-4 text-gray-300">
+        Search Results
+      </h2>
+
       {searchPosts.map((post) => (
         <div key={post.id} className="bg-white rounded-lg shadow-md p-4">
           {/* Post Header */}
@@ -56,42 +59,42 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                 {post.user?.firstname} {post.user?.lastname}
               </p>
               <p className="text-xs text-gray-500">
-                {post!.$createdAt ? formatDistanceToNow(new Date(post!.$createdAt), { addSuffix: true }) : "Recently"}
+                {post!.$createdAt
+                  ? formatDistanceToNow(new Date(post!.$createdAt), {
+                      addSuffix: true,
+                    })
+                  : "Recently"}
               </p>
             </div>
           </div>
-          
+
           {/* Post Content */}
           <div className="mb-4">
             <p className="text-gray-800 whitespace-pre-wrap break-words">
               {post.content}
             </p>
           </div>
-          
+
           {/* Post Media */}
           {post.image && (
             <div className="mb-4 rounded-lg overflow-hidden">
-              <Image 
-                src={post.image} 
-                alt="Post image" 
-                width={500} 
-                height={300} 
+              <Image
+                src={post.image}
+                alt="Post image"
+                width={500}
+                height={300}
                 className="w-full h-auto object-cover"
                 unoptimized
               />
             </div>
           )}
-          
+
           {post.video && (
             <div className="mb-4 rounded-lg overflow-hidden">
-              <video 
-                src={post.video} 
-                controls 
-                className="w-full h-auto"
-              />
+              <video src={post.video} controls className="w-full h-auto" />
             </div>
           )}
-          
+
           {/* Post Actions */}
           {/* <div className="flex items-center justify-between text-gray-500 pt-3 border-t border-gray-100">
             <button className="flex items-center space-x-1 hover:text-[#5AC35A]">

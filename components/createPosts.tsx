@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { createPost } from "@/lib/actions/user.actions";
 import { Post, PostWithUser } from "@/types/schema";
@@ -32,34 +32,38 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      
+
       // Check file size
       if (file.size > MAX_FILE_SIZE) {
-        toast.error(`File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Max size is 1MB.`);
+        toast.error(
+          `File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Max size is 1MB.`,
+        );
         return;
       }
-      
+
       setFileSize(file.size);
       const reader = new FileReader();
 
       reader.onload = () => {
         const base64Data = reader.result as string;
-        
+
         // Determine if it's an image or video based on file type
-        if (file.type.startsWith('image/')) {
+        if (file.type.startsWith("image/")) {
           setPost((prevPost) => ({
             ...prevPost,
             image: base64Data || "",
             video: "", // Clear video when image is set
           }));
-        } else if (file.type.startsWith('video/')) {
+        } else if (file.type.startsWith("video/")) {
           setPost((prevPost) => ({
             ...prevPost,
             video: base64Data || "",
             image: "", // Clear image when video is set
           }));
         } else {
-          toast.error("Unsupported file type. Please upload an image or video.");
+          toast.error(
+            "Unsupported file type. Please upload an image or video.",
+          );
         }
       };
 
@@ -75,7 +79,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setPost((prevPost) => ({
@@ -86,17 +90,17 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     // Validate content
     if (!post.content?.trim()) {
       toast.error("Please add some content to your post");
       return;
     }
-    
+
     try {
       setLoading(true);
       const newPost = await createPost(post);
-      
+
       // Reset form after successful submission
       setPost({
         user_id: userId,
@@ -104,14 +108,15 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
         video: "",
         content: "",
       });
-      
+
       // Update UI
       onPostCreated(newPost);
       toast.success("Post created successfully");
-      
     } catch (error) {
       console.error("Error creating post:", error);
-      toast.error(error instanceof Error ? error.message : "Failed to create post");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create post",
+      );
     } finally {
       setLoading(false);
     }
@@ -174,27 +179,28 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
             />
             <p className="mt-2 text-sm text-gray-400">
               Supported formats: JPG, PNG, MP4. Max size: 1MB.
-              {fileSize > 0 && ` Selected file size: ${(fileSize / 1024).toFixed(2)}KB`}
+              {fileSize > 0 &&
+                ` Selected file size: ${(fileSize / 1024).toFixed(2)}KB`}
             </p>
-            
+
             {/* Preview section */}
             {post.image && (
               <div className="mt-4">
                 <p className="text-sm font-medium">Image Preview:</p>
-                <Image 
-                  src={post.image} 
-                  alt="Preview" 
-                  className="mt-2 max-h-40 rounded-lg border border-gray-200" 
+                <Image
+                  src={post.image}
+                  alt="Preview"
+                  className="mt-2 max-h-40 rounded-lg border border-gray-200"
                 />
               </div>
             )}
-            
+
             {post.video && (
               <div className="mt-4">
                 <p className="text-sm font-medium">Video Preview:</p>
-                <Video 
-                  src={post.video} 
-                  controls 
+                <Video
+                  src={post.video}
+                  controls
                   className="mt-2 max-h-40 rounded-lg border border-gray-200"
                 />
               </div>

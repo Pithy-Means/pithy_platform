@@ -57,9 +57,10 @@ const Whoweare = () => {
               <p className="capitalize text-black text-lg font-semibold">
                 A world where everyone thrives in their chosen path.
               </p>
-              <Button 
+              <Button
                 onClick={() => router.push("/about")}
-                className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit">
+                className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit"
+              >
                 Learn More
               </Button>
             </div>

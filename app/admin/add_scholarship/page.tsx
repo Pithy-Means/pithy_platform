@@ -1,12 +1,12 @@
-import AddScholarship from '@/components/AddScholarship'
-import React from 'react'
+import AddScholarship from "@/components/AddScholarship";
+import React from "react";
 
 const AddScholarshipPage = () => {
   return (
     <>
       <AddScholarship />
     </>
-  )
-}
+  );
+};
 
-export default AddScholarshipPage
+export default AddScholarshipPage;

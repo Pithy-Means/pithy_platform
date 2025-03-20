@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Toaster } from "react-hot-toast";
-import ContactForm from '@/components/ContactForm';
+import ContactForm from "@/components/ContactForm";
 
 const Help = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +47,8 @@ const Help = () => {
             Need Help?
           </h1>
           <p className="mt-4 text-lg text-gray-700">
-            We&apos;re here to assist you! Whether you have a question or need support, our team is ready to help.
+            We&apos;re here to assist you! Whether you have a question or need
+            support, our team is ready to help.
           </p>
           <div className="mt-8">
             <button
@@ -81,13 +82,13 @@ const Help = () => {
               Contact Support
             </DialogTitle>
           </DialogHeader>
-          
+
           {!responseMessage ? (
             <ContactForm setResponseMessage={setResponseMessage} />
           ) : (
             <ThankYouMessage closeModal={closeModal} />
           )}
-          
+
           <DialogFooter className="sm:justify-center">
             <button
               onClick={closeModal}
@@ -113,18 +114,18 @@ const ThankYouMessage: React.FC<ThankYouMessageProps> = ({ closeModal }) => {
   return (
     <div className="flex flex-col items-center justify-center py-10 px-6">
       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-6">
-        <svg 
-          className="w-8 h-8 text-green-500" 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24" 
+        <svg
+          className="w-8 h-8 text-green-500"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M5 13l4 4L19 7" 
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M5 13l4 4L19 7"
           />
         </svg>
       </div>

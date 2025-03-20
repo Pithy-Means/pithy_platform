@@ -69,14 +69,16 @@ const Navbar = () => {
         href={link.path}
         onClick={() => isMobile && setIsOpen(false)}
         className={`text-white hover:text-[#5AC35A] transition ${
-          pathname === link.path ? "underline decoration-[#5AC35A] underline-offset-4 decoration-2" : ""
+          pathname === link.path
+            ? "underline decoration-[#5AC35A] underline-offset-4 decoration-2"
+            : ""
         }`}
       >
         {link.label}
       </Link>
     ));
 
-     // Wait for client-side to mount before rendering user info
+  // Wait for client-side to mount before rendering user info
   if (loading) {
     return (
       <nav className="px-10 py-6 bg-black">
@@ -128,20 +130,32 @@ const Navbar = () => {
               <div className="text-white">Loading...</div>
             ) : loggedUser ? (
               <div className="flex items-center space-x-4">
-                <Link href="/dashboard" className="text-white hover:text-[#5AC35A] transition">
+                <Link
+                  href="/dashboard"
+                  className="text-white hover:text-[#5AC35A] transition"
+                >
                   Dashboard
                 </Link>
-                <Link href="/logout" className="text-white hover:text-[#5AC35A] transition">
+                <Link
+                  href="/logout"
+                  className="text-white hover:text-[#5AC35A] transition"
+                >
                   Logout
                 </Link>
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Link href="/signIn" className="text-[#5AC35A] hover:text-white transition">
+                <Link
+                  href="/signIn"
+                  className="text-[#5AC35A] hover:text-white transition"
+                >
                   Login
                 </Link>
                 <div className="bg-white h-3 w-0.5" />
-                <Link href="/signUp" className="text-white hover:text-[#5AC35A] transition">
+                <Link
+                  href="/signUp"
+                  className="text-white hover:text-[#5AC35A] transition"
+                >
                   Sign Up
                 </Link>
               </div>
@@ -160,19 +174,31 @@ const Navbar = () => {
           {renderLinks(true)}
           {loggedUser ? (
             <>
-              <Link href="/dashboard" className="text-white hover:text-[#5AC35A] transition">
+              <Link
+                href="/dashboard"
+                className="text-white hover:text-[#5AC35A] transition"
+              >
                 Dashboard
               </Link>
-              <Link href="/logout" className="text-white hover:text-[#5AC35A] transition">
+              <Link
+                href="/logout"
+                className="text-white hover:text-[#5AC35A] transition"
+              >
                 Logout
               </Link>
             </>
           ) : (
             <div className="flex flex-col space-y-2">
-              <Link href="/signIn" className="text-[#5AC35A] hover:text-white transition">
+              <Link
+                href="/signIn"
+                className="text-[#5AC35A] hover:text-white transition"
+              >
                 Login
               </Link>
-              <Link href="/signUp" className="text-white hover:text-[#5AC35A] transition">
+              <Link
+                href="/signUp"
+                className="text-white hover:text-[#5AC35A] transition"
+              >
                 Sign Up
               </Link>
             </div>

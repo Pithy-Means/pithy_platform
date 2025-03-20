@@ -119,7 +119,7 @@ const JobDetail: FC = () => {
         <div className="flex items-center gap-4">
           <a
             href={`https://twitter.com/share?text=Check%20out%20this%20job%20${job.job_title}&url=${encodeURIComponent(
-              job.application_link
+              job.application_link,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -129,7 +129,7 @@ const JobDetail: FC = () => {
           </a>
           <a
             href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-              job.application_link
+              job.application_link,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -139,7 +139,7 @@ const JobDetail: FC = () => {
           </a>
           <a
             href={`https://t.me/share/url?url=${encodeURIComponent(
-              job.application_link
+              job.application_link,
             )}&text=Check%20out%20this%20job%20${job.job_title}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -149,7 +149,7 @@ const JobDetail: FC = () => {
           </a>
           <a
             href={`https://wa.me/?text=Check%20out%20this%20job%20${job.job_title}%20${encodeURIComponent(
-              job.application_link
+              job.application_link,
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -159,7 +159,7 @@ const JobDetail: FC = () => {
           </a>
           <a
             href={`mailto:?subject=Check%20out%20this%20job!&body=Here's%20a%20great%20job%20opportunity:%20${job.job_title}%20-%20${encodeURIComponent(
-              job.application_link
+              job.application_link,
             )}`}
             className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg shadow-md hover:bg-gray-600 transition duration-300"
           >

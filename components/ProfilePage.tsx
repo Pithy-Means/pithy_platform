@@ -12,7 +12,9 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <p className="text-gray-600 text-lg animate-pulse">Loading user info...</p>
+        <p className="text-gray-600 text-lg animate-pulse">
+          Loading user info...
+        </p>
       </div>
     );
   }
@@ -109,7 +111,8 @@ const CategoryInfo = ({
     <div className="space-y-3">
       {Object.entries(data).map(([key, value]) => (
         <p key={key} className="text-gray-700">
-          <span className="font-semibold">{key}:</span> {value || "Not specified"}
+          <span className="font-semibold">{key}:</span>{" "}
+          {value || "Not specified"}
         </p>
       ))}
     </div>

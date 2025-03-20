@@ -16,7 +16,7 @@ export async function checkTransactionStatus(transaction_id: string) {
         headers: {
           Authorization: `Bearer ${env.payment.secret}`,
         },
-      }
+      },
     );
 
     const contentType = response.headers.get("content-type");
@@ -63,13 +63,13 @@ export async function checkTransactionStatus(transaction_id: string) {
         currency,
         method: auth_model,
         status: "successful",
-      }
+      },
     );
 
     const courseDetail = await databases.getDocument(
       db,
       courseCollection,
-      payment.course_choice
+      payment.course_choice,
     );
 
     if (!courseDetail) {
@@ -90,7 +90,7 @@ export async function checkTransactionStatus(transaction_id: string) {
       {
         students: updateStudent,
         student_email: updateStudentEmail,
-      }
+      },
     );
 
     return {

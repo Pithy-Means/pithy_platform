@@ -54,7 +54,9 @@ const VerifyAuth = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-50 p-6 w-full">
       <div className="bg-white p-8 rounded-lg shadow-xl w-full">
-        <h1 className="text-3xl font-semibold text-center text-green-600 mb-6">Verify Your Email</h1>
+        <h1 className="text-3xl font-semibold text-center text-green-600 mb-6">
+          Verify Your Email
+        </h1>
         <p className="text-center text-lg text-gray-700 mb-4">{message}</p>
         <div className="flex justify-center items-center">
           <div className="w-20 h-20 rounded-full bg-blue-100 flex justify-center items-center mb-4">
@@ -65,7 +67,13 @@ const VerifyAuth = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
-              <circle cx="12" cy="12" r="10" strokeWidth="4" className="opacity-25" />
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                strokeWidth="4"
+                className="opacity-25"
+              />
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

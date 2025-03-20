@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState } from "react";
 import ShareSomething from "@/components/ShareSomething";
@@ -21,25 +21,25 @@ function Dashboard() {
         </div>
 
         {/* Sidebar Toggle for Mobile */}
-        <button 
+        <button
           onClick={toggleSidebar}
           className="lg:hidden fixed bottom-10 right-4 z-50 bg-black text-white p-2 rounded-full shadow-lg"
         >
           {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
-          {isSidebarOpen && (
-            <div className="lg:hidden fixed inset-0 bg-black/50 z-40">
-              <div className="h-full shadow-lg">
-                <PersonSidebar />
-              </div>
+        {isSidebarOpen && (
+          <div className="lg:hidden fixed inset-0 bg-black/50 z-40">
+            <div className="h-full shadow-lg">
+              <PersonSidebar />
             </div>
-          )}
-          {/* Sidebar Content */}
-          <div className="hidden lg:block">
-            <PersonSidebar />
           </div>
+        )}
+        {/* Sidebar Content */}
+        <div className="hidden lg:block">
+          <PersonSidebar />
         </div>
       </div>
+    </div>
   );
 }
 
