@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -10,17 +11,44 @@ import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
 import ThankYouMessage from "@/components/ThankYouMessage";
+import { Metadata } from "next";
 
 const DynamicMap = dynamic(() => import("../../../components/Map"), {
   ssr: false,
 });
 
+const metadata: Metadata = {
+  title: "Contact",
+  description: "Contact Pithy Means for questions, feedback or support.",
+  keywords: ["Pithy Means", "contact", "questions", "feedback", "support"],
+  openGraph: {
+    title: "Contact",
+    description: "Contact Pithy Means for questions, feedback or support.",
+    url: "https://www.pithymeans.com/contact",
+    siteName: "Pithy Means",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Pithy Means - Empowering Individuals",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact",
+    description: "Contact Pithy Means for questions, feedback or support.",
+    images: ["/opengraph-image.png"],
+  },
+}
+
 const Contact = () => {
   const [responseMessage, setResponseMessage] = useState("");
 
   return (
-    <div>
-      <div className="">
+    <>
         <div className="flex justify-center bg-black items-center h-96">
           <h3 className="text-lg md:text-2xl lg:text-3xl xl:text-5xl 4k:text-6xl text-[#5AC35A]">
             Contact
@@ -91,8 +119,7 @@ const Contact = () => {
           <FreqAskeQuestion />
           <Footer />
         </div>
-      </div>
-    </div>
+    </>
   );
 };
 
