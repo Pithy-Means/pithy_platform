@@ -17,8 +17,33 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Pithy Means ",
-  description: "Discover your potential with Pithy Means",
+  title: {
+    default: "Pithy Means",
+    template: "%s - Pithy Means",
+  },
+  description: "Discover your potential, value, and insights with Pithy Means. Empowering individuals with tools and resources to achieve their goals.",
+  keywords: ["Pithy Means", "self-improvement", "personal growth", "goal setting", "empowerment", "tools for success"],
+  openGraph: {
+    title: "Pithy Means",
+    description: "Discover your potential, value, and insights with Pithy Means. Empowering individuals with tools and resources to achieve their goals.",
+    url: "https://www.pithymeans.com",
+    siteName: "Pithy Means",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Pithy Means - Empowering Individuals",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pithy Means",
+    description: "Discover your potential, value, and insights with Pithy Means. Empowering individuals with tools and resources to achieve their goals.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({
