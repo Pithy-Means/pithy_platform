@@ -3,7 +3,35 @@ import Footer from "@/components/Footer";
 import FreqAskeQuestion from "@/components/FreqAskeQuestion";
 import SpecialMobile from "@/components/SpecialMobile";
 import SpecialOffer from "@/components/SpecialOffer";
+import { Metadata } from "next";
 import React from "react";
+
+export const metadata: Metadata = {
+  title:  "How It Works",
+  description: "Learn how Pithy Means works and how you can benefit from our platform.",
+  keywords: ["Pithy Means", "how it works", "benefits", "platform"],
+  openGraph: {
+    title: "How It Works",
+    description: "Learn how Pithy Means works and how you can benefit from our platform.",
+    url: "https://www.pithymeans.com/how-it-works",
+    siteName: "Pithy Means",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Pithy Means - Empowering Individuals",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "How It Works",
+    description: "Learn how Pithy Means works and how you can benefit from our platform.",
+    images: ["/opengraph-image.png"],
+  },
+}
 
 export default function HowItWorksPage() {
   return (

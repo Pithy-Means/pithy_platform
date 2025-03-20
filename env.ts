@@ -12,6 +12,9 @@ const env = {
     secret: String(process.env.FLUTTERWAVE_SECRET_KEY),
     encryption: String(process.env.FLUTTERWAVE_ENCRYPTION_KEY),
     hash: String(process.env.SECRET_HASH)
+  },
+  endpoint: {
+    base: String(process.env.NEXT_PUBLIC_BASE_URL),
   }
 }
 
