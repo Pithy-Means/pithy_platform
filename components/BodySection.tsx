@@ -15,7 +15,7 @@ const BodySection = () => {
         <Header_description />
       </div>
 
-      <div className="flex flex-row  lg:justify-evenly sm:justify-items-center space-y-20  space-x-20 px-6 sm:space-y-0 sm:space-x-10 sm:mb-10 lg:mb-0">
+      <div className="flex flex-row  lg:justify-evenly sm:items-center sm:justify-between space-x-20 lg:px-6 px-10">
         {/* Scholarships - Bottom Center */}
         <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 lg:px-20 lg:py-8 lg:rounded-full px-4 py-6 rounded-md transform lg:rotate-90 shadow-sm backdrop-blur-sm">
           <div className="w-2 h-2 bg-[#5AC35A] rounded-full mr-2"></div>
