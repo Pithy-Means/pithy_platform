@@ -2,51 +2,57 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { useEffect, useState } from "react";
-import { Modules, UserInfo } from "@/types/schema";
+import { Modules } from "@/types/schema";
 import { Video } from "./Video";
-import { useRouter } from "next/navigation";
 import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { useAuthStore } from "@/lib/store/useAuthStore";
+
 
 export default function ModulesPage() {
   const [modules, setModules] = useState<Modules[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<"summary" | "resources">(
+  const [activeTab, setActiveTab] = useState<"summary" | "question">(
     "summary",
   );
   const [videoSize, setVideoSize] = useState({ width: 600, height: 400 }); // Default video size
 
-  const router = useRouter();
-  const { user } = useAuthStore((state) => state as unknown as UserInfo);
 
   const totalModules = modules.length;
   const progressPercentage =
     totalModules > 0 ? ((activeModuleIndex + 1) / totalModules) * 100 : 0;
 
-  useEffect(() => {
-    const fetchModules = async () => {
-      try {
-        const response = await fetch(
-          `/api/get-modules?timestamp=${Date.now()}`,
-          { method: "GET" },
-        );
-        console.log("Response", response);
-        if (!response.ok) {
-          throw new Error("Failed to fetch modules");
+    useEffect(() => {
+      const fetchModules = async () => {
+        try {
+          // Let's add a limit parameter to ensure we get all modules
+          const response = await fetch(
+            `/api/get-modules`,
+            { method: "GET" }
+          );
+          console.log("Response", response);
+          if (!response.ok) {
+            throw new Error("Failed to fetch modules");
+          }
+          const result = await response.json();
+          console.log("Modules", result.data);
+          // Make sure we're correctly processing all the data
+          if (result.data && Array.isArray(result.data)) {
+            setModules(result.data);
+            console.log("Total modules loaded:", result.data.length);
+          } else {
+            throw new Error("Invalid data format received");
+          }
+        } catch (err) {
+          setError((err as Error).message);
+          console.error("Error fetching modules:", err);
+        } finally {
+          setLoading(false);
         }
-        const result = await response.json();
-        setModules(result.data);
-      } catch (err) {
-        setError((err as Error).message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchModules();
-  }, [user?.user, router]);
+      };
+    
+      fetchModules();
+    }, []);
 
   const handleModuleChange = (index: number) => {
     if (index <= activeModuleIndex) {
@@ -138,13 +144,13 @@ export default function ModulesPage() {
               </button>
               <button
                 className={`px-6 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === "resources"
+                  activeTab === "question"
                     ? "border-b-4 border-green-600 text-green-600"
                     : "text-gray-600 hover:text-green-600"
                 }`}
-                onClick={() => setActiveTab("resources")}
+                onClick={() => setActiveTab("question")}
               >
-                Resources
+                Question & Answers
               </button>
             </div>
 
@@ -159,11 +165,11 @@ export default function ModulesPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* Resources Content */}
+                  {/* question Content */}
                   <p className="leading-relaxed">
-                    Resources section content goes here.
+                    question section content goes here.
                   </p>
-                  {/* You can add links, documents, or other resources here */}
+                  {/* You can add links, documents, or other question here */}
                 </div>
               )}
             </div>
@@ -174,7 +180,7 @@ export default function ModulesPage() {
       {/* Sidebar */}
       <div className="w-full lg:w-96 flex flex-col gap-6">
         {/* Course Progress Section */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
+        <div className="bg-white rounded-xl shadow-lg p-6 h-96 overflow-y-auto">
           <h2 className="text-lg font-semibold text-gray-800">
             Entrepreneurship in East Africa - Case Study UG
           </h2>
