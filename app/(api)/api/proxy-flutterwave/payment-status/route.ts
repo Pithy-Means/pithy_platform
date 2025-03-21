@@ -8,7 +8,7 @@ import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 import { Query } from "node-appwrite";
 import env from "@/env";
-import { updateReferralPoints } from "@/lib/actions/user.actions";
+
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -193,11 +193,13 @@ export async function GET(req: Request) {
             // Calculate 10% of the payment amount as referral fee
             const referralFee = amount * 0.1;
 
-            // Update referrer's points and earned fees
-            await updateReferralPoints(
-              referrer.user_id,
-              referralFee,
-              user.user_id,
+            await databases.updateDocument(
+              db,
+              userCollection,
+              referrer.$id,
+              {
+                earned_referral_fees: referralFee,
+              },
             );
             console.log(
               `Referral fee of ${referralFee} awarded to user ${referrer.user_id}`,
