@@ -485,18 +485,40 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
           // Manual referral update without calling updateReferralPoints function
           try {
-            // Get current values with safe defaults
-            await updateReferralPoints(referrerDocId, 1, userId);
-
+            
+            console.log("Updated referral points for referrer:", referrerDocId);
+            
+            
             // Safely handle referred_users array
             let currentReferredUsers: string[] = [];
             if (Array.isArray(referrerInfo.referred_users)) {
               currentReferredUsers = [...referrerInfo.referred_users];
+            } else {
+              console.warn("referred_users is not an array, initializing as empty array");
             }
 
             // Add the new user if not already included
             if (!currentReferredUsers.includes(userId)) {
               currentReferredUsers.push(userId);
+            } else {
+              console.log(`User ${userId} is already in referred_users`);
+            }
+
+            // Safely update the referrer document with new points and referred users
+            try {
+              await databases.updateDocument(
+              db,
+              userCollection,
+              referrerDocId,
+              {
+                referral_points: (referrerInfo.referral_points || 0) + 1,
+                referred_users: currentReferredUsers,
+              },
+              );
+              console.log(`Referrer document updated successfully for ${referrerDocId}`);
+            } catch (updateError) {
+              console.error("Error updating referrer document:", updateError);
+              throw new Error("Failed to update referrer document");
             }
             console.log("Updated referred users array:", currentReferredUsers);
             console.log("Updated referral points for referrer:", referrerDocId);
