@@ -1,13 +1,13 @@
-import React, { Suspense } from "react";
+import React from "react";
 import CourseView from "@/components/courseView";
 
 const CoursePage = () => {
   return (
     <div className="flex h-full">
-      <div className="w-full">
-        <Suspense fallback={<div>Loading...</div>}>
+      <div className="w-full no-scrollbar">
+        <div className="flex items-center justify-between">
           <CourseView />
-        </Suspense>
+        </div>
       </div>
     </div>
   );
