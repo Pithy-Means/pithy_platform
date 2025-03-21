@@ -95,7 +95,7 @@ const JobList = () => {
 
               <h1 className="text-5xl md:text-6xl font-bold text-white relative inline-block">
                 <span className="bg-gradient-to-r from-green-300 via-green-400 to-green-200 bg-clip-text text-transparent">
-                  NEXT-GEN CAREER PORTAL
+                  JOB OPPORTUNITIES
                 </span>
                 <div className="absolute -bottom-3 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-300"></div>
                 <div className="absolute -bottom-3 left-0 w-16 h-1 bg-green-400 animate-pulse"></div>

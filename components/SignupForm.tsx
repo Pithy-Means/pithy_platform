@@ -122,17 +122,19 @@ const SignupForm = () => {
     const updatedFormData = { ...formData, signup_url: linkUsed };
     try {
       const newUser = await signup(updatedFormData as UserInfo);
-      console.log("New user:", newUser);
       if (newUser) {
         // Toast success message
         toast.success("User registered successfully");
+        resetForm();
         await createVerify(); // Trigger email verification
         // Reset the form store after successful registration
-        resetForm();
         // Redirect to the "Check Your Email" page
         router.push("/check-email");
       }
     } catch (error) {
+      // Display the user-friendly error message
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      toast.error(errorMessage);
       console.error("Error registering user:", error);
     } finally {
       setIsLoading(false);
@@ -141,9 +143,23 @@ const SignupForm = () => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-4 rounded-md">Loading...</div>
+      <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-80 backdrop-blur-sm z-50">
+      <div className="relative">
+        {/* Glowing circle */}
+        <div className="absolute inset-0 bg-green-500 rounded-full filter blur-md animate-pulse"></div>
+
+        {/* Spinning loader */}
+        <div className="relative z-10 w-24 h-24">
+          <div className="absolute inset-0 border-4 border-t-green-400 border-r-transparent border-b-green-200 border-l-transparent rounded-full animate-spin"></div>
+          <div className="absolute inset-2 border-4 border-t-transparent border-r-green-400 border-b-transparent border-l-green-200 rounded-full animate-spin"></div>
+          <div className="absolute inset-4 border-4 border-t-green-200 border-r-transparent border-b-green-400 border-l-transparent rounded-full animate-spin animation-delay-150"></div>
+        </div>
+
+        <p className="mt-8 text-green-400 font-medium tracking-wider animate-pulse text-center">
+          CREATING ACCOUNT IN PROCESS<span className="animate-ping">...</span>
+        </p>
       </div>
+    </div>
     );
   }
 

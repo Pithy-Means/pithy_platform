@@ -1,20 +1,52 @@
 "use server";
-
 import env from "@/env";
 import { db, moduleCollection, postAttachementBucket } from "@/models/name";
 import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
+import { Query } from "node-appwrite";
 
 export async function GET() {
   try {
     const { databases } = await createAdminClient();
-
-    const modules = await databases.listDocuments(db, moduleCollection);
+    
+    // Solution 1: Increase the limit to fetch all at once
+    const modules = await databases.listDocuments(
+      db,
+      moduleCollection,
+      [Query.limit(1000)] // Increase the limit to fetch all at once
+    );
+    // OR Solution 2: Implement pagination to get all modules
+    // This is more robust for larger collections
+    /*
+    let allModules = [];
+    let offset = 0;
+    const limit = 25; // Appwrite's default limit
+    
+    while (true) {
+      const response = await databases.listDocuments(
+        db,
+        moduleCollection,
+        {
+          limit: limit,
+          offset: offset
+        }
+      );
+      
+      allModules = [...allModules, ...response.documents];
+      
+      if (response.documents.length < limit) {
+        break; // We've reached the end of the collection
+      }
+      
+      offset += limit;
+    }
+    
+    const modules = { documents: allModules };
+    */
 
     const moduleWithVideo = await Promise.all(
       modules.documents.map(async (module) => {
         let videoUrl = null;
-
         if (module.video) {
           try {
             // Fetch the video preview URL directly from Appwrite
@@ -27,22 +59,21 @@ export async function GET() {
             );
           }
         }
-
         return {
           ...module,
           video: videoUrl, // Attach the working video URL
         };
       }),
     );
-
+    
     return NextResponse.json({
       message: "Modules fetched successfully",
       data: moduleWithVideo,
     });
   } catch (error) {
-    console.error("Error fetching courses:", error);
+    console.error("Error fetching modules:", error);
     return NextResponse.json(
-      { message: "Failed to fetch courses", error: (error as Error).message },
+      { message: "Failed to fetch modules", error: (error as Error).message },
       { status: 500 },
     );
   }
