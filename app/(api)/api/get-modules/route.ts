@@ -21,7 +21,10 @@ export async function GET() {
             videoUrl = `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${module.video}/view?project=${env.appwrite.projectId}&project=${env.appwrite.projectId}`;
             // imageUrl = filePreview.href;
           } catch (error) {
-            console.error(`Failed to fetch video for module ${module.$id}:`, error);
+            console.error(
+              `Failed to fetch video for module ${module.$id}:`,
+              error,
+            );
           }
         }
 
@@ -29,16 +32,18 @@ export async function GET() {
           ...module,
           video: videoUrl, // Attach the working video URL
         };
-      })
-    )
+      }),
+    );
 
-    return NextResponse.json({ message: 'Modules fetched successfully', data: moduleWithVideo });
-
+    return NextResponse.json({
+      message: "Modules fetched successfully",
+      data: moduleWithVideo,
+    });
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    console.error("Error fetching courses:", error);
     return NextResponse.json(
-      { message: 'Failed to fetch courses', error: (error as Error).message },
-      { status: 500 }
+      { message: "Failed to fetch courses", error: (error as Error).message },
+      { status: 500 },
     );
   }
 }

@@ -22,7 +22,10 @@ const CourseView: React.FC = () => {
     async (userCategory: string) => {
       setLoading(true);
       try {
-        const response = await fetch(`/api/get-courses?timestamp=${Date.now()}`, { method: "GET", cache: "no-cache" });
+        const response = await fetch(
+          `/api/get-courses?timestamp=${Date.now()}`,
+          { method: "GET", cache: "no-cache" },
+        );
         const data = await response.json();
         if (!response.ok || !data?.data) {
           throw new Error(data?.message || "Failed to fetch courses."); // Throw an error if the response is not okay
@@ -40,23 +43,23 @@ const CourseView: React.FC = () => {
         setLoading(false);
       }
     },
-    [] // Re-run the function when the dispatch function changes
+    [], // Re-run the function when the dispatch function changes
   );
 
   // Fetch courses once when the component mounts
   useEffect(() => {
-    if (user && user?.categories) {  
-        fetchCourses(user?.categories.toLowerCase());
+    if (user && user?.categories) {
+      fetchCourses(user?.categories.toLowerCase());
     }
   }, [user, fetchCourses]);
 
   return (
     <div className="w-full h-full p-6">
       {/* Header Section */}
-        <div className="flex justify-between items-center mb-8 w-full">
-          <p className="text-xl font-extrabold text-gray-800">All Courses</p>
-          <div className="flex gap-2">
-            {/* <button
+      <div className="flex justify-between items-center mb-8 w-full">
+        <p className="text-xl font-extrabold text-gray-800">All Courses</p>
+        <div className="flex gap-2">
+          {/* <button
               onClick={() => setLayout("grid")}
               className={`p-0.5 rounded transition-all duration-500 ease-in-out ${
                 layout === "grid" ? "bg-green-600 text-white" : "text-green-600"
@@ -64,7 +67,7 @@ const CourseView: React.FC = () => {
             >
               <LayoutGrid size={24} strokeWidth={3} />
             </button> */}
-            {/* <button
+          {/* <button
               onClick={() => setLayout("list")}
               className={`p-0.5 rounded transition-all duration-500 ease-in-out ${
                 layout === "list" ? "bg-green-600 text-white" : "text-green-600"
@@ -72,8 +75,8 @@ const CourseView: React.FC = () => {
             >
               <List size={24} strokeWidth={3} />
             </button> */}
-          </div>
         </div>
+      </div>
 
       {/* Admin and User Welcome Section */}
       <div className="flex justify-end items-center">

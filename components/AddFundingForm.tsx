@@ -2,7 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { createFunding, getFunding, updateFunding, deleteFunding, getFundings } from "@/lib/actions/user.actions";
+import {
+  createFunding,
+  getFunding,
+  updateFunding,
+  deleteFunding,
+  getFundings,
+} from "@/lib/actions/user.actions";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { Funding, UserInfo } from "@/types/schema";
 
@@ -46,7 +52,9 @@ const FundingForm = ({ editingId = "" }) => {
   if (!user) {
     return (
       <div className="flex justify-center items-center h-64 bg-white rounded-lg shadow-md">
-        <p className="text-gray-700 text-lg">Please log in to create or manage funding.</p>
+        <p className="text-gray-700 text-lg">
+          Please log in to create or manage funding.
+        </p>
       </div>
     );
   }
@@ -73,7 +81,9 @@ const FundingForm = ({ editingId = "" }) => {
       if (result) {
         setFormData({
           ...result,
-          closing_date: result.closing_date ? result.closing_date.split("T")[0] : new Date().toISOString().split("T")[0],
+          closing_date: result.closing_date
+            ? result.closing_date.split("T")[0]
+            : new Date().toISOString().split("T")[0],
         });
         setIsEditing(true);
       }
@@ -86,12 +96,15 @@ const FundingForm = ({ editingId = "" }) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prevState: Funding) => ({
       ...prevState,
-      [name]: name === "closing_date" ? new Date(value).toISOString().split('T')[0] : value,
+      [name]:
+        name === "closing_date"
+          ? new Date(value).toISOString().split("T")[0]
+          : value,
     }));
   };
 
@@ -120,33 +133,35 @@ const FundingForm = ({ editingId = "" }) => {
         // Update existing funding
         result = await updateFunding(formData.funding_id, formData);
         setMessage({ text: "Funding updated successfully!", type: "success" });
-        
+
         // Update the funding in the local state
-        setFundings(prevFundings => 
-          prevFundings.map(item => 
-            item.funding_id === formData.funding_id ? { ...formData } : item
-          )
+        setFundings((prevFundings) =>
+          prevFundings.map((item) =>
+            item.funding_id === formData.funding_id ? { ...formData } : item,
+          ),
         );
       } else {
         // Create new funding
         result = await createFunding(formData);
         setMessage({ text: "Funding created successfully!", type: "success" });
-        
+
         // Add the new funding to the local state immediately
         if (result) {
-          setFundings(prevFundings => [...prevFundings, result]);
+          setFundings((prevFundings) => [...prevFundings, result]);
         }
       }
-      
+
       // Reset form and hide it after successful submission
       resetForm();
       setShowForm(false);
-      
     } catch (error) {
-      console.error(isEditing ? "Error updating funding:" : "Error creating funding:", error);
-      setMessage({ 
-        text: isEditing ? "Error updating funding" : "Error creating funding", 
-        type: "error" 
+      console.error(
+        isEditing ? "Error updating funding:" : "Error creating funding:",
+        error,
+      );
+      setMessage({
+        text: isEditing ? "Error updating funding" : "Error creating funding",
+        type: "error",
       });
     } finally {
       setIsLoading(false);
@@ -157,17 +172,17 @@ const FundingForm = ({ editingId = "" }) => {
     if (!window.confirm("Are you sure you want to delete this funding?")) {
       return;
     }
-    
+
     setIsLoading(true);
     try {
       await deleteFunding(fundingId);
       setMessage({ text: "Funding deleted successfully!", type: "success" });
-      
+
       // Remove the deleted funding from the local state immediately
-      setFundings(prevFundings => 
-        prevFundings.filter(item => item.funding_id !== fundingId)
+      setFundings((prevFundings) =>
+        prevFundings.filter((item) => item.funding_id !== fundingId),
       );
-      
+
       // Reset form if we're editing the deleted funding
       if (isEditing && formData.funding_id === fundingId) {
         resetForm();
@@ -184,7 +199,9 @@ const FundingForm = ({ editingId = "" }) => {
   const handleEdit = (funding: Funding) => {
     setFormData({
       ...funding,
-      closing_date: funding.closing_date ? funding.closing_date.split("T")[0] : new Date().toISOString().split("T")[0],
+      closing_date: funding.closing_date
+        ? funding.closing_date.split("T")[0]
+        : new Date().toISOString().split("T")[0],
     });
     setIsEditing(true);
     setShowForm(true);
@@ -220,17 +237,29 @@ const FundingForm = ({ editingId = "" }) => {
           transition={{ duration: 0.5 }}
           className="flex flex-col items-center justify-center p-8 my-8 bg-white rounded-lg shadow-lg border border-gray-200 text-center"
         >
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Funding Opportunities</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Funding Opportunities
+          </h2>
           <p className="text-gray-600 mb-6 max-w-2xl">
-            Unlock new possibilities for your projects by exploring and managing funding opportunities. 
-            Add new funding sources, track applications, and stay organized in one place.
+            Unlock new possibilities for your projects by exploring and managing
+            funding opportunities. Add new funding sources, track applications,
+            and stay organized in one place.
           </p>
           <button
             onClick={() => setShowForm(true)}
             className="py-3 px-6 bg-green-600 text-white font-medium rounded-md hover:bg-green-700 transition-all duration-300 shadow-md flex items-center"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clipRule="evenodd"
+              />
             </svg>
             Add New Funding
           </button>
@@ -261,12 +290,23 @@ const FundingForm = ({ editingId = "" }) => {
               }}
               className="text-gray-500 hover:text-gray-700"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </motion.div>
-  
+
           {/* Title */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -274,7 +314,10 @@ const FundingForm = ({ editingId = "" }) => {
             transition={{ delay: 0.3 }}
             className="form-group"
           >
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
               Title
             </label>
             <input
@@ -287,7 +330,7 @@ const FundingForm = ({ editingId = "" }) => {
               required
             />
           </motion.div>
-  
+
           {/* Donor Name */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -295,7 +338,10 @@ const FundingForm = ({ editingId = "" }) => {
             transition={{ delay: 0.4 }}
             className="form-group"
           >
-            <label htmlFor="donor" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="donor"
+              className="block text-sm font-medium text-gray-700"
+            >
               Donor Name
             </label>
             <input
@@ -308,7 +354,7 @@ const FundingForm = ({ editingId = "" }) => {
               required
             />
           </motion.div>
-  
+
           {/* Eligible Countries */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -332,9 +378,9 @@ const FundingForm = ({ editingId = "" }) => {
               required
             />
           </motion.div>
-  
+
           {/* Grid for smaller fields */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
@@ -364,7 +410,7 @@ const FundingForm = ({ editingId = "" }) => {
                 <option value="other">Other</option>
               </select>
             </div>
-  
+
             {/* Grant Size */}
             <div className="form-group">
               <label
@@ -388,7 +434,7 @@ const FundingForm = ({ editingId = "" }) => {
                 <option value="More than $10000">More than $10000</option>
               </select>
             </div>
-  
+
             {/* Funding Type */}
             <div className="form-group">
               <label
@@ -415,7 +461,7 @@ const FundingForm = ({ editingId = "" }) => {
                 <option value="other">Other</option>
               </select>
             </div>
-  
+
             {/* Closing Date */}
             <div className="form-group">
               <label
@@ -428,14 +474,18 @@ const FundingForm = ({ editingId = "" }) => {
                 type="date"
                 id="closing_date"
                 name="closing_date"
-                value={formData.closing_date ? formData.closing_date.split("T")[0] : ""}
+                value={
+                  formData.closing_date
+                    ? formData.closing_date.split("T")[0]
+                    : ""
+                }
                 onChange={handleChange}
                 className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
                 required
               />
             </div>
           </motion.div>
-  
+
           {/* Reference Link */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -458,7 +508,7 @@ const FundingForm = ({ editingId = "" }) => {
               className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
             />
           </motion.div>
-  
+
           {/* Form Buttons */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -473,9 +523,13 @@ const FundingForm = ({ editingId = "" }) => {
               } text-white hover:bg-opacity-90 transition-all`}
               disabled={isLoading}
             >
-              {isLoading ? "Processing..." : isEditing ? "Update Funding" : "Submit Funding"}
+              {isLoading
+                ? "Processing..."
+                : isEditing
+                  ? "Update Funding"
+                  : "Submit Funding"}
             </button>
-  
+
             {isEditing && (
               <button
                 type="button"
@@ -489,7 +543,7 @@ const FundingForm = ({ editingId = "" }) => {
           </motion.div>
         </motion.form>
       )}
-  
+
       {/* Fundings List */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -501,11 +555,13 @@ const FundingForm = ({ editingId = "" }) => {
           Your Fundings
         </h2>
         {isLoading && <p className="text-gray-600">Loading fundings...</p>}
-  
+
         {!isLoading && fundings.length === 0 && (
-          <p className="text-gray-600">No fundings found. Create your first one using the button above!</p>
+          <p className="text-gray-600">
+            No fundings found. Create your first one using the button above!
+          </p>
         )}
-  
+
         {!isLoading && fundings.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {fundings.map((funding, index) => (
@@ -516,13 +572,17 @@ const FundingForm = ({ editingId = "" }) => {
                 transition={{ delay: index * 0.1 }}
                 className="p-6 rounded-lg bg-white border border-gray-200 shadow-md hover:shadow-lg transition-all"
               >
-                <h3 className="text-xl font-semibold text-gray-800">{funding.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-800">
+                  {funding.title}
+                </h3>
                 <div className="my-3">
                   <span className="inline-block px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
                     {funding.funding_type}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mt-2">Donor: {funding.donor}</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  Donor: {funding.donor}
+                </p>
                 <p className="text-sm text-gray-600">
                   Grant Size: {funding.grant_size}
                 </p>

@@ -10,9 +10,7 @@ const ThankYouMessage = () => {
         </h3>
         <div className="flex flex-col space-y-2 items-center">
           <div className="bg-[#1111116c] h-1 w-full rounded" />
-          <p className="text-black capitalize">
-            We&apos;ll be in touch soon
-          </p>
+          <p className="text-black capitalize">We&apos;ll be in touch soon</p>
         </div>
       </div>
     </Card>

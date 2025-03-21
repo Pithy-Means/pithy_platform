@@ -671,17 +671,30 @@ export default function PrivacyPolicy() {
           authorized to access or use the Website and Services.
         </p>
 
-          {/* Contacting Us */}
-          <section className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">Contacting Us</h2>
-            <p className="text-gray-600 leading-relaxed">
-              If you have any questions, concerns, or complaints regarding this Agreement, we encourage you to contact us using the details below:
-              <br />
-              <a href="https://www.pithymeans.com" className="text-blue-500 hover:underline">https://www.pithymeans.com</a>
-              <br />
-              <a href="mailto:pithymeans@gmail.com" className="text-blue-500 hover:underline">pithymeans@gmail.com</a>
-            </p>
-          </section>
+        {/* Contacting Us */}
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+            Contacting Us
+          </h2>
+          <p className="text-gray-600 leading-relaxed">
+            If you have any questions, concerns, or complaints regarding this
+            Agreement, we encourage you to contact us using the details below:
+            <br />
+            <a
+              href="https://www.pithymeans.com"
+              className="text-blue-500 hover:underline"
+            >
+              https://www.pithymeans.com
+            </a>
+            <br />
+            <a
+              href="mailto:pithymeans@gmail.com"
+              className="text-blue-500 hover:underline"
+            >
+              pithymeans@gmail.com
+            </a>
+          </p>
+        </section>
 
         <p className="mb-4">
           We will attempt to resolve complaints and disputes and make every

@@ -9,27 +9,19 @@ export async function GET(req: Request) {
   const userId = searchParams.get("userId");
 
   if (!userId) {
-    return NextResponse.json(
-      { error: "User ID is required" },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: "User ID is required" }, { status: 400 });
   }
 
   try {
     const { databases } = await createAdminClient();
 
     // Get the user
-    const userQuery = await databases.listDocuments(
-      db,
-      userCollection,
-      [Query.equal("user_id", userId)]
-    );
+    const userQuery = await databases.listDocuments(db, userCollection, [
+      Query.equal("user_id", userId),
+    ]);
 
     if (userQuery.documents.length === 0) {
-      return NextResponse.json(
-        { error: "User not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
     const user = userQuery.documents[0];
@@ -37,31 +29,26 @@ export async function GET(req: Request) {
     const studentEmail = user.email;
 
     // Find all courses where this user is enrolled
-    const coursesQuery = await databases.listDocuments(
-      db,
-      courseCollection,
-      [
-        Query.search("students", studentName),
-        Query.search("student_email", studentEmail)
-      ]
-    );
+    const coursesQuery = await databases.listDocuments(db, courseCollection, [
+      Query.search("students", studentName),
+      Query.search("student_email", studentEmail),
+    ]);
 
     return NextResponse.json({
       success: true,
-      courses: coursesQuery.documents.map(course => ({
+      courses: coursesQuery.documents.map((course) => ({
         course_id: course.course_id,
-        title: course.title
-      }))
+        title: course.title,
+      })),
     });
-
   } catch (error) {
     console.error("Error fetching user's purchased courses:", error);
     return NextResponse.json(
-      { 
+      {
         error: "Internal server error while fetching purchased courses",
-        details: error 
+        details: error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

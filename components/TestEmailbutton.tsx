@@ -5,7 +5,7 @@ const TestEmailbutton = () => {
   const handleSubmit = async () => {
     const res = await sendEmail({
       from: "onboarding@resend.dev",
-      to: ["bandonkeyea@gmail.com"],
+      to: ["pithymeansads@gmail.com"],
       subject: "Test Email",
       html: "<h1>Hello, this is a test email from Great.</h1>",
     });

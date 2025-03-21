@@ -3,11 +3,18 @@ import InputContact from "./InputContact";
 
 interface EmployerFieldsProps {
   data: Partial<EmployerInfo>;
-  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
+  onChange: (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
+  ) => void;
 }
 
 // Component for employer-specific form fields
-export const EmployerFields: React.FC<EmployerFieldsProps> = ({ data, onChange }) => (
+export const EmployerFields: React.FC<EmployerFieldsProps> = ({
+  data,
+  onChange,
+}) => (
   <div className="space-y-4">
     <InputContact
       label="Company Name"

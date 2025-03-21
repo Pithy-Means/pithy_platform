@@ -31,18 +31,18 @@ const Loader = () => (
         key={index}
         className="flex animate-pulse bg-white shadow rounded-lg p-4 sm:space-x-4 space-y-4 flex-col sm:flex-row items-start sm:items-center w-full"
       >
-        <div className="rounded-full bg-gray-300 h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16"/>
+        <div className="rounded-full bg-gray-300 h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16" />
         <div className="flex-1 space-y-4 w-full">
-          <div className="h-4 bg-gray-300 rounded w-1/3 sm:w-1/4 md:w-1/6"/>
+          <div className="h-4 bg-gray-300 rounded w-1/3 sm:w-1/4 md:w-1/6" />
           <div className="space-y-2">
-            <div className="h-4 bg-gray-300 rounded w-full"/>
-            <div className="h-4 bg-gray-300 rounded w-5/6"/>
-            <div className="h-4 bg-gray-300 rounded w-4/6"/>
+            <div className="h-4 bg-gray-300 rounded w-full" />
+            <div className="h-4 bg-gray-300 rounded w-5/6" />
+            <div className="h-4 bg-gray-300 rounded w-4/6" />
           </div>
           <div className="flex space-x-4 pt-2 justify-center sm:justify-start">
-            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
-            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
-            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14"/>
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14" />
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14" />
+            <div className="h-4 bg-gray-300 rounded w-10 sm:w-12 md:w-14" />
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
   }>({});
   const [repostingPostId, setRepostingPostId] = useState<string | null>(null);
   const [repostContent, setRepostContent] = useState<{ [key: string]: string }>(
-    {}
+    {},
   );
 
   const handleRepost = async (post: PostWithUser) => {
@@ -156,14 +156,14 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
     setPost,
     setComments,
     setLikeStatus,
-    setLoading
+    setLoading,
   );
 
   const handleDelete = async (postId: string) => {
     try {
       await deletePost(postId);
       setPost((prevPosts) =>
-        prevPosts.filter((post) => post.post_id !== postId)
+        prevPosts.filter((post) => post.post_id !== postId),
       );
     } catch (error) {
       console.error(error);
@@ -174,7 +174,7 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
     try {
       const updatedPost = await updatePost(postId, { content });
       setPost((prevPosts) =>
-        prevPosts.map((post) => (post.post_id === postId ? updatedPost : post))
+        prevPosts.map((post) => (post.post_id === postId ? updatedPost : post)),
       );
     } catch (error) {
       console.log("Update the post error:", error);

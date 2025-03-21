@@ -1,11 +1,22 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { FiChevronLeft, FiChevronRight, FiSearch, FiMail, FiEdit, FiTrash2 } from 'react-icons/fi';
-import { UserInfo } from '@/types/schema';
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  FiChevronLeft,
+  FiChevronRight,
+  FiSearch,
+  FiMail,
+  FiEdit,
+  FiTrash2,
+} from "react-icons/fi";
+import { UserInfo } from "@/types/schema";
 
 interface UsersTableProps {
-  fetchUsers: (page: number, limit: number, search?: string) => Promise<{
+  fetchUsers: (
+    page: number,
+    limit: number,
+    search?: string,
+  ) => Promise<{
     users: UserInfo[];
     total: number;
   }>;
@@ -13,14 +24,20 @@ interface UsersTableProps {
   onDelete?: (userId: string) => void;
 }
 
-const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelete }) => {
+const UserManagement: React.FC<UsersTableProps> = ({
+  fetchUsers,
+  onEdit,
+  onDelete,
+}) => {
   const [users, setUsers] = useState<UserInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(null);
-  
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTimeout, setSearchTimeout] = useState<NodeJS.Timeout | null>(
+    null,
+  );
+
   const usersPerPage = 10;
   const totalPages = Math.ceil(totalUsers / usersPerPage);
 
@@ -31,7 +48,7 @@ const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelet
       setUsers(response.users);
       setTotalUsers(response.total);
     } catch (error) {
-      console.error('Failed to fetch users:', error);
+      console.error("Failed to fetch users:", error);
     } finally {
       setLoading(false);
     }
@@ -77,26 +94,28 @@ const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelet
   const getPageNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 5;
-    
+
     let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
     let endPage = startPage + maxVisiblePages - 1;
-    
+
     if (endPage > totalPages) {
       endPage = totalPages;
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
     }
-    
+
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(i);
     }
-    
+
     return pageNumbers;
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">User Management</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-4 sm:mb-0">
+          User Management
+        </h2>
         <div className="relative w-full sm:w-64">
           <input
             type="text"
@@ -133,17 +152,22 @@ const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelet
                 </thead>
                 <tbody className="text-gray-600 text-sm">
                   {users.map((user) => (
-                    <tr key={user.user_id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <tr
+                      key={user.user_id}
+                      className="border-b border-gray-200 hover:bg-gray-50"
+                    >
                       <td className="py-4 px-6 text-left">
                         <div className="flex items-center">
                           <div className="mr-2">
                             <div className="h-10 w-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
-                              {`${user.firstname?.[0] || ''}${user.lastname?.[0] || ''}`}
+                              {`${user.firstname?.[0] || ""}${user.lastname?.[0] || ""}`}
                             </div>
                           </div>
                           <div>
-                            <span className="font-medium">{`${user.firstname || ''} ${user.lastname || ''}`}</span>
-                            <p className="text-xs text-gray-500">{user.user_id}</p>
+                            <span className="font-medium">{`${user.firstname || ""} ${user.lastname || ""}`}</span>
+                            <p className="text-xs text-gray-500">
+                              {user.user_id}
+                            </p>
                           </div>
                         </div>
                       </td>
@@ -165,14 +189,14 @@ const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelet
                       </td>
                       <td className="py-4 px-6 text-center">
                         <div className="flex item-center justify-center gap-2">
-                          <button 
-                            onClick={() => onEdit && onEdit(user)} 
+                          <button
+                            onClick={() => onEdit && onEdit(user)}
                             className="transform hover:scale-110 transition duration-300 text-blue-500"
                           >
                             <FiEdit size={18} />
                           </button>
-                          <button 
-                            onClick={() => onDelete && onDelete(user.user_id)} 
+                          <button
+                            onClick={() => onDelete && onDelete(user.user_id)}
                             className="transform hover:scale-110 transition duration-300 text-red-500"
                           >
                             <FiTrash2 size={18} />
@@ -188,31 +212,34 @@ const UserManagement: React.FC<UsersTableProps> = ({ fetchUsers, onEdit, onDelet
 
           <div className="flex flex-col sm:flex-row items-center justify-between mt-6">
             <div className="text-sm text-gray-500 mb-4 sm:mb-0">
-              Showing {users.length > 0 ? (currentPage - 1) * usersPerPage + 1 : 0} to {Math.min(currentPage * usersPerPage, totalUsers)} of {totalUsers} users
+              Showing{" "}
+              {users.length > 0 ? (currentPage - 1) * usersPerPage + 1 : 0} to{" "}
+              {Math.min(currentPage * usersPerPage, totalUsers)} of {totalUsers}{" "}
+              users
             </div>
             <div className="flex items-center">
-              <button 
-                onClick={handlePreviousPage} 
-                disabled={currentPage === 1} 
-                className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-50'}`}
+              <button
+                onClick={handlePreviousPage}
+                disabled={currentPage === 1}
+                className={`mx-1 px-3 py-1 rounded-md ${currentPage === 1 ? "text-gray-400 cursor-not-allowed" : "text-blue-600 hover:bg-blue-50"}`}
               >
                 <FiChevronLeft />
               </button>
-              
-              {getPageNumbers().map(pageNum => (
-                <button 
+
+              {getPageNumbers().map((pageNum) => (
+                <button
                   key={pageNum}
-                  onClick={() => setCurrentPage(pageNum)} 
-                  className={`mx-1 px-3 py-1 rounded-md ${currentPage === pageNum ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+                  onClick={() => setCurrentPage(pageNum)}
+                  className={`mx-1 px-3 py-1 rounded-md ${currentPage === pageNum ? "bg-blue-600 text-white" : "text-blue-600 hover:bg-blue-50"}`}
                 >
                   {pageNum}
                 </button>
               ))}
-              
-              <button 
-                onClick={handleNextPage} 
-                disabled={currentPage === totalPages} 
-                className={`mx-1 px-3 py-1 rounded-md ${currentPage === totalPages ? 'text-gray-400 cursor-not-allowed' : 'text-blue-600 hover:bg-blue-50'}`}
+
+              <button
+                onClick={handleNextPage}
+                disabled={currentPage === totalPages}
+                className={`mx-1 px-3 py-1 rounded-md ${currentPage === totalPages ? "text-gray-400 cursor-not-allowed" : "text-blue-600 hover:bg-blue-50"}`}
               >
                 <FiChevronRight />
               </button>

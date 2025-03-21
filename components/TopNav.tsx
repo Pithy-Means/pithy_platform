@@ -4,7 +4,7 @@ interface TopNavProps {
   user: string | undefined;
 }
 
-const TopNav: React.FC<TopNavProps> = ({user}) => {
+const TopNav: React.FC<TopNavProps> = ({ user }) => {
   return (
     <header className="h-16 bg-gray-100 border-b border-gray-200 flex items-center px-4">
       <h1 className="text-lg text-black font-semibold">Admin Dashboard</h1>

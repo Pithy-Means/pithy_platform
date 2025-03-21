@@ -48,13 +48,7 @@ export default async function createJobCollection() {
       100,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      jobCollection,
-      "employer",
-      100,
-      false,
-    ),
+    databases.createStringAttribute(db, jobCollection, "employer", 100, false),
     databases.createDatetimeAttribute(db, jobCollection, "closing_date", false),
     databases.createUrlAttribute(db, jobCollection, "application_link", false),
   ]);

@@ -1,4 +1,4 @@
-import type { NextPage } from 'next';
+import type { NextPage } from "next";
 
 const Home: NextPage = () => {
   return (
@@ -7,7 +7,9 @@ const Home: NextPage = () => {
       <main className="flex-1 p-6">
         {/* Header */}
         <header className="bg-white shadow-sm p-4 rounded-lg">
-          <h2 className="text-xl font-semibold text-gray-800">Welcome, Admin</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Welcome, Admin
+          </h2>
         </header>
 
         {/* Content */}
@@ -16,7 +18,9 @@ const Home: NextPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Card 1 */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800">Total Users</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Total Users
+              </h3>
               <p className="text-2xl font-bold text-gray-900 mt-2">1,234</p>
             </div>
 
@@ -28,14 +32,18 @@ const Home: NextPage = () => {
 
             {/* Card 3 */}
             <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-lg font-semibold text-gray-800">Active Projects</h3>
+              <h3 className="text-lg font-semibold text-gray-800">
+                Active Projects
+              </h3>
               <p className="text-2xl font-bold text-gray-900 mt-2">45</p>
             </div>
           </div>
 
           {/* Recent Activity Table */}
           <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
-            <h3 className="text-lg font-semibold text-gray-800">Recent Activity</h3>
+            <h3 className="text-lg font-semibold text-gray-800">
+              Recent Activity
+            </h3>
             <table className="w-full mt-4">
               <thead>
                 <tr className="text-left border-b">

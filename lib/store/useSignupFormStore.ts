@@ -19,12 +19,14 @@ export const useSignupFormStore = create<SignupFormState>()(
       formData: {},
       currentStep: 0,
       termsAgreed: false,
-      updateFormData: (data) => set((state) => ({
-        formData: { ...state.formData, ...data } as Partial<UserInfo>
-      })),
+      updateFormData: (data) =>
+        set((state) => ({
+          formData: { ...state.formData, ...data } as Partial<UserInfo>,
+        })),
       updateCurrentStep: (step) => set({ currentStep: step }),
       updateTermsAgreed: (agreed) => set({ termsAgreed: agreed }),
-      resetForm: () => set({ formData: {}, currentStep: 0, termsAgreed: false }),
+      resetForm: () =>
+        set({ formData: {}, currentStep: 0, termsAgreed: false }),
     }),
     {
       name: "signup-form-storage", // name of the item in localStorage
@@ -33,6 +35,6 @@ export const useSignupFormStore = create<SignupFormState>()(
         currentStep: state.currentStep,
         termsAgreed: state.termsAgreed,
       }),
-    }
-  )
+    },
+  ),
 );

@@ -34,8 +34,20 @@ export default async function createPostCollection() {
       100,
       false,
     ),
-    databases.createStringAttribute(db, postCollection, "mediaurl", 10000, false),
-    databases.createStringAttribute(db, postCollection, "mediatype", 100, false),
+    databases.createStringAttribute(
+      db,
+      postCollection,
+      "mediaurl",
+      10000,
+      false,
+    ),
+    databases.createStringAttribute(
+      db,
+      postCollection,
+      "mediatype",
+      100,
+      false,
+    ),
     databases.createStringAttribute(
       db,
       postCollection,
@@ -43,19 +55,7 @@ export default async function createPostCollection() {
       10000,
       false,
     ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "image",
-      100,
-      false,
-    ),
-    databases.createStringAttribute(
-      db,
-      postCollection,
-      "video",
-      100,
-      false,
-    ),
+    databases.createStringAttribute(db, postCollection, "image", 100, false),
+    databases.createStringAttribute(db, postCollection, "video", 100, false),
   ]);
 }

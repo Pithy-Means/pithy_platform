@@ -32,7 +32,7 @@ export async function POST(req: Request) {
         tx_ref,
         amount,
         currency,
-        redirect_url: "https://pithy-platform.vercel.app/payment-status",
+        redirect_url: "https://www.pithymeansplus.com/payment-status",
         payment_options:
           "card, ussd, mpesa, mobile_money_franco, qr, mobile_money_uganda, mobile_money_ghana, mobile_money_rwanda, mobile_money_tanzania, bank_transfer, opay, enaira, googlepay, applepay, capitec",
         customer: {
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
         customizations: {
           title: "Course",
           description: "Payment for course",
-          logo: "https://pithy-platform.vercel.app/assets/logo.png",
+          logo: "https://www.pithymeansplus.com/assets/logo.png",
         },
       }),
     });
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
           payment_id: payId,
           course_choice,
           status: "pending",
-        }
+        },
       );
 
       console.log("storePayment", storePayment);

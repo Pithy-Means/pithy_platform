@@ -34,13 +34,21 @@ function FooterSmallScreen() {
       {/* Fixed bottom bar for smaller screens */}
       <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4">
         <div className="flex justify-around items-center text-white">
-          <Button onClick={() => router.push("/dashboard")} className="bg-transparent p-0 hover:bg-transparent" aria-label="Home">
+          <Button
+            onClick={() => router.push("/dashboard")}
+            className="bg-transparent p-0 hover:bg-transparent"
+            aria-label="Home"
+          >
             <div className="flex flex-col items-center">
               <GoHome size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Home</span>
             </div>
           </Button>
-          <Button onClick={() => router.push("/dashboard/courses")} className="bg-transparent p-0 hover:bg-transparent" aria-label="Courses">
+          <Button
+            onClick={() => router.push("/dashboard/courses")}
+            className="bg-transparent p-0 hover:bg-transparent"
+            aria-label="Courses"
+          >
             <div className="flex flex-col items-center">
               <HiMiniClipboardDocumentList
                 size={28}
@@ -49,19 +57,31 @@ function FooterSmallScreen() {
               <span className="text-xs text-black/70">Courses</span>
             </div>
           </Button>
-          <button onClick={() => handleModel()} className="bg-transparent p-0 hover:bg-transparent" aria-label="Create Post">
+          <button
+            onClick={() => handleModel()}
+            className="bg-transparent p-0 hover:bg-transparent"
+            aria-label="Create Post"
+          >
             <div className="flex flex-col items-center">
               <MdOutlineAddCircle size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Post</span>
             </div>
           </button>
-          <Button onClick={() => router.push("/dashboard/jobs")} className="bg-transparent p-0 hover:bg-transparent" aria-label="Jobs">
+          <Button
+            onClick={() => router.push("/dashboard/jobs")}
+            className="bg-transparent p-0 hover:bg-transparent"
+            aria-label="Jobs"
+          >
             <div className="flex flex-col items-center">
               <BriefcaseBusiness size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Jobs</span>
             </div>
           </Button>
-          <Button onClick={() => router.push("/dashboard/fundings")} className="bg-transparent p-0 hover:bg-transparent" aria-label="Fundings">
+          <Button
+            onClick={() => router.push("/dashboard/fundings")}
+            className="bg-transparent p-0 hover:bg-transparent"
+            aria-label="Fundings"
+          >
             <div className="flex flex-col items-center">
               <HandCoins size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Funding</span>

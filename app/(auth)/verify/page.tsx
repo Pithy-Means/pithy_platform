@@ -6,7 +6,7 @@ const VerifyUserPage = () => {
     <Suspense>
       <VerifyAuth />
     </Suspense>
-  )
+  );
 };
 
 export default VerifyUserPage;

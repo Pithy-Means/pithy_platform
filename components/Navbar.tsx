@@ -8,7 +8,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { AuthState } from "@/types/schema";
 
-
 const Navbar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
@@ -96,7 +95,9 @@ const Navbar = () => {
               href={link.href}
               prefetch={true}
               className={`text-white text-lg font-bold hover:text-[#5AC35A] transition duration-300 ${
-                pathname === link.href ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""
+                pathname === link.href
+                  ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2"
+                  : ""
               }`}
             >
               {link.label}
@@ -151,7 +152,9 @@ const Navbar = () => {
               href={link.href}
               onClick={handleCloseMenu}
               className={`text-white hover:text-[#5AC35A] transition duration-300 ${
-                pathname === link.href ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2" : ""
+                pathname === link.href
+                  ? "underline decoration-[#5AC35A] underline-offset-8 decoration-2"
+                  : ""
               }`}
             >
               {link.label}
@@ -201,4 +204,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

@@ -1,10 +1,8 @@
-import AddQuestionForm from '@/components/AddQuestionForm';
-import React from 'react'
+import AddQuestionForm from "@/components/AddQuestionForm";
+import React from "react";
 
 const AddQuestionsPage = () => {
-  return (  
-    <AddQuestionForm />
-  )
-}
+  return <AddQuestionForm />;
+};
 
 export default AddQuestionsPage;

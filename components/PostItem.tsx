@@ -51,7 +51,7 @@ const ActionButton = memo(
       <Icon size={24} strokeWidth={2} />
       <span className="text-sm">{label}</span>
     </button>
-  )
+  ),
 );
 ActionButton.displayName = "ActionButton";
 
@@ -123,7 +123,7 @@ const PostContent = memo(
         )}
       </div>
     );
-  }
+  },
 );
 PostContent.displayName = "PostContent";
 

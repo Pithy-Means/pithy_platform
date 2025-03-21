@@ -14,7 +14,6 @@ const BodySection = () => {
       <div className="flex-1">
         <Header_description />
       </div>
-
       <div className="flex flex-row  lg:justify-evenly sm:items-center sm:justify-between space-x-20 lg:px-6 px-10">
         {/* Scholarships - Bottom Center */}
         <Button onClick={() => router.push("signIn")} className="flex items-center bg-white/10 lg:px-20 lg:py-8 lg:rounded-full px-4 py-6 rounded-md transform lg:rotate-90 shadow-sm backdrop-blur-sm">
@@ -43,16 +42,12 @@ const BodySection = () => {
             </Button>
           </div>
         </>
-
-
       </div>
 
       {/* Right Section - Image Centered But Positioned on the Right */}
       <div className="flex-1 flex justify-center lg:justify-end pb-20 lg:pb-0">
         <CardImage />
       </div>
-
-      {/* Absolute Positioned Elements */}
     </div>
   );
 };

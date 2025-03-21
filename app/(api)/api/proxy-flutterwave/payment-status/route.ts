@@ -1,4 +1,9 @@
-import { courseCollection, db, paymentCollection, userCollection } from "@/models/name";
+import {
+  courseCollection,
+  db,
+  paymentCollection,
+  userCollection,
+} from "@/models/name";
 import { createAdminClient } from "@/utils/appwrite";
 import { NextResponse } from "next/server";
 import { Query } from "node-appwrite";
@@ -13,7 +18,7 @@ export async function GET(req: Request) {
   if (!transaction_id) {
     return NextResponse.json(
       { error: "Transaction reference (transaction_id) is required." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -25,7 +30,7 @@ export async function GET(req: Request) {
         headers: {
           Authorization: `Bearer ${env.payment.secret}`,
         },
-      }
+      },
     );
 
     const contentType = response.headers.get("content-type");
@@ -35,7 +40,7 @@ export async function GET(req: Request) {
           error: "Unexpected response format from Flutterwave.",
           details: await response.text(),
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -52,7 +57,7 @@ export async function GET(req: Request) {
           error: data.message || "Payment verification failed.",
           details: data,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -62,7 +67,7 @@ export async function GET(req: Request) {
     if (amount !== data.data.amount) {
       return NextResponse.json(
         { error: "Invalid payment amount.", details: { amount } },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -76,7 +81,7 @@ export async function GET(req: Request) {
     if (!paymentRecord.documents.length) {
       return NextResponse.json(
         { error: "Payment record not found." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -92,8 +97,11 @@ export async function GET(req: Request) {
         const user = requestingUser.documents[0];
         if (user.email !== data.data.customer.email) {
           return NextResponse.json(
-            { error: "Unauthorized: requesting user does not match payment customer." },
-            { status: 403 }
+            {
+              error:
+                "Unauthorized: requesting user does not match payment customer.",
+            },
+            { status: 403 },
           );
         }
       }
@@ -110,13 +118,13 @@ export async function GET(req: Request) {
         method: auth_model,
         status: "successful",
         user_id: requesting_user_id, // Store user_id with payment for security
-      }
+      },
     );
 
     const courseDeatil = await databases.getDocument(
       db,
       courseCollection,
-      payment.course_choice
+      payment.course_choice,
     );
 
     if (!courseDeatil) {
@@ -147,55 +155,62 @@ export async function GET(req: Request) {
       {
         students: updateStudent,
         student_email: updateStudentEmail,
-      }
+      },
     );
 
     // Step A: Process referral fee if applicable and update user's paid status
     let updatedUser = null;
     try {
       // Fetch the user who made the payment to get their referral code
-      const userQuery = await databases.listDocuments(
-        db,
-        userCollection,
-        [Query.equal("email", data.data.customer.email)]
-      );
+      const userQuery = await databases.listDocuments(db, userCollection, [
+        Query.equal("email", data.data.customer.email),
+      ]);
 
       if (userQuery.documents.length > 0) {
         const user = userQuery.documents[0];
-        
+
         // Update the user's paid status to true
         updatedUser = await databases.updateDocument(
           db,
           userCollection,
           user.$id,
           {
-            paid: true
-          }
+            paid: true,
+          },
         );
 
         // If this user was referred by someone (check user's registration data)
         if (user.referral_by) {
           const referrerQuery = await databases.listDocuments(
-            db, 
+            db,
             userCollection,
-            [Query.equal("referral_by", user.referral_by)]
+            [Query.equal("referral_by", user.referral_by)],
           );
 
           if (referrerQuery.documents.length > 0) {
             const referrer = referrerQuery.documents[0];
-            
+
             // Calculate 10% of the payment amount as referral fee
             const referralFee = amount * 0.1;
-            
+
             // Update referrer's points and earned fees
-            await updateReferralPoints(referrer.user_id, referralFee, user.user_id);
-            console.log(`Referral fee of ${referralFee} awarded to user ${referrer.user_id}`);
+            await updateReferralPoints(
+              referrer.user_id,
+              referralFee,
+              user.user_id,
+            );
+            console.log(
+              `Referral fee of ${referralFee} awarded to user ${referrer.user_id}`,
+            );
           }
         }
       }
     } catch (referralError) {
       // Log the error but don't fail the payment verification
-      console.error("Error processing referral fee or updating user:", referralError);
+      console.error(
+        "Error processing referral fee or updating user:",
+        referralError,
+      );
     }
 
     return NextResponse.json({
@@ -213,7 +228,7 @@ export async function GET(req: Request) {
         error: "Internal server error during payment verification.",
         details: error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

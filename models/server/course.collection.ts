@@ -31,7 +31,13 @@ export default async function createCourseCollection() {
       100000,
       true,
     ),
-    databases.createStringAttribute(db, courseCollection, "price", 1000000,  true),
+    databases.createStringAttribute(
+      db,
+      courseCollection,
+      "price",
+      1000000,
+      true,
+    ),
     databases.createStringAttribute(
       db,
       courseCollection,

@@ -18,7 +18,7 @@ export default function DashboardLayout({
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated } = useAuthStore(
-    (state) => state as { user: UserInfo; isAuthenticated: boolean }
+    (state) => state as { user: UserInfo; isAuthenticated: boolean },
   );
   const router = useRouter();
 

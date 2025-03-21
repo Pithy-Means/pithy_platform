@@ -1,13 +1,22 @@
-import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import MapChart from './MapChart';
+import React from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import MapChart from "./MapChart";
 
 const userLocationData = [
-  { location: 'New York', users: 1200 },
-  { location: 'Los Angeles', users: 900 },
-  { location: 'Chicago', users: 700 },
-  { location: 'Houston', users: 600 },
-  { location: 'Phoenix', users: 500 },
+  { location: "New York", users: 1200 },
+  { location: "Los Angeles", users: 900 },
+  { location: "Chicago", users: 700 },
+  { location: "Houston", users: 600 },
+  { location: "Phoenix", users: 500 },
 ];
 
 const UserGraphs = () => {
@@ -17,7 +26,9 @@ const UserGraphs = () => {
 
       {/* Bar Chart: Users by Location */}
       <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">Users by Location</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          Users by Location
+        </h3>
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <ResponsiveContainer width="100%" height={400}>
             <BarChart data={userLocationData}>
@@ -34,7 +45,9 @@ const UserGraphs = () => {
 
       {/* Map Chart: User Locations */}
       <div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-4">User Locations Map</h3>
+        <h3 className="text-xl font-semibold text-gray-800 mb-4">
+          User Locations Map
+        </h3>
         <div className="bg-white p-6 rounded-lg shadow-sm">
           <ResponsiveContainer width="100%" height={400}>
             <div className="text-center text-gray-500">

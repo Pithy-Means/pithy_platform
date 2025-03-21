@@ -13,7 +13,9 @@ export default function ModulesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
-  const [activeTab, setActiveTab] = useState<"summary" | "resources">("summary");
+  const [activeTab, setActiveTab] = useState<"summary" | "resources">(
+    "summary",
+  );
   const [videoSize, setVideoSize] = useState({ width: 600, height: 400 }); // Default video size
 
   const router = useRouter();
@@ -28,7 +30,7 @@ export default function ModulesPage() {
       try {
         const response = await fetch(
           `/api/get-modules?timestamp=${Date.now()}`,
-          { method: "GET" }
+          { method: "GET" },
         );
         console.log("Response", response);
         if (!response.ok) {
@@ -49,11 +51,11 @@ export default function ModulesPage() {
   const handleModuleChange = (index: number) => {
     if (index <= activeModuleIndex) {
       setActiveModuleIndex(index);
-          // Adjust the video size when the user clicks next or previous
-    setVideoSize((prevSize) => ({
-      width: prevSize.width === 600 ? 800 : 600, // Toggle between two widths
-      height: prevSize.height === 400 ? 600 : 400, // Toggle between two heights
-    }));
+      // Adjust the video size when the user clicks next or previous
+      setVideoSize((prevSize) => ({
+        width: prevSize.width === 600 ? 800 : 600, // Toggle between two widths
+        height: prevSize.height === 400 ? 600 : 400, // Toggle between two heights
+      }));
     } else {
       alert("Complete the current module to unlock this one.");
     }

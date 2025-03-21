@@ -23,7 +23,10 @@ const ValuesAndInterests: React.FC<ValuesAndInterestsProps> = ({
       </div>
       <div className="flex flex-wrap gap-2">
         {interests.map((interest: string, index: number) => (
-          <button key={`interest-${index}`} className="bg-gray-300/25 px-1 rounded-lg hover:bg-green-600 transition duration-300">
+          <button
+            key={`interest-${index}`}
+            className="bg-gray-300/25 px-1 rounded-lg hover:bg-green-600 transition duration-300"
+          >
             {interest}
           </button>
         ))}

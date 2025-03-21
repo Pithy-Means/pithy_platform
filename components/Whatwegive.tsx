@@ -68,7 +68,8 @@ const Whatwegive = () => {
         </p>
         <Button
           onClick={() => router.push("/signIn")}
-          className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize md:text-xl">
+          className="text-white bg-gradient-to-r from-[#5AC35A] to-[#00AE76] w-fit capitalize md:text-xl"
+        >
           Start your journey
         </Button>
 
@@ -160,4 +161,3 @@ const Whatwegive = () => {
 };
 
 export default Whatwegive;
-

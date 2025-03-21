@@ -10,7 +10,7 @@ interface BasicInfoStepProps {
       | HTMLInputElement
       | HTMLTextAreaElement
       | HTMLSelectElement
-    >
+    >,
   ) => void;
 }
 
@@ -57,14 +57,14 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
         }
         className="w-full !rounded-xl !shadow-xl !border-green-300 focus:!border-green-500 focus:!ring-green-500 transition-all ease-in-out duration-300 transform hover:scale-105 my-3"
       />
-      <div className="flex flex-col md:flex-row items-center gap-3">
+      <div className="flex flex-col md:flex-row items-center justify-between w-full">
         <InputContact
           label="Country"
           type="text"
           name="country"
           value={formData.country || ""}
           onChange={onChange}
-          className="py-6"
+          className="py-6 w-full"
         />
         <InputContact
           label="City"
@@ -72,15 +72,7 @@ export const BasicInfoStep: React.FC<BasicInfoStepProps> = ({
           name="city"
           value={formData.city || ""}
           onChange={onChange}
-          className="py-6"
-        />
-        <InputContact
-          label="Area"
-          type="text"
-          name="earlier"
-          value={formData.earlier || ""}
-          onChange={onChange}
-          className="py-6"
+          className="py-6 w-full"
         />
       </div>
       <InputContact

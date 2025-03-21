@@ -4,30 +4,37 @@ import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import toast, { Toaster } from "react-hot-toast";
-import { createPostCourseAnswer, fetchAllPostCourseQuestions } from "@/lib/actions/user.actions";
+import {
+  createPostCourseAnswer,
+  fetchAllPostCourseQuestions,
+} from "@/lib/actions/user.actions";
 import { useQuestionStore } from "@/lib/hooks/useQuestionStore";
 import { PostCourseQuestionAnswer, UserInfo } from "@/types/schema";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { useRouter } from "next/navigation";
 
 const QuestionSlider: React.FC = () => {
-  const [allQuestions, setAllQuestions] = useState<{ id: string; question: string; choices: string[]; category: string }[]>([]);
-  const [filteredQuestions, setFilteredQuestions] = useState<{ id: string; question: string; choices: string[]; category: string }[]>([]);
+  const [allQuestions, setAllQuestions] = useState<
+    { id: string; question: string; choices: string[]; category: string }[]
+  >([]);
+  const [filteredQuestions, setFilteredQuestions] = useState<
+    { id: string; question: string; choices: string[]; category: string }[]
+  >([]);
   const [selectedChoice, setSelectedChoice] = useState<string | null>(null);
   const [customAnswer, setCustomAnswer] = useState<string>("");
   const [showCustomInput, setShowCustomInput] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
-  
+
   const router = useRouter();
   const { user } = useAuthStore((state) => state as unknown as UserInfo);
-  const { 
-    currentQuestionIndex, 
-    setCurrentQuestionIndex, 
-    testStarted, 
+  const {
+    currentQuestionIndex,
+    setCurrentQuestionIndex,
+    testStarted,
     setTestStarted,
     testCompleted,
-    setTestCompleted
+    setTestCompleted,
   } = useQuestionStore();
 
   useEffect(() => {
@@ -59,11 +66,11 @@ const QuestionSlider: React.FC = () => {
   // Filter questions based on user categories and auto-redirect if no questions
   useEffect(() => {
     if (initialLoadComplete && allQuestions.length > 0 && user?.categories) {
-      const questions = allQuestions.filter(
-        question => user.categories.includes(question.category)
+      const questions = allQuestions.filter((question) =>
+        user.categories.includes(question.category),
       );
       setFilteredQuestions(questions);
-      
+
       // If no questions for this user's categories, mark test as completed and redirect
       if (questions.length === 0) {
         localStorage.setItem("testCompleted", "true");
@@ -71,11 +78,18 @@ const QuestionSlider: React.FC = () => {
         // Redirect to courses page since there are no questions to answer
         router.push("/dashboard/courses");
       }
-      
+
       // Reset question index when questions change
       setCurrentQuestionIndex(0);
     }
-  }, [user?.categories, allQuestions, setCurrentQuestionIndex, initialLoadComplete, router, setTestCompleted]);
+  }, [
+    user?.categories,
+    allQuestions,
+    setCurrentQuestionIndex,
+    initialLoadComplete,
+    router,
+    setTestCompleted,
+  ]);
 
   useEffect(() => {
     setSelectedChoice(null);
@@ -106,7 +120,7 @@ const QuestionSlider: React.FC = () => {
     }
 
     const finalAnswer = showCustomInput ? customAnswer : selectedChoice;
-    
+
     if (!finalAnswer || (showCustomInput && customAnswer.trim() === "")) {
       toast.error("Please select an answer or provide a custom response.");
       return;
@@ -118,7 +132,7 @@ const QuestionSlider: React.FC = () => {
       username: user?.firstname || "",
       answer: finalAnswer,
       post_course_question_id: currentQuestion.id,
-      user_category: currentQuestion.category
+      user_category: currentQuestion.category,
     };
 
     setLoading(true);
@@ -132,7 +146,7 @@ const QuestionSlider: React.FC = () => {
         localStorage.setItem("testCompleted", "true");
         setTestCompleted(true);
         toast.success("Congratulations! You've completed all questions.");
-        
+
         // Redirect to courses dashboard page
         setTimeout(() => {
           router.push("/dashboard/courses");
@@ -180,7 +194,10 @@ const QuestionSlider: React.FC = () => {
     return (
       <div className="w-full max-w-md mx-auto space-y-4">
         <h2 className="text-black text-xl font-bold">No Questions Available</h2>
-        <p>There are no questions for your profile category. You can access the courses now.</p>
+        <p>
+          There are no questions for your profile category. You can access the
+          courses now.
+        </p>
         <Button
           onClick={() => {
             localStorage.setItem("testCompleted", "true");
@@ -198,20 +215,24 @@ const QuestionSlider: React.FC = () => {
 
   return (
     <div className="w-full max-w-md mx-auto space-y-4">
-      <h2 className="text-black text-xl font-bold">{filteredQuestions[currentQuestionIndex]?.question}</h2>
+      <h2 className="text-black text-xl font-bold">
+        {filteredQuestions[currentQuestionIndex]?.question}
+      </h2>
       <div className="space-y-2">
-        {filteredQuestions[currentQuestionIndex]?.choices.map((choice, index) => (
-          <Button
-            key={index}
-            onClick={() => handleChoiceSelection(choice)}
-            className={`w-full text-lg text-black ${
-              selectedChoice === choice ? "bg-[#5AC35A]" : "bg-[#f0f0f0]"
-            } p-3 text-left rounded-md hover:bg-opacity-90 transition-colors`}
-          >
-            {choice}
-          </Button>
-        ))}
-        
+        {filteredQuestions[currentQuestionIndex]?.choices.map(
+          (choice, index) => (
+            <Button
+              key={index}
+              onClick={() => handleChoiceSelection(choice)}
+              className={`w-full text-lg text-black ${
+                selectedChoice === choice ? "bg-[#5AC35A]" : "bg-[#f0f0f0]"
+              } p-3 text-left rounded-md hover:bg-opacity-90 transition-colors`}
+            >
+              {choice}
+            </Button>
+          ),
+        )}
+
         {/* Custom answer button */}
         <Button
           onClick={handleCustomOption}
@@ -221,7 +242,7 @@ const QuestionSlider: React.FC = () => {
         >
           Other (provide your own answer)
         </Button>
-        
+
         {/* Custom answer input field */}
         {showCustomInput && (
           <div className="mt-2">
@@ -246,10 +267,12 @@ const QuestionSlider: React.FC = () => {
         )}
         <Button
           onClick={handleSubmitAnswer}
-          className={`bg-[#5AC35A] hover:bg-opacity-90 transition-colors ${currentQuestionIndex === 0 && 'ml-auto'}`}
+          className={`bg-[#5AC35A] hover:bg-opacity-90 transition-colors ${currentQuestionIndex === 0 && "ml-auto"}`}
           disabled={loading}
         >
-          {currentQuestionIndex === filteredQuestions.length - 1 ? "Submit Test" : "Next"}
+          {currentQuestionIndex === filteredQuestions.length - 1
+            ? "Submit Test"
+            : "Next"}
         </Button>
       </div>
       <Toaster position="top-center" reverseOrder={false} />
