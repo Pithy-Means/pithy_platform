@@ -566,7 +566,6 @@ export const register = async (userdata: Partial<UserInfo>) => {
       }
     } catch (sessionError) {
       console.error("Error creating session:", sessionError);
-      // Continue as session can be created on login
     }
 
     return {
@@ -586,10 +585,42 @@ export const register = async (userdata: Partial<UserInfo>) => {
       }
     }
 
-    throw new Error(
-      error instanceof Error ? error.message : "Failed to register user",
-    );
+     // Use the user-friendly error message
+     const friendlyMessage = getUserFriendlyError(error);
+
+    throw new Error(friendlyMessage || "Account not created");
   }
+};
+
+// Add this function to your user.actions.ts file
+const getUserFriendlyError = (error: any): string => {
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  
+  // Map specific error messages to user-friendly versions
+  if (errorMessage.includes("A user with the same email already exists")) {
+    return "This email address is already registered. Please use a different email or try to log in.";
+  }
+  
+  if (errorMessage.includes("Email and password must be provided")) {
+    return "Please provide both email and password to create your account.";
+  }
+  
+  if (errorMessage.includes("Password must be at least")) {
+    return "Your password is too short. Please use a stronger password with at least 8 characters.";
+  }
+  
+  if (errorMessage.includes("Invalid email")) {
+    return "Please enter a valid email address.";
+  }
+  
+  if (errorMessage.includes("Account not created")) {
+    return "We couldn't create your account. Please try again later.";
+  }
+  
+  // Add more specific error mappings based on common errors you see
+  
+  // Default fallback for unknown errors
+  return "There was a problem creating your account. Please try again or contact support if the problem persists.";
 };
 
 export const updateUserProfile = async (
