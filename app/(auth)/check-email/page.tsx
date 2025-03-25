@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { createVerify } from "@/lib/actions/user.actions";
@@ -6,6 +7,7 @@ import toast, { Toaster } from "react-hot-toast";
 
 const CheckEmailPage = () => {
   const [isResending, setIsResending] = useState(false);
+  const [email, setEmail] = useState(""); // Add email state to get the user's email
 
   // Function to handle resending the verification email
   const handleResendVerification = async () => {
@@ -19,6 +21,29 @@ const CheckEmailPage = () => {
     } finally {
       setIsResending(false);
     }
+  };
+
+  // Function to determine which inbox to open based on the email domain
+  const handleGoToInbox = () => {
+    const domain = email.split("@")[1]?.toLowerCase(); // Get the domain part of the email address
+    let inboxUrl = "";
+
+    switch (domain) {
+      case "gmail.com":
+        inboxUrl = "https://mail.google.com/mail/u/0/#inbox";
+        break;
+      case "yahoo.com":
+        inboxUrl = "https://mail.yahoo.com";
+        break;
+      case "outlook.com":
+        inboxUrl = "https://outlook.live.com/mail/";
+        break;
+      default:
+        inboxUrl = "https://mail.google.com/mail/u/0/#inbox"; // Redirect to a generic mail provider (or handle other cases as needed)
+        break;
+    }
+
+    window.open(inboxUrl, "_blank"); // Open in a new tab
   };
 
   return (
@@ -39,6 +64,12 @@ const CheckEmailPage = () => {
         className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg"
       >
         {isResending ? "Resending..." : "Resend Verification Email"}
+      </button>
+      <button
+        onClick={handleGoToInbox}
+        className="mt-4 px-4 py-2 bg-green-800 text-white rounded-lg"
+      >
+        Go to Inbox
       </button>
     </div>
   );
