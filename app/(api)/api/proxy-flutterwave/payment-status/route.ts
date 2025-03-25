@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   if (!transaction_id) {
     return NextResponse.json(
       { error: "Transaction reference (transaction_id) is required." },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
         headers: {
           Authorization: `Bearer ${env.payment.secret}`,
         },
-      },
+      }
     );
 
     const contentType = response.headers.get("content-type");
@@ -40,7 +40,7 @@ export async function GET(req: Request) {
           error: "Unexpected response format from Flutterwave.",
           details: await response.text(),
         },
-        { status: 500 },
+        { status: 500 }
       );
     }
 
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
           error: data.message || "Payment verification failed.",
           details: data,
         },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -67,7 +67,7 @@ export async function GET(req: Request) {
     if (amount !== data.data.amount) {
       return NextResponse.json(
         { error: "Invalid payment amount.", details: { amount } },
-        { status: 400 },
+        { status: 400 }
       );
     }
 
@@ -81,7 +81,7 @@ export async function GET(req: Request) {
     if (!paymentRecord.documents.length) {
       return NextResponse.json(
         { error: "Payment record not found." },
-        { status: 404 },
+        { status: 404 }
       );
     }
 
@@ -101,7 +101,7 @@ export async function GET(req: Request) {
               error:
                 "Unauthorized: requesting user does not match payment customer.",
             },
-            { status: 403 },
+            { status: 403 }
           );
         }
       }
@@ -118,13 +118,13 @@ export async function GET(req: Request) {
         method: auth_model,
         status: "successful",
         user_id: requesting_user_id, // Store user_id with payment for security
-      },
+      }
     );
 
     const courseDeatil = await databases.getDocument(
       db,
       courseCollection,
-      payment.course_choice,
+      payment.course_choice
     );
 
     if (!courseDeatil) {
@@ -155,7 +155,7 @@ export async function GET(req: Request) {
       {
         students: updateStudent,
         student_email: updateStudentEmail,
-      },
+      }
     );
 
     // Step A: Process referral fee if applicable and update user's paid status
@@ -176,33 +176,65 @@ export async function GET(req: Request) {
           user.$id,
           {
             paid: true,
-          },
+          }
         );
 
         // If this user was referred by someone (check user's registration data)
         if (user.referral_by) {
+          console.log(`User ${user.user_id} was referred by someone.`);
+          // Find the referrer and award them a referral fee
           const referrerQuery = await databases.listDocuments(
             db,
             userCollection,
-            [Query.equal("referral_by", user.referral_by)],
+            [
+              Query.equal("referral_code", user.referral_by),
+              Query.notEqual("user_id", user.user_id),
+            ]
           );
 
           if (referrerQuery.documents.length > 0) {
             const referrer = referrerQuery.documents[0];
 
-            // Calculate 10% of the payment amount as referral fee
-            const referralFee = amount * 0.1;
 
-            await databases.updateDocument(
-              db,
-              userCollection,
-              referrer.$id,
-              {
-                earned_referral_fees: referralFee,
-              },
-            );
+
             console.log(
-              `Referral fee of ${referralFee} awarded to user ${referrer.user_id}`,
+              `User ${user.user_id} was referred by ${referrer.user_id}`
+            );
+
+            const referralFee = Math.round(amount * 0.1); // 10% referral fee
+            let exchangeRate = 1;
+            try {
+            const exchangeResponse = await fetch(
+              `https://api.exchangerate-api.com/v4/latest/USD`
+            );
+            
+            if (!exchangeResponse.ok) {
+              throw new Error("Failed to fetch exchange rate");
+            }
+      
+            const exchangeData = await exchangeResponse.json();
+            exchangeRate = exchangeData.rates[currency] || 1;
+            
+            console.log(`Exchange rate for ${currency}: ${exchangeRate}`);
+          } catch (exchangeError) {
+            console.error("Error fetching exchange rate:", exchangeError);
+            // Fallback to 1 if exchange rate fetch fails
+            exchangeRate = 1;
+          }
+      
+          // Convert amount to USD
+          const convertedAmount = referralFee / exchangeRate;
+      
+
+          console.log(`Converted amount in USD: ${convertedAmount}`);
+
+            await databases.updateDocument(db, userCollection, referrer.$id, {
+              earned_referral_fees: Math.round(Number(
+                (referrer.earned_referral_fees || 0) + convertedAmount
+              )),
+            });
+            console.log(
+              `Referral fee of ${convertedAmount} awarded to user ${referrer.user_id}`
             );
           }
         }
@@ -211,7 +243,7 @@ export async function GET(req: Request) {
       // Log the error but don't fail the payment verification
       console.error(
         "Error processing referral fee or updating user:",
-        referralError,
+        referralError
       );
     }
 
@@ -230,7 +262,7 @@ export async function GET(req: Request) {
         error: "Internal server error during payment verification.",
         details: error,
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
