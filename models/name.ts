@@ -24,4 +24,4 @@ export const commentJobsCollection = "commentJobs";
 export const fundingCollection = "fundings";
 export const commentFundingCollection = "commentFundings";
 export const commentScholarshipCollection = "commentScholarships";
-export const referalCollection = "referals";
+export const questionCollection = "questions";

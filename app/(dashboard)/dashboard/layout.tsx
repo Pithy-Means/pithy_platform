@@ -7,6 +7,7 @@ import { useAuthStore } from "@/lib/store/useAuthStore";
 import { UserInfo } from "@/types/schema";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 export default function DashboardLayout({
   children,
@@ -18,7 +19,7 @@ export default function DashboardLayout({
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated } = useAuthStore(
-    (state) => state as { user: UserInfo; isAuthenticated: boolean },
+    (state) => state as { user: UserInfo; isAuthenticated: boolean }
   );
   const router = useRouter();
 
@@ -35,7 +36,10 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
 
   return (
     <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
-      <OverView>{children}</OverView>
+      <OverView>
+        {children}
+        <Toaster />
+      </OverView>
       <FooterSmallScreen />
     </DashboardNavBar>
   );

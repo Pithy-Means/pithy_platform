@@ -17,6 +17,13 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://pithymeansplus.com'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'en-US': '/en-US',
+    },
+  },
   title: {
     default: "Pithy Means",
     template: "%s - Pithy Means",
