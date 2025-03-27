@@ -357,3 +357,9 @@ export type PostCourseQuestionAnswer = {
   answer: string;
   user_category?: string;
 };
+
+export type Questions = {
+  user_id: string;
+  question_id: string;
+  question?: string;
+}
