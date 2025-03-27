@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { Modules } from "@/types/schema";
 import { Video } from "./Video";
 import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
+import QuestionsManagement from "./QuestionManagement";
 
 
 export default function ModulesPage() {
@@ -165,11 +166,8 @@ export default function ModulesPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {/* question Content */}
-                  <p className="leading-relaxed">
-                    question section content goes here.
-                  </p>
                   {/* You can add links, documents, or other question here */}
+                  <QuestionsManagement />
                 </div>
               )}
             </div>
