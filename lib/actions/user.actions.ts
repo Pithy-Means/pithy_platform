@@ -11,6 +11,7 @@ import {
   Post,
   PostCourseQuestion,
   PostCourseQuestionAnswer,
+  Questions,
   Scholarship,
   UpdateUser,
   UserInfo,
@@ -39,6 +40,7 @@ import {
   postCommentCollection,
   postCourseAnswerCollection,
   postCourseQuestionCollection,
+  questionCollection,
   scholarshipCollection,
   userCollection,
 } from "@/models/name";
@@ -1896,5 +1898,94 @@ export const deleteScholarship = async (scholarshipId: string) => {
     return parseStringify(response);
   } catch (error) {
     console.error("Error deleting scholarship:", error);
+    throw new Error("Failed to Delete The Scholarship")
   }
 };
+
+
+export const createQuestion = async (data: Questions) => {
+  const { question_id } = data;
+  const id = generateValidPostId(question_id);
+  try {
+    const { databases } = await createAdminClient();
+
+    const createdQuestion = await databases.createDocument(
+      db, questionCollection, id, {
+        ...data
+      }
+    )
+    console.log("Question Created");
+    
+    return parseStringify(createdQuestion);
+  } catch (error) {
+    console.log('Error occured during the creation of the question:', error)
+    throw new Error('Failed to create question'); // Explicitly throw an error
+
+  }
+}
+
+export const getQuestions = async () => {
+  try {
+    const { databases } = await createAdminClient();
+
+    const fetchedQuestions = await databases.listDocuments(
+      db, questionCollection
+    );
+
+    console.log("Questions fetched succefully!")
+
+    return parseStringify(fetchedQuestions);
+  } catch (error) {
+    console.log('Error occurred during the fetching the questions:', error);
+    throw new Error('Failed to fetch questions'); // Explicitly throw an error
+
+  }
+}
+
+export const getQuestion = async (questionId: string) => {
+  const { databases } = await createAdminClient();
+  try {
+    const fetchQuestionById = await databases.listDocuments(
+      db, questionCollection, [
+        Query.equal("question_id", questionId)
+      ]
+    );
+
+    return parseStringify(fetchQuestionById);
+  } catch (error) {
+    console.log("Error occured during the fetching of the question by Id:", error);
+    throw new Error('Failed To Fetch This Question, Try Again Later')
+  }
+}
+
+
+export const updateQuestion = async (questionId: string, data: Partial<Questions>) => {
+  const { databases } = await createAdminClient();
+  try {
+    const updatedQuestion = await databases.updateDocument(
+      db,
+      questionCollection,
+      questionId,
+      data
+    );
+
+    return parseStringify(updatedQuestion);
+  } catch (error) {
+    console.log('Error Occured During The Updating Of This Question:', error);
+    throw new Error('Failed To Update This Question, Try Again Later')
+  }
+}
+
+export const deleteQuestion = async (questionId: string) => {
+  const { databases } = await createAdminClient();
+  try {
+    const deletedQuestion = await databases.deleteDocument(
+      db, questionCollection, questionId
+    );
+
+    return parseStringify(deletedQuestion);
+  } catch (error) {
+    console.log("Error Occured During The Deletion Of The Question:", error);
+    throw new Error("Failed To Delete The Question")
+  }
+}
