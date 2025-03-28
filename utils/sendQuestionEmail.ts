@@ -25,8 +25,9 @@ export async function sendQuestionEmail({
 }: SendQuestionEmailParams) {
   try {
     const { data, error } = await resend.emails.send({
-      from: "Management <management@pithymeansplus.com>",
+      from: `Management <management@pithymeansplus.com>`,
       to: "management@pithymeansplus.com",
+      replyTo: userEmail,
       subject: `New Question Submitted - ID: ${questionId}`,
       html: `
         <!DOCTYPE html>
@@ -99,10 +100,6 @@ export async function sendQuestionEmail({
               <div class="question">
                 <p>${questionText}</p>
               </div>
-            </div>
-
-            <div class="footer">
-              <p>This is an automated notification. Please do not reply directly to this email.</p>
             </div>
           </div>
         </body>
