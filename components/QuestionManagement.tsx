@@ -32,8 +32,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import CreateQuestionModal from './CreateQuestionModal'; // adjust the import path as needed
-
+import CreateQuestionModal from "./CreateQuestionModal"; // adjust the import path as needed
 
 import { toast } from "sonner";
 
@@ -76,9 +75,8 @@ const QuestionsManagement: React.FC = () => {
     useState<AdvancedQuestion | null>(null);
   const [editMode, setEditMode] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(
-    null
+    null,
   );
-
 
   // Authentication Context
   const { user } = useAuthStore((state) => state);
@@ -93,7 +91,7 @@ const QuestionsManagement: React.FC = () => {
           ...q,
           replies_count: q.replies?.length || 0,
           status: q.status || "published",
-        })
+        }),
       );
       setQuestions(enrichedQuestions);
     } catch (error) {
@@ -114,7 +112,7 @@ const QuestionsManagement: React.FC = () => {
       result = result.filter(
         (q) =>
           q.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          q.user?.firstname?.toLowerCase().includes(searchTerm.toLowerCase())
+          q.user?.firstname?.toLowerCase().includes(searchTerm.toLowerCase()),
       );
     }
 
@@ -156,7 +154,9 @@ const QuestionsManagement: React.FC = () => {
       };
 
       setQuestions((prev) =>
-        prev.map((q) => (q.$id === selectedQuestion.$id ? optimisticUpdate : q))
+        prev.map((q) =>
+          q.$id === selectedQuestion.$id ? optimisticUpdate : q,
+        ),
       );
 
       // Actual Backend Update
@@ -181,7 +181,7 @@ const QuestionsManagement: React.FC = () => {
 
     // Find the question to check user authorization
     const questionToDelete = questions.find(
-      (q) => q.$id === deleteConfirmation
+      (q) => q.$id === deleteConfirmation,
     );
 
     if (!questionToDelete || user.$id !== questionToDelete.user_id) {
@@ -260,28 +260,31 @@ const QuestionsManagement: React.FC = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)}>Create New Question</Button>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          Create New Question
+        </Button>
       </div>
 
       {/* Questions List */}
       <div className="space-y-4">
-        {filteredQuestions.map((question) => (
-          <div
-            key={question.$id}
-            className="bg-white border rounded-lg p-4 flex justify-between hover:shadow-md transition-shadow"
-          >
-            <div className="flex-grow pr-4">
-              <div className="flex items-center space-x-3 mb-2">
-                <span className="font-semibold text-sm">
-                  {question.user?.firstname || "Anonymous"}
-                </span>
-                <span className="text-xs text-gray-500">
-                  {formatDistanceToNow(new Date(question.$createdAt), {
-                    addSuffix: true,
-                  })}
-                </span>
-                <span
-                  className={`
+        {filteredQuestions.length > 0 ? (
+          filteredQuestions.map((question) => (
+            <div
+              key={question.$id}
+              className="bg-white border rounded-lg p-4 flex justify-between hover:shadow-md transition-shadow"
+            >
+              <div className="flex-grow pr-4">
+                <div className="flex items-center space-x-3 mb-2">
+                  <span className="font-semibold text-sm">
+                    {question.user?.firstname || "Anonymous"}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {formatDistanceToNow(new Date(question.$createdAt), {
+                      addSuffix: true,
+                    })}
+                  </span>
+                  <span
+                    className={`
                     text-xs px-2 py-1 rounded-full
                     ${
                       question.status === "draft"
@@ -291,44 +294,55 @@ const QuestionsManagement: React.FC = () => {
                           : "bg-gray-100 text-gray-800"
                     }
                   `}
-                >
-                  {question.status}
-                </span>
+                  >
+                    {question.status}
+                  </span>
+                </div>
+                <p className="text-gray-800">{question.question}</p>
+                <div className="mt-2 text-sm text-gray-500">
+                  Replies: {question.replies_count}
+                </div>
               </div>
-              <p className="text-gray-800">{question.question}</p>
-              <div className="mt-2 text-sm text-gray-500">
-                Replies: {question.replies_count}
-              </div>
-            </div>
 
-            {/* Actions Dropdown - Only show for question owner */}
-            {user && user.$id === question.user_id && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <MoreVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem
-                    onSelect={() => {
-                      setSelectedQuestion(question);
-                      setEditMode(true);
-                    }}
-                  >
-                    <Edit className="mr-2" size={16} /> Edit
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onSelect={() => setDeleteConfirmation(question.$id)}
-                    className="text-red-600"
-                  >
-                    <Trash2 className="mr-2" size={16} /> Delete
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+              {/* Actions Dropdown - Only show for question owner */}
+              {user && user.$id === question.user_id && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <MoreVertical />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem
+                      onSelect={() => {
+                        setSelectedQuestion(question);
+                        setEditMode(true);
+                      }}
+                    >
+                      <Edit className="mr-2" size={16} /> Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onSelect={() => setDeleteConfirmation(question.$id)}
+                      className="text-red-600"
+                    >
+                      <Trash2 className="mr-2" size={16} /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+          ))
+        ) : (
+          <div className="text-center text-gray-500 flex flex-col items-center justify-center space-y-4">
+            <p>No questions found.</p>
+            <p>Try searching for a question or creating a new one.</p>
+            <>
+              <Button onClick={() => setIsCreateModalOpen(true)}>
+                Create New Question
+              </Button>
+            </>
           </div>
-        ))}
+        )}
       </div>
 
       {/* Edit Question Dialog */}
@@ -346,7 +360,7 @@ const QuestionsManagement: React.FC = () => {
                 value={selectedQuestion.question}
                 onChange={(e) =>
                   setSelectedQuestion((prev) =>
-                    prev ? { ...prev, question: e.target.value } : null
+                    prev ? { ...prev, question: e.target.value } : null,
                   )
                 }
                 className="w-full"
@@ -389,12 +403,13 @@ const QuestionsManagement: React.FC = () => {
         </DialogContent>
       </Dialog>
       {isCreateModalOpen ? (
-        <CreateQuestionModal 
-          open={isCreateModalOpen} 
-          onOpenChange={setIsCreateModalOpen}
-          onQuestionCreated={fetchQuestions} // Optional: to refresh the list after creating a question
-        />
-      ): ""}
+        <>
+          <CreateQuestionModal
+            open={isCreateModalOpen}
+            onOpenChange={setIsCreateModalOpen}
+          />
+        </>
+      ) : null}
     </div>
   );
 };

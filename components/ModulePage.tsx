@@ -6,6 +6,7 @@ import { Modules } from "@/types/schema";
 import { Video } from "./Video";
 import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
 import QuestionsManagement from "./QuestionManagement";
+import toast, {Toaster} from "react-hot-toast";
 
 
 export default function ModulesPage() {
@@ -31,18 +32,18 @@ export default function ModulesPage() {
             `/api/get-modules`,
             { method: "GET" }
           );
-          console.log("Response", response);
           if (!response.ok) {
-            throw new Error("Failed to fetch modules");
+            toast.error("Error fetching modules, please try again later.");
           }
           const result = await response.json();
-          console.log("Modules", result.data);
           // Make sure we're correctly processing all the data
           if (result.data && Array.isArray(result.data)) {
+            toast.success("Successfully fetched modules.");
             setModules(result.data);
-            console.log("Total modules loaded:", result.data.length);
           } else {
-            throw new Error("Invalid data format received");
+            toast.error("Error fetching modules, please try again later.");
+            setError("Error fetching modules, please try again later.");
+            console.error("Error fetching modules:", result);
           }
         } catch (err) {
           setError((err as Error).message);
@@ -86,6 +87,19 @@ export default function ModulesPage() {
 
   return (
     <div className="flex flex-col xl:flex-row gap-12 p-8 lg:p-16">
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "rgba(0, 20, 0, 0.9)",
+            color: "#10ff10",
+            border: "1px solid #0f0",
+            boxShadow: "0 0 10px rgba(0, 255, 0, 0.3)",
+          },
+        }}
+        />
       {/* Main Content - Active Module */}
       {modules[activeModuleIndex] && (
         <div className="flex-1 rounded-xl shadow-lg p-8">
