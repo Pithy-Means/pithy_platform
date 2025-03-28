@@ -27,6 +27,7 @@ import { createQuestion } from "@/lib/actions/user.actions";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { UserInfo } from "@/types/schema";
 import { toast } from "sonner";
+import { sendQuestionEmail } from "@/utils/sendQuestionEmail";
 
 // Zod schema for form validation (reusing from original component)
 const QuestionSchema = z.object({
@@ -86,6 +87,14 @@ const CreateQuestionModal: React.FC<CreateQuestionModalProps> = ({
       const result = await createQuestion(questionData);
 
       if (result) {
+        // Send email notification
+        await sendQuestionEmail({
+          questionId: questionData.question_id,
+          questionText: questionData.question,
+          userId: questionData.user_id,
+          userName: user.firstname + " " + user.lastname,
+          userEmail: user.email,
+        });
         // Reset form
         form.reset({
           user_id: user.user_id,
