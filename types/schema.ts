@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { z} from 'zod';
-//Bimport { UserInfo } from '@/types/schema';
 export type BaseUserInfo = {
   user_id: string;
   firstname?: string;
@@ -362,4 +360,4 @@ export type Questions = {
   user_id: string;
   question_id: string;
   question?: string;
-}
+};
