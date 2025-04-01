@@ -1,3 +1,5 @@
+'use client';
+
 import { getReferralDetails } from "@/lib/actions/user.actions";
 import { Button } from "@react-email/components";
 import { CircleX } from "lucide-react";
@@ -8,12 +10,14 @@ interface ReferralHistoryModalProps {
   onClose: () => void;
   userId: string;
 }
+
 interface ReferralDetails {
   referrals: {
     id: string;
     firstname: string;
     lastname: string;
     date: string;
+    isPaid: boolean;
     earnings: number;
   }[];
   totalPoints: number;
@@ -81,17 +85,17 @@ export const ReferralHistoryModal = ({
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-800"></div>
               </div>
             ) : (
-              <div className="overflow-x-auto h-24 overflow-y-auto">
+              <div className="overflow-x-auto max-h-64 overflow-y-auto">
                 <table className="w-full border-collapse">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b border-gray-200">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b border-gray-200 sticky top-0 bg-gray-50">
                         Name
                       </th>
-                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b border-gray-200">
+                      <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600 border-b border-gray-200 sticky top-0 bg-gray-50">
                         Status
                       </th>
-                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600 border-b border-gray-200">
+                      <th className="px-4 py-3 text-right text-sm font-semibold text-gray-600 border-b border-gray-200 sticky top-0 bg-gray-50">
                         Earnings
                       </th>
                     </tr>
@@ -112,12 +116,19 @@ export const ReferralHistoryModal = ({
                               <p className="font-medium text-gray-900">
                                 {referral.firstname} {referral.lastname}
                               </p>
+                              <p className="text-xs text-gray-500">
+                                {new Date(referral.date).toLocaleDateString()}
+                              </p>
                             </div>
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                            Active
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            referral.isPaid 
+                              ? "bg-green-100 text-green-800" 
+                              : "bg-gray-100 text-gray-800"
+                          }`}>
+                            {referral.isPaid ? "Paid" : "Pending"}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
