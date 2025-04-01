@@ -202,39 +202,14 @@ export async function GET(req: Request) {
             );
 
             const referralFee = Math.round(amount * 0.1); // 10% referral fee
-            let exchangeRate = 1;
-            try {
-            const exchangeResponse = await fetch(
-              `https://api.exchangerate-api.com/v4/latest/USD`
-            );
-            
-            if (!exchangeResponse.ok) {
-              throw new Error("Failed to fetch exchange rate");
-            }
-      
-            const exchangeData = await exchangeResponse.json();
-            exchangeRate = exchangeData.rates[currency] || 1;
-            
-            console.log(`Exchange rate for ${currency}: ${exchangeRate}`);
-          } catch (exchangeError) {
-            console.error("Error fetching exchange rate:", exchangeError);
-            // Fallback to 1 if exchange rate fetch fails
-            exchangeRate = 1;
-          }
-      
-          // Convert amount to USD
-          const convertedAmount = referralFee / exchangeRate;
-      
 
-          console.log(`Converted amount in USD: ${convertedAmount}`);
+          console.log(`Converted amount in USD: ${referralFee}`);
 
             await databases.updateDocument(db, userCollection, referrer.$id, {
-              earned_referral_fees: Math.round(Number(
-                (referrer.earned_referral_fees || 0) + convertedAmount
-              )),
+              earned_referral_fees: Math.round(Number(referralFee)),
             });
             console.log(
-              `Referral fee of ${convertedAmount} awarded to user ${referrer.user_id}`
+              `Referral fee of ${referralFee} awarded to user ${referrer.user_id}`
             );
           }
         }
@@ -266,3 +241,27 @@ export async function GET(req: Request) {
     );
   }
 }
+
+
+          //   try {
+          //   const exchangeResponse = await fetch(
+          //     `https://api.exchangerate-api.com/v4/latest/USD`
+          //   );
+            
+          //   if (!exchangeResponse.ok) {
+          //     throw new Error("Failed to fetch exchange rate");
+          //   }
+      
+          //   const exchangeData = await exchangeResponse.json();
+          //   exchangeRate = exchangeData.rates[currency] || 1;
+            
+          //   console.log(`Exchange rate for ${currency}: ${exchangeRate}`);
+          // } catch (exchangeError) {
+          //   console.error("Error fetching exchange rate:", exchangeError);
+          //   // Fallback to 1 if exchange rate fetch fails
+          //   exchangeRate = 1;
+          // }
+      
+          // // Convert amount to USD
+          // const convertedAmount = referralFee / exchangeRate;
+      
