@@ -129,14 +129,14 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
             className: getLinkClassName(href),
             size: 24,
           })}
-          <p
-            className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "lg:block"}`}
+          <div
+            className={`${getLinkClassName(href)} ${isSidebarCollapsed ? "hidden" : "flex flex-row space-x-2"}`}
           >
-            {label}{" "}
+            <p>{label}</p>
             <span className="ml-2 text-xs text-[#F26900]">
               <LockKeyhole />
             </span>
-          </p>
+          </div>
         </div>
       );
     }
