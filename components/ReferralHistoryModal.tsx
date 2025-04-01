@@ -69,7 +69,7 @@ export const ReferralHistoryModal = ({
             <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
               <p className="text-sm text-gray-600 mb-1">Total Earnings</p>
               <p className="text-2xl font-bold text-green-800">
-                ${(referralDetails?.totalEarnings || 0).toFixed(2)}
+                {(referralDetails?.totalEarnings || 0).toFixed(2)}
               </p>
             </div>
           </div>
@@ -121,7 +121,7 @@ export const ReferralHistoryModal = ({
                           </span>
                         </td>
                         <td className="px-4 py-3 text-right text-sm font-medium text-gray-900">
-                          ${(referral.earnings || 0).toFixed(2)}
+                          {(referral.earnings || 0).toFixed(2)}
                         </td>
                       </tr>
                     ))}
