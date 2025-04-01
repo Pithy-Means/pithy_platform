@@ -35,6 +35,7 @@ import {
   fundingCollection,
   jobCollection,
   likePostCollection,
+  paymentCollection,
   postAttachementBucket,
   postCollection,
   postCommentCollection,
@@ -196,22 +197,30 @@ export const reset = async (data: UpdateUser) => {
 // Function to get referral details for a user
 export const getReferralDetails = async (userId: string) => {
   try {
+    console.log(`Getting referral details for user: ${userId}`);
     const { databases } = await createAdminClient();
-    const user = await databases.listDocuments(db, userCollection, [
+    
+    // Get the referring user
+    const userQuery = await databases.listDocuments(db, userCollection, [
       Query.equal("user_id", userId),
     ]);
     
     // Check if user exists and has documents
-    if (!user?.documents || user.documents.length === 0) {
+    if (!userQuery?.documents || userQuery.documents.length === 0) {
+      console.log("No user found with ID:", userId);
       return {
         referrals: [],
         totalPoints: 0,
         totalEarnings: 0,
       };
     }
+    
+    const user = userQuery.documents[0];
+    console.log(`Found user: ${user.firstname} ${user.lastname}, Referral fees: ${user.earned_referral_fees || 0}`);
     
     // Check if referred_users exists and has elements
-    if (!user.documents[0].referred_users?.length) {
+    if (!user.referred_users?.length) {
+      console.log("User has no referred users");
       return {
         referrals: [],
         totalPoints: 0,
@@ -219,30 +228,137 @@ export const getReferralDetails = async (userId: string) => {
       };
     }
     
+    console.log(`User has ${user.referred_users.length} referred users`);
+    
     // Fetch full details of all referred users
-    const referralPromises = user.documents[0].referred_users.map(
+    const referralPromises = user.referred_users.map(
       async (referredId: string) => {
         try {
+          console.log(`Fetching details for referred user ID: ${referredId}`);
           const referredUser = await databases.getDocument(
             db,
             userCollection,
             referredId,
           );
           
-          // Calculate individual earnings - if we don't have per-referral tracking,
-          // distribute evenly among all referrals as a fallback
-          const totalReferrals = user.documents[0].referred_users.length;
-          const estimatedEarning = totalReferrals > 0 
-            ? (user.documents[0].earned_referral_fees || 0) / totalReferrals 
-            : 0;
+          console.log(`Referred user: ${referredUser.firstname} ${referredUser.lastname}, Paid status: ${referredUser.paid}`);
+          
+          // Check if the user has paid - use loose comparison to handle different data types
+          // This handles cases where paid might be a string "true" instead of boolean true
+          const hasPaid = referredUser.paid == true;
+          
+          let individualEarning = 0;
+          
+          // First try to use the existing earned_referral_fees from the referring user
+          if (hasPaid && user.earned_referral_fees) {
+            // If we have multiple paid referrals, divide the earnings
+            const paidReferrals = user.referred_users.filter((id: string) => {
+              // We don't have the paid status for other users yet, so we'll use the current user's earned_referral_fees
+              return id === referredId && hasPaid;
+            });
+            
+            // If this is the only paid referral, assign all the earnings to this user
+            if (paidReferrals.length === 1) {
+              individualEarning = user.earned_referral_fees || 0;
+              console.log(`Using existing earned_referral_fees: ${individualEarning}`);
+            }
+          }
+          
+          // If we couldn't determine earnings from existing data, try to calculate from payment records
+          if (hasPaid && individualEarning === 0) {
+            // Get this user's payment record to calculate the 10%
+            console.log(`Looking for payment records for user: ${referredUser.user_id}`);
+            const paymentRecords = await databases.listDocuments(db, paymentCollection, [
+              Query.equal("user_id", referredUser.user_id),
+              Query.equal("status", "successful")
+            ]);
+            
+            console.log(`Found ${paymentRecords.documents.length} payment records`);
+            
+            if (paymentRecords.documents.length > 0) {
+              // Get the most recent successful payment
+              const payment = paymentRecords.documents[0];
+              console.log(`Payment details: ${JSON.stringify({
+                amount: payment.amount,
+                status: payment.status,
+                currency: payment.currency
+              })}`);
+              
+              // Calculate 10% of the payment amount if amount exists
+              if (payment.amount) {
+                individualEarning = Math.round(payment.amount * 0.1);
+                console.log(`Calculated earnings (10% of ${payment.amount}): ${individualEarning}`);
+              } else {
+                // If we can't find the amount in the payment record, use a fallback approach
+                // Try to get transaction data if it exists
+                if (payment.tx_ref) {
+                  try {
+                    const response = await fetch(
+                      `https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${payment.tx_ref}`,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${env.payment.secret}`,
+                        },
+                      }
+                    );
+                    
+                    if (response.ok) {
+                      const flutterwaveData = await response.json();
+                      if (flutterwaveData.status === "success" && flutterwaveData.data) {
+                        individualEarning = Math.round(flutterwaveData.data.amount * 0.1);
+                        console.log(`Got amount from Flutterwave: ${flutterwaveData.data.amount}, earnings: ${individualEarning}`);
+                      }
+                    }
+                  } catch (error) {
+                    console.error("Error verifying transaction:", error);
+                  }
+                }
+                
+                // If we still don't have an amount, use a default based on the course price
+                // This is a fallback solution - ideally, you'd have the actual payment amount
+                if (individualEarning === 0 && payment.course_choice) {
+                  try {
+                    const course = await databases.getDocument(db, courseCollection, payment.course_choice);
+                    if (course && course.price) {
+                      individualEarning = Math.round(course.price * 0.1);
+                      console.log(`Using course price as fallback: ${course.price}, earnings: ${individualEarning}`);
+                    }
+                  } catch (error) {
+                    console.error("Error getting course:", error);
+                  }
+                }
+              }
+            } else {
+              // As a last resort, check if there's a course_choice directly on the user
+              if (referredUser.course_choice) {
+                try {
+                  const course = await databases.getDocument(db, courseCollection, referredUser.course_choice);
+                  if (course && course.price) {
+                    individualEarning = Math.round(course.price * 0.1);
+                    console.log(`Last resort using course price: ${course.price}, earnings: ${individualEarning}`);
+                  }
+                } catch (error) {
+                  console.error("Error getting course:", error);
+                }
+              }
+            }
+          }
+          
+          // If all else fails but the user is marked as paid, use the referring user's total earnings
+          if (hasPaid && individualEarning === 0 && user.earned_referral_fees) {
+            individualEarning = user.earned_referral_fees;
+            console.log(`Using referring user's total earnings as last resort: ${individualEarning}`);
+          }
+          
+          console.log(`Final earnings for ${referredUser.firstname}: ${individualEarning}`);
           
           return {
             id: referredId,
             firstname: referredUser.firstname || "",
             lastname: referredUser.lastname || "",
             date: referredUser.$createdAt,
-            // Use a default value or estimate since we don't have per-referral earnings
-            earnings: estimatedEarning
+            isPaid: hasPaid,
+            earnings: individualEarning
           };
         } catch (error) {
           console.error(`Error fetching referred user ${referredId}:`, error);
@@ -253,10 +369,37 @@ export const getReferralDetails = async (userId: string) => {
     
     const referrals = (await Promise.all(referralPromises)).filter(Boolean);
     
+    // For debugging - log all referrals and their earnings
+    referrals.forEach(ref => {
+      console.log(`Referral: ${ref.firstname} ${ref.lastname}, Paid: ${ref.isPaid}, Earnings: ${ref.earnings}`);
+    });
+    
+    // If we have no individual earnings but the user has a total, distribute it evenly among paid referrals
+    const paidReferrals = referrals.filter(ref => ref.isPaid);
+    const hasIndividualEarnings = referrals.some(ref => ref.earnings > 0);
+    
+    if (!hasIndividualEarnings && user.earned_referral_fees > 0 && paidReferrals.length > 0) {
+      const earningsPerReferral = user.earned_referral_fees / paidReferrals.length;
+      referrals.forEach(ref => {
+        if (ref.isPaid) {
+          ref.earnings = earningsPerReferral;
+        }
+      });
+      console.log(`Distributed ${user.earned_referral_fees} evenly among ${paidReferrals.length} paid referrals, each getting ${earningsPerReferral}`);
+    }
+    
+    // Calculate total earnings by summing up individual earnings
+    const totalEarnings = referrals.reduce((total, referral) => total + (referral.earnings || 0), 0);
+    console.log(`Total earnings: ${totalEarnings}`);
+    
+    // If we still have no earnings but the user has earned_referral_fees, use that as the total
+    const finalTotalEarnings = totalEarnings > 0 ? totalEarnings : (user.earned_referral_fees || 0);
+    console.log(`Final total earnings: ${finalTotalEarnings}`);
+    
     return {
       referrals,
-      totalPoints: user.documents[0].referral_points || 0,
-      totalEarnings: user.documents[0].earned_referral_fees || 0,
+      totalPoints: user.referral_points || 0,
+      totalEarnings: finalTotalEarnings,
     };
   } catch (error) {
     console.error("Error getting referral details:", error);
