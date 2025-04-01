@@ -83,6 +83,7 @@ export const login = async ({ email, password }: LoginInfo) => {
       sameSite: "strict",
       secure: true,
       maxAge: oneMonthInSeconds,
+      expires: oneMonthInSeconds
     });
 
     // fetch the user information using the session token
@@ -199,7 +200,7 @@ export const getReferralDetails = async (userId: string) => {
     const user = await databases.listDocuments(db, userCollection, [
       Query.equal("user_id", userId),
     ]);
-
+    
     // Check if user exists and has documents
     if (!user?.documents || user.documents.length === 0) {
       return {
@@ -208,7 +209,7 @@ export const getReferralDetails = async (userId: string) => {
         totalEarnings: 0,
       };
     }
-
+    
     // Check if referred_users exists and has elements
     if (!user.documents[0].referred_users?.length) {
       return {
@@ -217,7 +218,7 @@ export const getReferralDetails = async (userId: string) => {
         totalEarnings: 0,
       };
     }
-
+    
     // Fetch full details of all referred users
     const referralPromises = user.documents[0].referred_users.map(
       async (referredId: string) => {
@@ -227,12 +228,21 @@ export const getReferralDetails = async (userId: string) => {
             userCollection,
             referredId,
           );
+          
+          // Calculate individual earnings - if we don't have per-referral tracking,
+          // distribute evenly among all referrals as a fallback
+          const totalReferrals = user.documents[0].referred_users.length;
+          const estimatedEarning = totalReferrals > 0 
+            ? (user.documents[0].earned_referral_fees || 0) / totalReferrals 
+            : 0;
+          
           return {
             id: referredId,
-            firstname: referredUser.firstname,
-            lastname: referredUser.lastname,
+            firstname: referredUser.firstname || "",
+            lastname: referredUser.lastname || "",
             date: referredUser.$createdAt,
-            // You can add more fields as needed
+            // Use a default value or estimate since we don't have per-referral earnings
+            earnings: estimatedEarning
           };
         } catch (error) {
           console.error(`Error fetching referred user ${referredId}:`, error);
@@ -240,9 +250,9 @@ export const getReferralDetails = async (userId: string) => {
         }
       },
     );
-
+    
     const referrals = (await Promise.all(referralPromises)).filter(Boolean);
-
+    
     return {
       referrals,
       totalPoints: user.documents[0].referral_points || 0,
@@ -553,6 +563,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
         referred_users: [], // New user starts with empty referred_users array
       },
     );
+
 
     // Step 4: Create session
     let session;
