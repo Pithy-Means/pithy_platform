@@ -68,7 +68,7 @@ const Contact = () => {
                 location={
                   "1309 Coffeen Avenue STE 10269, Sheridan, WY 82801, USA"
                 }
-                email={"contact@pithymeans.com"}
+                email={"management@pithymeansplus.com"}
                 phone={["+1 (307) 374-0993", " +1 (307) 205-5983"]}
                 className="text-black break-normal"
               />
