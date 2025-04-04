@@ -18,7 +18,7 @@ export default function DashboardLayout({
 }
 
 function DashboardContent({ children }: { children: React.ReactNode }) {
-  const { user, isAuthenticated } = useAuthStore(
+  const { isAuthenticated } = useAuthStore(
     (state) => state as { user: UserInfo; isAuthenticated: boolean }
   );
   const router = useRouter();
@@ -35,7 +35,7 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <DashboardNavBar user={user?.firstname?.charAt(0)?.toUpperCase() ?? ""}>
+    <DashboardNavBar>
       <OverView>
         {children}
         <Toaster />
