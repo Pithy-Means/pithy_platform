@@ -4,6 +4,7 @@ import "./globals.css";
 import ConditionalLayout from "@/components/ConditionalLayout";
 import { UserProvider } from "@/context/UserContext";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -88,6 +89,7 @@ export default function RootLayout({
           <ConditionalLayout>{children}</ConditionalLayout>
         </UserProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
