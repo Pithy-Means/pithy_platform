@@ -37,6 +37,7 @@
     "@types/next": "^9.0.0",
     "@types/react-router-dom": "^5.3.3",
     "@vercel/analytics": "^1.5.0",
+    "@vercel/speed-insights": "^1.2.0",
     "appwrite": "^16.1.0",
     "bcryptjs": "^2.4.3",
     "browser-image-compression": "^2.0.2",
