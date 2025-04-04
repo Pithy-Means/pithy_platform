@@ -1,21 +1,40 @@
+"use client";
+
 import React, { useState } from "react";
 import { Search, Menu, X } from "lucide-react";
 import Logo from "./Logo";
 import { IoMdNotificationsOutline } from "react-icons/io";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { Button } from "./ui/button";
+import { useAuthStore } from "@/lib/store/useAuthStore";
+import { UserInfo } from "@/types/schema";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface DashboardNavBarProps {
-  user: string | undefined;
   children: React.ReactNode;
 }
 
-const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
-  user,
-  children,
-}) => {
+const DashboardNavBar: React.FC<DashboardNavBarProps> = ({ children }) => {
+  const router = useRouter();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const { user, signout } = useAuthStore((state) => state as unknown as UserInfo);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signout();
+      toast.success("Thank You For Visiting Pithy Means, See You Soon!");
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed", error);
+      toast.error("Something Went Wrong. Please Try Again Later!");
+    }
   };
 
   return (
@@ -76,9 +95,22 @@ const DashboardNavBar: React.FC<DashboardNavBarProps> = ({
             <IoMdNotificationsOutline className="text-black h-8 w-8" />
           </div>
           <div className="flex items-center justify-center">
-            <div className="bg-black py-1.5 px-3 rounded-full border border-white shadow-md text-white">
-              {user}
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button className="bg-black py-1.5 px-3 rounded-full border border-white shadow-md text-white">
+                  {user?.firstname?.charAt(0)?.toUpperCase() ?? "Guest"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-fit p-2 bg-green-50">
+                <Button
+                  variant={"default"}
+                  className="bg-white text-black border border-gray-300 hover:bg-gray-200 rounded-full shadow-md py-1.5 px-3"
+                  onClick={() => handleLogout()}
+                >
+                  Logout
+                </Button>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
       </nav>
