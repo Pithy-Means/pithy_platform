@@ -1,6 +1,7 @@
 "use client";
 
 import { getScholarship } from "@/lib/actions/user.actions";
+import { formatDateWithOrdinal } from "@/lib/utils";
 import { Scholarship } from "@/types/schema";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -88,7 +89,7 @@ const ScholarshipDetailPage = () => {
               </p>
               <p className="text-gray-700 mb-4">
                 <span className="font-semibold text-green-600">Deadline:</span>{" "}
-                {scholarship.deadline || "No deadline"}
+                {scholarship.deadline ? formatDateWithOrdinal(new Date(scholarship.deadline)) : "Not specified"}
               </p>
               <p className="text-gray-700 mb-4">
                 <span className="font-semibold text-green-600">

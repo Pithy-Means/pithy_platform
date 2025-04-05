@@ -8,6 +8,7 @@ import { FaBlackTie } from "react-icons/fa6";
 import { FaMarker } from "react-icons/fa";
 import { CalendarCheck, ChevronRight, Zap } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
+import { formatDateWithOrdinal } from "@/lib/utils";
 
 const JobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -243,7 +244,7 @@ const JobList = () => {
                                 CLOSING DATE
                               </span>
                               <p className="text-sm font-semibold text-white group-hover:text-green-200 transition-colors duration-300">
-                                {job.closing_date || "Not specified"}
+                                {job.closing_date ? formatDateWithOrdinal(new Date(job.closing_date)) : "Not specified"}
                               </p>
                             </div>
                           </div>

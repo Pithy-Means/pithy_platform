@@ -55,3 +55,38 @@ export const timeFetcher = (date: string, daysOffset: number): string => {
   newDate.setDate(newDate.getDate() + daysOffset);
   return newDate.toISOString(); // Ensure it returns the ISO string
 };
+
+// Define this helper function elsewhere in your code
+export function formatDateWithOrdinal(date: Date): string {
+  const day = date.getDate();
+  const month = date.toLocaleString("default", { month: "long" });
+  const year = date.getFullYear();
+
+  // Add ordinal suffix to the day
+  const ordinal = getOrdinalSuperscript(day);
+
+  // Using HTML for superscript formatting
+  return `${day}${ordinal}, ${month}/${year}`;
+}
+
+// Helper function to get the correct ordinal suffix
+function getOrdinalSuperscript(day: number): string {
+  // Determine the ordinal suffix
+  let suffix = 'th';
+  if (day % 10 === 1 && day % 100 !== 11) {
+    suffix = 'st';
+  } else if (day % 10 === 2 && day % 100 !== 12) {
+    suffix = 'nd';
+  } else if (day % 10 === 3 && day % 100 !== 13) {
+    suffix = 'rd';
+  }
+  
+  // Convert to Unicode superscript
+  return suffix
+    .replace('t', 'ᵗ')
+    .replace('s', 'ˢ')
+    .replace('n', 'ⁿ')
+    .replace('r', 'ʳ')
+    .replace('d', 'ᵈ')
+    .replace('h', 'ʰ');
+}

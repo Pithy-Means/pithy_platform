@@ -1696,10 +1696,35 @@ export const createJob = async (job: Job) => {
   }
 };
 
+const deleteJobAfterDeadlineOfApplication = async () => {
+  try {
+    const now = new Date();
+    const { databases } = await createAdminClient();
+    const jobs = await databases.listDocuments(db, jobCollection);
+    
+    // Filter jobs that have passed their deadline
+    const expiredJobs = jobs.documents.filter(job => {
+      const deadlineDate = new Date(job.closing_date);
+      return deadlineDate <= now;
+    });
+    
+    // Delete all expired jobs
+    for (const job of expiredJobs) {
+      await databases.deleteDocument(db, jobCollection, job.$id);
+    }    
+  } catch (error) {
+    console.error("Error deleting expired jobs:", error);
+    throw new Error(
+      (error as Error).message || "Failed to delete expired jobs",
+    );
+  }
+};
+
 export const getJobs = async () => {
   try {
     const { databases } = await createAdminClient();
     const jobs = await databases.listDocuments(db, jobCollection);
+    await deleteJobAfterDeadlineOfApplication();
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -1918,10 +1943,36 @@ export const createFunding = async (data: Funding) => {
   }
 };
 
+const deleteFundingAfterDeadlineOfApplication = async () => {
+  try {
+    const now = new Date();
+    const { databases } = await createAdminClient();
+    const fundings = await databases.listDocuments(db, fundingCollection);
+
+    // Filter fundings that have passed their deadline
+    const expiredFundings = fundings.documents.filter((funding) => {
+      const deadlineDate = new Date(funding.closing_date);
+      return deadlineDate <= now;
+    });
+
+    // Delete all expired fundings
+    for (const funding of expiredFundings) {
+      await databases.deleteDocument(db, fundingCollection, funding.$id);
+    }
+  }
+  catch (error) {
+    console.error("Error deleting expired fundings:", error);
+    throw new Error(
+      (error as Error).message || "Failed to delete expired fundings",
+    );
+  }
+};
+
 export const getFundings = async () => {
   try {
     const { databases } = await createAdminClient();
     const fundings = await databases.listDocuments(db, fundingCollection);
+    await deleteFundingAfterDeadlineOfApplication();
     return parseStringify(fundings);
   } catch (error) {
     console.error("Error fetching fundings:", error);
@@ -1996,6 +2047,35 @@ export const createScholarship = async (data: Scholarship) => {
   }
 };
 
+const deleteScholarshipAfterDeadlineOfApplication = async () => {
+  try {
+    const now = new Date();
+    const { databases } = await createAdminClient();
+    const scholarships = await databases.listDocuments(
+      db,
+      scholarshipCollection,
+    );
+
+    // Filter scholarships that have passed their deadline
+    const expiredScholarships = scholarships.documents.filter((scholarship) => {
+      const deadlineDate = new Date(scholarship.deadline);
+      return deadlineDate <= now;
+    });
+
+    // Delete all expired scholarships
+    for (const scholarship of expiredScholarships) {
+      await databases.deleteDocument(
+        db,
+        scholarshipCollection,
+        scholarship.$id,
+      );
+    }
+    console.log("Expired scholarships deleted successfully.");
+  } catch (error) {
+    console.error("Error deleting expired scholarships:", error);
+  }
+};
+
 export const getScholarships = async () => {
   try {
     const { databases } = await createAdminClient();
@@ -2003,6 +2083,8 @@ export const getScholarships = async () => {
       db,
       scholarshipCollection,
     );
+    await deleteScholarshipAfterDeadlineOfApplication();
+    console.log("Scholarships fetched successfully");
     return parseStringify(scholarships);
   } catch (error) {
     console.error("Error fetching scholarships:", error);
@@ -2055,7 +2137,6 @@ export const deleteScholarship = async (scholarshipId: string) => {
     throw new Error("Failed to Delete The Scholarship")
   }
 };
-
 
 export const createQuestion = async (data: Questions) => {
   const { question_id } = data;
