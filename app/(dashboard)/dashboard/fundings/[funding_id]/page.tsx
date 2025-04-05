@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { getFunding } from "@/lib/actions/user.actions";
 import { Funding } from "@/types/schema";
 import toast, { Toaster } from "react-hot-toast";
+import { formatDateWithOrdinal } from "@/lib/utils";
 
 const FundingDetail = () => {
   const { funding_id } = useParams();
@@ -97,7 +98,7 @@ const FundingDetail = () => {
           </p>
           <p className="mb-4">
             <span className="font-semibold">Application Deadline:</span>{" "}
-            {funding.closing_date || "Not specified"}
+            {funding.closing_date ? formatDateWithOrdinal(new Date(funding.closing_date)) : "Not specified"}
           </p>
         </div>
 
