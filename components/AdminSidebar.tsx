@@ -11,7 +11,7 @@ import {
   FaMoneyCheckAlt,
   FaGraduationCap,
 } from "react-icons/fa";
-import { Joystick, LogOut } from "lucide-react";
+import { Gem, Joystick, LogOut } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { AuthState } from "@/types/schema";
 
@@ -35,6 +35,11 @@ const links = [
     path: "/admin/add_scholarship",
     icon: <FaGraduationCap />,
   },
+  {
+    name: "Payments",
+    path: "/admin/payment",
+    icon: <Gem />,
+  }
 ];
 
 const AdminSidebar: React.FC = () => {
