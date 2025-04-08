@@ -76,12 +76,14 @@ UserInfo.displayName = "UserInfo";
 // Memoized post content component with lazy loading
 const PostContent = memo(
   ({
+    post_id,
     content,
     image,
     video,
     isExpanded,
     onToggleExpand,
   }: {
+    post_id: string;
     content: string;
     image?: string;
     video?: string;
@@ -116,9 +118,11 @@ const PostContent = memo(
           <Video
             src={video}
             controls
-            width={800}
-            height={400}
+            width={'800'}
+            height={'400'}
             className="h-72 w-full rounded-md"
+            moduleId={post_id}
+            onComplete={() => {}}
           />
         )}
       </div>
@@ -236,6 +240,7 @@ const PostItem: React.FC<PostItemProps> = ({
           video={post.video}
           isExpanded={isExpanded}
           onToggleExpand={handleToggleExpand}
+          post_id={post.post_id || ""}
         />
       </div>
 
