@@ -407,6 +407,33 @@ export const getReferralDetails = async (userId: string) => {
   }
 };
 
+export const getWHoUserPaid = async () => {
+  const { databases } = await createAdminClient();
+  try {
+
+    const fetchedUsers = await databases.listDocuments(
+      db, paymentCollection
+    );
+
+    const initiatePayment = fetchedUsers.documents.filter((user) => user.checked === false && user.status !== "successful");
+    const successfulPayment = fetchedUsers.documents.filter((user) => user.checked === true && user.status === "successful");
+
+    // console.log("Fetched Users:", fetchedUsers.documents);
+    // console.log("Initiate Payment Users:", initiatePayment);
+    // console.log("Successful Payment Users:", successfulPayment);
+
+    return {
+      initiatePayment: parseStringify(initiatePayment),
+      successfulPayment: parseStringify(successfulPayment)
+    };
+
+  } catch (error) {
+    console.log("Error Occurred During The Fetching Of The User Who Paid:", error);
+    throw new Error("Failed To Fetch The User Who Paid")
+
+  }
+}
+
 export const updateReferralPoints = async (
   referrerId: string,
   amount: number,
