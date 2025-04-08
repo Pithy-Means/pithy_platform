@@ -1,76 +1,71 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
-import { useRef, useState } from "react";
+import { useVideoProgressStore } from "@/lib/store/useVideoProgressStore";
+import { useEffect, useRef } from "react";
 
-interface Video {
+interface VideoProps {
   src: string;
-  subtitles?: string; // URL to subtitle file (.vtt)
-  controls?: boolean;
-  width?: number | string;
-  height?: number | string;
+  width: string;
+  height: string;
+  controls: boolean;
   className?: string;
-  key?: string;
+  moduleId: string;
+  onComplete?: () => void;
 }
 
-export function Video({ src, subtitles, width, height }: Video) {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+export const Video = ({
+  src,
+  width,
+  height,
+  controls,
+  className,
+  moduleId,
+  onComplete,
+}: VideoProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handlePlay = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-      } else {
-        videoRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
+  
+  // Import from the store we created
+  const { updateProgress, getProgress, markAsCompleted } = useVideoProgressStore();
+  
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+    
+    // Restore progress when component mounts or src changes
+    const savedProgress = getProgress(moduleId);
+    if (savedProgress) {
+      videoElement.currentTime = savedProgress.currentTime;
     }
-  };
-
+    
+    // Handle video completion
+    const handleEnded = () => {
+      markAsCompleted(moduleId);
+      if (onComplete) onComplete();
+    };
+    
+    // Save progress every 10 seconds instead of on every frame to reduce writes
+    const progressInterval = setInterval(() => {
+      if (!videoElement.paused) {
+        updateProgress(moduleId, videoElement.currentTime);
+      }
+    }, 10000);
+    
+    videoElement.addEventListener('ended', handleEnded);
+    
+    return () => {
+      clearInterval(progressInterval);
+      videoElement.removeEventListener('ended', handleEnded);
+    };
+  }, [moduleId, src, updateProgress, getProgress, markAsCompleted, onComplete]);
+  
   return (
-    <div className="relative w-full bg-gray-900 rounded-lg overflow-hidden">
-      {!isPlaying && (
-        <div className="absolute inset-0 bg-cover bg-center bg-black bg-opacity-50"></div>
-      )}
-      <video
-        ref={videoRef}
-        preload="metadata"
-        className={`w-full h-auto ${
-          isPlaying ? "opacity-100" : "opacity-0"
-        } transition-opacity duration-300`}
-        width={width}
-        height={height}
-        src={src}
-        onClick={handlePlay}
-        key={src}
-      >
-        {subtitles && (
-          <track
-            src={subtitles} // The URL to the subtitle file
-            kind="subtitles"
-            srcLang="en" // Language of the subtitles (e.g., English)
-            label="English" // Label for the track
-            default // Enable subtitles by default
-          />
-        )}
-      </video>
-      <div
-        className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-          isPlaying ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
-      >
-        <button
-          onClick={handlePlay}
-          className="p-4 bg-gray-800 bg-opacity-70 rounded-full text-white hover:bg-opacity-90"
-        >
-          {isPlaying ? (
-            <Pause className="w-8 h-8" />
-          ) : (
-            <Play className="w-8 h-8" />
-          )}
-        </button>
-      </div>
-    </div>
+    <video
+      ref={videoRef}
+      src={src}
+      width={width}
+      height={height}
+      controls={controls}
+      className={className}
+    />
   );
-}
+};
