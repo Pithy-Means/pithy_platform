@@ -9,7 +9,7 @@ import { Input } from "./ui/input";
 import toast, { Toaster } from "react-hot-toast";
 import { Textarea } from "./ui/textarea";
 import Image from "next/image";
-import { Video } from "./Video";
+// import { Video } from "./Video";
 
 interface CreatePostProps {
   userId: string;
@@ -198,7 +198,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
             {post.video && (
               <div className="mt-4">
                 <p className="text-sm font-medium">Video Preview:</p>
-                <Video
+                <video
                   src={post.video}
                   controls
                   className="mt-2 max-h-40 rounded-lg border border-gray-200"
