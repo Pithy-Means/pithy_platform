@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   createFunding,
   getFunding,
@@ -96,7 +95,7 @@ const FundingForm = ({ editingId = "" }) => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prevState: Funding) => ({
@@ -137,8 +136,8 @@ const FundingForm = ({ editingId = "" }) => {
         // Update the funding in the local state
         setFundings((prevFundings) =>
           prevFundings.map((item) =>
-            item.funding_id === formData.funding_id ? { ...formData } : item,
-          ),
+            item.funding_id === formData.funding_id ? { ...formData } : item
+          )
         );
       } else {
         // Create new funding
@@ -157,7 +156,7 @@ const FundingForm = ({ editingId = "" }) => {
     } catch (error) {
       console.error(
         isEditing ? "Error updating funding:" : "Error creating funding:",
-        error,
+        error
       );
       setMessage({
         text: isEditing ? "Error updating funding" : "Error creating funding",
@@ -180,7 +179,7 @@ const FundingForm = ({ editingId = "" }) => {
 
       // Remove the deleted funding from the local state immediately
       setFundings((prevFundings) =>
-        prevFundings.filter((item) => item.funding_id !== fundingId),
+        prevFundings.filter((item) => item.funding_id !== fundingId)
       );
 
       // Reset form if we're editing the deleted funding
@@ -208,35 +207,23 @@ const FundingForm = ({ editingId = "" }) => {
   };
 
   return (
-    <div className="space-y-6 p-4 w-full bg-white min-h-screen">
+    <div className="space-y-6 p-4 w-full bg-white">
       {/* Message Display */}
-      <AnimatePresence>
-        {message.text && (
-          <motion.div
-            key="message"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-            className={`p-3 rounded-md shadow-md ${
-              message.type === "success"
-                ? "bg-green-500 text-white"
-                : "bg-red-500 text-white"
-            }`}
-          >
-            {message.text}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {message.text && (
+        <div
+          className={`p-3 rounded-md shadow-md ${
+            message.type === "success"
+              ? "bg-green-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       {/* Call to Action when form is hidden */}
       {!showForm ? (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col items-center justify-center p-8 my-8 bg-white rounded-lg shadow-lg border border-gray-200 text-center"
-        >
+        <div className="flex flex-col items-center justify-center p-8 my-8 bg-white rounded-lg shadow-lg border border-gray-200 text-center">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Funding Opportunities
           </h2>
@@ -263,25 +250,17 @@ const FundingForm = ({ editingId = "" }) => {
             </svg>
             Add New Funding
           </button>
-        </motion.div>
+        </div>
       ) : (
         /* Form Section */
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        <form
           onSubmit={handleSubmit}
           className="space-y-4 p-6 rounded-lg bg-white border border-gray-200 shadow-lg"
         >
-          <motion.div className="flex justify-between items-center mb-4">
-            <motion.h2
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 }}
-              className="text-2xl font-bold text-green-700"
-            >
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold text-green-700">
               {isEditing ? "Edit Funding" : "Create Funding"}
-            </motion.h2>
+            </h2>
             <button
               type="button"
               onClick={() => {
@@ -305,15 +284,10 @@ const FundingForm = ({ editingId = "" }) => {
                 />
               </svg>
             </button>
-          </motion.div>
+          </div>
 
           {/* Title */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="form-group"
-          >
+          <div className="form-group">
             <label
               htmlFor="title"
               className="block text-sm font-medium text-gray-700"
@@ -329,15 +303,10 @@ const FundingForm = ({ editingId = "" }) => {
               className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
               required
             />
-          </motion.div>
+          </div>
 
           {/* Donor Name */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="form-group"
-          >
+          <div className="form-group">
             <label
               htmlFor="donor"
               className="block text-sm font-medium text-gray-700"
@@ -353,15 +322,10 @@ const FundingForm = ({ editingId = "" }) => {
               className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
               required
             />
-          </motion.div>
+          </div>
 
           {/* Eligible Countries */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="form-group"
-          >
+          <div className="form-group">
             <label
               htmlFor="eligibre_countries"
               className="block text-sm font-medium text-gray-700"
@@ -377,15 +341,10 @@ const FundingForm = ({ editingId = "" }) => {
               className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
               required
             />
-          </motion.div>
+          </div>
 
           {/* Grid for smaller fields */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="grid grid-cols-1 md:grid-cols-2 gap-4"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Focus Area */}
             <div className="form-group">
               <label
@@ -484,15 +443,10 @@ const FundingForm = ({ editingId = "" }) => {
                 required
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Reference Link */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="form-group"
-          >
+          <div className="form-group">
             <label
               htmlFor="reference_link"
               className="block text-sm font-medium text-gray-700"
@@ -507,15 +461,10 @@ const FundingForm = ({ editingId = "" }) => {
               onChange={handleChange}
               className="w-full p-2 mt-1 bg-white border border-gray-300 rounded-md text-gray-700 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
             />
-          </motion.div>
+          </div>
 
           {/* Form Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9 }}
-            className="flex space-x-3 pt-4 border-t border-gray-200"
-          >
+          <div className="flex space-x-3 pt-4 border-t border-gray-200">
             <button
               type="submit"
               className={`py-2 px-4 rounded-md ${
@@ -540,21 +489,20 @@ const FundingForm = ({ editingId = "" }) => {
                 Cancel
               </button>
             )}
-          </motion.div>
-        </motion.form>
+          </div>
+        </form>
       )}
 
       {/* Fundings List */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        className="mt-8"
-      >
+      <div className="mt-8">
         <h2 className="text-2xl font-bold text-green-700 mb-4">
           Your Fundings
         </h2>
-        {isLoading && <p className="text-gray-600">Loading fundings...</p>}
+        {isLoading && (
+          <div className="flex justify-center items-center min-h-screen">
+            <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
+          </div>
+        )}
 
         {!isLoading && fundings.length === 0 && (
           <p className="text-gray-600">
@@ -564,12 +512,9 @@ const FundingForm = ({ editingId = "" }) => {
 
         {!isLoading && fundings.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {fundings.map((funding, index) => (
-              <motion.div
+            {fundings.map((funding) => (
+              <div
                 key={funding.funding_id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
                 className="p-6 rounded-lg bg-white border border-gray-200 shadow-md hover:shadow-lg transition-all"
               >
                 <h3 className="text-xl font-semibold text-gray-800">
@@ -606,11 +551,11 @@ const FundingForm = ({ editingId = "" }) => {
                     Delete
                   </button>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };
