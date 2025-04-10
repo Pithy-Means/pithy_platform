@@ -14,8 +14,9 @@ function DashboardContent({ children }: { children: React.ReactNode }) {
     <div className="relative">
       <DashboardNavBar>
         <div className="flex mt-4 space-x-4">
-          <AdminSidebar />
-          <main className="flex-1 px-4 bg-gray-50">{children}</main>
+          <AdminSidebar>
+            {children}
+          </AdminSidebar>
         </div>
       </DashboardNavBar>
     </div>
