@@ -162,13 +162,14 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
 
   return (
     <div className="flex space-x-4 relative w-full">
+      {/* Fixed Sidebar (no scrolling) */}
       <div
         className={`
           hidden 
           md:flex 
-          min-h-[80vh]
-          max-h-[calc(100vh-40px)]
-          overflow-y-auto
+          h-screen
+          sticky
+          top-0
           flex-col 
           justify-between 
           bg-white 
@@ -188,7 +189,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           transition-all 
           duration-800 
           ease-in-out
-          relative
           ${isSidebarCollapsed ? "w-[100px]" : "w-[340px]"}
         `}
       >
@@ -357,6 +357,11 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
         </div>
       </div>
 
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto">
+        {children}
+      </div>
+
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           <CreatePost userId={user?.user_id || ""} onPostCreated={addNewPost} />
@@ -369,8 +374,6 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
           <ProfileContainer />
         </Modal>
       )}
-
-      {children}
     </div>
   );
 };

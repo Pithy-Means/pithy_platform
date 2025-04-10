@@ -421,10 +421,6 @@ export const getWHoUserPaid = async () => {
     const initiatePayment = fetchedUsers.documents.filter((user) => user.checked === false && user.status !== "successful");
     const successfulPayment = fetchedUsers.documents.filter((user) => user.checked === true && user.status === "successful");
 
-    // console.log("Fetched Users:", fetchedUsers.documents);
-    console.log("Initiate Payment Users:", initiatePayment.length);
-    console.log("Successful Payment Users:", successfulPayment.length);
-
     return {
       initiatePayment: parseStringify(initiatePayment),
       successfulPayment: parseStringify(successfulPayment)
@@ -1758,7 +1754,6 @@ export const getJobs = async () => {
       Query.orderDesc("$createdAt"),
     ]);
     await deleteJobAfterDeadlineOfApplication();
-    console.log('Jobs', jobs.total);
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -2010,7 +2005,6 @@ export const getFundings = async () => {
       Query.orderDesc("$createdAt"),
     ]);
     await deleteFundingAfterDeadlineOfApplication();
-    console.log("Fundings fetched successfully", fundings.total);
     return parseStringify(fundings);
   } catch (error) {
     console.error("Error fetching fundings:", error);
