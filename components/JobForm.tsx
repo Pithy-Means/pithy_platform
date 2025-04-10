@@ -366,13 +366,13 @@ const JobDashboard = () => {
                   htmlFor="job_earlier"
                   className="block text-sm font-medium text-black"
                 >
-                  Job Earlier
+                  Career Area
                 </label>
                 <input
                   type="text"
                   id="job_earlier"
                   name="job_earlier"
-                  placeholder="Job Earlier"
+                  placeholder="Career Area"
                   value={formData.job_earlier}
                   onChange={handleFormInputChange}
                   className="w-full mt-1 p-2 border border-gray-300 text-black rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
