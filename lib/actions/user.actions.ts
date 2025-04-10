@@ -1750,8 +1750,12 @@ const deleteJobAfterDeadlineOfApplication = async () => {
 export const getJobs = async () => {
   try {
     const { databases } = await createAdminClient();
-    const jobs = await databases.listDocuments(db, jobCollection);
+    const jobs = await databases.listDocuments(db, jobCollection, [
+      Query.limit(1000),
+      Query.orderDesc("$createdAt"),
+    ]);
     await deleteJobAfterDeadlineOfApplication();
+    console.log('Jobs', jobs.total);
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -1998,8 +2002,12 @@ const deleteFundingAfterDeadlineOfApplication = async () => {
 export const getFundings = async () => {
   try {
     const { databases } = await createAdminClient();
-    const fundings = await databases.listDocuments(db, fundingCollection);
+    const fundings = await databases.listDocuments(db, fundingCollection, [
+      Query.limit(1000),
+      Query.orderDesc("$createdAt"),
+    ]);
     await deleteFundingAfterDeadlineOfApplication();
+    console.log("Fundings fetched successfully", fundings.total);
     return parseStringify(fundings);
   } catch (error) {
     console.error("Error fetching fundings:", error);
@@ -2109,6 +2117,7 @@ export const getScholarships = async () => {
     const scholarships = await databases.listDocuments(
       db,
       scholarshipCollection,
+      [ Query.limit(1000), Query.orderDesc("$createdAt") ],
     );
     await deleteScholarshipAfterDeadlineOfApplication();
     console.log("Scholarships fetched successfully");
