@@ -10,6 +10,7 @@ import {
 } from "@/lib/actions/user.actions";
 import { Button } from "./ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+import toast, { Toaster } from "react-hot-toast";
 
 // Optional: Create a context for job management if you want to use it across multiple components
 // This is a simplified version that combines both components
@@ -47,15 +48,15 @@ const JobDashboard = () => {
       setLoading(true);
       try {
         const jobsData = await getJobs();
-        console.log("Fetched jobs:", jobsData);
         if (jobsData) {
           // Ensure jobsData is always treated as an array
           const jobsArray = jobsData.documents || [];
+          toast.success("Jobs fetched successfully");
           setJobs(jobsArray);
-          console.log("Updated jobs state:", jobsArray);
         }
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
+        toast.error("Failed to fetch jobs");
         setError("Failed to load jobs. Please try again.");
       } finally {
         setLoading(false);
@@ -228,13 +229,21 @@ const JobDashboard = () => {
   if (loading && jobs.length === 0 && !showCreateForm) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+        <div className="animate-spin h-8 w-8 border-4 border-green-500 rounded-full border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 bg-white/80 rounded-lg shadow-md">
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          className: "bg-black/50 text-green-200",
+          duration: 4000,
+        }}
+      />
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800">Job Dashboard</h2>
         <Button
@@ -454,7 +463,7 @@ const JobDashboard = () => {
 
       {/* Job List Section */}
       <div className="mt-6">
-        <h3 className="text-xl font-semibold mb-4">
+        <h3 className="text-xl font-semibold mb-4 text-black">
           {jobs.length > 0 ? "Your Jobs" : ""}
         </h3>
 

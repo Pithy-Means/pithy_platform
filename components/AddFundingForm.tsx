@@ -10,6 +10,7 @@ import {
 } from "@/lib/actions/user.actions";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { Funding, UserInfo } from "@/types/schema";
+import toast, { Toaster } from "react-hot-toast";
 
 const FundingForm = ({ editingId = "" }) => {
   // Access the user context to get user information
@@ -63,6 +64,7 @@ const FundingForm = ({ editingId = "" }) => {
     try {
       const result = await getFundings();
       if (result && Array.isArray(result.documents)) {
+        toast.success("Fundings loaded successfully");
         setFundings(result.documents);
       }
     } catch (error) {
@@ -131,6 +133,7 @@ const FundingForm = ({ editingId = "" }) => {
       if (isEditing) {
         // Update existing funding
         result = await updateFunding(formData.funding_id, formData);
+
         setMessage({ text: "Funding updated successfully!", type: "success" });
 
         // Update the funding in the local state
@@ -208,6 +211,13 @@ const FundingForm = ({ editingId = "" }) => {
 
   return (
     <div className="space-y-6 p-4 w-full bg-white">
+      <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+        }}
+      />
       {/* Message Display */}
       {message.text && (
         <div
