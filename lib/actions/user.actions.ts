@@ -412,15 +412,18 @@ export const getWHoUserPaid = async () => {
   try {
 
     const fetchedUsers = await databases.listDocuments(
-      db, paymentCollection
+      db, paymentCollection, [
+        Query.limit(1000),
+        Query.orderDesc("$createdAt"),
+      ]
     );
 
     const initiatePayment = fetchedUsers.documents.filter((user) => user.checked === false && user.status !== "successful");
     const successfulPayment = fetchedUsers.documents.filter((user) => user.checked === true && user.status === "successful");
 
     // console.log("Fetched Users:", fetchedUsers.documents);
-    // console.log("Initiate Payment Users:", initiatePayment);
-    // console.log("Successful Payment Users:", successfulPayment);
+    console.log("Initiate Payment Users:", initiatePayment.length);
+    console.log("Successful Payment Users:", successfulPayment.length);
 
     return {
       initiatePayment: parseStringify(initiatePayment),
