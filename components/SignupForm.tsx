@@ -15,6 +15,17 @@ import TermsAndConditions from "./TermsAndConditions";
 import PrivacyPolicy from "./PrivacyPolicy";
 import toast, { Toaster } from "react-hot-toast";
 import { useSignupFormStore } from "@/lib/store/useSignupFormStore";
+import {
+  createUserValidationSchema,
+  baseUserSchema,
+  ageSchema,
+  genderSchema,
+  categorySchema,
+  studentSchema,
+  jobSeekerSchema,
+  employerSchema,
+} from "@/lib/validations/auth-schema";
+import { z } from "zod";
 
 const SignupForm = () => {
   // Use the persistent store
@@ -30,6 +41,8 @@ const SignupForm = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isFormComplete, setIsFormComplete] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isFormValid, setIsFormValid] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showPrivacy, setShowPrivacy] = useState(false);
 
@@ -39,6 +52,56 @@ const SignupForm = () => {
 
   const { signup } = useAuthStore((state) => state as AuthState);
 
+  // Validate form based on current step
+  useEffect(() => {
+    const validateCurrentStep = () => {
+      try {
+        switch (currentStep) {
+          case 0:
+            baseUserSchema.parse(formData);
+            break;
+          case 1:
+            ageSchema.parse(formData);
+            break;
+          case 2:
+            genderSchema.parse(formData);
+            break;
+          case 3:
+            categorySchema.parse(formData);
+            // Validate category specific fields
+            if (formData.categories) {
+              switch (formData.categories) {
+                case "student":
+                  studentSchema.parse(formData);
+                  break;
+                case "job seeker":
+                  jobSeekerSchema.parse(formData);
+                  break;
+                case "employer":
+                  employerSchema.parse(formData);
+                  break;
+              }
+            }
+            break;
+        }
+        setIsFormValid(true);
+        setFormErrors({});
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          const newErrors: Record<string, string> = {};
+          error.errors.forEach((err) => {
+            const field = err.path[0];
+            newErrors[field as string] = err.message;
+          });
+          setFormErrors(newErrors);
+          setIsFormValid(false);
+        }
+      }
+    };
+
+    validateCurrentStep();
+  }, [currentStep, formData]);
+
   // Set referral code from URL if present
   useEffect(() => {
     if (referralCode) {
@@ -47,8 +110,16 @@ const SignupForm = () => {
   }, [referralCode, updateFormData]);
 
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 4 && isFormValid) {
       updateCurrentStep(currentStep + 1);
+    } else if (!isFormValid) {
+      // Show toast with form errors
+      const errorKeys = Object.keys(formErrors);
+      if (errorKeys.length > 0) {
+        toast.error(`Please fix the following: ${formErrors[errorKeys[0]]}`);
+      } else {
+        toast.error("Please complete all required fields correctly");
+      }
     }
   };
 
@@ -86,7 +157,7 @@ const SignupForm = () => {
 
       const fields = requiredFields[currentStep] || [];
       const isComplete = fields.every(
-        (field) => formData[field as keyof UserInfo],
+        (field) => formData[field as keyof UserInfo]
       );
       setIsFormComplete(isComplete);
     };
@@ -98,7 +169,7 @@ const SignupForm = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     updateFormData({ [name]: value });
@@ -106,6 +177,29 @@ const SignupForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Final validation before submission
+    try {
+      const schema = createUserValidationSchema(formData.categories);
+      schema.parse(formData);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          const field = err.path[0];
+          newErrors[field as string] = err.message;
+        });
+        setFormErrors(newErrors);
+
+        // Show first error in toast
+        const errorKeys = Object.keys(newErrors);
+        if (errorKeys.length > 0) {
+          toast.error(`Please fix: ${newErrors[errorKeys[0]]}`);
+        }
+
+        return;
+      }
+    }
     setIsLoading(true);
     if (!isFormComplete) {
       toast.error("Please fill in all required fields");
@@ -133,7 +227,8 @@ const SignupForm = () => {
       }
     } catch (error) {
       // Display the user-friendly error message
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       toast.error(errorMessage);
       console.error("Error registering user:", error);
     } finally {
@@ -143,23 +238,23 @@ const SignupForm = () => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-80 backdrop-blur-sm z-50">
-      <div className="relative">
-        {/* Glowing circle */}
-        <div className="absolute inset-0 bg-green-500 rounded-full filter blur-md animate-pulse"></div>
+      <div className="fixed inset-0 flex justify-center items-center bg-white backdrop-blur-sm z-50">
+        <div className="relative">
+          {/* Glowing circle */}
+          <div className="absolute inset-0 bg-green-500 rounded-full filter blur-md animate-pulse"></div>
 
-        {/* Spinning loader */}
-        <div className="relative z-10 w-24 h-24">
-          <div className="absolute inset-0 border-4 border-t-green-400 border-r-transparent border-b-green-200 border-l-transparent rounded-full animate-spin"></div>
-          <div className="absolute inset-2 border-4 border-t-transparent border-r-green-400 border-b-transparent border-l-green-200 rounded-full animate-spin"></div>
-          <div className="absolute inset-4 border-4 border-t-green-200 border-r-transparent border-b-green-400 border-l-transparent rounded-full animate-spin animation-delay-150"></div>
+          {/* Spinning loader */}
+          <div className="relative z-10 w-24 h-24">
+            <div className="absolute inset-0 border-4 border-t-green-400 border-r-transparent border-b-green-200 border-l-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-2 border-4 border-t-transparent border-r-green-400 border-b-transparent border-l-green-200 rounded-full animate-spin"></div>
+            <div className="absolute inset-4 border-4 border-t-green-200 border-r-transparent border-b-green-400 border-l-transparent rounded-full animate-spin animation-delay-150"></div>
+          </div>
+
+          <p className="mt-8 text-green-400 font-medium tracking-wider animate-pulse text-center">
+            CREATING ACCOUNT IN PROCESS<span className="animate-ping">...</span>
+          </p>
         </div>
-
-        <p className="mt-8 text-green-400 font-medium tracking-wider animate-pulse text-center">
-          CREATING ACCOUNT IN PROCESS<span className="animate-ping">...</span>
-        </p>
       </div>
-    </div>
     );
   }
 
@@ -402,23 +497,23 @@ const SignupForm = () => {
             <div className="text-gray-600">
               <div className="flex flex-wrap items-center gap-1">
                 <p className="p-1">I agree to the </p>
-                <Button
+                <div
                   onClick={handleDisplayTerms}
-                  type="button"
-                  className="text-green-600 bg-transparent hover:underline p-1 h-auto"
+                  // type="button"
+                  className="text-green-600 bg-transparent hover:underline p-1 h-auto cursor-pointer"
                 >
                   Terms and Conditions
                   <span className="text-red-500">*</span>
-                </Button>
+                </div>
                 <p className="p-1">and</p>
-                <Button
+                <div
                   onClick={handleDisplayPrivacyPoliciesContent}
-                  type="button"
-                  className="text-green-600 bg-transparent hover:underline p-1 h-auto"
+                  // type="button"
+                  className="text-green-600 bg-transparent hover:underline p-1 h-auto cursor-pointer"
                 >
                   Privacy Policy
                   <span className="text-red-500">*</span>
-                </Button>
+                </div>
                 <span className="text-gray-600">.</span>
               </div>
               <p className="text-xs text-gray-600 mt-1">
