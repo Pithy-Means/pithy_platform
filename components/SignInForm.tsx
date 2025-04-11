@@ -9,20 +9,33 @@ import Image from "next/image";
 import Link from "next/link";
 import useAuth from "@/lib/hooks/useAuth";
 import { Button } from "./ui/button";
-import { Eye, EyeOff, MoveLeft } from "lucide-react";
+import { MoveLeft } from "lucide-react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import toast, { Toaster } from "react-hot-toast";
+import { z } from "zod";
 
 const MAX_ATTEMPTS = 5;
+
+// Create a Zod schema for login validation
+const loginSchema = z.object({
+  email: z.string()
+    .min(3, { message: "Email is required" })
+    .email({ message: "Please enter a valid email address" }),
+  password: z.string()
+    .min(3, { message: "Password is required" })
+    .min(8, { message: "Password must be at least 8 characters" })
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 const SignInForm = () => {
   const [formdata, setFormdata] = useState<Partial<LoginInfo>>({
     email: "",
     password: "",
   });
-  const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [attempts, setAttempts] = useState<number>(0);
+  const [errors, setErrors] = useState<Partial<Record<keyof LoginFormData, string>>>({});
 
   const setUser = useAuth((state) => state.setUser);
   const { signin } = useAuthStore((state) => state as AuthState);
@@ -36,10 +49,6 @@ const SignInForm = () => {
     }
   }, []);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -47,17 +56,40 @@ const SignInForm = () => {
   ) => {
     const { name, value } = e.target;
     setFormdata((prev) => ({ ...prev, [name]: value }));
+    
+    // Clear error for this field when the user types
+    if (errors[name as keyof LoginFormData]) {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
+  const validateForm = (): boolean => {
+    try {
+      loginSchema.parse(formdata);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: Partial<Record<keyof LoginFormData, string>> = {};
+        error.errors.forEach((err) => {
+          const path = err.path[0] as keyof LoginFormData;
+          newErrors[path] = err.message;
+        });
+        setErrors(newErrors);
+      }
+      return false;
+    }
   };
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
-
-    if (!formdata.email || !formdata.password) {
-      toast.error("Email or Password is missing.");
-      setLoading(false);
+    
+    // Validate form before submitting
+    if (!validateForm()) {
       return;
     }
+    
+    setLoading(true);
 
     try {
       const response = await signin(formdata as LoginInfo);
@@ -141,42 +173,43 @@ const SignInForm = () => {
           <MoveLeft size={24} className="mx-3" />
           Go Back
         </Button>
-        <div className="flex justify-center items-center my-auto space-x-4 w-full md:flex-row flex-col">
+        <div className="flex justify-center items-center mx-0 xl:mx-30  space-x-4 w-full md:flex-row flex-col">
           <div className="flex flex-col w-full lg:w-2/4 px-0 mx-0 lg:px-10 lg:mx-auto">
             <h2 className="text-xl lg:text-xl 2xl:text-2xl font-bold text-[#111111] mb-6 capitalize">
               Welcome back
             </h2>
             <form className="space-y-6 flex flex-col" onSubmit={handleSignIn}>
-              <InputContact
-                label="Email"
-                type="email"
-                name="email"
-                className="w-full lg:w-3/4 2xl:py-6 text-xl"
-                value={formdata.email as string}
-                onChange={handleChange}
-              />
-              <div className="relative">
+              <div className="flex flex-col gap-1">
                 <InputContact
-                  label="Password"
-                  type={showPassword ? "text" : "password"}
-                  className="w-full lg:w-3/4 2xl:py-6 text-xl"
-                  name="password"
-                  value={formdata.password as string}
+                  label="Email"
+                  type="email"
+                  name="email"
+                  className={`w-full text-xl ${errors.email ? 'border-red-500' : ''}`}
+                  value={formdata.email as string}
                   onChange={handleChange}
                 />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 lg:right-[150px] xl:right-[220px] 5xl:right-[310px] flex items-center px-2 text-gray-500 hover:text-gray-700"
-                >
-                  {showPassword ? <EyeOff /> : <Eye />}
-                </button>
+                {errors.email && (
+                  <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+              
+              <div className="flex flex-col gap-1">
+                <div className="relative">
+                  <InputContact
+                    label="Password"
+                    type={"password"}
+                    className={`w-full text-xl ${errors.password ? 'border-red-500' : ''}`}
+                    name="password"
+                    value={formdata.password as string}
+                    onChange={handleChange}
+                  />
+                </div>  
               </div>
 
               <Button
                 type="submit"
                 disabled={loading}
-                className="w-full lg:w-3/4 2xl:py-4 text-xl py-2 px-4 bg-[#529c50] text-white font-semibold rounded-md hover:bg-[#67d476] transition duration-200"
+                className="w-full text-xl py-2 px-4 bg-[#529c50] text-white font-semibold rounded-md hover:bg-[#67d476] transition duration-200"
               >
                 {loading ? (
                   <div className="flex items-center">
