@@ -681,18 +681,18 @@ export default function PrivacyPolicy() {
             Agreement, we encourage you to contact us using the details below:
             <br />
             <a
-              href="https://www.pithymeans.com"
-              className="text-blue-500 hover:underline"
-            >
-              https://www.pithymeans.com
-            </a>
-            <br />
-            <a
-              href="mailto:pithymeans@gmail.com"
-              className="text-blue-500 hover:underline"
-            >
-              pithymeans@gmail.com
-            </a>
+                href="https://www.pithymeansplus.com"
+                className="text-green-500 hover:underline"
+              >
+                https://www.pithymeansplus.com
+              </a>
+              <br />
+              <a
+                href="mailto:manager@pithymeansplus.com"
+                className="text-green-500 hover:underline"
+              >
+                manager@pithymeansplus.com
+              </a>
           </p>
         </section>
 
