@@ -105,7 +105,7 @@ function FooterSmallScreen() {
       {/* Fixed bottom bar for smaller screens */}
       <div className="fixed bottom-0 h-20 w-full block md:hidden bg-[#5AC35A] py-4">
         <div className="flex justify-around items-center text-white">
-          <Button
+          <div
             onClick={() => router.push("/dashboard")}
             className="bg-transparent p-0 hover:bg-transparent"
             aria-label="Home"
@@ -114,8 +114,8 @@ function FooterSmallScreen() {
               <GoHome size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Home</span>
             </div>
-          </Button>
-          <Button
+          </div>
+          <div
             onClick={() => router.push("/dashboard/courses")}
             className="bg-transparent p-0 hover:bg-transparent"
             aria-label="Courses"
@@ -127,8 +127,8 @@ function FooterSmallScreen() {
               />
               <span className="text-xs text-black/70">Courses</span>
             </div>
-          </Button>
-          <button
+          </div>
+          <div
             onClick={() => handleModel()}
             className="bg-transparent p-0 hover:bg-transparent"
             aria-label="Create Post"
@@ -137,9 +137,9 @@ function FooterSmallScreen() {
               <MdOutlineAddCircle size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">Post</span>
             </div>
-          </button>
-          {/* Jobs button with conditional lock */}
-          <Button
+          </div>
+          {/* Jobs div with conditional lock */}
+          <div
             onClick={() => handlePremiumNavigation("/dashboard/jobs", true)}
             className="bg-transparent p-0 hover:bg-transparent"
             aria-label="Jobs"
@@ -154,9 +154,9 @@ function FooterSmallScreen() {
                 />
               )}
             </div>
-          </Button>
-          {/* More button to show additional options */}
-          <Button
+          </div>
+          {/* More div to show additional options */}
+          <div
             onClick={toggleMoreModal}
             className="bg-transparent p-0 hover:bg-transparent"
             aria-label="More Options"
@@ -165,7 +165,7 @@ function FooterSmallScreen() {
               <MoreHorizontal size={28} className="hover:text-gray-800" />
               <span className="text-xs text-black/70">More</span>
             </div>
-          </Button>
+          </div>
         </div>
       </div>
 
@@ -182,7 +182,7 @@ function FooterSmallScreen() {
       {/* More Options Modal */}
       {moreModalOpen && (
         <Modal isOpen={moreModalOpen} onClose={toggleMoreModal}>
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+          <div className="bg-white/10 rounded-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-bold mb-4 text-center">More Options</h2>
             
             <div className="grid grid-cols-2 gap-4">
@@ -197,7 +197,7 @@ function FooterSmallScreen() {
                     <LockKeyhole className="absolute -top-2 -right-2 text-[#F26900]" size={16} />
                   )}
                 </div>
-                <span className="text-sm">Funding</span>
+                <span className="text-sm text-white">Funding</span>
               </div>
 
               {/* Scholarships */}
@@ -211,7 +211,7 @@ function FooterSmallScreen() {
                     <LockKeyhole className="absolute -top-2 -right-2 text-[#F26900]" size={16} />
                   )}
                 </div>
-                <span className="text-sm">Scholarships</span>
+                <span className="text-sm text-white">Scholarships</span>
               </div>
 
               {/* Profile */}
@@ -223,7 +223,7 @@ function FooterSmallScreen() {
                 className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
               >
                 <IoPersonOutline size={28} className="text-[#5AC35A]" />
-                <span className="text-sm">Profile</span>
+                <span className="text-sm text-white">Profile</span>
               </div>
 
               {/* Notifications */}
@@ -235,7 +235,7 @@ function FooterSmallScreen() {
                 className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
               >
                 <Bell size={28} className="text-[#5AC35A]" />
-                <span className="text-sm">Notifications</span>
+                <span className="text-sm text-white">Notifications</span>
               </div>
 
               {/* Help & Support */}
@@ -247,7 +247,7 @@ function FooterSmallScreen() {
                 className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"
               >
                 <IoMdHelpCircleOutline size={28} className="text-[#5AC35A]" />
-                <span className="text-sm">Help & Support</span>
+                <span className="text-sm text-white">Help & Support</span>
               </div>
 
               {/* Logout */}
