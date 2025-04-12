@@ -25,3 +25,4 @@ export const fundingCollection = "fundings";
 export const commentFundingCollection = "commentFundings";
 export const commentScholarshipCollection = "commentScholarships";
 export const questionCollection = "questions";
+export const userProgressCollection = "userProgress";
