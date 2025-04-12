@@ -16,6 +16,7 @@ import createJobCollection from "./job.collection";
 // import createCertificateCollection from "./certificate.collection";
 import createPaymentCollection from "./payment.collection";
 import createModuleCollection from "./module.collection";
+import { createUserProgress } from "./userProgress.collection";
 
 const isDbSetup = false;
 
@@ -48,6 +49,7 @@ export default async function getOrCreateDB() {
         createScholarshipCollection(),
         createJobCollection(),
         createModuleCollection(),
+        createUserProgress()
       ]);
       console.log("Database setup complete");
     } catch (error) {

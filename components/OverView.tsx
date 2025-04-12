@@ -23,7 +23,7 @@ import {
 import { PostWithUser } from "@/types/schema";
 import CreatePost from "./createPosts";
 import { useAuthStore } from "@/lib/store/useAuthStore";
-import { useCourseStore } from "@/lib/store/courseStore";
+// import { useCourseStore } from "@/lib/store/courseStore";
 import Modal from "./Modal";
 import ProfileContainer from "./ProfileContainer";
 
@@ -45,7 +45,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
   };
 
   const { user, signout } = useAuthStore((state) => state);
-  const { isCoursePurchased } = useCourseStore();
+  // const { isCoursePurchased } = useCourseStore();
 
   // Check if user has paid
   const isPaid = user?.paid || false;

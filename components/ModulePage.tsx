@@ -14,7 +14,7 @@ export default function ModulesPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeModuleIndex, setActiveModuleIndex] = useState(0);
   const [activeTab, setActiveTab] = useState<"summary" | "question">("summary");
-  const [videoSize, setVideoSize] = useState({ width: 600, height: 400 });
+  // const [videoSize, setVideoSize] = useState({ width: "100%", height: "auto" });
 
   // Get the store methods
   const { getProgress } = useVideoProgressStore();
@@ -78,10 +78,6 @@ export default function ModulesPage() {
     // Allow access to completed modules and the next one
     if (index <= lastCompletedIndex + 1) {
       setActiveModuleIndex(index);
-      setVideoSize((prevSize) => ({
-        width: prevSize.width === 600 ? 800 : 600,
-        height: prevSize.height === 400 ? 600 : 400,
-      }));
     } else {
       toast.error("Complete the current module to unlock this one.");
     }
@@ -97,7 +93,7 @@ export default function ModulesPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen w-full">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500"></div>
       </div>
     );
@@ -105,14 +101,14 @@ export default function ModulesPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen">
+      <div className="flex items-center justify-center h-screen w-full">
         <p className="text-red-500 text-lg font-semibold">{error}</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col xl:flex-row gap-12 p-8 lg:p-16">
+    <div className="flex flex-col lg:flex-row w-full p-2 sm:p-4 md:p-6 lg:p-12">
       <Toaster
         position="top-right"
         reverseOrder={false}
@@ -127,187 +123,189 @@ export default function ModulesPage() {
         }}
       />
       
-      {modules[activeModuleIndex] && (
-        <div className="flex-1 rounded-xl shadow-lg p-8">
-          <h1 className="text-3xl font-bold mb-4 text-gray-800">
-            {modules[activeModuleIndex].module_title}
-          </h1>
-          <p className="text-sm text-gray-500 mb-6">
-            Module {activeModuleIndex + 1} - Course Overview
-          </p>
-
-          {modules[activeModuleIndex].video ? (
-            <div className="relative mt-6 w-full aspect-video rounded-lg overflow-hidden shadow-md">
-              <Video
-                height={videoSize.height.toString()}
-                width={videoSize.width.toString()}
-                src={modules[activeModuleIndex].video}
-                className="object-cover w-full h-full"
-                controls={true}
-                moduleId={modules[activeModuleIndex].module_id}
-                onComplete={handleVideoComplete}
-              />
-              <div className="absolute inset-y-0 left-0 flex items-center pl-4">
-                <button
-                  className="p-2 bg-gray-200 bg-opacity-35 text-gray-700 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
-                  onClick={() => setActiveModuleIndex((prev) => prev - 1)}
-                  disabled={activeModuleIndex === 0}
-                >
-                  <ChevronsLeft />
-                </button>
-              </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-4">
-                <button
-                  className="p-2 bg-green-600 bg-opacity-35 text-white rounded-full hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
-                  onClick={() => setActiveModuleIndex((prev) => prev + 1)}
-                  disabled={
-                    activeModuleIndex === modules.length - 1 || 
-                    !getProgress(modules[activeModuleIndex].module_id)?.completed
-                  }
-                >
-                  <ChevronsRight />
-                </button>
-              </div>
-            </div>
-          ) : (
-            <p className="text-gray-500 text-sm italic">
-              No video available for this module.
+      <div className="flex flex-col xl:flex-row gap-6 lg:gap-12 w-full">
+        {modules[activeModuleIndex] && (
+          <div className="w-full xl:flex-1 rounded-xl shadow-lg p-4 sm:p-6 md:p-8">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 sm:mb-4 text-gray-800">
+              {modules[activeModuleIndex].module_title}
+            </h1>
+            <p className="text-sm text-gray-500 mb-4 sm:mb-6">
+              Module {activeModuleIndex + 1} - Course Overview
             </p>
-          )}
 
-          {/* Tabs Section */}
-          <div className="mt-8">
-            <div className="flex border-b-2 border-gray-200">
-              <button
-                className={`px-6 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === "summary"
-                    ? "border-b-4 border-green-600 text-green-600"
-                    : "text-gray-600 hover:text-green-600"
-                }`}
-                onClick={() => setActiveTab("summary")}
-              >
-                Summary
-              </button>
-              <button
-                className={`px-6 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
-                  activeTab === "question"
-                    ? "border-b-4 border-green-600 text-green-600"
-                    : "text-gray-600 hover:text-green-600"
-                }`}
-                onClick={() => setActiveTab("question")}
-              >
-                Question & Answers
-              </button>
-            </div>
+            {modules[activeModuleIndex].video ? (
+              <div className="relative mt-4 sm:mt-6 w-full aspect-video rounded-lg overflow-hidden shadow-md">
+                <Video
+                  height="100%"
+                  width="100%"
+                  src={modules[activeModuleIndex].video}
+                  className="object-cover w-full h-full"
+                  controls={true}
+                  moduleId={modules[activeModuleIndex].module_id}
+                  onComplete={handleVideoComplete}
+                />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-2 sm:pl-4">
+                  <button
+                    className="p-1 sm:p-2 bg-gray-200 bg-opacity-35 text-gray-700 rounded-full hover:bg-gray-300 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
+                    onClick={() => setActiveModuleIndex((prev) => prev - 1)}
+                    disabled={activeModuleIndex === 0}
+                  >
+                    <ChevronsLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                </div>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-4">
+                  <button
+                    className="p-1 sm:p-2 bg-green-600 bg-opacity-35 text-white rounded-full hover:bg-green-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed transition"
+                    onClick={() => setActiveModuleIndex((prev) => prev + 1)}
+                    disabled={
+                      activeModuleIndex === modules.length - 1 || 
+                      !getProgress(modules[activeModuleIndex].module_id)?.completed
+                    }
+                  >
+                    <ChevronsRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500 text-sm italic">
+                No video available for this module.
+              </p>
+            )}
 
-            {/* Conditionally render content based on active tab */}
-            <div className="mt-6 text-sm text-gray-700 space-y-4">
-              {activeTab === "summary" ? (
-                <div className="space-y-4">
-                  {/* Summary Content */}
-                  <p className="leading-relaxed">
-                    {modules[activeModuleIndex].module_description}
-                  </p>
-                  
-                  {/* Show video progress indicator */}
-                  {modules[activeModuleIndex].video && getProgress(modules[activeModuleIndex].module_id) && (
-                    <div className="mt-4">
-                      <h3 className="text-sm font-medium text-gray-700">Your Progress</h3>
-                      <div className="mt-2 bg-gray-200 rounded-full h-2.5">
-                        <div 
-                          className="bg-green-600 h-2.5 rounded-full"
-                          style={{ 
-                            width: getProgress(modules[activeModuleIndex].module_id)?.completed ? 
-                              '100%' : 
-                              getProgress(modules[activeModuleIndex].module_id)?.currentTime ? 
-                                `${Math.min((getProgress(modules[activeModuleIndex].module_id)?.currentTime || 0) / (60 * 10) * 100, 99)}%` : 
-                                '0%' 
-                          }}
-                        ></div>
+            {/* Tabs Section */}
+            <div className="mt-6 sm:mt-8">
+              <div className="flex border-b-2 border-gray-200">
+                <button
+                  className={`px-3 py-2 sm:px-6 sm:py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
+                    activeTab === "summary"
+                      ? "border-b-4 border-green-600 text-green-600"
+                      : "text-gray-600 hover:text-green-600"
+                  }`}
+                  onClick={() => setActiveTab("summary")}
+                >
+                  Summary
+                </button>
+                <button
+                  className={`px-3 py-2 sm:px-6 sm:py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
+                    activeTab === "question"
+                      ? "border-b-4 border-green-600 text-green-600"
+                      : "text-gray-600 hover:text-green-600"
+                  }`}
+                  onClick={() => setActiveTab("question")}
+                >
+                  Question & Answers
+                </button>
+              </div>
+
+              {/* Conditionally render content based on active tab */}
+              <div className="mt-4 sm:mt-6 text-sm text-gray-700 space-y-4">
+                {activeTab === "summary" ? (
+                  <div className="space-y-4">
+                    {/* Summary Content */}
+                    <p className="leading-relaxed">
+                      {modules[activeModuleIndex].module_description}
+                    </p>
+                    
+                    {/* Show video progress indicator */}
+                    {modules[activeModuleIndex].video && getProgress(modules[activeModuleIndex].module_id) && (
+                      <div className="mt-4">
+                        <h3 className="text-sm font-medium text-gray-700">Your Progress</h3>
+                        <div className="mt-2 bg-gray-200 rounded-full h-2.5">
+                          <div 
+                            className="bg-green-600 h-2.5 rounded-full"
+                            style={{ 
+                              width: getProgress(modules[activeModuleIndex].module_id)?.completed ? 
+                                '100%' : 
+                                getProgress(modules[activeModuleIndex].module_id)?.currentTime ? 
+                                  `${Math.min((getProgress(modules[activeModuleIndex].module_id)?.currentTime || 0) / (60 * 10) * 100, 99)}%` : 
+                                  '0%' 
+                            }}
+                          ></div>
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {getProgress(modules[activeModuleIndex].module_id)?.completed ? 
+                            'Completed' : 
+                            'In progress'}
+                        </p>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">
-                        {getProgress(modules[activeModuleIndex].module_id)?.completed ? 
-                          'Completed' : 
-                          'In progress'}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <QuestionsManagement />
-                </div>
-              )}
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <QuestionsManagement />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Sidebar */}
-      <div className="w-full lg:w-96 flex flex-col gap-6">
-        {/* Course Progress Section */}
-        <div className="bg-white rounded-xl shadow-lg p-6 h-96 overflow-y-auto">
-          <h2 className="text-lg font-semibold text-gray-800">
-            Entrepreneurship in East Africa - Case Study UG
-          </h2>
-          <p className="text-sm text-green-600 mt-2">
-            Progress: {progressPercentage.toFixed(2)}%
-          </p>
-          <ul className="mt-6 space-y-4">
-            {modules.map((module, index) => {
-              const progress = getProgress(module.module_id);
-              const isCompleted = progress?.completed;
-              
-              // Find the last completed module index
-              const lastCompletedIndex = modules.reduce((lastIdx, mod, idx) => {
-                const prog = getProgress(mod.module_id);
-                return prog?.completed ? idx : lastIdx;
-              }, -1);
-              
-              // A module is unlocked if it's before or immediately after the last completed module
-              const isUnlocked = index <= lastCompletedIndex + 1;
+        {/* Sidebar */}
+        <div className="w-full xl:w-80 mt-6 xl:mt-0">
+          {/* Course Progress Section */}
+          <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 h-96 overflow-y-auto">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Entrepreneurship in East Africa - Case Study UG
+            </h2>
+            <p className="text-sm text-green-600 mt-2">
+              Progress: {progressPercentage.toFixed(2)}%
+            </p>
+            <ul className="mt-4 sm:mt-6 space-y-3 sm:space-y-4">
+              {modules.map((module, index) => {
+                const progress = getProgress(module.module_id);
+                const isCompleted = progress?.completed;
+                
+                // Find the last completed module index
+                const lastCompletedIndex = modules.reduce((lastIdx, mod, idx) => {
+                  const prog = getProgress(mod.module_id);
+                  return prog?.completed ? idx : lastIdx;
+                }, -1);
+                
+                // A module is unlocked if it's before or immediately after the last completed module
+                const isUnlocked = index <= lastCompletedIndex + 1;
 
-              return (
-                <li
-                  key={module.module_id}
-                  className={`flex items-center gap-3 ${
-                    isUnlocked
-                      ? "cursor-pointer"
-                      : "cursor-not-allowed"
-                  }`}
-                  onClick={() =>
-                    isUnlocked && handleModuleChange(index)
-                  }
-                >
-                  {isCompleted ? (
-                    <CheckCircle className="w-5 h-5 text-green-600" />
-                  ) : isUnlocked ? (
-                    <div className="w-5 h-5 border-2 border-green-600 rounded-full flex items-center justify-center">
-                      {progress && progress.currentTime > 0 && (
-                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
-                      )}
-                    </div>
-                  ) : (
-                    <Lock className="w-5 h-5 text-gray-400" />
-                  )}
-                  <span
-                    className={`text-sm ${
+                return (
+                  <li
+                    key={module.module_id}
+                    className={`flex items-center gap-2 sm:gap-3 ${
                       isUnlocked
-                        ? "text-gray-800"
-                        : "text-gray-400"
+                        ? "cursor-pointer"
+                        : "cursor-not-allowed"
                     }`}
+                    onClick={() =>
+                      isUnlocked && handleModuleChange(index)
+                    }
                   >
-                    {module.module_title}
-                    {progress && progress.currentTime > 0 && !isCompleted && (
-                      <span className="text-xs text-green-600 ml-2">
-                        (In progress)
-                      </span>
+                    {isCompleted ? (
+                      <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
+                    ) : isUnlocked ? (
+                      <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-green-600 rounded-full flex items-center justify-center">
+                        {progress && progress.currentTime > 0 && (
+                          <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                        )}
+                      </div>
+                    ) : (
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                     )}
-                  </span>
-                </li>
-              );
-            })}
-          </ul>
+                    <span
+                      className={`text-xs sm:text-sm ${
+                        isUnlocked
+                          ? "text-gray-800"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {module.module_title}
+                      {progress && progress.currentTime > 0 && !isCompleted && (
+                        <span className="text-xs text-green-600 ml-1 sm:ml-2">
+                          (In progress)
+                        </span>
+                      )}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
