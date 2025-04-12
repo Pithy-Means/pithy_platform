@@ -398,9 +398,9 @@ const FundingForm = ({ editingId = "" }) => {
               >
                 <option value="">Select Grant Size</option>
                 <option value="Up to $1000">Up to $1000</option>
-                <option value="$1000 - $5000">$1000 - $5000</option>
-                <option value="$5000 - $10000">$5000 - $10000</option>
-                <option value="More than $10000">More than $10000</option>
+                <option value="$1000 - $10000">$1000 - $10000</option>
+                <option value="$10000 - $100000">$10000 - $100000</option>
+                <option value="More than $100000">More than $100000</option>
               </select>
             </div>
 
