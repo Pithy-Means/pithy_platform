@@ -1,1 +1,348 @@
-if(!self.define){let e,s={};const a=(a,n)=>(a=new URL(a+".js",n).href,s[a]||new Promise((s=>{if("document"in self){const e=document.createElement("script");e.src=a,e.onload=s,document.head.appendChild(e)}else e=a,importScripts(a),s()})).then((()=>{let e=s[a];if(!e)throw new Error(`Module ${a} didn’t register its module`);return e})));self.define=(n,c)=>{const t=e||("document"in self?document.currentScript.src:"")||location.href;if(s[t])return;let i={};const d=e=>a(e,t),r={module:{uri:t},exports:i,require:d};s[t]=Promise.all(n.map((e=>r[e]||d(e)))).then((e=>(c(...e),i)))}}define(["./workbox-4754cb34"],(function(e){"use strict";importScripts(),self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"/_next/app-build-manifest.json",revision:"b0d77afdc74773cf3ec8be89b4b76e29"},{url:"/_next/static/chunks/087072f9-ad3a56c144f40edd.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/0e5ce63c-b7703b767b9af1bd.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/1963-d31f0087802f545f.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/2117-19a6462af2f24f11.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/2191-1ac5953e81b5a548.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/2207-3181b1a26a5736fa.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/223.c5c381c2376c7441.js",revision:"c5c381c2376c7441"},{url:"/_next/static/chunks/2404-bb27b7bf13238df2.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/2870-252bbe7873bca426.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/3145-b058475a27be0a31.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/3247-f9d880e4850e4f47.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/3618-dc6eee5fbcdca25f.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/3d47b92a-9ec73e31cdb978ee.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/4239-aa2db48a89fe146b.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/4472-8e5bb859d8167dc1.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/521-fb0544ad30067217.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/53c13509-d6311d9f26e02807.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/5e22fd23-fd71dbef969be055.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/6491-74b5b6b8d48e9438.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/66ec4792-85df1e78b6f29bab.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/7140-a460a9ae1dd38da8.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/7330-0969d737f4eb14c4.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/7648-aee3044c270366fc.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/7695-628bed018639fd93.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/795d4814-41248b8b9dd6d824.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/8019-1fd7562a5d07c3a8.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/8046-ea8b3d5d0981fbc7.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/8580-ecf3b23187c7d33b.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/8e1d74a4-cbeb2a462bcc085f.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/9064-4e03fda86c4663ff.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/9405-1a408ac1dbc52b92.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/9c4e2130-8d0e30f4ec6024d5.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/(reset-password)/reset-password/page-eab1185a495b5843.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/check-email/page-a6a55715de12a4de.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/forgot-password/page-edf45e2d464c0626.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/layout-7c5dfd7d0db650f7.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/signIn/page-015a448fc4832769.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/signUp/page-898756b8767217f1.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(auth)/verify/page-c286d6f5745e9ce8.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/courses/%5Bcourse_id%5D/page-b57544aa14b04321.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/courses/page-e7dfa6e47cfb275d.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/fundings/%5Bfunding_id%5D/page-f3acb410004ba33d.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/fundings/page-605f640c943439b9.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/help/page-c1c3577a5f125d20.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/jobs/%5Bjob_id%5D/page-5c955246dfe1066f.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/jobs/page-29bd21d00765b159.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/layout-1ecc2e4277d645e5.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/notifications/page-a184904aa5528be5.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/page-82ee33f5caf2ec65.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/scholarships/%5Bscholarship_id%5D/page-ec5de3f8766bf9d4.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(dashboard)/dashboard/scholarships/page-0fdb77fe441fba0d.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/403/page-35cc9c4d7089de96.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/about/page-edc0ae4ced4df960.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/contact/page-fc8c76cc6d2b66b8.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/how-it-works/page-33c5b766ab56d1da.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/offline/page-8f3788f3d1bbc58e.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/(pages)/payment-status/page-dc82e80c4f2718af.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/_not-found/page-a4eb68408551e10d.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/add_funding/page-2e42080070b6af1c.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/add_job/page-bea7585fdc276477.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/add_question/page-b9c003a69ca7f0be.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/add_scholarship/page-47833dc49e7ee346.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/addcourse/page-bb148f60ae2324bd.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/layout-a0599d722cb43537.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/admin/page-08dfed78117b57f8.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/layout-087e92bb12fc32b9.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/app/page-0dccb4363216df5b.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/d0deef33.e0722780845cf21c.js",revision:"e0722780845cf21c"},{url:"/_next/static/chunks/e34aaff9-825e29a814c27888.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/ee560e2c-b725c0bb5279489d.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/eec3d76d-671b0704423100f3.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/f7333993-48700910dfd61564.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/f97e080b-76d31b21bc3aa497.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/fd9d1056-3378abdbff6e1469.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/framework-a63c59c368572696.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/main-6fb10786d5dbd3ad.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/main-app-282fb8e3f94d9385.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/pages/_app-78ddf957b9a9b996.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/pages/_error-7ce03bcf1df914ce.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/chunks/polyfills-42372ed130431b0a.js",revision:"846118c33b2c0e922d7b3a7676f81f6f"},{url:"/_next/static/chunks/webpack-38ede44e4722be98.js",revision:"wXXdmnPmNc9YTlHULQt9J"},{url:"/_next/static/css/27b4d6b789fddb24.css",revision:"27b4d6b789fddb24"},{url:"/_next/static/css/857aa62baa17c894.css",revision:"857aa62baa17c894"},{url:"/_next/static/css/8696414957349dfe.css",revision:"8696414957349dfe"},{url:"/_next/static/css/d1e9ab96f065007e.css",revision:"d1e9ab96f065007e"},{url:"/_next/static/media/4473ecc91f70f139-s.p.woff",revision:"78e6fc13ea317b55ab0bd6dc4849c110"},{url:"/_next/static/media/463dafcda517f24f-s.p.woff",revision:"cbeb6d2d96eaa268b4b5beb0b46d9632"},{url:"/_next/static/media/layers-2x.9859cd12.png",revision:"9859cd12"},{url:"/_next/static/media/layers.ef6db872.png",revision:"ef6db872"},{url:"/_next/static/media/marker-icon.d577052a.png",revision:"d577052a"},{url:"/_next/static/media/marker-icon.d577052a.png",revision:"2273e3d8ad9264b7daa5bdbf8e6b47f8"},{url:"/_next/static/media/marker-shadow.612e3b52.png",revision:"44a526eed258222515aa21eaffd14a96"},{url:"/_next/static/wXXdmnPmNc9YTlHULQt9J/_buildManifest.js",revision:"0ea7e7088aabf697ba3d8aa8c7b54a89"},{url:"/_next/static/wXXdmnPmNc9YTlHULQt9J/_ssgManifest.js",revision:"b6652df95db52feb4daf4eca35380933"},{url:"/apple-touch-icon.png",revision:"382e99d8ebbf9118f7d6a5261524dc79"},{url:"/assets/Arrow 3.png",revision:"21abe86b22572bd60f06e2e60a1ca12e"},{url:"/assets/Arrow2.png",revision:"aac08841bd39d40ff8a969c1a4a47c8f"},{url:"/assets/C05_6.png",revision:"e14a47f0683ba0a4a1a1ef28d5cb604f"},{url:"/assets/C12_22.png",revision:"62239527aa37719617e11d8237b34e0b"},{url:"/assets/C2_1.png.png",revision:"6de953f64daf01f50fcd070a940f418c"},{url:"/assets/C2_15.png",revision:"9f99300c88aafe88c32efc25c3c88ec2"},{url:"/assets/Frame 87.png",revision:"a7c8403d84c77524c3c410cb59e35df0"},{url:"/assets/Frame 88.png",revision:"c7abbfd50bcfbfa81168f542839adecd"},{url:"/assets/Group 3473673.png",revision:"57939bc09ba5875f1ac87e6c428fba5a"},{url:"/assets/Group3473707.png",revision:"977e008f9edfb193ce14e8db06db00a6"},{url:"/assets/Layer_1.png",revision:"edd8e099e3294d3d2790407cd72712af"},{url:"/assets/Standing_ladies.png",revision:"b28450ba61ae90d538914e6f2bea92d7"},{url:"/assets/airtel.png",revision:"b06a370811c3d7f542dd56333979cbbe"},{url:"/assets/backward.png",revision:"68860b8c139b5df4e6cc2f31d49272ed"},{url:"/assets/briefcase-04.png",revision:"9258e56db714bc6df1c641391828c752"},{url:"/assets/cancel-circle.png",revision:"d496493213fe1de685550100f2696d23"},{url:"/assets/development1.png",revision:"9ff8e86fa28e843556318821255d485a"},{url:"/assets/development2.png",revision:"9079ef5a922e850f9bfc296756b4cd33"},{url:"/assets/discount.png",revision:"57939bc09ba5875f1ac87e6c428fba5a"},{url:"/assets/flesh.png",revision:"e43b6a6f0fe91745d43f9b2061cd091a"},{url:"/assets/forward.png",revision:"7d1a4d68da5e4bf3e0a71c4f3b59e9c1"},{url:"/assets/green-line.png",revision:"958b43a4582189db52435f6c0d111801"},{url:"/assets/green.png",revision:"8cf0a78af4b4f2fc2ad97bf5fa3e4d7d"},{url:"/assets/images.jpeg",revision:"8033adaadd1809870dca0bf4c9e02b94"},{url:"/assets/leftfooter.png",revision:"2b48a79f0493447cd99e95cab7fd1589"},{url:"/assets/lineone.png",revision:"e9a2dabcc0cb8228f80f25bc8d018b01"},{url:"/assets/linetwo.png",revision:"e5271fa29fdb11bf71951f0eccbf2416"},{url:"/assets/logo.png",revision:"28f3eea90ec91c3d212be4f4816ed8f8"},{url:"/assets/mtn.png",revision:"915e6a3e5830405aa0a06aee518ddf07"},{url:"/assets/one.png",revision:"38e7b208aea36ba96cbffd67ebb8ada4"},{url:"/assets/person_feedback.png",revision:"d5901fd6577a82e6ed97e2fa046854dc"},{url:"/assets/post_image.png",revision:"7243880d56f923395efa05f040782c53"},{url:"/assets/report.png",revision:"e6fe4df7d2f5804c306d39519c6bb20b"},{url:"/assets/rightfooter.png",revision:"f9e91094a572782739debecd7653c8cf"},{url:"/assets/sign.png",revision:"cb524fd7e6b15e42a717c4ade9d1f876"},{url:"/assets/signin.png",revision:"a3dec05770abd4414c9f26e7978b2d62"},{url:"/assets/spiral.png",revision:"99f59d0649d691ae37940f1861a8f718"},{url:"/assets/square-lock-02.png",revision:"1f9b1a0ae95dcbd1d840727b0195c0b4"},{url:"/assets/start_price.png",revision:"455e2b0a9d11577afc037a1e6e60d926"},{url:"/assets/strike - stroke.png",revision:"4291f4acf2c75bfb6bb5704d716cc132"},{url:"/assets/three.png",revision:"bb42c4e3aa8dcabb7a3432dfe97e0be1"},{url:"/assets/two.png",revision:"5c11e1dc123b45467709f69bfb24ae1e"},{url:"/assets/visa.png",revision:"10f57107c130d24bd004100bd83c3b15"},{url:"/assets/whiteimage.png",revision:"c4d8de3bc94cc1dcbfbf5e682b363eb1"},{url:"/assets/whoweare.png",revision:"dc6b25a49d9f701889b0b799e7fd7c67"},{url:"/assets/woman.png",revision:"1de162749e3be2cc7910c5e982a895aa"},{url:"/countries.geo.json",revision:"552c4c03c09d42b9826c03c39c13a577"},{url:"/favicon-16x16.png",revision:"d77e6254384e3c9e96197d07a6dc1ca9"},{url:"/favicon-32x32.png",revision:"fe7436375194e2e5e872ef7591f5eadc"},{url:"/manifest.json",revision:"c457c8217b1098fd1c16aa7aeef1dfaf"},{url:"/videos/Career Change_ The Questions You Need to Ask Yourself Now _ Laura Sheehan .mp4",revision:"b87adce3b8591d0365546ffc7938462f"},{url:"/videos/Career advice for teenagers_ Value your values _ Amy MacLeod _ TEDxKanata.mp4",revision:"93ce38b9f1a27abcbebce2173821b01b"},{url:"/videos/To find work you love _ Benjamin Todd .mp4",revision:"1daf06a35972b7c31193d70d087269bf"}],{ignoreURLParametersMatching:[]}),e.cleanupOutdatedCaches(),e.registerRoute("/",new e.NetworkFirst({cacheName:"start-url",plugins:[{cacheWillUpdate:async({request:e,response:s,event:a,state:n})=>s&&"opaqueredirect"===s.type?new Response(s.body,{status:200,statusText:"OK",headers:s.headers}):s}]}),"GET"),e.registerRoute(/^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,new e.CacheFirst({cacheName:"google-fonts-webfonts",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:31536e3})]}),"GET"),e.registerRoute(/^https:\/\/fonts\.(?:googleapis)\.com\/.*/i,new e.StaleWhileRevalidate({cacheName:"google-fonts-stylesheets",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:604800})]}),"GET"),e.registerRoute(/\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,new e.StaleWhileRevalidate({cacheName:"static-font-assets",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:604800})]}),"GET"),e.registerRoute(/\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,new e.StaleWhileRevalidate({cacheName:"static-image-assets",plugins:[new e.ExpirationPlugin({maxEntries:64,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\/_next\/image\?url=.+$/i,new e.StaleWhileRevalidate({cacheName:"next-image",plugins:[new e.ExpirationPlugin({maxEntries:64,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\.(?:mp3|wav|ogg)$/i,new e.CacheFirst({cacheName:"static-audio-assets",plugins:[new e.RangeRequestsPlugin,new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\.(?:mp4)$/i,new e.CacheFirst({cacheName:"static-video-assets",plugins:[new e.RangeRequestsPlugin,new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\.(?:js)$/i,new e.StaleWhileRevalidate({cacheName:"static-js-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\.(?:css|less)$/i,new e.StaleWhileRevalidate({cacheName:"static-style-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\/_next\/data\/.+\/.+\.json$/i,new e.StaleWhileRevalidate({cacheName:"next-data",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute(/\.(?:json|xml|csv)$/i,new e.NetworkFirst({cacheName:"static-data-assets",plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute((({url:e})=>{if(!(self.origin===e.origin))return!1;const s=e.pathname;return!s.startsWith("/api/auth/")&&!!s.startsWith("/api/")}),new e.NetworkFirst({cacheName:"apis",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:16,maxAgeSeconds:86400})]}),"GET"),e.registerRoute((({url:e})=>{if(!(self.origin===e.origin))return!1;return!e.pathname.startsWith("/api/")}),new e.NetworkFirst({cacheName:"others",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:86400})]}),"GET"),e.registerRoute((({url:e})=>!(self.origin===e.origin)),new e.NetworkFirst({cacheName:"cross-origin",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:32,maxAgeSeconds:3600})]}),"GET")}));
+// public/sw.js
+const CACHE_NAME = 'module-content-cache-v1';
+const VIDEO_CACHE = 'video-cache';
+const API_CACHE = 'api-cache';
+const MAX_CACHE_SIZE = 500 * 1024 * 1024; // Maximum size (500MB) for video cache
+
+// Files to cache immediately on install
+const CORE_ASSETS = [
+  '/',
+  '/offline.html',
+  '/manifest.json',
+  // Add core CSS, JS assets here
+];
+
+// Install event - precache core assets
+self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then((cache) => {
+        return cache.addAll(CORE_ASSETS);
+      })
+      .then(() => self.skipWaiting())
+  );
+});
+
+// Activate event - clean up old caches
+self.addEventListener('activate', (event) => {
+  const cacheWhitelist = [CACHE_NAME, VIDEO_CACHE, API_CACHE];
+  
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.map((cacheName) => {
+          if (!cacheWhitelist.includes(cacheName)) {
+            return caches.delete(cacheName);
+          }
+          return null;
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// Calculate the total size of a cache
+async function getCacheSize(cacheName) {
+  const cache = await caches.open(cacheName);
+  const keys = await cache.keys();
+  
+  let size = 0;
+  for (const request of keys) {
+    const response = await cache.match(request);
+    if (response) {
+      const blob = await response.clone().blob();
+      size += blob.size;
+    }
+  }
+  
+  return size;
+}
+
+// Manage cache size - remove oldest entries if cache gets too large
+async function manageCacheSize(cacheName, maxSize) {
+  const size = await getCacheSize(cacheName);
+  
+  if (size > maxSize) {
+    console.log(`Cache ${cacheName} is too large (${size} bytes). Cleaning up...`);
+    
+    const cache = await caches.open(cacheName);
+    const keys = await cache.keys();
+    
+    // Sort by timestamp if available, otherwise just delete the first few entries
+    // In a real app, you'd track timestamps of cached entries
+    const keysToDelete = keys.slice(0, Math.ceil(keys.length * 0.2)); // Delete oldest 20%
+    
+    for (const key of keysToDelete) {
+      await cache.delete(key);
+    }
+    
+    console.log(`Removed ${keysToDelete.length} entries from cache ${cacheName}`);
+  }
+}
+
+// Helper function to determine if a URL is a video file
+function isVideoRequest(url) {
+  const requestUrl = new URL(url);
+  return (
+    requestUrl.pathname.includes('/storage/buckets/') && 
+    requestUrl.pathname.includes('/files/') &&
+    requestUrl.pathname.includes('/view')
+  );
+}
+
+// Helper function to determine if a URL is an API request
+function isApiRequest(url) {
+  return url.includes('/api/');
+}
+
+// Helper function to check if navigator is online
+function isOnline() {
+  return self.navigator && self.navigator.onLine;
+}
+
+// Fetch event - handle requests
+self.addEventListener('fetch', (event) => {
+  // Skip cross-origin requests
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+  
+  // Handle video requests
+  if (isVideoRequest(event.request.url)) {
+    event.respondWith(handleVideoRequest(event.request));
+    return;
+  }
+  
+  // Handle API requests
+  if (isApiRequest(event.request.url)) {
+    event.respondWith(handleApiRequest(event.request));
+    return;
+  }
+  
+  // Handle navigation requests - use network first, then cache
+  if (event.request.mode === 'navigate') {
+    event.respondWith(handleNavigationRequest(event.request));
+    return;
+  }
+  
+  // Handle static asset requests - use cache first, then network
+  event.respondWith(handleStaticRequest(event.request));
+});
+
+// Handle video requests
+async function handleVideoRequest(request) {
+  const cache = await caches.open(VIDEO_CACHE);
+  
+  // Try the cache first
+  const cachedResponse = await cache.match(request);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  // Fall back to network if online
+  if (isOnline()) {
+    try {
+      const networkResponse = await fetch(request);
+      
+      // Cache the response for future offline use
+      if (networkResponse.ok) {
+        const clonedResponse = networkResponse.clone();
+        cache.put(request, clonedResponse);
+        
+        // Check and manage cache size
+        manageCacheSize(VIDEO_CACHE, MAX_CACHE_SIZE);
+      }
+      
+      return networkResponse;
+    } catch (error) {
+      console.error('Error fetching video:', error);
+      // Show offline message
+      return new Response('Video not available offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+    }
+  }
+  
+  // If offline and not in cache, return offline response
+  return new Response('Video not available offline', {
+    status: 503,
+    headers: { 'Content-Type': 'text/plain' }
+  });
+}
+
+// Handle API requests
+async function handleApiRequest(request) {
+  // For GET requests, try network first, then cache
+  if (request.method === 'GET') {
+    // Try network first
+    if (isOnline()) {
+      try {
+        const networkResponse = await fetch(request);
+        
+        // Save to cache if successful
+        if (networkResponse.ok) {
+          const cache = await caches.open(API_CACHE);
+          cache.put(request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+      } catch (error) {
+        console.error('Error fetching API data:', error);
+      }
+    }
+    
+    // Try cache if network fails or offline
+    const cache = await caches.open(API_CACHE);
+    const cachedResponse = await cache.match(request);
+    
+    if (cachedResponse) {
+      return cachedResponse;
+    }
+    
+    // Return error if neither network nor cache worked
+    return new Response(JSON.stringify({
+      error: 'You are offline and this data is not available locally'
+    }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
+  // For non-GET requests (POST, PUT, etc.), try network only
+  // If offline, store in IndexedDB for later sync
+  if (!isOnline() && (request.method === 'POST' || request.method === 'PUT')) {
+    // Here we could queue the request for later
+    // For simplicity, we're just returning an error
+    return new Response(JSON.stringify({
+      error: 'You are offline. Changes will be saved when you reconnect.'
+    }), {
+      status: 503,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+  
+  // Otherwise, pass through to network
+  return fetch(request);
+}
+
+// Handle navigation requests
+async function handleNavigationRequest(request) {
+  // Try network first
+  if (isOnline()) {
+    try {
+      return await fetch(request);
+    } catch (error) {
+      console.error('Navigation fetch failed:', error);
+    }
+  }
+  
+  // If offline or network fails, try cache
+  const cache = await caches.open(CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+  
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  // If not in cache, return offline page
+  return cache.match('/offline.html');
+}
+
+// Handle static asset requests
+async function handleStaticRequest(request) {
+  // Try cache first
+  const cache = await caches.open(CACHE_NAME);
+  const cachedResponse = await cache.match(request);
+  
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+  
+  // Try network if not in cache
+  try {
+    const networkResponse = await fetch(request);
+    
+    // Cache successful responses
+    if (networkResponse.ok) {
+      cache.put(request, networkResponse.clone());
+    }
+    
+    return networkResponse;
+  } catch (error) {
+    console.error('Static asset fetch failed:', error);
+    
+    // Return a placeholder or error for images
+    if (request.destination === 'image') {
+      return new Response('Image not available offline', {
+        status: 503,
+        headers: { 'Content-Type': 'text/plain' }
+      });
+    }
+    
+    // Return a generic error for other resources
+    return new Response('Resource not available offline', {
+      status: 503,
+      headers: { 'Content-Type': 'text/plain' }
+    });
+  }
+}
+
+// Background sync for progress updates
+self.addEventListener('sync', (event) => {
+  if (event.tag === 'sync-progress') {
+    event.waitUntil(syncVideoProgress());
+  }
+});
+
+// Function to sync video progress with server when back online
+async function syncVideoProgress() {
+  try {
+    // Get data from IndexedDB
+    const response = await fetch('/api/sync-progress', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        updates: [] // This would be populated from IndexedDB in a real implementation
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to sync progress with server');
+    }
+    
+    console.log('Successfully synced progress with server');
+    
+    // Notify any open clients that the sync was successful
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'SYNC_COMPLETED',
+        success: true
+      });
+    });
+    
+    return true;
+  } catch (error) {
+    console.error('Sync failed:', error);
+    
+    // Notify clients of the failure
+    const clients = await self.clients.matchAll();
+    clients.forEach(client => {
+      client.postMessage({
+        type: 'SYNC_COMPLETED',
+        success: false,
+        error: error.message
+      });
+    });
+    
+    return false;
+  }
+}
+
+// Listen for messages from clients
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
