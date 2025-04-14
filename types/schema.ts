@@ -363,14 +363,15 @@ export type Questions = {
 };
 
 export interface Question {
-  id: string;
+  pre_course_question_id: string;
+  user_id: string;
   text: string;
   category: string;
   options: Answer[];
 }
 
 export interface Answer {
-  id: string;
+  answer_id: string;
   text: string;
   score: {
     [key: string]: number;
@@ -388,5 +389,11 @@ export interface TemperamentResult {
   careers: string[];
 }
 
+export type TemperamentType = 
+  | 'ISTJ' | 'ISFJ' | 'INFJ' | 'INTJ'
+  | 'ISTP' | 'ISFP' | 'INFP' | 'INTP'
+  | 'ESTP' | 'ESFP' | 'ENFP' | 'ENTP'
+  | 'ESTJ' | 'ESFJ' | 'ENFJ' | 'ENTJ';
+
+// You can keep the TemperamentDimension type if you need it elsewhere
 export type TemperamentDimension = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
-export type TemperamentType = `${TemperamentDimension}${TemperamentDimension}${TemperamentDimension}${TemperamentDimension}`;
