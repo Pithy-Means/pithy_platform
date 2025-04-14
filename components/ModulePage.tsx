@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Modules } from "@/types/schema";
 import { Video } from "./Video";
 import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
-import QuestionsManagement from "./QuestionManagement";
+// import QuestionsManagement from "./QuestionManagement";
 import toast, { Toaster } from "react-hot-toast";
 import { useVideoProgressStore } from "@/lib/store/useVideoProgressStore";
 
@@ -231,9 +231,7 @@ export default function ModulesPage() {
                     )}
                   </div>
                 ) : (
-                  <div className="space-y-4">
-                    <QuestionsManagement />
-                  </div>
+                  ""
                 )}
               </div>
             </div>
