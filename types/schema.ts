@@ -361,3 +361,32 @@ export type Questions = {
   question_id: string;
   question?: string;
 };
+
+export interface Question {
+  id: string;
+  text: string;
+  category: string;
+  options: Answer[];
+}
+
+export interface Answer {
+  id: string;
+  text: string;
+  score: {
+    [key: string]: number;
+  };
+}
+
+export interface UserResponse {
+  questionId: string;
+  answerId: string;
+}
+
+export interface TemperamentResult {
+  type: string;
+  description: string;
+  careers: string[];
+}
+
+export type TemperamentDimension = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
+export type TemperamentType = `${TemperamentDimension}${TemperamentDimension}${TemperamentDimension}${TemperamentDimension}`;
