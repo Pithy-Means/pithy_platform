@@ -11,15 +11,15 @@ import {
   Post,
   PostCourseQuestion,
   PostCourseQuestionAnswer,
-  Questions,
+  Question,
   Scholarship,
   UpdateUser,
   UserInfo,
+  UserResponse,
   VerifyUser,
   // VerifyUser,
 } from "@/types/schema";
 // import crypto from "crypto";
-import dayjs from "dayjs";
 import { createAdminClient, createSessionClient } from "@/utils/appwrite";
 import { cookies } from "next/headers";
 import { ID, Query } from "node-appwrite";
@@ -41,11 +41,13 @@ import {
   postCommentCollection,
   postCourseAnswerCollection,
   postCourseQuestionCollection,
-  questionCollection,
+  preCourseAnswerCollection,
+  preCourseQuestionCollection,
   scholarshipCollection,
   userCollection,
 } from "@/models/name";
 import env from "@/env";
+import dayjs from "dayjs";
 
 export const getUserInfo = async ({ userId }: GetUserInfo) => {
   try {
@@ -84,7 +86,7 @@ export const login = async ({ email, password }: LoginInfo) => {
       sameSite: "strict",
       secure: true,
       maxAge: oneMonthInSeconds,
-      expires: oneMonthInSeconds
+      expires: oneMonthInSeconds,
     });
 
     // fetch the user information using the session token
@@ -184,7 +186,7 @@ export const reset = async (data: UpdateUser) => {
     const response = await account.updateRecovery(
       data.user_id,
       data.secret,
-      data.password,
+      data.password
     );
     console.log("Password reset response", response);
 
@@ -197,14 +199,13 @@ export const reset = async (data: UpdateUser) => {
 // Function to get referral details for a user
 export const getReferralDetails = async (userId: string) => {
   try {
-    console.log(`Getting referral details for user: ${userId}`);
     const { databases } = await createAdminClient();
-    
+
     // Get the referring user
     const userQuery = await databases.listDocuments(db, userCollection, [
       Query.equal("user_id", userId),
     ]);
-    
+
     // Check if user exists and has documents
     if (!userQuery?.documents || userQuery.documents.length === 0) {
       console.log("No user found with ID:", userId);
@@ -214,10 +215,9 @@ export const getReferralDetails = async (userId: string) => {
         totalEarnings: 0,
       };
     }
-    
+
     const user = userQuery.documents[0];
-    console.log(`Found user: ${user.firstname} ${user.lastname}, Referral fees: ${user.earned_referral_fees || 0}`);
-    
+
     // Check if referred_users exists and has elements
     if (!user.referred_users?.length) {
       console.log("User has no referred users");
@@ -226,10 +226,8 @@ export const getReferralDetails = async (userId: string) => {
         totalPoints: 0,
         totalEarnings: 0,
       };
-    }
-    
-    console.log(`User has ${user.referred_users.length} referred users`);
-    
+    };
+
     // Fetch full details of all referred users
     const referralPromises = user.referred_users.map(
       async (referredId: string) => {
@@ -238,17 +236,16 @@ export const getReferralDetails = async (userId: string) => {
           const referredUser = await databases.getDocument(
             db,
             userCollection,
-            referredId,
+            referredId
           );
-          
-          console.log(`Referred user: ${referredUser.firstname} ${referredUser.lastname}, Paid status: ${referredUser.paid}`);
-          
+
+
           // Check if the user has paid - use loose comparison to handle different data types
           // This handles cases where paid might be a string "true" instead of boolean true
           const hasPaid = referredUser.paid == true;
-          
+
           let individualEarning = 0;
-          
+
           // First try to use the existing earned_referral_fees from the referring user
           if (hasPaid && user.earned_referral_fees) {
             // If we have multiple paid referrals, divide the earnings
@@ -256,38 +253,32 @@ export const getReferralDetails = async (userId: string) => {
               // We don't have the paid status for other users yet, so we'll use the current user's earned_referral_fees
               return id === referredId && hasPaid;
             });
-            
+
             // If this is the only paid referral, assign all the earnings to this user
             if (paidReferrals.length === 1) {
               individualEarning = user.earned_referral_fees || 0;
-              console.log(`Using existing earned_referral_fees: ${individualEarning}`);
             }
           }
-          
+
           // If we couldn't determine earnings from existing data, try to calculate from payment records
           if (hasPaid && individualEarning === 0) {
             // Get this user's payment record to calculate the 10%
-            console.log(`Looking for payment records for user: ${referredUser.user_id}`);
-            const paymentRecords = await databases.listDocuments(db, paymentCollection, [
-              Query.equal("user_id", referredUser.user_id),
-              Query.equal("status", "successful")
-            ]);
-            
-            console.log(`Found ${paymentRecords.documents.length} payment records`);
-            
+            const paymentRecords = await databases.listDocuments(
+              db,
+              paymentCollection,
+              [
+                Query.equal("user_id", referredUser.user_id),
+                Query.equal("status", "successful"),
+              ]
+            );
+
             if (paymentRecords.documents.length > 0) {
               // Get the most recent successful payment
               const payment = paymentRecords.documents[0];
-              console.log(`Payment details: ${JSON.stringify({
-                amount: payment.amount,
-                status: payment.status,
-                currency: payment.currency
-              })}`);
-              
+
               // Calculate 10% of the payment amount if amount exists
               if (payment.amount) {
                 individualEarning = Math.round(payment.amount * 0.1);
-                console.log(`Calculated earnings (10% of ${payment.amount}): ${individualEarning}`);
               } else {
                 // If we can't find the amount in the payment record, use a fallback approach
                 // Try to get transaction data if it exists
@@ -301,27 +292,34 @@ export const getReferralDetails = async (userId: string) => {
                         },
                       }
                     );
-                    
+
                     if (response.ok) {
                       const flutterwaveData = await response.json();
-                      if (flutterwaveData.status === "success" && flutterwaveData.data) {
-                        individualEarning = Math.round(flutterwaveData.data.amount * 0.1);
-                        console.log(`Got amount from Flutterwave: ${flutterwaveData.data.amount}, earnings: ${individualEarning}`);
+                      if (
+                        flutterwaveData.status === "success" &&
+                        flutterwaveData.data
+                      ) {
+                        individualEarning = Math.round(
+                          flutterwaveData.data.amount * 0.1
+                        );
                       }
                     }
                   } catch (error) {
                     console.error("Error verifying transaction:", error);
                   }
                 }
-                
+
                 // If we still don't have an amount, use a default based on the course price
                 // This is a fallback solution - ideally, you'd have the actual payment amount
                 if (individualEarning === 0 && payment.course_choice) {
                   try {
-                    const course = await databases.getDocument(db, courseCollection, payment.course_choice);
+                    const course = await databases.getDocument(
+                      db,
+                      courseCollection,
+                      payment.course_choice
+                    );
                     if (course && course.price) {
                       individualEarning = Math.round(course.price * 0.1);
-                      console.log(`Using course price as fallback: ${course.price}, earnings: ${individualEarning}`);
                     }
                   } catch (error) {
                     console.error("Error getting course:", error);
@@ -332,10 +330,13 @@ export const getReferralDetails = async (userId: string) => {
               // As a last resort, check if there's a course_choice directly on the user
               if (referredUser.course_choice) {
                 try {
-                  const course = await databases.getDocument(db, courseCollection, referredUser.course_choice);
+                  const course = await databases.getDocument(
+                    db,
+                    courseCollection,
+                    referredUser.course_choice
+                  );
                   if (course && course.price) {
                     individualEarning = Math.round(course.price * 0.1);
-                    console.log(`Last resort using course price: ${course.price}, earnings: ${individualEarning}`);
                   }
                 } catch (error) {
                   console.error("Error getting course:", error);
@@ -343,59 +344,67 @@ export const getReferralDetails = async (userId: string) => {
               }
             }
           }
-          
+
           // If all else fails but the user is marked as paid, use the referring user's total earnings
           if (hasPaid && individualEarning === 0 && user.earned_referral_fees) {
             individualEarning = user.earned_referral_fees;
-            console.log(`Using referring user's total earnings as last resort: ${individualEarning}`);
           }
-          
-          console.log(`Final earnings for ${referredUser.firstname}: ${individualEarning}`);
-          
+
           return {
             id: referredId,
             firstname: referredUser.firstname || "",
             lastname: referredUser.lastname || "",
             date: referredUser.$createdAt,
             isPaid: hasPaid,
-            earnings: individualEarning
+            earnings: individualEarning,
           };
         } catch (error) {
           console.error(`Error fetching referred user ${referredId}:`, error);
           return null;
         }
-      },
+      }
     );
-    
+
     const referrals = (await Promise.all(referralPromises)).filter(Boolean);
-    
-    // For debugging - log all referrals and their earnings
-    referrals.forEach(ref => {
-      console.log(`Referral: ${ref.firstname} ${ref.lastname}, Paid: ${ref.isPaid}, Earnings: ${ref.earnings}`);
-    });
-    
+
+    // // For debugging - log all referrals and their earnings
+    // referrals.forEach((ref) => {
+    //   console.log(
+    //     `Referral: ${ref.firstname} ${ref.lastname}, Paid: ${ref.isPaid}, Earnings: ${ref.earnings}`
+    //   );
+    // });
+
     // If we have no individual earnings but the user has a total, distribute it evenly among paid referrals
-    const paidReferrals = referrals.filter(ref => ref.isPaid);
-    const hasIndividualEarnings = referrals.some(ref => ref.earnings > 0);
-    
-    if (!hasIndividualEarnings && user.earned_referral_fees > 0 && paidReferrals.length > 0) {
-      const earningsPerReferral = user.earned_referral_fees / paidReferrals.length;
-      referrals.forEach(ref => {
+    const paidReferrals = referrals.filter((ref) => ref.isPaid);
+    const hasIndividualEarnings = referrals.some((ref) => ref.earnings > 0);
+
+    if (
+      !hasIndividualEarnings &&
+      user.earned_referral_fees > 0 &&
+      paidReferrals.length > 0
+    ) {
+      const earningsPerReferral =
+        user.earned_referral_fees / paidReferrals.length;
+      referrals.forEach((ref) => {
         if (ref.isPaid) {
           ref.earnings = earningsPerReferral;
         }
       });
-      console.log(`Distributed ${user.earned_referral_fees} evenly among ${paidReferrals.length} paid referrals, each getting ${earningsPerReferral}`);
+      console.log(
+        `Distributed ${user.earned_referral_fees} evenly among ${paidReferrals.length} paid referrals, each getting ${earningsPerReferral}`
+      );
     }
-    
+
     // Calculate total earnings by summing up individual earnings
-    const totalEarnings = referrals.reduce((total, referral) => total + (referral.earnings || 0), 0);
-    console.log(`Total earnings: ${totalEarnings}`);
-    
+    const totalEarnings = referrals.reduce(
+      (total, referral) => total + (referral.earnings || 0),
+      0
+    );
+
     // If we still have no earnings but the user has earned_referral_fees, use that as the total
-    const finalTotalEarnings = totalEarnings > 0 ? totalEarnings : (user.earned_referral_fees || 0);
-    console.log(`Final total earnings: ${finalTotalEarnings}`);
-    
+    const finalTotalEarnings =
+      totalEarnings > 0 ? totalEarnings : user.earned_referral_fees || 0;
+
     return {
       referrals,
       totalPoints: user.referral_points || 0,
@@ -410,33 +419,35 @@ export const getReferralDetails = async (userId: string) => {
 export const getWHoUserPaid = async () => {
   const { databases } = await createAdminClient();
   try {
+    const fetchedUsers = await databases.listDocuments(db, paymentCollection, [
+      Query.limit(1000),
+      Query.orderDesc("$createdAt"),
+    ]);
 
-    const fetchedUsers = await databases.listDocuments(
-      db, paymentCollection, [
-        Query.limit(1000),
-        Query.orderDesc("$createdAt"),
-      ]
+    const initiatePayment = fetchedUsers.documents.filter(
+      (user) => user.checked === false && user.status !== "successful"
     );
-
-    const initiatePayment = fetchedUsers.documents.filter((user) => user.checked === false && user.status !== "successful");
-    const successfulPayment = fetchedUsers.documents.filter((user) => user.checked === true && user.status === "successful");
+    const successfulPayment = fetchedUsers.documents.filter(
+      (user) => user.checked === true && user.status === "successful"
+    );
 
     return {
       initiatePayment: parseStringify(initiatePayment),
-      successfulPayment: parseStringify(successfulPayment)
+      successfulPayment: parseStringify(successfulPayment),
     };
-
   } catch (error) {
-    console.log("Error Occurred During The Fetching Of The User Who Paid:", error);
-    throw new Error("Failed To Fetch The User Who Paid")
-
+    console.log(
+      "Error Occurred During The Fetching Of The User Who Paid:",
+      error
+    );
+    throw new Error("Failed To Fetch The User Who Paid");
   }
-}
+};
 
 export const updateReferralPoints = async (
   referrerId: string,
   amount: number,
-  newReferredUserId: string,
+  newReferredUserId: string
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -455,7 +466,7 @@ export const updateReferralPoints = async (
       userDoc = userQuery.documents[0];
       userDocId = userDoc.$id;
       console.log(
-        `Found user by user_id: ${referrerId}, document ID: ${userDocId}`,
+        `Found user by user_id: ${referrerId}, document ID: ${userDocId}`
       );
     } else {
       // Try as document ID directly
@@ -480,7 +491,7 @@ export const updateReferralPoints = async (
         referral_points: userDoc.referral_points || 0,
         earned_referral_fees: userDoc.earned_referral_fees || 0,
         referred_users: userDoc.referred_users || [],
-      }),
+      })
     );
 
     // Calculate new points and amount
@@ -497,10 +508,10 @@ export const updateReferralPoints = async (
     }
 
     console.log(
-      `Updating referrer ${userDocId} with new referred user ${newReferredUserId}`,
+      `Updating referrer ${userDocId} with new referred user ${newReferredUserId}`
     );
     console.log(
-      `New state will be: points=${currentPoints + 1}, fees=${currentAmount + referral_fee}, users=${currentReferredUsers.length}`,
+      `New state will be: points=${currentPoints + 1}, fees=${currentAmount + referral_fee}, users=${currentReferredUsers.length}`
     );
 
     // Update referrer with new points and amount
@@ -512,7 +523,7 @@ export const updateReferralPoints = async (
         referral_points: currentPoints + 1,
         earned_referral_fees: currentAmount + referral_fee,
         referred_users: currentReferredUsers,
-      },
+      }
     );
 
     console.log(
@@ -521,7 +532,7 @@ export const updateReferralPoints = async (
         referral_points: referrerUpdated.referral_points,
         earned_referral_fees: referrerUpdated.earned_referral_fees,
         referred_users: referrerUpdated.referred_users,
-      }),
+      })
     );
 
     return parseStringify(referrerUpdated);
@@ -560,7 +571,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
       userId,
       email,
       password,
-      `${firstname} ${lastname}`,
+      `${firstname} ${lastname}`
     );
 
     if (!createdAccount) {
@@ -602,7 +613,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
               actualReferralCode = extracted;
               console.log(
                 "Successfully extracted from URL object:",
-                actualReferralCode,
+                actualReferralCode
               );
             }
           } catch (urlError) {
@@ -639,14 +650,14 @@ export const register = async (userdata: Partial<UserInfo>) => {
         const normalizedCode = actualReferralCode.trim();
         console.log(
           "Looking up referrer with normalized code:",
-          normalizedCode,
+          normalizedCode
         );
 
         // Find referrer by their referral code - EXACT match
         const referrerQuery = await databases.listDocuments(
           db,
           userCollection,
-          [Query.equal("referral_code", normalizedCode)],
+          [Query.equal("referral_code", normalizedCode)]
         );
 
         console.log(`Referrer query results: ${referrerQuery.total} documents`);
@@ -658,7 +669,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
         ) {
           referrerInfo = referrerQuery.documents[0];
           console.log(
-            `Found referrer: ${referrerInfo.$id} (${referrerInfo.firstname || "Unknown"} ${referrerInfo.lastname || "User"})`,
+            `Found referrer: ${referrerInfo.$id} (${referrerInfo.firstname || "Unknown"} ${referrerInfo.lastname || "User"})`
           );
 
           // Get the document ID for updating
@@ -666,16 +677,16 @@ export const register = async (userdata: Partial<UserInfo>) => {
 
           // Manual referral update without calling updateReferralPoints function
           try {
-            
             console.log("Updated referral points for referrer:", referrerDocId);
-            
-            
+
             // Safely handle referred_users array
             let currentReferredUsers: string[] = [];
             if (Array.isArray(referrerInfo.referred_users)) {
               currentReferredUsers = [...referrerInfo.referred_users];
             } else {
-              console.warn("referred_users is not an array, initializing as empty array");
+              console.warn(
+                "referred_users is not an array, initializing as empty array"
+              );
             }
 
             // Add the new user if not already included
@@ -688,15 +699,17 @@ export const register = async (userdata: Partial<UserInfo>) => {
             // Safely update the referrer document with new points and referred users
             try {
               await databases.updateDocument(
-              db,
-              userCollection,
-              referrerDocId,
-              {
-                referral_points: (referrerInfo.referral_points || 0) + 1,
-                referred_users: currentReferredUsers,
-              },
+                db,
+                userCollection,
+                referrerDocId,
+                {
+                  referral_points: (referrerInfo.referral_points || 0) + 1,
+                  referred_users: currentReferredUsers,
+                }
               );
-              console.log(`Referrer document updated successfully for ${referrerDocId}`);
+              console.log(
+                `Referrer document updated successfully for ${referrerDocId}`
+              );
             } catch (updateError) {
               console.error("Error updating referrer document:", updateError);
               throw new Error("Failed to update referrer document");
@@ -730,9 +743,8 @@ export const register = async (userdata: Partial<UserInfo>) => {
         referral_by: actualReferralCode || "",
         earned_referral_fees: 0,
         referred_users: [], // New user starts with empty referred_users array
-      },
+      }
     );
-
 
     // Step 4: Create session
     let session;
@@ -767,8 +779,8 @@ export const register = async (userdata: Partial<UserInfo>) => {
       }
     }
 
-     // Use the user-friendly error message
-     const friendlyMessage = getUserFriendlyError(error);
+    // Use the user-friendly error message
+    const friendlyMessage = getUserFriendlyError(error);
 
     throw new Error(friendlyMessage || "Account not created");
   }
@@ -777,37 +789,37 @@ export const register = async (userdata: Partial<UserInfo>) => {
 // Add this function to your user.actions.ts file
 const getUserFriendlyError = (error: any): string => {
   const errorMessage = error instanceof Error ? error.message : String(error);
-  
+
   // Map specific error messages to user-friendly versions
   if (errorMessage.includes("A user with the same email already exists")) {
     return "This email address is already registered. Please use a different email or try to log in.";
   }
-  
+
   if (errorMessage.includes("Email and password must be provided")) {
     return "Please provide both email and password to create your account.";
   }
-  
+
   if (errorMessage.includes("Password must be at least")) {
     return "Your password is too short. Please use a stronger password with at least 8 characters.";
   }
-  
+
   if (errorMessage.includes("Invalid email")) {
     return "Please enter a valid email address.";
   }
-  
+
   if (errorMessage.includes("Account not created")) {
     return "We couldn't create your account. Please try again later.";
   }
-  
+
   // Add more specific error mappings based on common errors you see
-  
+
   // Default fallback for unknown errors
   return "There was a problem creating your account. Please try again or contact support if the problem persists.";
 };
 
 export const updateUserProfile = async (
   userId: string,
-  updatedData: Partial<UserInfo>,
+  updatedData: Partial<UserInfo>
 ) => {
   const { databases } = await createAdminClient();
 
@@ -838,7 +850,7 @@ export const updateUserProfile = async (
       db,
       userCollection,
       user.documents[0].$id,
-      cleanData,
+      cleanData
     );
 
     console.log(`User profile updated for userId: ${updatedProfile.$id}`);
@@ -847,7 +859,7 @@ export const updateUserProfile = async (
     console.log("Error updating user profile:", error);
 
     throw new Error(
-      error instanceof Error ? error.message : "Failed to update user profile",
+      error instanceof Error ? error.message : "Failed to update user profile"
     );
   }
 };
@@ -855,7 +867,7 @@ export const updateUserProfile = async (
 export const getAllUsers = async (
   limit = 25,
   offset = 0,
-  filters: any[] = [],
+  filters: any[] = []
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -874,7 +886,7 @@ export const getAllUsers = async (
   } catch (error) {
     console.error("Error fetching users:", error);
     throw new Error(
-      error instanceof Error ? error.message : "Failed to fetch users",
+      error instanceof Error ? error.message : "Failed to fetch users"
     );
   }
 };
@@ -913,7 +925,7 @@ export const searchUsers = async ({
           Query.search("lastname", searchTerm),
           Query.search("email", searchTerm),
           Query.search("user_id", searchTerm),
-        ]),
+        ])
       );
     }
 
@@ -949,7 +961,7 @@ export const searchUsers = async ({
   } catch (error) {
     console.error("Error searching users:", error);
     throw new Error(
-      error instanceof Error ? error.message : "Failed to search users",
+      error instanceof Error ? error.message : "Failed to search users"
     );
   }
 };
@@ -958,7 +970,7 @@ export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
     const response = await account.createVerification(
-      "https://www.pithymeansplus.com/verify",
+      "https://www.pithymeansplus.com/verify"
     );
     console.log("Verification created:", response);
     // Check if the response includes the necessary fields
@@ -1075,7 +1087,7 @@ export const createPost = async (data: Post) => {
           binaryData = Buffer.from(base64Data, "base64");
         } catch (err) {
           throw new Error(
-            `Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`,
+            `Failed to decode ${mediaType} data: ${err instanceof Error ? err.message : String(err)}`
           );
         }
 
@@ -1087,7 +1099,7 @@ export const createPost = async (data: Post) => {
         const MAX_SIZE = 5 * 1024 * 1024; // 5MB
         if (binaryData.length > MAX_SIZE) {
           throw new Error(
-            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`,
+            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`
           );
         }
 
@@ -1096,7 +1108,7 @@ export const createPost = async (data: Post) => {
 
         file = new File([binaryData], fileName, { type: mimeType });
         console.log(
-          `Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`,
+          `Created ${mediaType} file: ${fileName}, size: ${(file.size / 1024).toFixed(2)}KB`
         );
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
@@ -1116,7 +1128,7 @@ export const createPost = async (data: Post) => {
         const fileUpload = await storage.createFile(
           postAttachementBucket,
           ID.unique(),
-          file,
+          file
         );
         console.log("File uploaded successfully:", fileUpload.$id);
 
@@ -1129,7 +1141,7 @@ export const createPost = async (data: Post) => {
       } catch (uploadErr) {
         console.error("File upload error:", uploadErr);
         throw new Error(
-          `Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`,
+          `Failed to upload file: ${uploadErr instanceof Error ? uploadErr.message : String(uploadErr)}`
         );
       }
     }
@@ -1150,7 +1162,7 @@ export const createPost = async (data: Post) => {
           post_id: validPost,
           image: imageId, // Will be empty string if no image
           video: videoId, // Will be empty string if no video
-        },
+        }
       );
 
       console.log("Post created successfully:", post.$id);
@@ -1158,7 +1170,7 @@ export const createPost = async (data: Post) => {
     } catch (dbErr) {
       console.error("Database error:", dbErr);
       throw new Error(
-        `Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`,
+        `Failed to create post in database: ${dbErr instanceof Error ? dbErr.message : String(dbErr)}`
       );
     }
   } catch (error: unknown) {
@@ -1174,7 +1186,7 @@ export const createPost = async (data: Post) => {
 
 export const updatePost = async (
   postId: string,
-  updatedData: Partial<Post>,
+  updatedData: Partial<Post>
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1183,7 +1195,7 @@ export const updatePost = async (
       db,
       postCollection,
       postId,
-      updatedData,
+      updatedData
     );
     return parseStringify(post);
   } catch (error) {
@@ -1255,7 +1267,7 @@ export const repost = async (data: Post) => {
         user_comment: user_comment || "", // Optional user comment
         created_at: now,
         updated_at: now,
-      },
+      }
     );
 
     console.log("Repost created successfully:", repost);
@@ -1297,7 +1309,7 @@ export const getPosts = async (page: number = 1, limit: number = 3) => {
           image: imageUrl,
           video: videoUrl,
         };
-      }),
+      })
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1319,7 +1331,7 @@ export const getPost = async (postId: string) => {
 export const searchPostsByContent = async (
   searchTerm: string,
   page: number = 1,
-  limit: number = 3,
+  limit: number = 3
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1352,7 +1364,7 @@ export const searchPostsByContent = async (
           image: imageUrl,
           video: videoUrl,
         };
-      }),
+      })
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1369,7 +1381,7 @@ export const searchPosts = async (
     page?: number;
     limit?: number;
     sortBy?: "recent" | "popular" | "relevant";
-  } = {},
+  } = {}
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1398,12 +1410,12 @@ export const searchPosts = async (
     // Date range filtering
     if (dateRange.start) {
       queries.push(
-        Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()),
+        Query.greaterThanEqual("$createdAt", dateRange.start.toISOString())
       );
     }
     if (dateRange.end) {
       queries.push(
-        Query.lessThanEqual("$createdAt", dateRange.end.toISOString()),
+        Query.lessThanEqual("$createdAt", dateRange.end.toISOString())
       );
     }
 
@@ -1445,14 +1457,14 @@ export const searchPosts = async (
         (q) =>
           !q.toString().includes("limit") &&
           !q.toString().includes("offset") &&
-          !q.toString().includes("orderBy"),
+          !q.toString().includes("orderBy")
       ),
     ];
 
     const totalPosts = await databases.listDocuments(
       db,
       postCollection,
-      totalQuery,
+      totalQuery
     );
     const totalPages = Math.ceil((totalPosts?.total || 0) / limit);
 
@@ -1472,7 +1484,7 @@ export const searchPosts = async (
           image: imageUrl,
           video: videoUrl,
         };
-      }),
+      })
     );
 
     return {
@@ -1496,7 +1508,7 @@ export const searchPostsByUser = async (
   firstname?: string,
   lastname?: string,
   page: number = 1,
-  limit: number = 3,
+  limit: number = 3
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1520,7 +1532,7 @@ export const searchPostsByUser = async (
     const posts = await databases.listDocuments(
       db,
       postCollection,
-      searchQueries,
+      searchQueries
     );
 
     if (!posts?.documents || !Array.isArray(posts.documents)) {
@@ -1543,7 +1555,7 @@ export const searchPostsByUser = async (
           image: imageUrl,
           video: videoUrl,
         };
-      }),
+      })
     );
     return parseStringify(postWithFiles);
   } catch (error) {
@@ -1567,7 +1579,7 @@ export const createComment = async (data: CommentPost) => {
         ...data,
         post_id: postExists.post_id,
         comment_id: validComment,
-      },
+      }
     );
     console.log("Comment created", comment);
     return parseStringify(comment);
@@ -1605,7 +1617,7 @@ export const likePost = async (data: LikePost) => {
         ...data,
         post_id: postExists.post_id,
         like_post_id: validLike,
-      },
+      }
     );
     console.log("Like created", like);
     return parseStringify(like);
@@ -1646,7 +1658,7 @@ export const toggleLike = async (data: LikePost) => {
           ...data,
           post_id: postExists.post_id,
           like_post_id: validLike,
-        },
+        }
       );
       console.log("Like created", like);
       return parseStringify(like);
@@ -1711,7 +1723,7 @@ export const createJob = async (job: Job) => {
         ...job,
         user_id: job.user_id,
         job_id: validJobId,
-      },
+      }
     );
 
     console.log("Job created", response);
@@ -1727,21 +1739,21 @@ const deleteJobAfterDeadlineOfApplication = async () => {
     const now = new Date();
     const { databases } = await createAdminClient();
     const jobs = await databases.listDocuments(db, jobCollection);
-    
+
     // Filter jobs that have passed their deadline
-    const expiredJobs = jobs.documents.filter(job => {
+    const expiredJobs = jobs.documents.filter((job) => {
       const deadlineDate = new Date(job.closing_date);
       return deadlineDate <= now;
     });
-    
+
     // Delete all expired jobs
     for (const job of expiredJobs) {
       await databases.deleteDocument(db, jobCollection, job.$id);
-    }    
+    }
   } catch (error) {
     console.error("Error deleting expired jobs:", error);
     throw new Error(
-      (error as Error).message || "Failed to delete expired jobs",
+      (error as Error).message || "Failed to delete expired jobs"
     );
   }
 };
@@ -1808,48 +1820,13 @@ export const getModules = async () => {
   }
 };
 
-export const createPostCourseQuestions = async (
-  data: PostCourseQuestion,
-  questions: Array<{ text: string; choices: string[] }>,
-) => {
-  try {
-    const { databases } = await createAdminClient();
-
-    let questionDocument;
-
-    for (const [index, question] of questions.entries()) {
-      const validQuestionId = generateValidPostId(
-        `${data.post_course_question_id}-${index}`,
-      );
-
-      questionDocument = await databases.createDocument(
-        db,
-        postCourseQuestionCollection,
-        validQuestionId,
-        {
-          ...data,
-          question: question.text,
-          choices: question.choices,
-          user_id: data.user_id,
-          post_course_question_id: validQuestionId,
-        },
-      );
-      console.log("Question created", questionDocument);
-    }
-
-    return parseStringify(questionDocument);
-  } catch (error) {
-    console.error("Error creating questions:", error);
-  }
-};
-
 export const fetchAllPostCourseQuestions = async () => {
   try {
     const { databases } = await createAdminClient();
 
     const response = await databases.listDocuments(
       db,
-      postCourseQuestionCollection,
+      postCourseQuestionCollection
     );
     // Optionally, parse or format the response if needed
     const data = response.documents.map((doc) => ({
@@ -1874,7 +1851,7 @@ export const fetchPostCourseQuestion = async (questionId: string) => {
     const response = await databases.getDocument(
       db,
       postCourseQuestionCollection,
-      questionId,
+      questionId
     );
     return parseStringify(response);
   } catch (error) {
@@ -1884,7 +1861,7 @@ export const fetchPostCourseQuestion = async (questionId: string) => {
 
 export const updatePostCourseQuestion = async (
   questionId: string,
-  data: Partial<PostCourseQuestion>,
+  data: Partial<PostCourseQuestion>
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -1892,7 +1869,7 @@ export const updatePostCourseQuestion = async (
       db,
       postCourseQuestionCollection,
       questionId,
-      data,
+      data
     );
     return parseStringify(response);
   } catch (error) {
@@ -1906,7 +1883,7 @@ export const deletePostCourseQuestion = async (questionId: string) => {
     const response = await databases.deleteDocument(
       db,
       postCourseQuestionCollection,
-      questionId,
+      questionId
     );
     return parseStringify(response);
   } catch (error) {
@@ -1915,7 +1892,7 @@ export const deletePostCourseQuestion = async (questionId: string) => {
 };
 
 export const createPostCourseAnswer = async (
-  data: PostCourseQuestionAnswer,
+  data: PostCourseQuestionAnswer
 ) => {
   const { answer_id } = data;
   const validAnswerId = generateValidPostId(answer_id);
@@ -1924,7 +1901,7 @@ export const createPostCourseAnswer = async (
     const getQuestionId = await databases.listDocuments(
       db,
       postCourseQuestionCollection,
-      [Query.equal("post_course_question_id", data.post_course_question_id)],
+      [Query.equal("post_course_question_id", data.post_course_question_id)]
     );
 
     console.log("Question ID", getQuestionId.documents[0].$id);
@@ -1940,7 +1917,7 @@ export const createPostCourseAnswer = async (
         answer: data.answer,
         post_course_question_id: questionId,
         answer_id: validAnswerId,
-      },
+      }
     );
 
     console.log("Answer created", answer);
@@ -1963,7 +1940,7 @@ export const createFunding = async (data: Funding) => {
       {
         ...data,
         funding_id: validFundingId,
-      },
+      }
     );
     console.log("Funding created", funding);
     return parseStringify(funding);
@@ -1988,11 +1965,10 @@ const deleteFundingAfterDeadlineOfApplication = async () => {
     for (const funding of expiredFundings) {
       await databases.deleteDocument(db, fundingCollection, funding.$id);
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error deleting expired fundings:", error);
     throw new Error(
-      (error as Error).message || "Failed to delete expired fundings",
+      (error as Error).message || "Failed to delete expired fundings"
     );
   }
 };
@@ -2017,7 +1993,7 @@ export const getFunding = async (fundingId: string) => {
     const funding = await databases.getDocument(
       db,
       fundingCollection,
-      fundingId,
+      fundingId
     );
     return parseStringify(funding);
   } catch (error) {
@@ -2027,7 +2003,7 @@ export const getFunding = async (fundingId: string) => {
 
 export const updateFunding = async (
   fundingId: string,
-  data: Partial<Funding>,
+  data: Partial<Funding>
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -2035,7 +2011,7 @@ export const updateFunding = async (
       db,
       fundingCollection,
       fundingId,
-      data,
+      data
     );
     return parseStringify(response);
   } catch (error) {
@@ -2049,7 +2025,7 @@ export const deleteFunding = async (fundingId: string) => {
     const response = await databases.deleteDocument(
       db,
       fundingCollection,
-      fundingId,
+      fundingId
     );
     return parseStringify(response);
   } catch (error) {
@@ -2070,7 +2046,7 @@ export const createScholarship = async (data: Scholarship) => {
       {
         ...data,
         scholarship_id: validScholarshipId,
-      },
+      }
     );
     console.log("Scholarship created", scholarship);
     return parseStringify(scholarship);
@@ -2085,7 +2061,7 @@ const deleteScholarshipAfterDeadlineOfApplication = async () => {
     const { databases } = await createAdminClient();
     const scholarships = await databases.listDocuments(
       db,
-      scholarshipCollection,
+      scholarshipCollection
     );
 
     // Filter scholarships that have passed their deadline
@@ -2099,7 +2075,7 @@ const deleteScholarshipAfterDeadlineOfApplication = async () => {
       await databases.deleteDocument(
         db,
         scholarshipCollection,
-        scholarship.$id,
+        scholarship.$id
       );
     }
     console.log("Expired scholarships deleted successfully.");
@@ -2114,7 +2090,7 @@ export const getScholarships = async () => {
     const scholarships = await databases.listDocuments(
       db,
       scholarshipCollection,
-      [ Query.limit(1000), Query.orderDesc("$createdAt") ],
+      [Query.limit(1000), Query.orderDesc("$createdAt")]
     );
     await deleteScholarshipAfterDeadlineOfApplication();
     console.log("Scholarships fetched successfully");
@@ -2130,7 +2106,7 @@ export const getScholarship = async (scholarshipId: string) => {
     const scholarship = await databases.getDocument(
       db,
       scholarshipCollection,
-      scholarshipId,
+      scholarshipId
     );
     return parseStringify(scholarship);
   } catch (error) {
@@ -2140,7 +2116,7 @@ export const getScholarship = async (scholarshipId: string) => {
 
 export const updateScholarship = async (
   scholarshipId: string,
-  data: Partial<Scholarship>,
+  data: Partial<Scholarship>
 ) => {
   try {
     const { databases } = await createAdminClient();
@@ -2148,7 +2124,7 @@ export const updateScholarship = async (
       db,
       scholarshipCollection,
       scholarshipId,
-      data,
+      data
     );
     return parseStringify(response);
   } catch (error) {
@@ -2162,98 +2138,157 @@ export const deleteScholarship = async (scholarshipId: string) => {
     const response = await databases.deleteDocument(
       db,
       scholarshipCollection,
-      scholarshipId,
+      scholarshipId
     );
     return parseStringify(response);
   } catch (error) {
     console.error("Error deleting scholarship:", error);
-    throw new Error("Failed to Delete The Scholarship")
+    throw new Error("Failed to Delete The Scholarship");
   }
 };
 
-export const createQuestion = async (data: Questions) => {
-  const { question_id } = data;
-  const id = generateValidPostId(question_id);
-  try {
-    const { databases } = await createAdminClient();
-
-    const createdQuestion = await databases.createDocument(
-      db, questionCollection, id, {
-        ...data
-      }
-    )
-    console.log("Question Created");
-    
-    return parseStringify(createdQuestion);
-  } catch (error) {
-    console.log('Error occured during the creation of the question:', error)
-    throw new Error('Failed to create question'); // Explicitly throw an error
-
-  }
-}
-
-export const getQuestions = async () => {
-  try {
-    const { databases } = await createAdminClient();
-
-    const fetchedQuestions = await databases.listDocuments(
-      db, questionCollection
-    );
-
-    console.log("Questions fetched succefully!")
-
-    return parseStringify(fetchedQuestions);
-  } catch (error) {
-    console.log('Error occurred during the fetching the questions:', error);
-    throw new Error('Failed to fetch questions'); // Explicitly throw an error
-
-  }
-}
-
-export const getQuestion = async (questionId: string) => {
+export const createQuestion = async (
+  question: Question
+): Promise<Question> => {
   const { databases } = await createAdminClient();
+  const questionId = ID.unique();
+  console.log('Creating question ...');
   try {
-    const fetchQuestionById = await databases.listDocuments(
-      db, questionCollection, [
-        Query.equal("question_id", questionId)
-      ]
-    );
 
-    return parseStringify(fetchQuestionById);
-  } catch (error) {
-    console.log("Error occured during the fetching of the question by Id:", error);
-    throw new Error('Failed To Fetch This Question, Try Again Later')
-  }
-}
-
-
-export const updateQuestion = async (questionId: string, data: Partial<Questions>) => {
-  const { databases } = await createAdminClient();
-  try {
-    const updatedQuestion = await databases.updateDocument(
+    const questionToStore = {
+      ...question,
+      pre_course_question_id: questionId,
+      options: question.options.map((option) => {
+        option.answer_id = generateValidPostId(option.answer_id);
+        return JSON.stringify(option);
+            }),
+    }
+    const response = await databases.createDocument(
       db,
-      questionCollection,
+      preCourseQuestionCollection,
       questionId,
-      data
+      questionToStore
     );
 
-    return parseStringify(updatedQuestion);
-  } catch (error) {
-    console.log('Error Occured During The Updating Of This Question:', error);
-    throw new Error('Failed To Update This Question, Try Again Later')
-  }
-}
+    const parsedResponse = {
+      ...response,
+      options: response.options.map((option: string) => JSON.parse(option)),
+    };
 
-export const deleteQuestion = async (questionId: string) => {
+    console.log("Question created", parsedResponse);
+
+    return parseStringify(parsedResponse);
+  } catch (error) {
+    console.error("Error creating question:", error);
+    throw new Error("Failed to create the question");
+  }
+};
+
+export const fetchQuestions = async (): Promise<Question[]> => {
   const { databases } = await createAdminClient();
   try {
-    const deletedQuestion = await databases.deleteDocument(
-      db, questionCollection, questionId
+    const questions = await databases.listDocuments(
+      db,
+      preCourseQuestionCollection,
+      [Query.limit(1000), Query.orderDesc("$createdAt")]
     );
-
-    return parseStringify(deletedQuestion);
+    return parseStringify(questions.documents);
   } catch (error) {
-    console.log("Error Occured During The Deletion Of The Question:", error);
-    throw new Error("Failed To Delete The Question")
+    console.error("Error fetching questions:", error);
+    throw new Error("Failed to fetch questions");
+  }
+};
+
+export const updateQuestion = async (
+  questionId: string,
+  data: Partial<Question>
+): Promise<Question> => {
+  const { databases } = await createAdminClient();
+  try {
+    // Only include fields that are allowed to be updated
+    // and stringify the options properly
+    const dataToStore: any = {};
+    
+    if (data.text !== undefined) dataToStore.text = data.text;
+    if (data.category !== undefined) dataToStore.category = data.category;
+    
+    if (data.options) {
+      dataToStore.options = data.options.map(option => 
+        typeof option === 'string' ? option : JSON.stringify(option)
+      );
+    }
+    
+    const response = await databases.updateDocument(
+      db,
+      preCourseQuestionCollection,
+      questionId,
+      dataToStore
+    );
+    
+    return parseStringify(response);
+  } catch (error) {
+    console.error("Error updating question:", error);
+    throw new Error("Failed to update the question");
   }
 }
+
+export const deleteQuestion = async (questionId: string): Promise<void> => {
+  const { databases } = await createAdminClient();
+  try {
+    await databases.deleteDocument(
+      db,
+      preCourseQuestionCollection,
+      questionId
+    );
+  } catch (error) {
+    console.error("Error deleting question:", error);
+    throw new Error("Failed to delete the question");
+  }
+};
+
+export const saveResult = async (
+  userId: string,
+  temperamentType: string,
+  responses: UserResponse[]
+): Promise<void> => {
+  const { databases } = await createAdminClient();
+  const responseToStore = responses.map((response) => (JSON.stringify(response)));
+  console.log("Saving result ...");
+  const preCourseAnswerId = ID.unique();
+
+  try {
+    const result = await databases.createDocument(
+      db,
+      preCourseAnswerCollection,
+      preCourseAnswerId,
+      {
+        pre_course_answer_id: preCourseAnswerId,
+        user_id: userId,
+        temperamentType,
+        responses: responseToStore
+      }
+    );
+    console.log("Result saved successfully:", result);
+    return parseStringify(result);
+  } catch (error) {
+    console.error("Error saving result:", error);
+    throw new Error("Failed to save the result");
+  }
+};
+
+export const fetchUserResult = async (
+  userId: string
+): Promise<UserResponse[]> => {
+  const { databases } = await createAdminClient();
+  try {
+    const result = await databases.listDocuments(
+      db,
+      preCourseAnswerCollection,
+      [Query.equal("user_id", userId)]
+    );
+    return parseStringify(result.documents);
+  } catch (error) {
+    console.error("Error fetching user result:", error);
+    throw new Error("Failed to fetch the user result");
+  }
+};
