@@ -199,7 +199,6 @@ export const reset = async (data: UpdateUser) => {
 // Function to get referral details for a user
 export const getReferralDetails = async (userId: string) => {
   try {
-    console.log(`Getting referral details for user: ${userId}`);
     const { databases } = await createAdminClient();
 
     // Get the referring user
@@ -218,9 +217,6 @@ export const getReferralDetails = async (userId: string) => {
     }
 
     const user = userQuery.documents[0];
-    console.log(
-      `Found user: ${user.firstname} ${user.lastname}, Referral fees: ${user.earned_referral_fees || 0}`
-    );
 
     // Check if referred_users exists and has elements
     if (!user.referred_users?.length) {
@@ -230,9 +226,7 @@ export const getReferralDetails = async (userId: string) => {
         totalPoints: 0,
         totalEarnings: 0,
       };
-    }
-
-    console.log(`User has ${user.referred_users.length} referred users`);
+    };
 
     // Fetch full details of all referred users
     const referralPromises = user.referred_users.map(
@@ -245,9 +239,6 @@ export const getReferralDetails = async (userId: string) => {
             referredId
           );
 
-          console.log(
-            `Referred user: ${referredUser.firstname} ${referredUser.lastname}, Paid status: ${referredUser.paid}`
-          );
 
           // Check if the user has paid - use loose comparison to handle different data types
           // This handles cases where paid might be a string "true" instead of boolean true
@@ -266,18 +257,12 @@ export const getReferralDetails = async (userId: string) => {
             // If this is the only paid referral, assign all the earnings to this user
             if (paidReferrals.length === 1) {
               individualEarning = user.earned_referral_fees || 0;
-              console.log(
-                `Using existing earned_referral_fees: ${individualEarning}`
-              );
             }
           }
 
           // If we couldn't determine earnings from existing data, try to calculate from payment records
           if (hasPaid && individualEarning === 0) {
             // Get this user's payment record to calculate the 10%
-            console.log(
-              `Looking for payment records for user: ${referredUser.user_id}`
-            );
             const paymentRecords = await databases.listDocuments(
               db,
               paymentCollection,
@@ -287,27 +272,13 @@ export const getReferralDetails = async (userId: string) => {
               ]
             );
 
-            console.log(
-              `Found ${paymentRecords.documents.length} payment records`
-            );
-
             if (paymentRecords.documents.length > 0) {
               // Get the most recent successful payment
               const payment = paymentRecords.documents[0];
-              console.log(
-                `Payment details: ${JSON.stringify({
-                  amount: payment.amount,
-                  status: payment.status,
-                  currency: payment.currency,
-                })}`
-              );
 
               // Calculate 10% of the payment amount if amount exists
               if (payment.amount) {
                 individualEarning = Math.round(payment.amount * 0.1);
-                console.log(
-                  `Calculated earnings (10% of ${payment.amount}): ${individualEarning}`
-                );
               } else {
                 // If we can't find the amount in the payment record, use a fallback approach
                 // Try to get transaction data if it exists
@@ -331,9 +302,6 @@ export const getReferralDetails = async (userId: string) => {
                         individualEarning = Math.round(
                           flutterwaveData.data.amount * 0.1
                         );
-                        console.log(
-                          `Got amount from Flutterwave: ${flutterwaveData.data.amount}, earnings: ${individualEarning}`
-                        );
                       }
                     }
                   } catch (error) {
@@ -352,9 +320,6 @@ export const getReferralDetails = async (userId: string) => {
                     );
                     if (course && course.price) {
                       individualEarning = Math.round(course.price * 0.1);
-                      console.log(
-                        `Using course price as fallback: ${course.price}, earnings: ${individualEarning}`
-                      );
                     }
                   } catch (error) {
                     console.error("Error getting course:", error);
@@ -372,9 +337,6 @@ export const getReferralDetails = async (userId: string) => {
                   );
                   if (course && course.price) {
                     individualEarning = Math.round(course.price * 0.1);
-                    console.log(
-                      `Last resort using course price: ${course.price}, earnings: ${individualEarning}`
-                    );
                   }
                 } catch (error) {
                   console.error("Error getting course:", error);
@@ -386,14 +348,7 @@ export const getReferralDetails = async (userId: string) => {
           // If all else fails but the user is marked as paid, use the referring user's total earnings
           if (hasPaid && individualEarning === 0 && user.earned_referral_fees) {
             individualEarning = user.earned_referral_fees;
-            console.log(
-              `Using referring user's total earnings as last resort: ${individualEarning}`
-            );
           }
-
-          console.log(
-            `Final earnings for ${referredUser.firstname}: ${individualEarning}`
-          );
 
           return {
             id: referredId,
@@ -412,12 +367,12 @@ export const getReferralDetails = async (userId: string) => {
 
     const referrals = (await Promise.all(referralPromises)).filter(Boolean);
 
-    // For debugging - log all referrals and their earnings
-    referrals.forEach((ref) => {
-      console.log(
-        `Referral: ${ref.firstname} ${ref.lastname}, Paid: ${ref.isPaid}, Earnings: ${ref.earnings}`
-      );
-    });
+    // // For debugging - log all referrals and their earnings
+    // referrals.forEach((ref) => {
+    //   console.log(
+    //     `Referral: ${ref.firstname} ${ref.lastname}, Paid: ${ref.isPaid}, Earnings: ${ref.earnings}`
+    //   );
+    // });
 
     // If we have no individual earnings but the user has a total, distribute it evenly among paid referrals
     const paidReferrals = referrals.filter((ref) => ref.isPaid);
@@ -445,12 +400,10 @@ export const getReferralDetails = async (userId: string) => {
       (total, referral) => total + (referral.earnings || 0),
       0
     );
-    console.log(`Total earnings: ${totalEarnings}`);
 
     // If we still have no earnings but the user has earned_referral_fees, use that as the total
     const finalTotalEarnings =
       totalEarnings > 0 ? totalEarnings : user.earned_referral_fees || 0;
-    console.log(`Final total earnings: ${finalTotalEarnings}`);
 
     return {
       referrals,
@@ -2201,19 +2154,30 @@ export const createQuestion = async (
   const questionId = ID.unique();
   console.log('Creating question ...');
   try {
+
+    const questionToStore = {
+      ...question,
+      pre_course_question_id: questionId,
+      options: question.options.map((option) => {
+        option.answer_id = generateValidPostId(option.answer_id);
+        return JSON.stringify(option);
+            }),
+    }
     const response = await databases.createDocument(
       db,
       preCourseQuestionCollection,
       questionId,
-      {
-        ...question,
-        pre_course_question_id: questionId,
-      }
+      questionToStore
     );
 
-    console.log("Question created", response);
+    const parsedResponse = {
+      ...response,
+      options: response.options.map((option: string) => JSON.parse(option)),
+    };
 
-    return parseStringify(response);
+    console.log("Question created", parsedResponse);
+
+    return parseStringify(parsedResponse);
   } catch (error) {
     console.error("Error creating question:", error);
     throw new Error("Failed to create the question");
@@ -2241,12 +2205,26 @@ export const updateQuestion = async (
 ): Promise<Question> => {
   const { databases } = await createAdminClient();
   try {
+    // Only include fields that are allowed to be updated
+    // and stringify the options properly
+    const dataToStore: any = {};
+    
+    if (data.text !== undefined) dataToStore.text = data.text;
+    if (data.category !== undefined) dataToStore.category = data.category;
+    
+    if (data.options) {
+      dataToStore.options = data.options.map(option => 
+        typeof option === 'string' ? option : JSON.stringify(option)
+      );
+    }
+    
     const response = await databases.updateDocument(
       db,
       preCourseQuestionCollection,
       questionId,
-      data
+      dataToStore
     );
+    
     return parseStringify(response);
   } catch (error) {
     console.error("Error updating question:", error);
@@ -2274,18 +2252,24 @@ export const saveResult = async (
   responses: UserResponse[]
 ): Promise<void> => {
   const { databases } = await createAdminClient();
+  const responseToStore = responses.map((response) => (JSON.stringify(response)));
+  console.log("Saving result ...");
+  const preCourseAnswerId = ID.unique();
+
   try {
     const result = await databases.createDocument(
       db,
       preCourseAnswerCollection,
-      ID.unique(),
+      preCourseAnswerId,
       {
+        pre_course_answer_id: preCourseAnswerId,
         user_id: userId,
         temperamentType,
-        responses
+        responses: responseToStore
       }
     );
     console.log("Result saved successfully:", result);
+    return parseStringify(result);
   } catch (error) {
     console.error("Error saving result:", error);
     throw new Error("Failed to save the result");
