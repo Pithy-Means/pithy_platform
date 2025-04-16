@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Question, TemperamentResult, TemperamentType, UserResponse } from "@/types/schema";
 
 // Scores for each dimension
-interface DimensionScores {
+export interface DimensionScores {
   E: number;
   I: number;
   S: number;
@@ -12,9 +14,36 @@ interface DimensionScores {
   P: number;
 }
 
-export const calculateTemperamentType = (responses: UserResponse[], questions: Question[]): TemperamentType => {
+// Define the question and option interfaces based on the provided data
+export interface Option {
+  text: string;
+  score: {
+    E?: number;
+    I?: number;
+    S?: number;
+    N?: number;
+    T?: number;
+    F?: number;
+    J?: number;
+    P?: number;
+  };
+  answer_id?: string; // Added for compatibility with your schema
+}
+
+export interface AssessmentQuestion {
+  text: string;
+  category: string;
+  options: Option[];
+  pre_course_question_id?: string; // Added for compatibility with your schema
+}
+
+// Function to process user responses and calculate temperament type
+export const calculateTemperamentType = (
+  responses: Array<{ questionId: string; answerId: string }>, 
+  questions: AssessmentQuestion[]
+): TemperamentType => {
   // Initialize scores for each dimension
-  const scores = {
+  const scores: DimensionScores = {
     E: 0, I: 0,
     S: 0, N: 0,
     T: 0, F: 0,
@@ -26,13 +55,15 @@ export const calculateTemperamentType = (responses: UserResponse[], questions: Q
     const question = questions.find(q => q.pre_course_question_id === response.questionId);
     if (!question) return;
     
-    const answer = question.options.find(a => a.answer_id === response.answerId);
+    // Find the selected option by its index (answerId)
+    const answerIndex = parseInt(response.answerId);
+    const answer = question.options[answerIndex];
     if (!answer) return;
     
-    // Add scores for each dimension
+    // Add scores for each dimension from the selected answer
     Object.entries(answer.score).forEach(([dimension, score]) => {
-      if (dimension in scores) {
-        scores[dimension as keyof typeof scores] += score;
+      if (dimension in scores && score !== undefined) {
+        scores[dimension as keyof DimensionScores] += score;
       }
     });
   });
@@ -43,8 +74,47 @@ export const calculateTemperamentType = (responses: UserResponse[], questions: Q
   return type;
 };
 
-export const getTemperamentDescription = (type: TemperamentType): TemperamentResult => {
-  const temperaments: Record<TemperamentType, TemperamentResult> = {
+// Simpler version that works directly with the data format from document 1
+export const calculateTemperamentTypeFromRawAnswers = (
+  selectedAnswers: Array<number>, // Array of selected answer indices (0-3) for each question
+  questions: any[] // Raw questions data from document 1
+): string => {
+  // Initialize scores for each dimension
+  const scores: DimensionScores = {
+    E: 0, I: 0,
+    S: 0, N: 0,
+    T: 0, F: 0,
+    J: 0, P: 0
+  };
+  
+  // Process each answer
+  questions.forEach((question, questionIndex) => {
+    if (questionIndex >= selectedAnswers.length) return;
+    
+    const answerIndex = selectedAnswers[questionIndex];
+    const selectedOption = question.options[answerIndex];
+    
+    if (selectedOption && selectedOption.score) {
+      // Add up all the dimension scores from this answer
+      Object.entries(selectedOption.score).forEach(([dimension, score]) => {
+        if (dimension in scores && typeof score === 'number') {
+          scores[dimension as keyof DimensionScores] += score;
+        }
+      });
+    }
+  });
+  
+  // Determine type based on highest scores in each dimension pair
+  const type = `${scores.E > scores.I ? 'E' : 'I'}${scores.S > scores.N ? 'S' : 'N'}${scores.T > scores.F ? 'T' : 'F'}${scores.J > scores.P ? 'J' : 'P'}`;
+  
+  console.log("Final scores:", scores);
+  console.log("Determined type:", type);
+  
+  return type;
+};
+
+export const getTemperamentDescription = (type: string): TemperamentResult => {
+  const temperaments: Record<string, TemperamentResult> = {
     'ISTJ': {
       type: 'ISTJ',
       description: 'Quiet, serious, thorough, dependable, practical, matter-of-fact, logical, and organized.',
@@ -133,3 +203,21 @@ export const getTemperamentDescription = (type: TemperamentType): TemperamentRes
     careers: []
   };
 };
+
+// Example usage:
+// This function demonstrates how to use the assessment system
+export const takePersonalityTest = (questions: any[], userAnswers: number[]): TemperamentResult => {
+  // Calculate the temperament type based on user answers
+  const temperamentType = calculateTemperamentTypeFromRawAnswers(userAnswers, questions);
+  
+  // Get the description for the calculated type
+  return getTemperamentDescription(temperamentType);
+};
+
+// Example:
+// const questions = [/* Your questions data */];
+// const userAnswers = [0, 2, 1, 3, 0, 2, 1, 0, 3, 1, 2, 0, 3, 1, 2, 0, 3, 1, 2, 0];
+// const result = takePersonalityTest(questions, userAnswers);
+// console.log(`Your personality type is: ${result.type}`);
+// console.log(`Description: ${result.description}`);
+// console.log(`Recommended careers: ${result.careers.join(', ')}`);
