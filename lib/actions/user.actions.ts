@@ -538,7 +538,7 @@ export const updateReferralPoints = async (
     return parseStringify(referrerUpdated);
   } catch (error) {
     console.error("Error updating referrer points:", error);
-    throw error;
+    throw new Error("Failed to update referral points");
   }
 };
 
@@ -618,6 +618,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
             }
           } catch (urlError) {
             console.log("Not a valid URL, trying regex extraction");
+            throw new Error("Not a valid URL");
           }
 
           // If URL parsing failed or didn't get a code, try regex
@@ -630,6 +631,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
           }
         } catch (e) {
           console.error("Error extracting referral code:", e);
+          throw new Error("Invalid referral code format");
         }
       }
 
@@ -718,12 +720,14 @@ export const register = async (userdata: Partial<UserInfo>) => {
             console.log("Updated referral points for referrer:", referrerDocId);
           } catch (directUpdateError) {
             console.error("Failed direct referral update:", directUpdateError);
+            throw new Error("Direct referral update failed");
           }
         } else {
           console.log(`No referrer found for code: "${normalizedCode}"`);
         }
       } catch (referralError) {
         console.error("Error processing referral:", referralError);
+        throw new Error("Referral processing failed");
       }
     } else {
       console.log("No valid referral code provided after processing");
@@ -760,6 +764,7 @@ export const register = async (userdata: Partial<UserInfo>) => {
       }
     } catch (sessionError) {
       console.error("Error creating session:", sessionError);
+      throw new Error("Session creation failed");
     }
 
     return {
@@ -776,46 +781,13 @@ export const register = async (userdata: Partial<UserInfo>) => {
         await account.deleteSession(userId);
       } catch (cleanupError) {
         console.error("Error during cleanup:", cleanupError);
+        throw new Error("Account created but user info not saved");
       }
     }
-
-    // Use the user-friendly error message
-    const friendlyMessage = getUserFriendlyError(error);
-
-    throw new Error(friendlyMessage || "Account not created");
+    throw new Error("Account not created");
   }
 };
 
-// Add this function to your user.actions.ts file
-const getUserFriendlyError = (error: any): string => {
-  const errorMessage = error instanceof Error ? error.message : String(error);
-
-  // Map specific error messages to user-friendly versions
-  if (errorMessage.includes("A user with the same email already exists")) {
-    return "This email address is already registered. Please use a different email or try to log in.";
-  }
-
-  if (errorMessage.includes("Email and password must be provided")) {
-    return "Please provide both email and password to create your account.";
-  }
-
-  if (errorMessage.includes("Password must be at least")) {
-    return "Your password is too short. Please use a stronger password with at least 8 characters.";
-  }
-
-  if (errorMessage.includes("Invalid email")) {
-    return "Please enter a valid email address.";
-  }
-
-  if (errorMessage.includes("Account not created")) {
-    return "We couldn't create your account. Please try again later.";
-  }
-
-  // Add more specific error mappings based on common errors you see
-
-  // Default fallback for unknown errors
-  return "There was a problem creating your account. Please try again or contact support if the problem persists.";
-};
 
 export const updateUserProfile = async (
   userId: string,
