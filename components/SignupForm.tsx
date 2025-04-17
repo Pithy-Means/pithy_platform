@@ -226,11 +226,15 @@ const SignupForm = () => {
         router.push("/check-email");
       }
     } catch (error) {
-      // Display the user-friendly error message
+      // Display the error message
+
       const errorMessage =
-        error instanceof Error ? error.message : String(error);
+        error instanceof Error
+          ? error.message
+          : "Error registering user. Please try again.";
+
       toast.error(errorMessage);
-      console.error("Error registering user:", error);
+      console.error("Error registering user:", `${ error instanceof Error ? error.message : 'Error occurred'}`);
     } finally {
       setIsLoading(false);
     }
