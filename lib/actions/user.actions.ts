@@ -563,16 +563,52 @@ export const register = async (userdata: Partial<UserInfo>) => {
       throw new Error("Email and password must be provided");
     }
 
+    // Check if email already exists
+    try {
+      // Try to get a user with the same email
+      const existingUsers = await databases.listDocuments(
+        db,
+        userCollection,
+        [Query.equal("email", email)]
+      );
+      
+      if (existingUsers.total > 0) {
+        throw new Error("Email already in use");
+      }
+    } catch (emailCheckError: any) {
+      // If this is our custom error, rethrow it
+      if (emailCheckError instanceof Error && emailCheckError.message === "Email already in use") {
+        throw emailCheckError;
+      }
+      // Otherwise, this was a database error, log and continue
+      console.warn("Error checking for existing email:", emailCheckError);
+    }
+
     // Log the incoming referral code for debugging
     console.log("Original referral code received:", referral_code);
 
     // Step 1: Create the account
-    createdAccount = await account.create(
-      userId,
-      email,
-      password,
-      `${firstname} ${lastname}`
-    );
+    try {
+      createdAccount = await account.create(
+        userId,
+        email,
+        password,
+        `${firstname} ${lastname}`
+      );
+    } catch (accountError: any) {
+      // Check for specific Appwrite error indicating duplicate email
+      if (accountError instanceof Error && 
+         (accountError.message.includes("already exists") || 
+          accountError.message.includes("already registered"))) {
+        throw new Error("This email is already registered. Please log in instead.");
+      }
+      // Check for conflict status code (409)
+      if (accountError.code === 409) {
+        throw new Error("This email is already registered. Please log in instead.");
+      }
+      // For other errors, rethrow
+      throw accountError;
+    }
 
     if (!createdAccount) {
       throw new Error("Account not created");
@@ -768,26 +804,19 @@ export const register = async (userdata: Partial<UserInfo>) => {
     }
 
     return {
+      success: true,
       newUserAccount: parseStringify(createdAccount),
       userinfo: parseStringify(createdUserInfo),
       referralProcessed: !!referrerInfo,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error in register function:", error);
-
-    // Cleanup if needed
-    if (createdAccount && !createdUserInfo) {
-      try {
-        await account.deleteSession(userId);
-      } catch (cleanupError) {
-        console.error("Error during cleanup:", cleanupError);
-        throw new Error("Account created but user info not saved");
-      }
-    }
-    throw new Error("Account not created");
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Account not created"
+    };
   }
 };
-
 
 export const updateUserProfile = async (
   userId: string,
