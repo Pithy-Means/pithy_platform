@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 // components/Video.tsx
 "use client";
 
@@ -147,8 +148,10 @@ export function Video({
       }
       
       // Save final progress when component unmounts
-      if (videoRef.current) {
-        updateProgress(moduleId, videoRef.current.currentTime);
+      const videoElement = videoRef.current;
+      if (videoElement) {
+        const currentTime = videoElement.currentTime; // Copy currentTime to a local variable
+        updateProgress(moduleId, currentTime);
       }
     };
   }, [moduleId, updateProgress]);

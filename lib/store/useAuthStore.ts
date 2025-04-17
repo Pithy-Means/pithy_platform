@@ -35,8 +35,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ loading: true });
     try {
       const response = await register(data); // API call
-      if (!response) {
-        throw new Error("Invalid response from server");
+      if (!response || !response.success || !response.userinfo) {
+        set({ loading: false });
+        throw new Error(response.message || "Registration failed");
       }
       const userInfo: UserInfo = {
         ...response.userinfo,
