@@ -2307,7 +2307,8 @@ const deleteScholarshipAfterDeadlineOfApplication = async () => {
     const { databases } = await createAdminClient();
     const scholarships = await databases.listDocuments(
       db,
-      scholarshipCollection
+      scholarshipCollection,
+      [Query.limit(1000)]
     );
 
     // Filter scholarships that have passed their deadline
@@ -2329,6 +2330,89 @@ const deleteScholarshipAfterDeadlineOfApplication = async () => {
     console.error("Error deleting expired scholarships:", error);
   }
 };
+
+/**
+ * Searches scholarships based on specified criteria
+ * 
+ * @param params - Search parameters
+ * @param params.title - Optional title to search for
+ * @param params.provider - Optional provider to search for
+ * @param params.study_level - Optional study level to filter by
+ * @param params.discipline - Optional discipline/field to filter by
+ * @param params.country_of_study - Optional country to filter by
+ * @returns Promise containing filtered scholarships
+ */
+export const searchScholarships = async ({
+  title,
+  provider,
+  study_level,
+  discipline,
+  country_of_study
+}: {
+  title?: string;
+  provider?: string;
+  study_level?: string;
+  discipline?: string;
+  country_of_study?: string;
+}) => {
+  try {
+    // Get all scholarships
+    const result = await getScholarships();
+    
+    if (!result || !result.documents) {
+      console.error("No scholarships found or invalid response format");
+      return { documents: [] };
+    }
+    
+    // Filter scholarships based on provided criteria
+    const filteredScholarships = result.documents.filter((scholarship: Scholarship) => {
+      // Check if scholarship matches all non-empty criteria
+      // Using case-insensitive matching for text fields
+      
+      // Title filter
+      if (title && scholarship.title && 
+          !scholarship.title.toLowerCase().includes(title.toLowerCase())) {
+        return false;
+      }
+      
+      // Provider filter
+      if (provider && scholarship.provider &&
+          !scholarship.provider.toLowerCase().includes(provider.toLowerCase())) {
+        return false;
+      }
+      
+      // Study level filter - exact match
+      if (study_level && scholarship.study_level !== study_level) {
+        return false;
+      }
+      
+      // Discipline filter
+      if (discipline && scholarship.discipline &&
+          !scholarship.discipline.toLowerCase().includes(discipline.toLowerCase())) {
+        return false;
+      }
+      
+      // Country of study filter - exact match
+      if (country_of_study && scholarship.country_of_study !== country_of_study) {
+        return false;
+      }
+      
+      // All provided criteria matched or were not specified
+      return true;
+    });
+    
+    console.log(`Found ${filteredScholarships.length} matching scholarships`);
+    
+    return {
+      ...result,
+      documents: filteredScholarships
+    };
+  } catch (error) {
+    console.error("Error searching scholarships:", error);
+    throw error;
+  }
+};
+
 
 export const getScholarships = async () => {
   try {
