@@ -9,6 +9,7 @@ import { FaMarker } from "react-icons/fa";
 import { CalendarCheck, ChevronRight, Zap } from "lucide-react";
 import { toast, Toaster } from "react-hot-toast";
 import { formatDateWithOrdinal } from "@/lib/utils";
+import JobSearch from "./jobSearch";
 
 const JobList = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -37,6 +38,13 @@ const JobList = () => {
 
     fetchJobs();
   }, []);
+
+  // Handle search results from JobSearch component
+  const handleSearchResults = (searchResults: Job[]) => {
+    setJobs(searchResults);
+    // setSearchPerformed(true);
+  };
+
 
   return (
     <div className="w-full p-4 md:p-8 min-h-screen">
@@ -88,36 +96,39 @@ const JobList = () => {
             </div>
           </div>
         )}
+        <header className="text-center mb-16 relative animate-fadeIn">
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-green-500 rounded-full filter blur-3xl opacity-5 animate-pulse pointer-events-none"></div>
+
+          <h1 className="text-5xl md:text-6xl font-bold text-white relative inline-block">
+            <span className="bg-gradient-to-r from-green-300 via-green-400 to-green-200 bg-clip-text text-transparent">
+              JOB OPPORTUNITIES
+            </span>
+            <div className="absolute -bottom-3 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-300"></div>
+            <div className="absolute -bottom-3 left-0 w-16 h-1 bg-green-400 animate-pulse"></div>
+          </h1>
+
+          <p className="text-green-50 mt-6 max-w-2xl mx-auto text-lg opacity-80">
+            Explore cutting-edge opportunities engineered for the professionals
+            of tomorrow
+          </p>
+
+          <div className="mt-4 flex justify-center space-x-1">
+            {[...Array(5)].map((_, i) => (
+              <div
+                key={i}
+                className="w-2 h-2 rounded-full bg-green-500 opacity-75 animate-pulse"
+                style={{ animationDelay: `${i * 200}ms` }}
+              ></div>
+            ))}
+          </div>
+        </header>
+
+        <div className="mb-8">
+          <JobSearch onSearchResults={handleSearchResults} setLoading={setLoading} />
+        </div>
 
         {jobs.length > 0 ? (
           <>
-            <header className="text-center mb-16 relative animate-fadeIn">
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-green-500 rounded-full filter blur-3xl opacity-5 animate-pulse pointer-events-none"></div>
-
-              <h1 className="text-5xl md:text-6xl font-bold text-white relative inline-block">
-                <span className="bg-gradient-to-r from-green-300 via-green-400 to-green-200 bg-clip-text text-transparent">
-                  JOB OPPORTUNITIES
-                </span>
-                <div className="absolute -bottom-3 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-emerald-300"></div>
-                <div className="absolute -bottom-3 left-0 w-16 h-1 bg-green-400 animate-pulse"></div>
-              </h1>
-
-              <p className="text-green-50 mt-6 max-w-2xl mx-auto text-lg opacity-80">
-                Explore cutting-edge opportunities engineered for the
-                professionals of tomorrow
-              </p>
-
-              <div className="mt-4 flex justify-center space-x-1">
-                {[...Array(5)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="w-2 h-2 rounded-full bg-green-500 opacity-75 animate-pulse"
-                    style={{ animationDelay: `${i * 200}ms` }}
-                  ></div>
-                ))}
-              </div>
-            </header>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10 w-full mx-auto">
               {jobs.map((job, index) => (
                 <div
@@ -223,7 +234,7 @@ const JobList = () => {
                             </div>
                             <div>
                               <span className="text-xs text-gray-500 uppercase tracking-wider font-medium">
-                                LOCATION
+                                COUNTRY OF WORK
                               </span>
                               <p className="text-sm font-semibold text-white group-hover:text-green-200 transition-colors duration-300">
                                 {job.country_of_work || "Not specified"}
@@ -244,7 +255,11 @@ const JobList = () => {
                                 CLOSING DATE
                               </span>
                               <p className="text-sm font-semibold text-white group-hover:text-green-200 transition-colors duration-300">
-                                {job.closing_date ? formatDateWithOrdinal(new Date(job.closing_date)) : "Not specified"}
+                                {job.closing_date
+                                  ? formatDateWithOrdinal(
+                                      new Date(job.closing_date)
+                                    )
+                                  : "Not specified"}
                               </p>
                             </div>
                           </div>

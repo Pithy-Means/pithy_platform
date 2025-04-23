@@ -389,11 +389,31 @@ export interface TemperamentResult {
   careers: string[];
 }
 
-export type TemperamentType = 
-  | 'ISTJ' | 'ISFJ' | 'INFJ' | 'INTJ'
-  | 'ISTP' | 'ISFP' | 'INFP' | 'INTP'
-  | 'ESTP' | 'ESFP' | 'ENFP' | 'ENTP'
-  | 'ESTJ' | 'ESFJ' | 'ENFJ' | 'ENTJ';
+export type TemperamentType =
+  | "ISTJ"
+  | "ISFJ"
+  | "INFJ"
+  | "INTJ"
+  | "ISTP"
+  | "ISFP"
+  | "INFP"
+  | "INTP"
+  | "ESTP"
+  | "ESFP"
+  | "ENFP"
+  | "ENTP"
+  | "ESTJ"
+  | "ESFJ"
+  | "ENFJ"
+  | "ENTJ";
 
 // You can keep the TemperamentDimension type if you need it elsewhere
-export type TemperamentDimension = 'E' | 'I' | 'S' | 'N' | 'T' | 'F' | 'J' | 'P';
+export type TemperamentDimension =
+  | "E"
+  | "I"
+  | "S"
+  | "N"
+  | "T"
+  | "F"
+  | "J"
+  | "P";

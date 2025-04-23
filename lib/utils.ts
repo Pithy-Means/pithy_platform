@@ -90,3 +90,86 @@ function getOrdinalSuperscript(day: number): string {
     .replace('d', 'ᵈ')
     .replace('h', 'ʰ');
 }
+
+
+
+/**
+ * Generates alternative spellings for a word to enable fuzzy search
+ * @param word The original search term
+ * @returns Array of alternative spellings including the original
+ */
+export function generateAlternativeSpellings(word: string) {
+  if (!word || word.length < 3) return [word]; // Don't generate alternatives for very short words
+  
+  const alternatives = [word];
+  
+  // 1. Character swaps (e.g., "teh" instead of "the")
+  for (let i = 0; i < word.length - 1; i++) {
+    const swapped = word.substring(0, i) + 
+                    word[i+1] + 
+                    word[i] + 
+                    word.substring(i+2);
+    alternatives.push(swapped);
+  }
+  
+  // 2. Missing characters (e.g., "progamming" instead of "programming")
+  for (let i = 0; i < word.length; i++) {
+    const missing = word.substring(0, i) + word.substring(i+1);
+    alternatives.push(missing);
+  }
+  
+  // 3. Extra character (common typos near the key on keyboard)
+  // This is simplified, but you could expand with a full keyboard proximity map
+  for (let i = 0; i <= word.length; i++) {
+    // Only add a few common typos to keep the number of queries reasonable
+    const charToCheck = word[Math.max(0, i-1)];
+    if (charToCheck) {
+      const adjacentChars = getAdjacentKeys(charToCheck);
+      for (const adjacent of adjacentChars) {
+        // Insert an adjacent character
+        const withExtra = word.substring(0, i) + adjacent + word.substring(i);
+        alternatives.push(withExtra);
+      }
+    }
+  }
+  
+  // Return unique alternatives, limiting to a reasonable number
+  // to avoid excessive database calls
+  return [...new Set(alternatives)].slice(0, 5);
+}
+
+/**
+ * Returns adjacent keys on a QWERTY keyboard for common typos
+ */
+export function getAdjacentKeys(char: string) {
+  const keyboardMap = {
+    'a': ['s', 'q', 'z'],
+    'b': ['v', 'n', 'g', 'h'],
+    'c': ['x', 'v', 'd', 'f'],
+    'd': ['s', 'f', 'e', 'r', 'c', 'x'],
+    'e': ['w', 'r', 'd', 'f', '3', '4'],
+    'f': ['d', 'g', 'r', 't', 'c', 'v'],
+    'g': ['f', 'h', 't', 'y', 'v', 'b'],
+    'h': ['g', 'j', 'y', 'u', 'b', 'n'],
+    'i': ['u', 'o', 'k', 'l', '8', '9'],
+    'j': ['h', 'k', 'u', 'i', 'n', 'm'],
+    'k': ['j', 'l', 'i', 'o', 'm'],
+    'l': ['k', 'o', 'p'],
+    'm': ['n', 'j', 'k'],
+    'n': ['b', 'm', 'h', 'j'],
+    'o': ['i', 'p', 'k', 'l', '9', '0'],
+    'p': ['o', 'l', '0'],
+    'q': ['w', 'a', '1', '2'],
+    'r': ['e', 't', 'd', 'f', '4', '5'],
+    's': ['a', 'd', 'w', 'e', 'z', 'x'],
+    't': ['r', 'y', 'f', 'g', '5', '6'],
+    'u': ['y', 'i', 'h', 'j', '7', '8'],
+    'v': ['c', 'b', 'f', 'g'],
+    'w': ['q', 'e', 'a', 's', '2', '3'],
+    'x': ['z', 'c', 's', 'd'],
+    'y': ['t', 'u', 'g', 'h', '6', '7'],
+    'z': ['a', 'x', 's']
+  };
+  
+  return keyboardMap[char.toLowerCase() as keyof typeof keyboardMap] || [];
+}
