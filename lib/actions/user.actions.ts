@@ -28,6 +28,7 @@ import {
   parseStringify,
   generateValidId,
   generateReferralCode,
+  generateAlternativeSpellings,
 } from "../utils";
 import {
   courseCollection,
@@ -1394,92 +1395,203 @@ export const searchPosts = async (
       limit = 10,
       sortBy = "recent",
     } = options;
-
     const offset = (page - 1) * limit;
-    const queries = [];
-
-    // Content search
-    if (searchTerm) {
-      queries.push(Query.search("content", searchTerm));
-    }
-
-    // Filter by author if provided
+    
+    // Generate all possible search query combinations
+    const allSearchQueries = [];
+    let hasSearchTerm = false;
+    
+    // First, if we have an author search term, search for matching users
+    let userIds: string[] = [];
     if (author) {
-      queries.push(Query.equal("user_id", author));
+      userIds = await findUsersByName(author);
+      
+      // If no matching users and there's an author filter, return empty results early
+      if (userIds.length === 0) {
+        return {
+          posts: [],
+          totalPosts: 0,
+          currentPage: page,
+          totalPages: 0,
+        };
+      }
     }
-
-    // Date range filtering
-    if (dateRange.start) {
-      queries.push(
-        Query.greaterThanEqual("$createdAt", dateRange.start.toISOString())
-      );
-    }
-    if (dateRange.end) {
-      queries.push(
-        Query.lessThanEqual("$createdAt", dateRange.end.toISOString())
-      );
-    }
-
-    // Sorting
-    switch (sortBy) {
-      case "recent":
-        queries.push(Query.orderDesc("$createdAt"));
-        break;
-      case "popular":
-        queries.push(Query.orderDesc("likesCount"));
-        break;
-      case "relevant":
-        // If searching by term, relevance is applied by default
-        if (!searchTerm) {
-          queries.push(Query.orderDesc("$createdAt"));
+    
+    // Content search with fuzzy matching
+    if (searchTerm) {
+      hasSearchTerm = true;
+      const searchTerms = searchTerm.split(' ').filter(term => term.length > 0);
+      
+      // For single word searches, apply fuzzy matching
+      if (searchTerms.length === 1 && searchTerms[0].length >= 3) {
+        const alternatives = generateAlternativeSpellings(searchTerms[0]);
+        
+        // Create a query for each alternative spelling
+        for (const alt of alternatives) {
+          const queries = [];
+          queries.push(Query.search("content", alt));
+          
+          // Add author filter if provided
+          if (author && userIds.length > 0) {
+            queries.push(Query.equal("user_id", userIds));
+          }
+          
+          // Date range filtering
+          if (dateRange.start) {
+            queries.push(Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()));
+          }
+          if (dateRange.end) {
+            queries.push(Query.lessThanEqual("$createdAt", dateRange.end.toISOString()));
+          }
+          
+          allSearchQueries.push(queries);
         }
-        break;
+      } else {
+        // For multi-word searches, use the original search term
+        const queries = [];
+        queries.push(Query.search("content", searchTerm));
+        
+        // Add author filter if provided
+        if (author && userIds.length > 0) {
+          queries.push(Query.equal("user_id", userIds));
+        }
+        
+        // Date range filtering
+        if (dateRange.start) {
+          queries.push(Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()));
+        }
+        if (dateRange.end) {
+          queries.push(Query.lessThanEqual("$createdAt", dateRange.end.toISOString()));
+        }
+        
+        allSearchQueries.push(queries);
+      }
+    } else {
+      // No search term provided, just use regular filters
+      const queries = [];
+      
+      // Filter by author if provided
+      if (author && userIds.length > 0) {
+        queries.push(Query.equal("user_id", userIds));
+      }
+      
+      // Date range filtering
+      if (dateRange.start) {
+        queries.push(Query.greaterThanEqual("$createdAt", dateRange.start.toISOString()));
+      }
+      if (dateRange.end) {
+        queries.push(Query.lessThanEqual("$createdAt", dateRange.end.toISOString()));
+      }
+      
+      allSearchQueries.push(queries);
     }
-
-    // Pagination
-    queries.push(Query.limit(limit));
-    queries.push(Query.offset(offset));
-
-    const posts = await databases.listDocuments(db, postCollection, queries);
-
-    if (!posts?.documents || !Array.isArray(posts.documents)) {
-      console.error("Invalid posts response");
-      return {
-        posts: [],
-        totalPosts: 0,
-        currentPage: page,
-        totalPages: 0,
-      };
+    
+    // Execute all search queries and merge results
+    let allResults = [];
+    const seenDocumentIds = new Set();
+    
+    for (const queries of allSearchQueries) {
+      // Add sorting
+      const sortQueries = [...queries];
+      
+      switch (sortBy) {
+        case "recent":
+          sortQueries.push(Query.orderDesc("$createdAt"));
+          break;
+        case "popular":
+          sortQueries.push(Query.orderDesc("likesCount"));
+          break;
+        case "relevant":
+          // If searching by term, relevance is applied by default
+          if (!hasSearchTerm) {
+            sortQueries.push(Query.orderDesc("$createdAt"));
+          }
+          break;
+      }
+      
+      // Add pagination
+      sortQueries.push(Query.limit(limit));
+      sortQueries.push(Query.offset(offset));
+      
+      const result = await databases.listDocuments(db, postCollection, sortQueries);
+      
+      if (result?.documents && Array.isArray(result.documents)) {
+        // Add unique documents to our results
+        for (const doc of result.documents) {
+          if (!seenDocumentIds.has(doc.$id)) {
+            seenDocumentIds.add(doc.$id);
+            allResults.push(doc);
+          }
+        }
+      }
     }
-
+    
+    // Sort merged results according to sortBy parameter
+    // This is necessary because we've potentially merged results from multiple queries
+    if (allResults.length > 0) {
+      switch (sortBy) {
+        case "recent":
+          allResults.sort((a, b) => new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime());
+          break;
+        case "popular":
+          allResults.sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0));
+          break;
+        // For "relevant", we keep the order provided by the search engine
+      }
+    }
+    
+    // Limit to the requested number of results
+    allResults = allResults.slice(0, limit);
+    
     // Get total posts count for pagination
-    const totalQuery = [
-      ...queries.filter(
-        (q) =>
-          !q.toString().includes("limit") &&
-          !q.toString().includes("offset") &&
-          !q.toString().includes("orderBy")
-      ),
-    ];
-
-    const totalPosts = await databases.listDocuments(
-      db,
-      postCollection,
-      totalQuery
-    );
-    const totalPages = Math.ceil((totalPosts?.total || 0) / limit);
-
+    // We'll need to count unique results from all queries
+    let totalPosts = 0;
+    
+    // If there's a search term, we need to calculate the total differently
+    if (hasSearchTerm) {
+      // Get a count of all documents matching our search term variations
+      const seenIds = new Set();
+      
+      for (const queries of allSearchQueries) {
+        const countQueries = queries.filter(
+          (q) => !q.toString().includes("limit") && 
+                !q.toString().includes("offset") && 
+                !q.toString().includes("orderBy")
+        );
+        
+        const result = await databases.listDocuments(db, postCollection, countQueries);
+        
+        if (result?.documents) {
+          for (const doc of result.documents) {
+            seenIds.add(doc.$id);
+          }
+        }
+      }
+      
+      totalPosts = seenIds.size;
+    } else {
+      // No search term, just use the standard count
+      const countQueries = allSearchQueries[0].filter(
+        (q) => !q.toString().includes("limit") && 
+              !q.toString().includes("offset") && 
+              !q.toString().includes("orderBy")
+      );
+      
+      const result = await databases.listDocuments(db, postCollection, countQueries);
+      totalPosts = result?.total || 0;
+    }
+    
+    const totalPages = Math.ceil(totalPosts / limit);
+    
     // Process posts to include file URLs
     const postsWithFiles = await Promise.all(
-      posts.documents.map(async (post) => {
+      allResults.map(async (post) => {
         const imageUrl = post.image
           ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.image}/view?project=${env.appwrite.projectId}`
           : null;
-
         const videoUrl = post.video
           ? `${env.appwrite.endpoint}/storage/buckets/${postAttachementBucket}/files/${post.video}/view?project=${env.appwrite.projectId}`
           : null;
-
         return {
           ...post,
           image: imageUrl,
@@ -1487,10 +1599,10 @@ export const searchPosts = async (
         };
       })
     );
-
+    
     return {
       posts: parseStringify(postsWithFiles),
-      totalPosts: totalPosts?.total || 0,
+      totalPosts: totalPosts,
       currentPage: page,
       totalPages,
     };
@@ -1504,6 +1616,61 @@ export const searchPosts = async (
     };
   }
 };
+
+/**
+ * Searches for users by their first name or last name
+ * Also applies fuzzy search to handle typos in name searches
+ * 
+ * @param nameQuery The name to search for (first or last)
+ * @returns Array of matching user IDs
+ */
+async function findUsersByName(nameQuery: string): Promise<string[]> {
+  try {
+    const { databases } = await createAdminClient();
+    
+    // Skip empty queries
+    if (!nameQuery || nameQuery.trim() === "") {
+      return [];
+    }
+    
+    // Generate name variations for fuzzy matching if name is long enough
+    const nameVariations = nameQuery.length >= 3 
+      ? generateAlternativeSpellings(nameQuery)
+      : [nameQuery];
+    
+    const userIds = new Set<string>();
+    
+    // For each name variation, search in both firstName and lastName fields
+    for (const nameVariant of nameVariations) {
+      // Search by firstName
+      const firstNameResults = await databases.listDocuments(
+        db,
+        userCollection,
+        [Query.search("firstname", nameVariant)]
+      );
+      
+      if (firstNameResults?.documents) {
+        firstNameResults.documents.forEach(user => userIds.add(user.$id));
+      }
+      
+      // Search by lastName
+      const lastNameResults = await databases.listDocuments(
+        db,
+        userCollection,
+        [Query.search("lastname", nameVariant)]
+      );
+      
+      if (lastNameResults?.documents) {
+        lastNameResults.documents.forEach(user => userIds.add(user.$id));
+      }
+    }
+    
+    return Array.from(userIds);
+  } catch (error) {
+    console.error("Error finding users by name:", error);
+    return [];
+  }
+}
 
 export const searchPostsByUser = async (
   firstname?: string,
@@ -1739,7 +1906,7 @@ const deleteJobAfterDeadlineOfApplication = async () => {
   try {
     const now = new Date();
     const { databases } = await createAdminClient();
-    const jobs = await databases.listDocuments(db, jobCollection);
+    const jobs = await databases.listDocuments(db, jobCollection, [Query.limit(1000)]);
 
     // Filter jobs that have passed their deadline
     const expiredJobs = jobs.documents.filter((job) => {
@@ -1770,6 +1937,40 @@ export const getJobs = async () => {
     return parseStringify(jobs);
   } catch (error) {
     console.error("Error fetching jobs:", error);
+  }
+};
+
+export const searchJobs = async (
+  country?: string,
+  location?: string,
+  title?: string
+): Promise<Job[]> => {
+  try {
+    const { databases } = await createAdminClient();
+    const queries: string[] = [];
+
+    if (country) {
+      queries.push(Query.search("country_of_work", country));
+    }
+    if (location) {
+      queries.push(Query.search("location_of_work", location));
+    }
+    if (title) {
+      queries.push(Query.search("job_title", title));
+    }
+
+    console.log("Searching jobs with queries:", queries);
+    // If no search criteria, apply a default limit
+    const results = await databases.listDocuments(
+      db,
+      jobCollection,
+      queries.length > 0 ? queries : [Query.limit(1000)] // Apply limit if no search criteria
+    );
+
+    return parseStringify(results.documents);
+  } catch (error) {
+    console.error("Error searching jobs:", error);
+    return []; // Return an empty array in case of an error
   }
 };
 
@@ -1954,7 +2155,7 @@ const deleteFundingAfterDeadlineOfApplication = async () => {
   try {
     const now = new Date();
     const { databases } = await createAdminClient();
-    const fundings = await databases.listDocuments(db, fundingCollection);
+    const fundings = await databases.listDocuments(db, fundingCollection, [Query.limit(1000)]);
 
     // Filter fundings that have passed their deadline
     const expiredFundings = fundings.documents.filter((funding) => {
@@ -1985,6 +2186,50 @@ export const getFundings = async () => {
     return parseStringify(fundings);
   } catch (error) {
     console.error("Error fetching fundings:", error);
+  }
+};
+
+/**
+ * Searches for fundings by title.
+ * Requires the 'title' attribute to be indexed in the Appwrite collection for efficient searching.
+ * @param searchTitle The title (or part of it) to search for.
+ * @param limit Max number of results to return. Defaults to 25.
+ * @returns A promise that resolves to the Appwrite document list structure containing matching fundings, or undefined if an error occurs.
+ */
+export const searchFundingByTitle = async (
+  searchTitle: string,
+  limit: number = 100
+): Promise<{ total: number; documents: Funding[] } | undefined> => {
+  // Basic validation
+  if (!searchTitle || typeof searchTitle !== 'string' || searchTitle.trim() === '') {
+    console.log("Search title is empty or invalid.");
+    return { total: 0, documents: [] }; // Return empty result for empty search
+  }
+
+  try {
+    const { databases } = await createAdminClient();
+    console.log(`Searching for fundings with title containing: "${searchTitle}"`);
+
+    // Use Query.search() for partial/full-text search (requires index)
+    // Alternatively, use Query.equal('title', searchTitle) for exact matches
+    const searchResults = await databases.listDocuments(
+      db,
+      fundingCollection,
+      [
+        Query.search('title', searchTitle.trim()), // Use search for flexibility
+        Query.limit(limit), // Apply limit to search results
+        Query.orderDesc("$createdAt") // Optional: Order search results
+      ]
+    );
+
+    console.log(`Found ${searchResults.total} fundings matching the title.`);
+    // Assuming parseStringify is meant to deep clone or handle specific Appwrite object structures
+    return parseStringify(searchResults);
+
+  } catch (error) {
+    console.error(`Error searching fundings by title "${searchTitle}":`, error);
+    // Return undefined or throw error based on desired error handling strategy
+    return undefined;
   }
 };
 
