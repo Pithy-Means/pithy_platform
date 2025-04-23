@@ -118,7 +118,7 @@ const SearchScholarship = ({ onSearchResults, setLoading, setError }: SearchScho
 
   return (
     <div className="w-full mb-12 bg-white bg-opacity-20 backdrop-blur-md rounded-xl p-6 shadow-lg border border-green-200">
-      <form onSubmit={handleSearch} className="space-y-4">
+      <form onSubmit={handleSearch} className="space-y-4 text-black">
         <div className="flex flex-col md:flex-row md:items-end gap-4">
           {/* Main search field */}
           <div className="flex-1">
