@@ -968,6 +968,20 @@ export const searchUsers = async ({
   }
 };
 
+// Add this function to your API file or import it if already exists
+export const deleteUser = async (userId: string) => {
+  try {
+    const { databases } = await createAdminClient();
+    await databases.deleteDocument(db, userCollection, userId);
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error(
+      error instanceof Error ? error.message : "Failed to delete user"
+    );
+  }
+};
+
 export const createVerify = async () => {
   try {
     const { account } = await createSessionClient();
