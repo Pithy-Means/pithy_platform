@@ -159,10 +159,9 @@ export const recovery = async (data: UserInfo) => {
     }
 
     const userId = userList.documents[0].$id; // User ID extraction
-    console.log("User ID:", userId);
 
     const resetToken = ID.unique(); // Unique token for reset
-    const resetLink = `https://hilarious-tarsier-58aa63.netlify.app/reset-password?userId=${userId}&secret=${resetToken}`;
+    const resetLink = `https://www.pithymeansplus.com/reset-password?userId=${userId}&secret=${resetToken}`;
     console.log("Generated reset link:", resetLink);
 
     const recoveryPass = await account.createRecovery(data.email, resetLink);
