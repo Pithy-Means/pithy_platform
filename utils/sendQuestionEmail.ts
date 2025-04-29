@@ -10,7 +10,6 @@ const resend = new Resend(env.emails.apikey);
 type SendQuestionEmailParams = {
   questionId: string;
   questionText: string;
-  userId: string;
   userName: string;
   userEmail: string;
 };
@@ -19,7 +18,6 @@ type SendQuestionEmailParams = {
 export async function sendQuestionEmail({
   questionId,
   questionText,
-  userId,
   userName,
   userEmail,
 }: SendQuestionEmailParams) {
@@ -92,7 +90,6 @@ export async function sendQuestionEmail({
               <div class="detail">
                 <p><strong>Question ID:</strong> ${questionId}</p>
                 <p><strong>Submitted By:</strong> ${userName}</p>
-                <p><strong>User ID:</strong> ${userId}</p>
                 <p><strong>User Email:</strong> ${userEmail}</p>
               </div>
 
