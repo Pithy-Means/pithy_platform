@@ -232,7 +232,6 @@ export const getReferralDetails = async (userId: string) => {
     const referralPromises = user.referred_users.map(
       async (referredId: string) => {
         try {
-          console.log(`Fetching details for referred user ID: ${referredId}`);
           const referredUser = await databases.getDocument(
             db,
             userCollection,
