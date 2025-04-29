@@ -30,7 +30,6 @@ export default function QuestionManagement() {
     text: "",
     score: { E: 0, I: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 },
   });
-  console.log("User id:", user?.user_id);
 
   const handleAddOption = () => {
     if (newOption.text.trim() === "") return;
