@@ -8,7 +8,7 @@ import { Lock, CheckCircle, ChevronsLeft, ChevronsRight } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
 import { useVideoProgressStore } from "@/lib/store/useVideoProgressStore";
 
-export default function ModulesPage() {
+export default function ModulePage() {
   const [modules, setModules] = useState<Modules[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

@@ -2210,10 +2210,16 @@ export const getFundings = async () => {
  */
 export const searchFundingByTitle = async (
   searchTitle: string,
+  searchArea: string,
   limit: number = 100
 ): Promise<{ total: number; documents: Funding[] } | undefined> => {
   // Basic validation
   if (!searchTitle || typeof searchTitle !== 'string' || searchTitle.trim() === '') {
+    console.log("Search title is empty or invalid.");
+    return { total: 0, documents: [] }; // Return empty result for empty search
+  }
+
+  if (!searchArea || typeof searchArea !== 'string' || searchArea.trim() === '') {
     console.log("Search title is empty or invalid.");
     return { total: 0, documents: [] }; // Return empty result for empty search
   }
@@ -2229,6 +2235,7 @@ export const searchFundingByTitle = async (
       fundingCollection,
       [
         Query.search('title', searchTitle.trim()), // Use search for flexibility
+        Query.search('focus_earlier', searchArea.trim()),
         Query.limit(limit), // Apply limit to search results
         Query.orderDesc("$createdAt") // Optional: Order search results
       ]
@@ -2239,7 +2246,6 @@ export const searchFundingByTitle = async (
     return parseStringify(searchResults);
 
   } catch (error) {
-    console.error(`Error searching fundings by title "${searchTitle}":`, error);
     // Return undefined or throw error based on desired error handling strategy
     return undefined;
   }
