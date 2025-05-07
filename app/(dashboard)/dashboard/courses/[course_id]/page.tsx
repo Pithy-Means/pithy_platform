@@ -4,9 +4,10 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Courses, UserInfo } from "@/types/schema";
 import ModuleForm from "@/components/ModuleForm"; // Import ModuleForm
-import ModulesPage from "@/components/ModulePage";
+import ModulesPage from "@/components/ModulesPage";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/lib/store/useAuthStore";
+
 
 const CourseDetail = () => {
   const { course_id } = useParams(); // Get the course_id from the URL
