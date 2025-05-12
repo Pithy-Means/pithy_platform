@@ -208,7 +208,7 @@ const Home: NextPage = () => {
             {/* Card 2 */}
             <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
               <h3 className="text-lg font-semibold text-black">Revenue</h3>
-              <p className="text-3xl font-bold text-black mt-2">$12,345</p>
+              <p className="text-3xl font-bold text-black mt-2"> - </p>
             </div>
 
             {/* Card 3 */}
@@ -216,7 +216,7 @@ const Home: NextPage = () => {
               <h3 className="text-lg font-semibold text-black">
                 Active Projects
               </h3>
-              <p className="text-3xl font-bold text-black mt-2">45</p>
+              <p className="text-3xl font-bold text-black mt-2"> - </p>
             </div>
           </div>
 
