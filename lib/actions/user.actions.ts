@@ -268,6 +268,7 @@ export const getReferralDetails = async (userId: string) => {
               [
                 Query.equal("user_id", referredUser.user_id),
                 Query.equal("status", "successful"),
+                Query.limit(10000)
               ]
             );
 
