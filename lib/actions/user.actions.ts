@@ -878,6 +878,7 @@ export const getAllUsers = async (
       ...filters,
       Query.limit(limit),
       Query.offset(offset),
+      Query.orderDesc
     ]);
 
     return {
