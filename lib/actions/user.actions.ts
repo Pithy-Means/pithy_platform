@@ -878,7 +878,7 @@ export const getAllUsers = async (
       ...filters,
       Query.limit(limit),
       Query.offset(offset),
-      Query.orderDesc
+      Query.orderDesc("$createdAt")
     ]);
 
     return {
