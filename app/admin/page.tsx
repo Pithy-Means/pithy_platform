@@ -28,11 +28,6 @@ const Home: NextPage = () => {
     userName: "",
   });
   const [isDeleting, setIsDeleting] = useState(false);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    type: "", // success or error
-  });
 
   // Fetch users data
   const fetchUsers = useCallback(async () => {
@@ -40,18 +35,8 @@ const Home: NextPage = () => {
     try {
       const data = await getAllUsers(limit, offset);
       setUserData(data);
-      setNotification({
-        show: true,
-        message: "Users fetched successfully",
-        type: "success",
-      });
     } catch (error) {
       console.error("Failed to fetch users:", error);
-      setNotification({
-        show: true,
-        message: "Failed to fetch users",
-        type: "error",
-      });
     } finally {
       setIsLoading(false);
     }
@@ -87,19 +72,6 @@ const Home: NextPage = () => {
     setOffset((prev) => Math.max(0, prev - limit));
   };
 
-  // Handle notification close
-  const showNotification = (message: string, type: "success" | "error") => {
-    setNotification({
-      show: true,
-      message,
-      type,
-    });
-
-    // Auto hide after 3 seconds
-    setTimeout(() => {
-      setNotification((prev) => ({ ...prev, show: false }));
-    }, 3000);
-  };
 
   // Open delete confirmation modal
   const openDeleteModal = (userId: string, userName: string) => {
@@ -126,15 +98,10 @@ const Home: NextPage = () => {
     setIsDeleting(true);
     try {
       await deleteUser(deleteModal.userId);
-      showNotification(
-        `User ${deleteModal.userName} has been deleted successfully`,
-        "success"
-      );
       closeDeleteModal();
       fetchUsers(); // Refresh user list
     } catch (error) {
       console.error("Failed to delete user:", error);
-      showNotification("Failed to delete user", "error");
     } finally {
       setIsDeleting(false);
     }
@@ -142,16 +109,6 @@ const Home: NextPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Notification */}
-      {notification.show && (
-        <div
-          className={`fixed top-4 right-4 p-4 rounded-md shadow-md z-50 ${
-            notification.type === "success" ? "bg-green-500" : "bg-red-500"
-          } text-white`}
-        >
-          {notification.message}
-        </div>
-      )}
       {/* Delete Confirmation Modal */}
       {deleteModal.isOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
