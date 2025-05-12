@@ -41,6 +41,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "appwrite": "^16.1.0",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "browser-image-compression": "^2.0.2",
     "canvas-confetti": "^1.9.3",
@@ -89,6 +90,7 @@
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/bcryptjs": "^2.4.6",
     "@types/date-fns": "^2.5.3",
     "@types/debug": "^4.1.12",
