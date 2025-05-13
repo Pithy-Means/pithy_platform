@@ -420,8 +420,8 @@ export const getWHoUserPaid = async () => {
   const { databases } = await createAdminClient();
   try {
     const fetchedUsers = await databases.listDocuments(db, paymentCollection, [
-      Query.limit(1000),
       Query.orderDesc("$createdAt"),
+      Query.limit(1000)
     ]);
 
     const initiatePayment = fetchedUsers.documents.filter(
@@ -430,6 +430,8 @@ export const getWHoUserPaid = async () => {
     const successfulPayment = fetchedUsers.documents.filter(
       (user) => user.checked === true && user.status === "successful"
     );
+
+    console.log("Fetch user who paid", fetchedUsers.total)
 
     return {
       initiatePayment: parseStringify(initiatePayment),
