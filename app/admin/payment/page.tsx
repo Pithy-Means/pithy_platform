@@ -221,7 +221,7 @@ const PaymentDashboard = () => {
                           <TableCell>{format(new Date(user.$createdAt), 'MMM d, yyyy')}</TableCell>
                           <TableCell>
                             <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
-                              Pending
+                              {user.status}
                             </Badge>
                           </TableCell>
                           <TableCell className="text-right">{user.amount?.toLocaleString()}</TableCell>
