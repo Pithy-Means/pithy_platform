@@ -215,6 +215,9 @@ export interface PaymentData {
   status?: string;
   user_id?: string;
   payment_id?: string;
+  error_details?: string,
+  notes?: string,
+  flutterwave_transaction_id?: string,
   amount: number;
   currency?: string;
   tx_ref: string;
