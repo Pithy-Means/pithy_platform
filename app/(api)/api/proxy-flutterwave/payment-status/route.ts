@@ -163,7 +163,7 @@ export async function GET(req: Request) {
     try {
       // Fetch the user who made the payment to get their referral code
       const userQuery = await databases.listDocuments(db, userCollection, [
-        Query.equal("email", data.data.customer.email),
+        Query.equal("email", data.data.customer.email), Query.limit(1000)
       ]);
 
       if (userQuery.documents.length > 0) {
@@ -189,6 +189,7 @@ export async function GET(req: Request) {
             [
               Query.equal("referral_code", user.referral_by),
               Query.notEqual("user_id", user.user_id),
+              Query.limit(1000)
             ]
           );
 
