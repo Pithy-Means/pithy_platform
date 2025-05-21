@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -205,7 +206,7 @@ const OverView: React.FC<OverViewProps> = ({ children }) => {
     // For non-premium features or if user has paid
     return (
       <Link
-        href={href}
+        href={href as any}
         className="flex flex-row gap-3 items-center hover:text-[#37BB65] group relative w-full py-2"
         aria-label={label}
       >
