@@ -7,7 +7,7 @@
   "scope": "/",
   "id": "/",
   "display": "standalone",
-  "orientation": "any",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#5bbad5",
   "categories": ["education", "productivity", "lifestyle", "business"],
@@ -64,12 +64,5 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "related_applications": [
-    {
-      "platform": "web, android, ios"
-    }
-  ],
-  "prefer_related_applications": false,
-  "dir": "ltr"
+  ]
 }
