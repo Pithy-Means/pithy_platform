@@ -1,25 +1,33 @@
-import { updateQuestion, deleteQuestion } from '@/lib/actions/user.actions';
-import { NextApiRequest, NextApiResponse } from 'next';
+// app/(api)/api/question/fetch/[pre_course_question_id]/route.ts
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+import { updateQuestion, deleteQuestion } from '@/lib/actions/user.actions';
+import { NextRequest, NextResponse } from 'next/server';
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: { pre_course_question_id: string } }
+) {
   try {
-    const { id } = req.query;
-    
-    if (typeof id !== 'string') {
-      return res.status(400).json({ message: 'Invalid question ID' });
-    }
-    
-    if (req.method === 'PUT') {
-      const question = await updateQuestion(id, req.body);
-      return res.status(200).json(question);
-    } else if (req.method === 'DELETE') {
-      await deleteQuestion(id);
-      return res.status(204).end();
-    }
-    
-    return res.status(405).json({ message: 'Method not allowed' });
+    const id = params.pre_course_question_id;
+    const body = await request.json();
+    const question = await updateQuestion(id, body);
+    return NextResponse.json(question);
   } catch (error) {
     console.error('API error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { pre_course_question_id: string } }
+) {
+  try {
+    const id = params.pre_course_question_id;
+    await deleteQuestion(id);
+    return new NextResponse(null, { status: 204 });
+  } catch (error) {
+    console.error('API error:', error);
+    return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
   }
 }
