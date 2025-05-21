@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -94,7 +95,7 @@ const AdminSidebar: React.FC<AdminSidebarProps> = ({ children }) => {
           {links.map((link) => (
             <Link
               key={link.path}
-              href={link.path}
+              href={link.path as any}
               className={`flex items-center px-4 py-3 hover:bg-green-500 hover:text-white/90 transition-colors ${
                 pathname === link.path ? "bg-green-500 text-white/90" : ""
               }`}

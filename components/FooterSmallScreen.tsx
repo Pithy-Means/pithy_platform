@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -85,7 +86,7 @@ function FooterSmallScreen() {
     if (isPremium && !hasAccess) {
       router.push("/dashboard/courses");
     } else {
-      router.push(path);
+      router.push(path as any);
     }
 
     // Close the more modal if it's open
@@ -217,7 +218,7 @@ function FooterSmallScreen() {
               {/* Profile */}
               <div 
                 onClick={() => {
-                  router.push("/dashboard/profile");
+                  router.push("/dashboard/profile" as any);
                   setMoreModalOpen(false);
                 }}
                 className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 cursor-pointer"

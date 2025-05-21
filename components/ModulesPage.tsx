@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Modules } from "@/types/schema";
 import toast, { Toaster } from "react-hot-toast";
 import { useVideoProgressStore } from "@/lib/store/useVideoProgressStore";
@@ -27,11 +27,7 @@ export default function ModulesPage() {
   const progressPercentage =
     totalModules > 0 ? ((activeModuleIndex + 1) / totalModules) * 100 : 0;
 
-  useEffect(() => {
-    fetchModules();
-  }, [getProgress]);
-
-  const fetchModules = async () => {
+  const fetchModules = useCallback(async () => {
     try {
       const response = await fetch(`/api/get-modules`, { method: "GET" });
       if (!response.ok) {
@@ -70,7 +66,11 @@ export default function ModulesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [getProgress]);
+
+  useEffect(() => {
+    fetchModules();
+  }, [getProgress, fetchModules]);
 
   const handleModuleChange = (index: number) => {
     // Find the last completed module index
