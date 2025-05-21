@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import type { Route } from 'next';
 import { Question, UserResponse, TemperamentResult, Answer, UserInfo } from '@/types/schema';
 import { calculateTemperamentTypeFromRawAnswers, getTemperamentDescription } from '@/utils/temperament';
 import { fetchQuestions, saveResult } from '@/lib/actions/user.actions';
@@ -352,8 +353,7 @@ const QuestionModal: React.FC<QuestionModalProps> = ({ isOpen, onClose }) => {
                   </svg>
                   Take Test Again
                 </button>
-                
-                <Link href="/profile" 
+                <Link href={"/profile" as Route} 
                   onClick={onClose}
                   className="px-6 py-3 bg-white text-green-700 border-2 border-green-600 rounded-lg shadow hover:bg-green-50 transition duration-300 flex items-center"
                 >
