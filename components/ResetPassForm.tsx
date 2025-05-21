@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import InputContact from "./InputContact";
 import toast, { Toaster } from "react-hot-toast";
 import { Button } from "./ui/button";
+import type { Route } from "next";
 
 type ResetFormData = {
   user_id: string;
@@ -74,7 +75,7 @@ const PasswordRecoveryForm: React.FC = () => {
       toast.success("Password reset successfully.");
       console.log("Response:", response);
       if (response.status === 200) {
-        router.push("/login");
+        router.push("/login" as Route);
       }
     } catch (err) {
       toast.error("An error occurred. Please try again.");
