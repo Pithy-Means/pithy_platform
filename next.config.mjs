@@ -8,7 +8,8 @@ const __dirname = dirname(__filename);
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // distDir: "build",
+  output: "standalone",
+  outputFileTracing: true,
   reactStrictMode: false,
   swcMinify: true,
   compiler: {
