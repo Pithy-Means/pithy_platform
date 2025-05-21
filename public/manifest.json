@@ -67,7 +67,7 @@
   ],
   "related_applications": [
     {
-      "platform": "web"
+      "platform": "web, android, ios"
     }
   ],
   "prefer_related_applications": false,
