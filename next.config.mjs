@@ -1,30 +1,19 @@
-// import withPWA from 'next-pwa';
-
-// const withPWAConfig = withPWA({
-//   dest: 'public',
-//   register: true,
-//   skipWaiting: true,
-//   disable: process.env.NODE_ENV === 'development'
-// });
-
-
-
-
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-// import withBundleAnalyzer from "@next/bundle-analyzer";
+import withPWA from "next-pwa";
 
 // Resolve __filename and __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// const bundleAnalyzer = withBundleAnalyzer({
-  //   enabled: process.env.ANALYZE === "true",
-  // });
-
-  /** @type {import('next').NextConfig} */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  distDir: "build",
   reactStrictMode: false,
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "development",
+  },
   // Webpack Configuration
   webpack: (config) => {
     config.cache = {
@@ -68,9 +57,13 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+// Configure PWA
+const withPWAConfig = withPWA({
+  dest: 'public',
+  register: true,
+  skipWaiting: true,
+  disable: process.env.NODE_ENV === 'development'
+});
 
-
-// export default withPWAConfig(nextConfig);
-
-// module.exports = withPWA(nextConfig);
+// Export the configuration with PWA enabled
+export default withPWAConfig(nextConfig);
