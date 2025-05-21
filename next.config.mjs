@@ -58,12 +58,18 @@ const nextConfig = {
   },
 };
 
-// Configure PWA
+// Configure PWA with improved settings
 const withPWAConfig = withPWA({
   dest: 'public',
   register: true,
   skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development'
+  disable: process.env.NODE_ENV === 'development',
+  buildExcludes: [/middleware-manifest\.json$/],
+  maximumFileSizeToCacheInBytes: 5000000,
+  fallbacks: {
+    // Fallbacks help the PWA be more reliable
+    document: '/offline', // Fallback HTML document
+  },
 });
 
 // Export the configuration with PWA enabled
