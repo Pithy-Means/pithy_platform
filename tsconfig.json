@@ -33,14 +33,15 @@
       "google.maps",
       "history",
       "json-schema"
-    ],
+    ]
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "app/(api)/api/upload-files"
+    "app/(api)/api/upload-files",
+    "build/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
