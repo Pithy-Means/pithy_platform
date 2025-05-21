@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Link from "next/link";
@@ -7,6 +8,7 @@ import { Button } from "./ui/button";
 import { useState, useEffect, useRef } from "react";
 import { useAuthStore } from "@/lib/store/useAuthStore";
 import { AuthState } from "@/types/schema";
+import { Route } from "next";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -92,7 +94,7 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              href={link.href}
+              href={link.href as Route}
               prefetch={true}
               className={`text-white text-lg font-bold hover:text-[#5AC35A] transition duration-300 ${
                 pathname === link.href
@@ -149,7 +151,7 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <Link
               key={link.href}
-              href={link.href}
+              href={link.href as Route}
               onClick={handleCloseMenu}
               className={`text-white hover:text-[#5AC35A] transition duration-300 ${
                 pathname === link.href
