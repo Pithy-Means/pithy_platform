@@ -4,6 +4,7 @@ import ConditionalLayout from "@/components/ConditionalLayout";
 import { UserProvider } from "@/context/UserContext";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import PWAInstallPromotion from "@/components/PWAInstallPromotion";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -47,7 +48,7 @@ export const viewport = {
 };
 
 // Enhanced function to generate page-specific metadata with schema.org structured data
-export const generateMetadata = ({ 
+export const generateMetadata = ({
 } = {}) => {
   // Default metadata for the root layout
   const metadataBase = new URL(SITE_URL);
@@ -59,8 +60,8 @@ export const generateMetadata = ({
   const datePublished = new Date().toISOString();
   const dateModified = new Date().toISOString();
   const pageUrl = `${SITE_URL}${path}`;
-  const allKeywords = [...new Set([...PRIMARY_KEYWORDS, ...SECONDARY_KEYWORDS, 
-    'Pithy Means Plus', 
+  const allKeywords = [...new Set([...PRIMARY_KEYWORDS, ...SECONDARY_KEYWORDS,
+    'Pithy Means Plus',
     'executive coaching',
     'habit formation',
     'personal transformation',
@@ -69,7 +70,7 @@ export const generateMetadata = ({
     'mental wellness strategies',
     'goal setting framework'
   ])];
-  
+
   // Generate JSON-LD structured data based on page type
   const structuredData = {
     '@context': 'https://schema.org',
@@ -94,19 +95,19 @@ export const generateMetadata = ({
     },
     keywords: allKeywords.join(', '),
   };
-  
+
   return {
     metadataBase,
-    
+
     // Enhanced title with primary keyword focus
     title: {
       default: title,
       template: '%s | Pithy Means Plus - Personal Development Experts',
     },
-    
+
     // Expanded description with clear value proposition and call-to-action
     description,
-    
+
     // Canonical and alternate URLs with hreflang implementation
     alternates: {
       canonical: '/',
@@ -115,10 +116,10 @@ export const generateMetadata = ({
         'es-ES': '/es-ES',
       },
     },
-    
+
     // Strategic keyword selection based on search intent and competition analysis
     keywords: allKeywords,
-    
+
     // Optimized icons for various platforms with consistent branding
     icons: {
       icon: [
@@ -133,10 +134,10 @@ export const generateMetadata = ({
         { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#5bbad5' },
       ],
     },
-    
+
     // Web app manifest for PWA
     manifest: '/site.webmanifest',
-    
+
     // Enhanced Open Graph metadata for improved social sharing
     openGraph: {
       type: 'website',
@@ -162,7 +163,7 @@ export const generateMetadata = ({
         },
       ],
     },
-    
+
     // Optimized Twitter Card metadata
     twitter: {
       card: 'summary_large_image',
@@ -172,7 +173,7 @@ export const generateMetadata = ({
       description: description,
       images: "opengraph-image.png",
     },
-    
+
     // Advanced robots directives
     robots: {
       index: true,
@@ -186,13 +187,13 @@ export const generateMetadata = ({
         'max-snippet': -1,
       },
     },
-    
+
     // Verification for search engines
     verification: {
       google: '4841994003', // Replace with your actual verification code
       yandex: '45218ce81a99efd4', // Replace with your actual verification code if needed
     },
-    
+
     // Enhanced additional metadata
     category: 'personal development',
     creator: 'Pithy Means Expert Team',
@@ -214,14 +215,14 @@ export const generateMetadata = ({
         }
       ]
     },
-    
+
     // Format detection for mobile
     formatDetection: {
       telephone: true,
       email: true,
       address: true,
     },
-    
+
     // Additional tags for enhanced indexing and user experience
     other: {
       'revisit-after': '7 days',
@@ -233,10 +234,10 @@ export const generateMetadata = ({
 };
 
 // Utility function for creating page-specific metadata in other files
-export const createPageMetadata = ({ 
-  title, 
-  description, 
-  path = '', 
+export const createPageMetadata = ({
+  title,
+  description,
+  path = '',
   ogImage = '/opengraph-image.png',
   pageType = 'WebPage',
   pageKeywords = [],
@@ -254,7 +255,7 @@ export const createPageMetadata = ({
 }) => {
   const pageUrl = `${SITE_URL}${path}`;
   const allKeywords = [...new Set([...pageKeywords, ...PRIMARY_KEYWORDS.slice(0, 3)])];
-  
+
   // Generate JSON-LD structured data based on page type
   const structuredData = {
     '@context': 'https://schema.org',
@@ -285,7 +286,7 @@ export const createPageMetadata = ({
       }
     } : {})
   };
-  
+
   return {
     title,
     description,
@@ -361,6 +362,7 @@ export default function RootLayout({
         <UserProvider>
           <ConditionalLayout>{children}</ConditionalLayout>
         </UserProvider>
+        <PWAInstallPromotion />
         <Analytics />
         <SpeedInsights />
       </body>

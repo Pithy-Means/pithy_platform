@@ -431,8 +431,6 @@ export const getWHoUserPaid = async () => {
       (user) => user.checked === true && user.status === "successful"
     );
 
-    console.log("Fetch user who paid", fetchedUsers.total)
-
     return {
       initiatePayment: parseStringify(initiatePayment),
       successfulPayment: parseStringify(successfulPayment),
