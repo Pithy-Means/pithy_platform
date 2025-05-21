@@ -6,7 +6,7 @@ const QuickLinks: React.FC = () => {
       <h3 className="text-2xl font-extrabold text-white">Quick Links</h3>
       <nav className="flex flex-col space-y-2 ">
         <Link
-          href=""
+          href="/"
           className="text-[12px] md:text-base text-white hover:text-white transition duration-300 ease-in-out"
         >
           Home
