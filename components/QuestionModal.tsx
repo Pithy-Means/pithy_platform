@@ -285,12 +285,12 @@ const QuestionModal: React.FC<QuestionModalProps> = ({ isOpen, onClose }) => {
                       </div>
                     </div>
                     
-                    <h1 className="text-4xl font-serif font-bold text-green-800 mb-2">Certificate of Achievement</h1>
+                    <h1 className="text-4xl font-serif font-bold text-green-800 mb-2">Certificate Of Achievement</h1>
                     <div className="h-1 w-64 bg-green-500 mx-auto my-4"></div>
                     <p className="text-gray-600">This certifies that</p>
                     <p className="text-3xl font-bold text-green-700 mt-2 mb-2">{user?.firstname} {user?.lastname || "Valued Participant"}</p>
                     <p className="text-gray-600">has successfully completed the</p>
-                    <p className="text-xl font-bold text-green-600 mt-1">Temperament Assessment Test</p>
+                    <p className="text-xl font-bold text-green-600 mt-1">Personality Type Self Assessment</p>
                   </div>
                   
                   <div className="mb-8 text-center">

@@ -26,7 +26,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
   });
   const [loading, setLoading] = useState<boolean>(false);
   const [fileSize, setFileSize] = useState<number>(0);
-  const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1MB
+  const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
 
   // Improved file change handler
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,7 +36,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
       // Check file size
       if (file.size > MAX_FILE_SIZE) {
         toast.error(
-          `File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Max size is 1MB.`,
+          `File too large (${(file.size / (1024 * 1024)).toFixed(2)}MB). Max size is 50MB.`,
         );
         return;
       }
@@ -178,7 +178,7 @@ const CreatePosts: React.FC<CreatePostProps> = ({ userId, onPostCreated }) => {
               className="block w-full text-gray-600 text-sm border border-gray-300 rounded-lg shadow-sm file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-green-500/10 file:text-green-600 hover:file:bg-green-100 focus:ring-4 focus:ring-green-400 focus:outline-none"
             />
             <p className="mt-2 text-sm text-gray-400">
-              Supported formats: JPG, PNG, MP4. Max size: 1MB.
+              Supported formats: JPG, PNG, MP4. Max size: 50MB.
               {fileSize > 0 &&
                 ` Selected file size: ${(fileSize / 1024).toFixed(2)}KB`}
             </p>
