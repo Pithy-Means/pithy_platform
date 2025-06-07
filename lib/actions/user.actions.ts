@@ -1111,11 +1111,11 @@ export const createPost = async (data: Post) => {
           throw new Error(`Failed to convert ${mediaType} data`);
         }
 
-        // Check file size (max 5MB)
-        const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+        // Check file size (max 50MB)
+        const MAX_SIZE = 50 * 1024 * 1024; // 50MB
         if (binaryData.length > MAX_SIZE) {
           throw new Error(
-            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 5MB`
+            `${mediaType} file too large (${(binaryData.length / (1024 * 1024)).toFixed(2)}MB). Max size is 50MB`
           );
         }
 
