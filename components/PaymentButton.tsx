@@ -99,6 +99,9 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({ course }) => {
       console.log("Payment response:", data);
 
       if (response.ok && data.link) {
+        if (course.course_id) {
+          sessionStorage.setItem("pending_course_purchase", course.course_id);
+        }
         window.location.href = data.link;
       } else {
         console.error("Payment initiation failed:", data);
