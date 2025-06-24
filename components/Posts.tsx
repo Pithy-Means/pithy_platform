@@ -60,7 +60,6 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
   const [loading, setLoading] = useState(false);
 
   const { posts, loadingPosts, hasMore, loadMorePosts } = usePosts();
-  console.log("Posts", posts);
   const [post, setPost] = useState<PostWithUser[]>([]);
   const [comments, setComments] = useState<{
     [key: string]: CommentPostWithUser[];
@@ -222,9 +221,9 @@ const Posts: React.FC<PostsProps> = ({ searchPosts }) => {
               likeStatus={
                 post.post_id
                   ? likeStatus[post.post_id] || {
-                      isLiked: false,
-                      likeCount: 0,
-                    }
+                    isLiked: false,
+                    likeCount: 0,
+                  }
                   : { isLiked: false, likeCount: 0 }
               }
               comments={post.post_id ? comments[post.post_id] || [] : []}
