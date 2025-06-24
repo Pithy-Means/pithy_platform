@@ -98,7 +98,6 @@ export const fetchPosts = async (
     });
 
     const fetchPromise = await getPosts(page, limit);
-    console.log("Fetching posts for page", fetchPromise);
     const response = await Promise.race([fetchPromise, timeoutPromise]);
 
     if (signal?.aborted) {
