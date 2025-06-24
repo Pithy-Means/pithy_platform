@@ -145,7 +145,6 @@ export const usePosts = () => {
     setError(null);
 
     try {
-      console.log("Fetching initial posts...");
       const initialPosts = await fetchWithRetry(1, BATCH_SIZE);
 
       if (initialPosts && initialPosts.length > 0) {
@@ -314,7 +313,7 @@ export const usePosts = () => {
             // Only update if content changed or newer timestamp
             updatedPosts[existingIndex].$updatedAt !== update.$updatedAt ||
             JSON.stringify(updatedPosts[existingIndex]) !==
-              JSON.stringify(update)
+            JSON.stringify(update)
           ) {
             // Update existing post
             updatedPosts[existingIndex] = update;
@@ -325,10 +324,10 @@ export const usePosts = () => {
         // Only sort if changes were made
         return hasChanges
           ? updatedPosts.sort(
-              (a, b) =>
-                new Date(b.$createdAt).getTime() -
-                new Date(a.$createdAt).getTime(),
-            )
+            (a, b) =>
+              new Date(b.$createdAt).getTime() -
+              new Date(a.$createdAt).getTime(),
+          )
           : prevPosts;
       });
 
