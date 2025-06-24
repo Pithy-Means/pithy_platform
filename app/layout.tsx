@@ -124,11 +124,11 @@ export const generateMetadata = ({
     icons: {
       icon: [
         { url: '/favicon.ico' },
-        { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-        { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/icons/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/icons/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
       ],
       apple: [
-        { url: '/apple-touch-icon.png', sizes: '180x180' },
+        { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
       ],
       other: [
         { rel: 'mask-icon', url: '/safari-pinned-tab.svg', color: '#5bbad5' },
@@ -152,14 +152,14 @@ export const generateMetadata = ({
           width: 1200,
           height: 630,
           alt: 'Pithy Means Plus - Expert Personal Development Platform',
-          type: 'image/jpeg',
+          type: 'image/png',
         },
         {
           url: `${SITE_URL}/opengraph-image.png`,
           width: 600,
           height: 600,
           alt: 'Pithy Means Plus - Expert Personal Development Platform',
-          type: 'image/jpeg',
+          type: 'image/png',
         },
       ],
     },
@@ -206,11 +206,11 @@ export const generateMetadata = ({
       capable: true,
       startupImage: [
         {
-          url: '/favicon-32x32.png',
+          url: '/icons/favicon-32x32.png',
           media: '(orientation: portrait)'
         },
         {
-          url: '/favicon-32x32.png',
+          url: '/icons/favicon-32x32.png',
           media: '(orientation: landscape)'
         }
       ]
@@ -346,7 +346,7 @@ export default function RootLayout({
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/favicon-32x32.png"
+          href="/icons/favicon-32x32.png"
         />
         <link
           rel="icon"
@@ -354,7 +354,7 @@ export default function RootLayout({
           sizes="16x16"
           href="/favicon-16x16.png"
         />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
