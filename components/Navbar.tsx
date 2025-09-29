@@ -59,7 +59,7 @@ const Navbar = () => {
   ];
 
   return (
-    <div className="px-10 pt-6 bg-black">
+    <div className="px-10 py-6 bg-black">
       <div className="flex justify-between">
         <div className="text-2xl font-bold">
           <Logo />
